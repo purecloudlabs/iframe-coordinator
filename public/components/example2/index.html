@@ -1,0 +1,11 @@
+<h1>Component #2</h1>
+<div id="path"></div>
+<script type="text/javascript" src="/static/js/componentLib.js"></script>
+<script type="text/javascript">
+ console.log("RENDERED");
+ document.getElementById("path").innerHTML = window.location.hash;
+
+ window.onhashchange = function () {
+    document.getElementById("path").innerHTML = window.location.hash;
+ }
+</script>
