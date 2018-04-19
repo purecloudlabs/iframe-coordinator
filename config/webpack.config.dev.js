@@ -204,7 +204,8 @@ module.exports = {
 
     new HtmlWebpackPlugin({
       inject: true,
-      template: paths.appHtml
+        template: paths.appHtml,
+        excludeChunks: ['componentLib']
     }),
 
     new HotModuleReplacementPlugin(),
