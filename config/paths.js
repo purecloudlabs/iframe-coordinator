@@ -43,6 +43,7 @@ module.exports = {
   appHtml: resolveApp('./public/index.html'),
   appIndexJs: resolveApp('./src/index.js'),
   componentLibJs: resolveApp('./src/libs/componentLib.js'),
+  coordinatorLibJs: resolveApp('./src/libs/coordinatorLib.js'),
   appSrc: resolveApp('./src'),
   dotenv: resolveApp('./.env'),
   entry: resolveApp('./src/index.js'),
