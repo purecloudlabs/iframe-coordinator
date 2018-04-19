@@ -4,7 +4,7 @@ import Component exposing (Component)
 import Html exposing (Attribute, Html)
 import Html.Attributes exposing (attribute)
 import Json.Decode as Decode exposing (decodeValue)
-import List.Extra as ListEx
+import Message.ComponentMsg as ComponentMsg exposing (ComponentMsg)
 import Navigation exposing (Location)
 import Path exposing (Path)
 
@@ -16,7 +16,7 @@ main =
         { init = init
         , update = update
         , view = view
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
         }
 
 
@@ -45,6 +45,8 @@ init componentJson location =
 
 type Msg
     = RouteChange Path
+    | ComponentMessage ComponentMsg
+    | Unknown String
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -53,11 +55,33 @@ update msg model =
         RouteChange route ->
             ( { model | route = route }, Cmd.none )
 
+        ComponentMessage msg ->
+            handleComponentMsg model msg
+
+        Unknown err ->
+            ( model, logWarning ("Unknown Msg: " ++ err) )
+
+
+handleComponentMsg : Model -> ComponentMsg -> ( Model, Cmd Msg )
+handleComponentMsg model msg =
+    case msg of
+        ComponentMsg.NavRequest location ->
+            ( model, Navigation.newUrl location.hash )
+
 
 parseLocation : Location -> Path
 parseLocation location =
     String.dropLeft 1 location.hash
         |> Path.parse
+
+
+logWarning : String -> Cmd Msg
+logWarning errMsg =
+    let
+        _ =
+            Debug.log errMsg
+    in
+    Cmd.none
 
 
 
@@ -83,3 +107,29 @@ componentFrame =
 src : String -> Attribute msg
 src value =
     attribute "src" value
+
+
+
+-- Subs
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    componentIn decodeComponentMsg
+
+
+decodeComponentMsg : Decode.Value -> Msg
+decodeComponentMsg json =
+    case
+        Decode.decodeValue
+            (Decode.map ComponentMessage ComponentMsg.decoder)
+            json
+    of
+        Ok msg ->
+            msg
+
+        Err err ->
+            Unknown err
+
+
+port componentIn : (Decode.Value -> msg) -> Sub msg
