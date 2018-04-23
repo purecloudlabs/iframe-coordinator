@@ -1,8 +1,7 @@
 port module ComponentHelper exposing (main)
 
 import Json.Decode as Decode
-import Message.Navigate as Navigate
-import Navigation exposing (modifyUrl)
+import Message.ComponentMsg as ComponentMsg exposing (ComponentMsg)
 import Platform exposing (Program, program)
 
 
@@ -33,18 +32,38 @@ init =
 
 
 type Msg
-    = Navigate String
-    | Unknown Decode.Value
+    = Unknown String
+    | ComponentMessage ComponentMsg
+    | CoordinatorMessage Decode.Value
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    case msg of
-        Navigate string ->
-            Debug.log "navigate" ( model, modifyUrl string )
-
+    case Debug.log "Message" msg of
         Unknown value ->
-            ( model, Cmd.none )
+            ( model, logWarning ("No handler for unknown message: " ++ toString value) )
+
+        ComponentMessage message ->
+            handleComponentMessage model message
+
+        CoordinatorMessage value ->
+            ( model, logWarning ("No handler for coordinator messages" ++ toString value) )
+
+
+handleComponentMessage : Model -> ComponentMsg -> ( Model, Cmd Msg )
+handleComponentMessage model msg =
+    case msg of
+        ComponentMsg.NavRequest _ ->
+            ( model, coordinatorOut (ComponentMsg.encode msg) )
+
+
+logWarning : String -> Cmd Msg
+logWarning errMsg =
+    let
+        _ =
+            Debug.log errMsg
+    in
+    Cmd.none
 
 
 
@@ -53,19 +72,33 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    parentMessage decodeMessage
+    Sub.batch
+        [ componentIn componentMessageDecoder
+        , coordinatorIn CoordinatorMessage
+        ]
 
 
-decodeMessage : Decode.Value -> Msg
-decodeMessage value =
-    Decode.decodeValue
-        (Decode.field "data"
-            (Decode.oneOf
-                [ Decode.map Navigate Navigate.decoder ]
-            )
-        )
-        value
-        |> Result.withDefault (Unknown value)
+componentMessageDecoder : Decode.Value -> Msg
+componentMessageDecoder value =
+    case
+        Decode.decodeValue
+            (Decode.map ComponentMessage ComponentMsg.decoder)
+            value
+    of
+        Ok msg ->
+            msg
+
+        Err err ->
+            Unknown err
 
 
-port parentMessage : (Decode.Value -> msg) -> Sub msg
+port coordinatorIn : (Decode.Value -> msg) -> Sub msg
+
+
+port coordinatorOut : Decode.Value -> Cmd msg
+
+
+port componentIn : (Decode.Value -> msg) -> Sub msg
+
+
+port componentOut : Decode.Value -> Cmd msg
