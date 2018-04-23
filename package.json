@@ -1,12 +1,16 @@
 {
   "name": "iframe-coordinator",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Libraries for creating a seamless UI from multiple iframes",
   "repository": {
     "type": "git",
     "url": "https://github.com/purecloudlabs/iframe-coordinator.git"
   },
-  "browser": "build/coordinatorLib.js",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "tag": "alpha"
+  },
+  "main": "build/coordinatorLib.js",
   "files": "build/**",
   "directories": {
     "test": "tests"
