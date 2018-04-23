@@ -43,7 +43,8 @@ module.exports = {
 
         paths.appIndexJs,
       ],
-      componentLib: paths.componentLibJs
+      componentLib: paths.componentLibJs,
+      coordinatorLib: paths.coordinatorLibJs
     },
 
   output: {
@@ -205,7 +206,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       inject: true,
         template: paths.appHtml,
-        excludeChunks: ['componentLib']
+        excludeChunks: ['componentLib', 'coordinatorLib']
     }),
 
     new HotModuleReplacementPlugin(),
