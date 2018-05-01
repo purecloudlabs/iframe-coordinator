@@ -9,11 +9,17 @@ export default class ComponentFrame extends HTMLElement {
 
     constructor() {
         super();
+
         this.iframe = document.createElement('iframe');
         this.iframe.setAttribute('frameborder', 0);
         this.iframe.setAttribute('style', IFRAME_STYLE);
         this.iframe.setAttribute('sandbox', 'allow-scripts');
-        this.appendChild(this.iframe);
+    }
+
+    connectedCallback() {
+        if (this.children[0] != this.iframe) {
+            this.appendChild(this.iframe);
+        }
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
