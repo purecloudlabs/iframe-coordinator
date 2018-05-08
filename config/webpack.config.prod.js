@@ -6,7 +6,8 @@ const paths = require('../config/paths');
 // It requires a trailing slash, or the file assets will get an incorrect path.
 const publicPath = paths.servedPath;
 
-module.exports = {
+module.exports = function () {
+    return {
   // Don't attempt to continue if there are any errors.
   bail: true,
 
@@ -113,4 +114,5 @@ module.exports = {
     tls: 'empty',
     child_process: 'empty'
   }
+    };
 };

@@ -17,7 +17,8 @@ require('../config/env');
 const fs = require('fs-extra');
 const chalk = require('chalk');
 const webpack = require('webpack');
-const config = require('../config/webpack.config.prod');
+const prodConfig = require('../config/webpack.config.prod')();
+const debugConfig = require('../config/webpack.config.debug')();
 const paths = require('../config/paths');
 const checkRequiredFiles = require('react-dev-utils/checkRequiredFiles');
 const formatWebpackMessages = require('react-dev-utils/formatWebpackMessages');
@@ -81,33 +82,42 @@ measureFileSizesBeforeBuild(paths.appBuild)
 // Create the production build and print the deployment instructions.
 function build(previousFileSizes) {
   console.log(`Creating an optimized ${process.env.NODE_ENV} build...`);
-
-  const compiler = webpack(config);
-  return new Promise((resolve, reject) => {
-    compiler.run((err, stats) => {
-      if (err) {
-        return reject(err);
-      }
-      const messages = formatElmCompilerErrors(
-        formatWebpackMessages(stats.toJson({}, true))
-      );
-      if (messages.errors.length) {
-        return reject(new Error(messages.errors.join('\n\n')));
-      }
-      if (process.env.CI && messages.warnings.length) {
-        console.log(
-          chalk.yellow(
-            '\nTreating warnings as errors because process.env.CI = true.\n' +
-              'Most CI servers set it automatically.\n'
-          )
-        );
-        return reject(new Error(messages.warnings.join('\n\n')));
-      }
-      return resolve({
-        stats,
-        previousFileSizes,
-        warnings: messages.warnings
-      });
+    return webpackBuild(prodConfig, previousFileSizes).then((prodRes) => {
+        console.log(`Creating an debug ${process.env.NODE_ENV} build...`);
+        return webpackBuild(debugConfig, previousFileSizes).then((debugRes) => {
+            return prodRes; //TODO: maybe merge with debug results?
+        });
     });
-  });
+}
+
+function webpackBuild(config, previousFileSizes) {
+    const compiler = webpack(config);
+    return new Promise((resolve, reject) => {
+        compiler.run((err, stats) => {
+            if (err) {
+                return reject(err);
+            }
+            const messages = formatElmCompilerErrors(
+                formatWebpackMessages(stats.toJson({}, true))
+            );
+            if (messages.errors.length) {
+                return reject(new Error(messages.errors.join('\n\n')));
+            }
+            if (process.env.CI && messages.warnings.length) {
+                console.log(
+                    chalk.yellow(
+                        '\nTreating warnings as errors because process.env.CI = true.\n' +
+                            'Most CI servers set it automatically.\n'
+                    )
+                );
+                return reject(new Error(messages.warnings.join('\n\n')));
+            }
+            return resolve({
+                stats,
+                previousFileSizes,
+                warnings: messages.warnings
+            });
+        });
+    });
+    
 }
