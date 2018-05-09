@@ -1,4 +1,4 @@
-module Path exposing (Path, parse, asString, startsWith, decoder)
+module Path exposing (Path, asString, decoder, join, parse, startsWith)
 
 import Json.Decode as Decode exposing (Decoder)
 import List.Extra as ListEx
@@ -15,7 +15,15 @@ parse : String -> Path
 parse pathStr =
     cleanPathString pathStr
         |> String.split "/"
+        |> List.filter (not << String.isEmpty)
         |> Absolute
+
+
+join : Path -> Path -> Path
+join p1 p2 =
+    case ( p1, p2 ) of
+        ( Absolute l1, Absolute l2 ) ->
+            Absolute (List.append l1 l2)
 
 
 asString : Path -> String
@@ -47,15 +55,15 @@ cleanPathString rawPathStr =
         pathStr =
             String.trim rawPathStr
     in
-        case ( String.startsWith "/" pathStr, String.endsWith "/" pathStr ) of
-            ( True, True ) ->
-                String.slice 1 -1 pathStr
+    case ( String.startsWith "/" pathStr, String.endsWith "/" pathStr ) of
+        ( True, True ) ->
+            String.slice 1 -1 pathStr
 
-            ( False, True ) ->
-                String.dropRight 1 pathStr
+        ( False, True ) ->
+            String.dropRight 1 pathStr
 
-            ( True, False ) ->
-                String.dropLeft 1 pathStr
+        ( True, False ) ->
+            String.dropLeft 1 pathStr
 
-            ( False, False ) ->
-                pathStr
+        ( False, False ) ->
+            pathStr

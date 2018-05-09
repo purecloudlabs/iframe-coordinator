@@ -13,7 +13,7 @@ export default class ComponentFrame extends HTMLElement {
         this.iframe = document.createElement('iframe');
         this.iframe.setAttribute('frameborder', 0);
         this.iframe.setAttribute('style', IFRAME_STYLE);
-        this.iframe.setAttribute('sandbox', 'allow-scripts');
+        this.iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
     }
 
     connectedCallback() {
