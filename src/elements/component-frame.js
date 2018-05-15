@@ -9,7 +9,7 @@ export default class ComponentFrame extends HTMLElement {
 
     constructor() {
         super();
-
+        this.setAttribute('style', IFRAME_STYLE);
         this.iframe = document.createElement('iframe');
         this.iframe.setAttribute('frameborder', 0);
         this.iframe.setAttribute('style', IFRAME_STYLE);
