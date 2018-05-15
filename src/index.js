@@ -1,4 +1,3 @@
-import './main.css';
 import '@webcomponents/custom-elements/src/native-shim.js';
 import '@webcomponents/custom-elements/custom-elements.min.js';
 import './libs/coordinatorLib.js';
