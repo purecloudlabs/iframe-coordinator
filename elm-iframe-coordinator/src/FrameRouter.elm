@@ -1,4 +1,15 @@
-port module FrameRouter exposing (main)
+module FrameRouter exposing (createRouter)
+
+{-| The FrameRouter module is the Elm code that backs the frame-router custom element
+in the iframe-coordinator toolkit. It handles mapping URL routes to components displayed
+in a child frame as well as message validation and routing within the parent application.
+
+This module is not currently designed for stand-alone use. You should instead use the
+custom elements defined in LINK_TO_JS_LIB to create seamless iframe applications
+
+@docs createRouter
+
+-}
 
 import Component exposing (Component)
 import Html exposing (Attribute, Html)
@@ -9,14 +20,21 @@ import Navigation exposing (Location)
 import Path exposing (Path)
 
 
-main : Program Decode.Value Model Msg
-main =
+{-| Create a program to handle routing. Takes an input port to listen to messages on.
+port binding is handled in the custom frame-router element in LINK_TO_JS_LIB_HERE
+-}
+createRouter :
+    ((Decode.Value -> Msg) -> Sub Msg)
+    -> Program Decode.Value Model Msg
+createRouter inputPort =
     Navigation.programWithFlags
         (RouteChange << parseLocation)
         { init = init
         , update = update
         , view = view
-        , subscriptions = subscriptions
+        , subscriptions =
+            \_ ->
+                inputPort decodeComponentMsg
         }
 
 
@@ -113,11 +131,6 @@ src value =
 -- Subs
 
 
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    componentIn decodeComponentMsg
-
-
 decodeComponentMsg : Decode.Value -> Msg
 decodeComponentMsg json =
     case
@@ -130,6 +143,3 @@ decodeComponentMsg json =
 
         Err err ->
             Unknown err
-
-
-port componentIn : (Decode.Value -> msg) -> Sub msg
