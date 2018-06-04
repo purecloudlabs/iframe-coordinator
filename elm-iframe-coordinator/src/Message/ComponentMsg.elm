@@ -1,5 +1,11 @@
 module Message.ComponentMsg exposing (ComponentMsg(..), decoder, encode)
 
+{-| The ComponantMsg module describes message formats used by components to communicate with the parent application.
+
+@docs ComponentMsg decoder encode
+
+-}
+
 import Dict exposing (Dict)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (decode, required)
@@ -8,10 +14,14 @@ import Message.LabeledMsg as LabeledMsg
 import Navigation exposing (Location)
 
 
+{-| Message types that can be sent to the parent app
+-}
 type ComponentMsg
     = NavRequest Location
 
 
+{-| Decoder for component messages. Messages are expected to be part of a labeled structure as defined in the LabeledMsg module.
+-}
 decoder : Decoder ComponentMsg
 decoder =
     LabeledMsg.decoder
@@ -21,6 +31,8 @@ decoder =
         )
 
 
+{-| Encodes a ComponentMsg into a LabeledMsg format suitable for sending to a parent app.
+-}
 encode : ComponentMsg -> Encode.Value
 encode msg =
     let
