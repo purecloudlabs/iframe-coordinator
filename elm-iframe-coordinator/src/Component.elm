@@ -1,5 +1,8 @@
 module Component exposing (Component, Id, Registry, decodeRegistry, urlForRoute)
 
+{-| The Component module defines the data structures used to represent individual component definitions and a registry of components.
+-}
+
 import Dict exposing (Dict)
 import Erl as Url exposing (Url)
 import Json.Decode as Decode exposing (Decoder, decodeValue)
