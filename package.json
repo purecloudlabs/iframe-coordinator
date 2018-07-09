@@ -1,6 +1,6 @@
 {
   "name": "iframe-coordinator",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha",
   "description": "Libraries for creating a seamless UI from multiple iframes",
   "repository": {
     "type": "git",

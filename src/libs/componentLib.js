@@ -30,7 +30,7 @@ function start(expectedOrigin) {
 
 function onLinkClick (callback) {
     window.addEventListener('click', (event) => {
-        if (event.target.tagName.toLowerCase() === 'a') {
+        if (event.target.tagName.toLowerCase() === 'a' && event.button == 0) {
             event.preventDefault();
             let a = event.target;
             let location = {

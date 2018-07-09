@@ -1,6 +1,7 @@
 module Component exposing (Component, Id, Registry, decodeRegistry, urlForRoute)
 
 import Dict exposing (Dict)
+import Erl as Url exposing (Url)
 import Json.Decode as Decode exposing (Decoder, decodeValue)
 import List.Extra as ListEx
 import Path exposing (Path)
@@ -11,7 +12,7 @@ type Registry
 
 
 type alias Component =
-    { indexPath : Path
+    { url : Url
     , assignedRoute : Path
     }
 
@@ -51,14 +52,22 @@ unwrapId id =
             identifier
 
 
-getUrl : Path -> Component -> String
-getUrl route component =
-    Path.asString component.indexPath ++ "/#" ++ Path.asString route
-
-
 matchesRoute : Path -> Component -> Bool
 matchesRoute path component =
     Path.startsWith component.assignedRoute path
+
+
+getUrl : Path -> Component -> String
+getUrl route component =
+    let
+        componentUrl =
+            component.url
+
+        newHash =
+            Path.join (Path.parse componentUrl.hash) route
+    in
+    { componentUrl | hash = Path.asString newHash }
+        |> Url.toString
 
 
 componentList : Registry -> List ( String, Component )
@@ -79,5 +88,10 @@ registryDecoder =
 componentDecoder : Decoder Component
 componentDecoder =
     Decode.map2 Component
-        (Decode.field "indexPath" Path.decoder)
+        (Decode.field "url" urlDecoder)
         (Decode.field "assignedRoute" Path.decoder)
+
+
+urlDecoder : Decoder Url
+urlDecoder =
+    Decode.map Url.parse Decode.string
