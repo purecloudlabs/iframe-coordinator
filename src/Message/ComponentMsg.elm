@@ -2,7 +2,7 @@ module Message.ComponentMsg exposing (ComponentMsg(..), decoder, encode)
 
 {-| The ComponentMsg module describes message formats used by components to communicate with the parent application.
 
-@docs ComponentMsg decoder encode
+@docs ComponentMsg, decoder, encode
 
 -}
 
