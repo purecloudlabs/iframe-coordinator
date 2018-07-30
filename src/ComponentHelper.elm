@@ -1,4 +1,4 @@
-port module ComponentHelper exposing (create)
+ module ComponentHelper exposing (create)
 
 {-| The ComponentHelper module is the Elm code that backs the component-side JS helper
 library in the iframe-coordinator toolkit. It message validation and routing within an
