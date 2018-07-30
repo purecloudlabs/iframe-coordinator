@@ -7,7 +7,7 @@ embedded iframe component.
 This module is not currently designed for stand-alone use. You should instead use the
 component library defined in LINK_TO_JS_LIB to create seamless iframe applications
 
-@docs createHelper
+@docs create
 
 -}
 
@@ -94,7 +94,7 @@ logWarning errMsg =
         _ =
             Debug.log errMsg
     in
-    Cmd.none
+        Cmd.none
 
 
 
