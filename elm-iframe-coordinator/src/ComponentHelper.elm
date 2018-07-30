@@ -1,4 +1,4 @@
-port module ComponentHelper exposing (createHelper)
+port module ComponentHelper exposing (create)
 
 {-| The ComponentHelper module is the Elm code that backs the component-side JS helper
 library in the iframe-coordinator toolkit. It message validation and routing within an
@@ -22,13 +22,13 @@ code are handled through four ports, an input and output pair for each of the co
 application and the parent coordinator. Port bindings are handled and exposed via the
 js library in LINK_TO_JS_LIB_HERE.
 -}
-createHelper :
+create :
     { coordinatorIn : (Decode.Value -> Msg) -> Sub Msg
     , coordinatorOut : Decode.Value -> Cmd Msg
     , componentIn : (Decode.Value -> Msg) -> Sub Msg
     }
     -> Program Never Model Msg
-createHelper ports =
+create ports =
     program
         { init = init
         , update =
