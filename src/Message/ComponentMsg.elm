@@ -1,6 +1,6 @@
 module Message.ComponentMsg exposing (ComponentMsg(..), decoder, encode)
 
-{-| The ComponantMsg module describes message formats used by components to communicate with the parent application.
+{-| The ComponentMsg module describes message formats used by components to communicate with the parent application.
 
 @docs ComponentMsg decoder encode
 
@@ -41,7 +41,7 @@ encode msg =
                 NavRequest location ->
                     ( "navRequest", encodeLocation location )
     in
-    LabeledMsg.encode label value
+        LabeledMsg.encode label value
 
 
 
