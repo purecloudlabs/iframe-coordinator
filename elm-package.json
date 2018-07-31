@@ -1,7 +1,7 @@
 {
     "version": "1.0.0",
     "summary": "Tools for coordinating embedded apps via iframes.",
-    "repository": "https://github.com/mcheely/tryframe-coordinator.git",
+    "repository": "https://github.com/MattCheely/tryframe-coordinator.git",
     "license": "MIT",
     "source-directories": [
         "src/"
