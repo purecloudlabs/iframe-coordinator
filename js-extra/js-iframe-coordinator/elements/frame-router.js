@@ -1,4 +1,4 @@
-import { FrameRouter } from '../elm/FrameRouter.elm';
+import { FrameElement } from '../elm/FrameElement.elm';
 
 export default class FrameRouterElement extends HTMLElement {
     constructor() {
@@ -7,7 +7,7 @@ export default class FrameRouterElement extends HTMLElement {
     }
 
     registerComponents(components) {
-        this.router = FrameRouter.embed(this, components);
+        this.router = FrameElement.embed(this, components);
 
         window.addEventListener('message', (event) => {
             this.router.ports.componentIn.send(event.data);
