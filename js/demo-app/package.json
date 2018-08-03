@@ -24,6 +24,6 @@
   },
   "dependencies": {
     "@webcomponents/custom-elements": "^1.0.9",
-    "iframe-coordinator": "file:../js-iframe-coordinator"
+    "iframe-coordinator": "file:../iframe-coordinator"
   }
 }
