@@ -1,10 +1,10 @@
-import { ComponentHelper } from '../elm/ComponentHelper.elm';
+import { ComponentProgram } from '../elm/ComponentProgram.elm';
 
 let worker = null;
 
 function start(expectedOrigin) {
     if (!worker) {
-        worker = ComponentHelper.worker();
+        worker = ComponentProgram.worker();
 
         window.addEventListener('message', (event) => {
             worker.ports.coordinatorIn.send({
@@ -52,4 +52,6 @@ function onLinkClick (callback) {
     });
 }
 
-start();
+export default {
+    start: start
+};

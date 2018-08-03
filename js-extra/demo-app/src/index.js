@@ -1,6 +1,8 @@
 import '@webcomponents/custom-elements/src/native-shim.js';
-import '@webcomponents/custom-elements/custom-elements.min.js';
-import './libs/coordinatorLib.js';
+import '@webcomponents/custom-elements/src/custom-elements.js';
+import coordinator from 'iframe-coordinator/dist/coordinatorLib.js';
+
+coordinator.registerElements();
 
 document.getElementById('router').registerComponents({
     "component1": {
