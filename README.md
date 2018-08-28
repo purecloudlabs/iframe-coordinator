@@ -1,13 +1,15 @@
 # iframe-coordinator
 
-Utilities for composing multiple web-apps into a single application interface via iframes.
+Tools for coordinating independent single-page-apps embedded via iframe
 
-## Setup
+## Why would I want to do that?
 
-`yarn install`
+Iframes are the only way to obtain strong isolation of the javascript runtime in a browser. This is useful for organizations with multiple teams shipping interfaces for different features. Teams can ship with confidence, knowing errors in other's code won't crash their interface.
 
-`elm-package install`
+Embedding applications via iframe also means that code from separate teams can be deployed and rolled back independently, limiting the impact of breaking changes. 
 
-## Run it
 
-`npm run start`
+## How do I use it?
+
+Currently iframe-coordinator is designed to be used via a set of JS bindings. We use Elm internally for it's reliability and protection against accidental breaking changes in the message formats.
+
