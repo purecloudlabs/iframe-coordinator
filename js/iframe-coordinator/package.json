@@ -10,6 +10,7 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "elm-package install -y",
     "build": "webpack"
   },
   "author": "",
