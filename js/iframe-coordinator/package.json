@@ -1,8 +1,12 @@
 {
   "name": "iframe-coordinator",
-  "version": "1.0.0",
+  "version": "0.1.2",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {},
+  "files": [
+    "client.js",
+    "host.js"
+  ],
   "devDependencies": {
     "webpack-cli": "^3.1.0",
     "elm-webpack-loader": "^4.5.0",
@@ -14,5 +18,12 @@
     "build": "webpack"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:purecloudlabs/iframe-coordinator.git"
+  },
+  "publishConfig": {
+    "registry": "https://purecloud.artifactoryonline.com/purecloud/api/npm/inin-internal-npm-dev/"
+  }
 }
