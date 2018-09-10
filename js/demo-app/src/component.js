@@ -1,3 +1,3 @@
-import component from 'iframe-coordinator/dist/componentLib.js';
+import component from "iframe-coordinator/client.js";
 
 component.start();
