@@ -17,4 +17,8 @@ source ${NPM_UTILS}/scripts/jenkins-pre-build.sh 8.11.4 -m
 
 ${SCRIPTS_DIR}/buildlibs.sh
 
-${NPM_UTILS}/scripts/version-and-publish.sh
+  # Remove the pre-push hook during git tagging.
+  # This may have been added during npm install and pre-push package.
+  rm -f ${PROJ_DIR}.git/hooks/pre-push
+
+${NPM_UTILS}/scripts/version-and-publish.sh -n
