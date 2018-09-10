@@ -1,9 +1,10 @@
-port module ComponentProgram exposing (main)
+port module ClientProgram exposing (main)
 
 import ComponentHelper
 import Json.Decode as Decode
 
 
+main : Program Never ComponentHelper.Model ComponentHelper.Msg
 main =
     ComponentHelper.create
         { coordinatorIn = coordinatorIn
