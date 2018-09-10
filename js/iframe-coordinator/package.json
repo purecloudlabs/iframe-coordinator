@@ -8,14 +8,19 @@
     "host.js"
   ],
   "devDependencies": {
-    "webpack-cli": "^3.1.0",
+    "elm-typescript-interop": "0.0.5",
     "elm-webpack-loader": "^4.5.0",
-    "webpack": "^4.16.3"
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^5.0.0",
+    "typescript": "^3.0.3",
+    "webpack": "^4.16.3",
+    "webpack-cli": "^3.1.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prepare": "elm-package install -y",
-    "build": "webpack"
+    "build": "webpack",
+    "start": "webpack --watch"
   },
   "author": "",
   "license": "MIT",

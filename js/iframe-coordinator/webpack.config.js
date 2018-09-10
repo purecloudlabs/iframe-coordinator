@@ -1,8 +1,8 @@
 module.exports = {
   mode: "none",
   entry: {
-    client: "./libs/client.js",
-    host: "./libs/host.js"
+    client: "./libs/client.ts",
+    host: "./libs/host.ts"
   },
   output: {
     libraryTarget: "commonjs2",
@@ -18,7 +18,17 @@ module.exports = {
           loader: "elm-webpack-loader",
           options: {}
         }
+      },
+      {
+        test: /\.ts$/,
+        exclude: [/node_modules/],
+        use: {
+          loader: "ts-loader"
+        }
       }
     ]
+  },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"]
   }
 };
