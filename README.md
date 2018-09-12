@@ -17,7 +17,7 @@ Embedding applications via iframe also means that code from separate teams can b
 ```js
 /* The iframe coordinator library uses custom elements to
  * embed itself in the host app. If you are targeting browsers
- * that don't support custome elements, you'll need a polyfill.
+ * that don't support custom elements, you'll need a polyfill.
  * see: https://github.com/webcomponents/custom-elements for
  * more details on configuring the polyfill
  */
@@ -57,7 +57,7 @@ document.getElementById("coordinator").registerComponents({
 ```html
 <body>
     <!-- host-app stuff -->
-    <iframe-coordinator id="coordinator" />
+    <frame-router id="coordinator" />
     <!-- more host-app stuff -->
 </body>
 ```
