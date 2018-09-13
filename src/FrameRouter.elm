@@ -1,4 +1,4 @@
-module FrameRouter exposing (createRouter)
+module FrameRouter exposing (createRouter, Model, Msg)
 
 {-| The FrameRouter module is the Elm code that backs the frame-router custom element
 in the iframe-coordinator toolkit. It handles mapping URL routes to components displayed
