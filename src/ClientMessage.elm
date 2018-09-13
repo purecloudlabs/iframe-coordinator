@@ -1,8 +1,8 @@
-module Message.ComponentMsg exposing (ComponentMsg(..), decoder, encode)
+module ClientMessage exposing (ClientMessage(..), decoder, encode)
 
-{-| The ComponentMsg module describes message formats used by components to communicate with the parent application.
+{-| The ClientMsg module describes message formats used by clients to communicate with the parent application.
 
-@docs ComponentMsg, decoder, encode
+@docs ClientMessage, decoder, encode
 
 -}
 
@@ -10,30 +10,30 @@ import Dict exposing (Dict)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode as Encode
-import Message.LabeledMsg as LabeledMsg
+import LabeledMessage
 import Navigation exposing (Location)
 
 
 {-| Message types that can be sent to the parent app
 -}
-type ComponentMsg
+type ClientMessage
     = NavRequest Location
 
 
-{-| Decoder for component messages. Messages are expected to be part of a labeled structure as defined in the LabeledMsg module.
+{-| Decoder for client messages. Messages are expected to be part of a labeled structure as defined in the LabeledMsg module.
 -}
-decoder : Decoder ComponentMsg
+decoder : Decoder ClientMessage
 decoder =
-    LabeledMsg.decoder
+    LabeledMessage.decoder
         (Dict.fromList
             [ ( "navRequest", navRequestDecoder )
             ]
         )
 
 
-{-| Encodes a ComponentMsg into a LabeledMsg format suitable for sending to a parent app.
+{-| Encodes a ClientMsg into a LabeledMsg format suitable for sending to a parent app.
 -}
-encode : ComponentMsg -> Encode.Value
+encode : ClientMessage -> Encode.Value
 encode msg =
     let
         ( label, value ) =
@@ -41,14 +41,14 @@ encode msg =
                 NavRequest location ->
                     ( "navRequest", encodeLocation location )
     in
-        LabeledMsg.encode label value
+        LabeledMessage.encode label value
 
 
 
 -- Helpers
 
 
-navRequestDecoder : Decoder ComponentMsg
+navRequestDecoder : Decoder ClientMessage
 navRequestDecoder =
     Decode.map NavRequest
         (decode Location

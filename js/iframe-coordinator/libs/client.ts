@@ -1,24 +1,24 @@
-import { ClientProgram } from "../elm/ClientProgram.elm";
+import { Client } from "../elm/Client.elm";
 
 let worker = null;
 
 function start(expectedOrigin) {
   if (!worker) {
-    worker = ClientProgram.worker();
+    worker = Client.worker();
 
     window.addEventListener("message", event => {
-      worker.ports.coordinatorIn.send({
+      worker.ports.fromHost.send({
         origin: event.origin,
         data: event.data
       });
     });
 
-    worker.ports.coordinatorOut.subscribe(message => {
+    worker.ports.toHost.subscribe(message => {
       window.parent.postMessage(message, "*");
     });
 
     onLinkClick((location: LocationMsg) => {
-      worker.ports.componentIn.send({
+      worker.ports.fromClient.send({
         msgType: "navRequest",
         msg: location
       });
