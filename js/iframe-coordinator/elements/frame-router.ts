@@ -1,26 +1,26 @@
-import { HostProgram } from "../elm/HostProgram.elm";
+import { Host } from "../elm/Host.elm";
 
-interface HostProgram {
+interface Host {
   ports: {
-    componentIn: {
+    fromClient: {
       send: (message) => void;
     };
   };
 }
 
 class FrameRouterElement extends HTMLElement {
-  router: HostProgram;
+  router: Host;
 
   constructor() {
     super();
     this.setAttribute("style", "position: relative;");
   }
 
-  registerComponents(components) {
-    this.router = HostProgram.embed(this, components);
+  registerClients(clients) {
+    this.router = Host.embed(this, clients);
 
     window.addEventListener("message", event => {
-      this.router.ports.componentIn.send(event.data);
+      this.router.ports.fromClient.send(event.data);
     });
   }
 }

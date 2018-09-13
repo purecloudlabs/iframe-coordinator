@@ -3,7 +3,7 @@ const SRC_ATTR = "src";
 const IFRAME_STYLE =
   "position: absolute; top: 0; left: 0; width: 100%; height: 100%;";
 
-class ComponentFrame extends HTMLElement {
+class ClientFrame extends HTMLElement {
   iframe: HTMLIFrameElement;
 
   static get observedAttributes() {
@@ -47,4 +47,4 @@ class ComponentFrame extends HTMLElement {
   }
 }
 
-export default ComponentFrame;
+export default ClientFrame;
