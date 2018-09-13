@@ -13,6 +13,9 @@ class FrameRouterElement extends HTMLElement {
 
   constructor() {
     super();
+  }
+
+  connectedCallback() {
     this.setAttribute("style", "position: relative;");
   }
 
