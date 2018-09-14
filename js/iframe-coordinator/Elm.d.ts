@@ -1,7 +1,7 @@
-declare module "*/ClientProgram.elm" {
-  export var ClientProgram: any;
+declare module "*/Client.elm" {
+  export var Client: any;
 }
 
-declare module "*/HostProgram.elm" {
-  export var HostProgram: any;
+declare module "*/Host.elm" {
+  export var Host: any;
 }

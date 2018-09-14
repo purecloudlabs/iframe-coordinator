@@ -1,9 +1,9 @@
 import FrameRouterElement from "../elements/frame-router";
-import ComponentFrame from "../elements/component-frame";
+import ClientFrame from "../elements/x-ifc-frame";
 
 export default {
   registerElements() {
     customElements.define("frame-router", FrameRouterElement);
-    customElements.define("component-frame", ComponentFrame);
+    customElements.define("x-ifc-frame", ClientFrame);
   }
 };

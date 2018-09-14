@@ -40,12 +40,12 @@ host.registerElements();
  * `#/one/my/path` would cause the `frame-router` element
  * to display the iframe at `//component/example1/#/one/my/path`
  */
-document.getElementById("coordinator").registerComponents({
-  component1: {
+document.getElementById("frame-element").registerClients({
+  client1: {
     url: "//components/example1/",
     assignedRoute: "/one"
   },
-  component2: {
+  client2: {
     url: "//components/example2/",
     assignedRoute: "/two"
   }
@@ -57,7 +57,7 @@ document.getElementById("coordinator").registerComponents({
 ```html
 <body>
     <!-- host-app stuff -->
-    <frame-router id="coordinator" />
+    <frame-router id="frame-element" />
     <!-- more host-app stuff -->
 </body>
 ```
@@ -68,13 +68,13 @@ document.getElementById("coordinator").registerComponents({
 
 ```js
 /* Import the client library */
-import component from "iframe-coordinator/client.js";
+import client from "iframe-coordinator/client.js";
 
 /* Start intercepting links, which will prevent the
  * default link action, and instead send a message to the
  * host application to trigger routing.
  */
-component.start();
+client.start();
 ```
 
 **HTML/DOM**

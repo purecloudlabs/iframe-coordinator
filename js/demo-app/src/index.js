@@ -4,17 +4,13 @@ import coordinator from "iframe-coordinator/host.js";
 
 coordinator.registerElements();
 
-document.getElementById("router").registerComponents({
-  component1: {
+document.getElementById("router").registerClients({
+  client1: {
     url: "//components/example1/",
     assignedRoute: "/one"
   },
-  component2: {
+  client2: {
     url: "//components/example2/",
     assignedRoute: "/two"
-  },
-  admin: {
-    url: "https://localhost:4400/admin-v2/#/",
-    assignedRoute: "/admin"
   }
 });
