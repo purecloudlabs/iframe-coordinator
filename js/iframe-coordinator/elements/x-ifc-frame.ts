@@ -12,34 +12,41 @@ class ClientFrame extends HTMLElement {
 
   constructor() {
     super();
+  }
+
+  connectedCallback() {
     this.iframe = document.createElement("iframe");
     this.iframe.setAttribute("frameborder", "0");
     this.iframe.setAttribute("style", IFRAME_STYLE);
     this.iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
-  }
-
-  connectedCallback() {
     this.setAttribute("style", IFRAME_STYLE);
     if (this.children[0] != this.iframe) {
       this.appendChild(this.iframe);
     }
+    this.syncLocation();
   }
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    if (name == SRC_ATTR) {
-      if (!this.iframe.contentWindow) {
-        this.iframe.onload = event => {
-          this.updateFrameLoc(this.getAttribute("src"));
-          this.iframe.onload = null;
-        };
-      } else {
-        this.updateFrameLoc(newValue);
-      }
+    if (this.iframe && name == SRC_ATTR) {
+      this.updateFrameLoc(newValue);
     }
   }
 
+  /* Syncs the iframe state to the current src attribute */
+  syncLocation() {
+    this.updateFrameLoc(this.getAttribute("src"));
+  }
+
   updateFrameLoc(newSrc: string) {
-    this.iframe.contentWindow.location.replace(newSrc);
+    if (this.iframe.contentWindow) {
+      this.iframe.contentWindow.location.replace(newSrc);
+    } else {
+      // Handle the case where the frame isn't ready yet.
+      this.iframe.onload = event => {
+        this.syncLocation();
+        this.iframe.onload = null;
+      };
+    }
   }
 
   send(message: any) {
