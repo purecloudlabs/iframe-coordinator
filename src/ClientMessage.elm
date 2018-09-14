@@ -6,6 +6,7 @@ module ClientMessage exposing (ClientMessage(..), decoder, encode)
 
 -}
 
+import CommonMessages exposing (Publication)
 import Dict exposing (Dict)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (decode, required)
@@ -14,10 +15,20 @@ import LabeledMessage
 import Navigation exposing (Location)
 
 
+
+-- ClientMessage
+
+
 {-| Message types that can be sent to the parent app
 -}
 type ClientMessage
     = NavRequest Location
+    | Publish Publication
+
+
+navRequestLabel : String
+navRequestLabel =
+    "navRequest"
 
 
 {-| Decoder for client messages. Messages are expected to be part of a labeled structure as defined in the LabeledMsg module.
@@ -26,7 +37,8 @@ decoder : Decoder ClientMessage
 decoder =
     LabeledMessage.decoder
         (Dict.fromList
-            [ ( "navRequest", navRequestDecoder )
+            [ ( navRequestLabel, navRequestDecoder )
+            , ( CommonMessages.publishLabel, publishDecoder )
             ]
         )
 
@@ -39,13 +51,16 @@ encode msg =
         ( label, value ) =
             case msg of
                 NavRequest location ->
-                    ( "navRequest", encodeLocation location )
+                    ( navRequestLabel, encodeLocation location )
+
+                Publish publication ->
+                    ( CommonMessages.publishLabel, CommonMessages.encodePublication publication )
     in
-        LabeledMessage.encode label value
+    LabeledMessage.encode label value
 
 
 
--- Helpers
+-- NavRequest
 
 
 navRequestDecoder : Decoder ClientMessage
@@ -81,3 +96,12 @@ encodeLocation loc =
         , ( "username", Encode.string loc.username )
         , ( "password", Encode.string loc.password )
         ]
+
+
+
+-- Publish
+
+
+publishDecoder : Decoder ClientMessage
+publishDecoder =
+    Decode.map Publish CommonMessages.publicationDecoder

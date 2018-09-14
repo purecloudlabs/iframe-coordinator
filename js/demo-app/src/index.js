@@ -4,7 +4,10 @@ import coordinator from "iframe-coordinator/host.js";
 
 coordinator.registerElements();
 
-document.getElementById("router").registerClients({
+let router = document.getElementById("router");
+
+// Set up client URLs and Routes
+router.registerClients({
   client1: {
     url: "//components/example1/",
     assignedRoute: "/one"
@@ -13,4 +16,16 @@ document.getElementById("router").registerClients({
     url: "//components/example2/",
     assignedRoute: "/two"
   }
+});
+
+// Subscribe to pub-sub events on the topic `publish.topic`
+router.subscribe("publish.topic");
+
+// Listen to publication events (will only be emitted for subscribed topics)
+router.addEventListener("publish", event => {
+  let publication = event.detail;
+  console.log(
+    `Recieved pub-sub data on topic ${publication.topic}:`,
+    publication.payload
+  );
 });
