@@ -1,7 +1,7 @@
-module FrameRouter exposing (createRouter, Model, Msg)
+module HostProgram exposing (create, Model, Msg)
 
 {-| The FrameRouter module is the Elm code that backs the frame-router custom element
-in the iframe-coordinator toolkit. It handles mapping URL routes to components displayed
+in the iframe-coordinator toolkit. It handles mapping URL routes to clients displayed
 in a child frame as well as message validation and routing within the parent application.
 
 This module is not currently designed for stand-alone use. You should instead use the
@@ -11,11 +11,11 @@ custom elements defined in LINK_TO_JS_LIB to create seamless iframe applications
 
 -}
 
-import Component exposing (Component)
+import ClientRegistry exposing (Client, ClientRegistry)
 import Html exposing (Attribute, Html)
 import Html.Attributes exposing (attribute)
 import Json.Decode as Decode exposing (decodeValue)
-import Message.ComponentMsg as ComponentMsg exposing (ComponentMsg)
+import ClientMessage exposing (ClientMessage)
 import Navigation exposing (Location)
 import Path exposing (Path)
 
@@ -23,10 +23,8 @@ import Path exposing (Path)
 {-| Create a program to handle routing. Takes an input port to listen to messages on.
 port binding is handled in the custom frame-router element in LINK_TO_JS_LIB_HERE
 -}
-createRouter :
-    ((Decode.Value -> Msg) -> Sub Msg)
-    -> Program Decode.Value Model Msg
-createRouter inputPort =
+create : ((Decode.Value -> Msg) -> Sub Msg) -> Program Decode.Value Model Msg
+create inputPort =
     Navigation.programWithFlags
         (RouteChange << parseLocation)
         { init = init
@@ -34,7 +32,7 @@ createRouter inputPort =
         , view = view
         , subscriptions =
             \_ ->
-                inputPort decodeComponentMsg
+                inputPort decodeClientMsg
         }
 
 
@@ -43,14 +41,14 @@ createRouter inputPort =
 
 
 type alias Model =
-    { components : Component.Registry
+    { clients : ClientRegistry
     , route : Path
     }
 
 
 init : Decode.Value -> Location -> ( Model, Cmd Msg )
-init componentJson location =
-    ( { components = Component.decodeRegistry componentJson
+init clientJson location =
+    ( { clients = ClientRegistry.decode clientJson
       , route = parseLocation location
       }
     , Cmd.none
@@ -63,7 +61,7 @@ init componentJson location =
 
 type Msg
     = RouteChange Path
-    | ComponentMessage ComponentMsg
+    | ClientMsg ClientMessage
     | Unknown String
 
 
@@ -73,17 +71,17 @@ update msg model =
         RouteChange route ->
             ( { model | route = route }, Cmd.none )
 
-        ComponentMessage msg ->
-            handleComponentMsg model msg
+        ClientMsg msg ->
+            handleClientMsg model msg
 
         Unknown err ->
             ( model, logWarning ("Unknown Msg: " ++ err) )
 
 
-handleComponentMsg : Model -> ComponentMsg -> ( Model, Cmd Msg )
-handleComponentMsg model msg =
+handleClientMsg : Model -> ClientMessage -> ( Model, Cmd Msg )
+handleClientMsg model msg =
     case msg of
-        ComponentMsg.NavRequest location ->
+        ClientMessage.NavRequest location ->
             ( model, Navigation.newUrl location.hash )
 
 
@@ -108,18 +106,18 @@ logWarning errMsg =
 
 view : Model -> Html Msg
 view model =
-    componentFrame [ src (url model.components model.route) ] []
+    clientFrame [ src (url model.clients model.route) ] []
 
 
-url : Component.Registry -> Path -> String
+url : ClientRegistry -> Path -> String
 url registry route =
-    Component.urlForRoute registry route
+    ClientRegistry.urlForRoute registry route
         |> Maybe.withDefault "about:blank"
 
 
-componentFrame : List (Attribute msg) -> List (Html msg) -> Html msg
-componentFrame =
-    Html.node "component-frame"
+clientFrame : List (Attribute msg) -> List (Html msg) -> Html msg
+clientFrame =
+    Html.node "x-ifc-frame"
 
 
 src : String -> Attribute msg
@@ -131,11 +129,11 @@ src value =
 -- Subs
 
 
-decodeComponentMsg : Decode.Value -> Msg
-decodeComponentMsg json =
+decodeClientMsg : Decode.Value -> Msg
+decodeClientMsg json =
     case
         Decode.decodeValue
-            (Decode.map ComponentMessage ComponentMsg.decoder)
+            (Decode.map ClientMsg ClientMessage.decoder)
             json
     of
         Ok msg ->
