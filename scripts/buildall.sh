@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 PROJ_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )/.."
 
