@@ -23,6 +23,7 @@ class ClientFrame extends HTMLElement {
     if (this.children[0] != this.iframe) {
       this.appendChild(this.iframe);
     }
+    window.addEventListener("message", this.handleClientMessages.bind(this));
     this.syncLocation();
   }
 
@@ -50,7 +51,23 @@ class ClientFrame extends HTMLElement {
   }
 
   send(message: any) {
-    this.iframe.contentWindow.postMessage(message, "*"); //TODO: Something better than *
+    this.iframe.contentWindow.postMessage(message, this.expectedClientOrigin());
+  }
+
+  expectedClientOrigin() {
+    let clientUrl = new URL(this.getAttribute("src"), window.location.href);
+    return clientUrl.origin;
+  }
+
+  handleClientMessages(event: MessageEvent) {
+    if (
+      event.origin === this.expectedClientOrigin() &&
+      event.source === this.iframe.contentWindow
+    ) {
+        //TODO: Update this for IE11 support
+      let msgEvent = new CustomEvent("clientMessage", { detail: event.data });
+      this.dispatchEvent(msgEvent);
+    }
   }
 }
 

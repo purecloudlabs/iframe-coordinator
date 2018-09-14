@@ -1,4 +1,7 @@
-module ClientProgram exposing (create, Model, Msg)
+module ClientProgram exposing
+    ( create
+    , Model, Msg
+    )
 
 {-| The ClientProgram module is the Elm code that backs the client-side JS helper
 library in the iframe-coordinator library. It message handles message validation
@@ -11,8 +14,8 @@ client library defined in iframe-coordinator to create seamless iframe applicati
 
 -}
 
-import Json.Decode as Decode
 import ClientMessage exposing (ClientMessage)
+import Json.Decode as Decode
 import Platform exposing (Program, program)
 
 
@@ -64,7 +67,7 @@ type Msg
 
 update : (Decode.Value -> Cmd Msg) -> Msg -> Model -> ( Model, Cmd Msg )
 update toHost msg model =
-    case Debug.log "Message" msg of
+    case Debug.log "ClientEvent" msg of
         Unknown value ->
             ( model, logWarning ("No handler for unknown message: " ++ toString value) )
 
@@ -81,9 +84,7 @@ handleClientMessage :
     -> ClientMessage
     -> ( Model, Cmd Msg )
 handleClientMessage toHost model msg =
-    case msg of
-        ClientMessage.NavRequest _ ->
-            ( model, toHost (ClientMessage.encode msg) )
+    ( model, toHost (ClientMessage.encode msg) )
 
 
 logWarning : String -> Cmd Msg
@@ -92,7 +93,7 @@ logWarning errMsg =
         _ =
             Debug.log errMsg
     in
-        Cmd.none
+    Cmd.none
 
 
 

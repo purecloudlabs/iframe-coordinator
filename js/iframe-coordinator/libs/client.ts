@@ -18,13 +18,17 @@ function start(expectedOrigin) {
     });
 
     onLinkClick((location: LocationMsg) => {
-      worker.ports.fromClient.send({
-        msgType: "navRequest",
-        msg: location
-      });
+      sendMessage("navRequest", location);
     });
   }
   return worker;
+}
+
+function sendMessage(type: string, data: any) {
+  worker.ports.fromClient.send({
+    msgType: type,
+    msg: data
+  });
 }
 
 interface LocationMsg {
@@ -74,5 +78,11 @@ function onLinkClick(callback) {
 }
 
 export default {
-  start: start
+  start: start,
+  publish(topic: string, data: any): void {
+    sendMessage("publish", {
+      topic: topic,
+      payload: data
+    });
+  }
 };

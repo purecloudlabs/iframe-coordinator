@@ -1,19 +1,27 @@
-<h1>Component #1</h1>
-<div id="path"></div>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../client.css">
+  </head>
+  <body>
+    <h1>Component #1</h1>
+    <div id="path"></div>
 
-<ul>
-    <li><a href="#/one/first" >/one/first</a></li>
-    <li><a href="#/one/second">/one/second</a></li>
-    <li><a href="#/two/first">/two/first</a></li>
-    <li><a href="#/two/second">/two/second</a></li>
-</ul>
+    <ul>
+        <li><a href="#/one/first" >/one/first</a></li>
+        <li><a href="#/one/second">/one/second</a></li>
+        <li><a href="#/two/first">/two/first</a></li>
+        <li><a href="#/two/second">/two/second</a></li>
+    </ul>
 
-<script type="text/javascript" src="/component-app.js"></script>
-<script type="text/javascript">
- console.log("RENDERED");
- document.getElementById("path").innerHTML = window.location.hash;
+    <div id="pub-sub">
+      <h3>Pub-Sub</h3>
+      <input id="pub-topic" type="text" value="publish.topic"></input>
+      <textarea id="pub-data">{
+        "data": 1234
+    }</textarea>
+      <button id="do-publish">Publish!</button>
+    </div>
 
- window.onhashchange = function () {
-    document.getElementById("path").innerHTML = window.location.hash;
- }
-</script>
+    <script type="text/javascript" src="/component-app.js"></script>
+  </body>
+</html>
