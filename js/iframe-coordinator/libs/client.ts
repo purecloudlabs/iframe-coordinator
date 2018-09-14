@@ -23,9 +23,44 @@ function start(expectedOrigin) {
         msg: location
       });
     });
+
+    /**
+     * Request a toast message be displayed by the host.
+     * 
+     * The page embedding the host is responsible for handling the fired custom event and
+     * presenting/styling the toast.  Application-specific concerns such as level, TTLs,
+     * ids for action callbacks (toast click, toast action buttons), etc. can be passed via an object
+     * as the custom property of the options param.
+     * 
+     * @param {string} message - The message content of the toast
+     * @param {object=} options - Supplimental toast options.
+     * @param {string=} options.title - Optional title for the toast.
+     * @param {object=} options.custom - Optional, application-specific toast properties.  Note: Properties must be JSON serializable.
+     * 
+     * @example
+     * worker.requestToast('Hello world');
+     * 
+     * @example
+     * worker.requestToast('World', {title: 'Hello'});
+     * 
+     * @example
+     * worker.requestToast('World', {title: 'Hello', custom: {ttl: 5, level: 'info'}});
+     */
+    worker.requestToast = function (message: string, {title = null, custom = null}: undefined | ToastOptions = {}): void {
+      worker.ports.fromClient.send({
+        msgType: "toastRequest",
+        msg: {
+          title,
+          message,
+          custom
+        }
+      });
+    };
   }
+
   return worker;
 }
+
 
 interface LocationMsg {
   href: string;
@@ -71,6 +106,11 @@ function onLinkClick(callback) {
       callback(location);
     }
   });
+}
+
+interface ToastOptions {
+  title?: string,
+  custom?: { [x: string]: any }
 }
 
 export default {
