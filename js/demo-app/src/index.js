@@ -29,3 +29,10 @@ router.addEventListener("publish", event => {
     publication.payload
   );
 });
+
+document.getElementById("publish").addEventListener("click", event => {
+    router.publish({
+        topic: "host.topic",
+        payload: { message: "Hello, Client!" }
+    });
+});

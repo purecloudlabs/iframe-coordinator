@@ -8,6 +8,10 @@ window.onhashchange = function() {
 
 // Start intercepting link click events for routing
 iframeClient.start();
+iframeClient.onPubsub(publication => {
+  console.log("Got Publish event:", publication);
+});
+iframeClient.subscribe("host.topic");
 
 document.getElementById("do-publish").addEventListener("click", () => {
   //Get the topic and the data to publish from the form

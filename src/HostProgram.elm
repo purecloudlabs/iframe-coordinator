@@ -31,13 +31,14 @@ port binding is handled in the custom frame-router element in LINK\_TO\_JS\_LIB\
 create :
     { fromHost : (Decode.Value -> Msg) -> Sub Msg
     , toHost : Decode.Value -> Cmd Msg
+    , toClient : Decode.Value -> Cmd Msg
     }
     -> Program Decode.Value Model Msg
 create ports =
     Navigation.programWithFlags
         (RouteChange << parseLocation)
         { init = init
-        , update = update ports.toHost
+        , update = update ports
         , view = view
         , subscriptions =
             subscriptions ports.fromHost
@@ -76,24 +77,31 @@ type Msg
     | BadMessage String
 
 
-update : (Decode.Value -> Cmd Msg) -> Msg -> Model -> ( Model, Cmd Msg )
-update toHostPort msg model =
+update :
+    { a
+        | toHost : Decode.Value -> Cmd Msg
+        , toClient : Decode.Value -> Cmd Msg
+    }
+    -> Msg
+    -> Model
+    -> ( Model, Cmd Msg )
+update ports msg model =
     case Debug.log "HostEvent" msg of
         RouteChange route ->
             ( { model | route = route }, Cmd.none )
 
         ClientMsg clientMsg ->
-            handleClientMsg toHostPort model clientMsg
+            handleClientMsg ports.toHost model clientMsg
 
         HostMsg hostMsg ->
-            handleHostMsg model hostMsg
+            handleHostMsg ports.toClient model hostMsg
 
         BadMessage err ->
             ( model, logWarning ("Bad Message: " ++ err) )
 
 
-handleHostMsg : Model -> HostMessage -> ( Model, Cmd Msg )
-handleHostMsg model msg =
+handleHostMsg : (Decode.Value -> Cmd Msg) -> Model -> HostMessage -> ( Model, Cmd Msg )
+handleHostMsg toClientPort model msg =
     case msg of
         HostMessage.Subscribe topic ->
             ( { model | hostSubscriptions = Set.insert topic model.hostSubscriptions }
@@ -105,6 +113,9 @@ handleHostMsg model msg =
             , Cmd.none
             )
 
+        HostMessage.Publish publication ->
+            ( model, dispatchClientPublication toClientPort publication )
+
 
 handleClientMsg : (Decode.Value -> Cmd Msg) -> Model -> ClientMessage -> ( Model, Cmd Msg )
 handleClientMsg toHostPort model msg =
@@ -114,11 +125,14 @@ handleClientMsg toHostPort model msg =
 
         --TODO: We should probably decorate messages outbound to the host app with details about the client they came from
         ClientMessage.Publish publication ->
-            ( model, dispatchPublication toHostPort model.hostSubscriptions publication )
+            ( model, dispatchHostPublication toHostPort model.hostSubscriptions publication )
+
+        _ ->
+            Debug.crash "Need to distinguish between internal and external messages"
 
 
-dispatchPublication : (Decode.Value -> Cmd Msg) -> Set String -> Publication -> Cmd Msg
-dispatchPublication toHostPort hostSubscriptions publication =
+dispatchHostPublication : (Decode.Value -> Cmd Msg) -> Set String -> Publication -> Cmd Msg
+dispatchHostPublication toHostPort hostSubscriptions publication =
     if Set.member publication.topic hostSubscriptions then
         toHostPort
             (CommonMessages.encodePublication publication
@@ -127,6 +141,14 @@ dispatchPublication toHostPort hostSubscriptions publication =
 
     else
         Cmd.none
+
+
+dispatchClientPublication : (Decode.Value -> Cmd Msg) -> Publication -> Cmd Msg
+dispatchClientPublication toClientPort publication =
+    toClientPort
+        (CommonMessages.encodePublication publication
+            |> LabeledMessage.encode CommonMessages.publishLabel
+        )
 
 
 parseLocation : Location -> Path

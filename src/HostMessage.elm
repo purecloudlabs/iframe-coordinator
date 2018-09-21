@@ -1,5 +1,6 @@
 module HostMessage exposing (HostMessage(..), decoder)
 
+import CommonMessages exposing (Publication)
 import Dict
 import Json.Decode as Decode exposing (Decoder)
 import LabeledMessage
@@ -8,23 +9,15 @@ import LabeledMessage
 type HostMessage
     = Subscribe String
     | Unsubscribe String
-
-
-subscribeLabel : String
-subscribeLabel =
-    "subscribe"
-
-
-unsubscribeLabel : String
-unsubscribeLabel =
-    "unsubscribe"
+    | Publish Publication
 
 
 decoder : Decoder HostMessage
 decoder =
     LabeledMessage.decoder
         (Dict.fromList
-            [ ( subscribeLabel, Decode.map Subscribe Decode.string )
-            , ( unsubscribeLabel, Decode.map Unsubscribe Decode.string )
+            [ ( CommonMessages.subscribeLabel, Decode.map Subscribe Decode.string )
+            , ( CommonMessages.unsubscribeLabel, Decode.map Unsubscribe Decode.string )
+            , ( CommonMessages.publishLabel, Decode.map Publish CommonMessages.publicationDecoder )
             ]
         )
