@@ -51,7 +51,10 @@ class ClientFrame extends HTMLElement {
   }
 
   send(message: any) {
-    this.iframe.contentWindow.postMessage(message, this.expectedClientOrigin());
+    let clientOrigin = this.expectedClientOrigin();
+    if (clientOrigin != "null") {
+      this.iframe.contentWindow.postMessage(message, clientOrigin);
+    }
   }
 
   expectedClientOrigin() {
@@ -64,7 +67,7 @@ class ClientFrame extends HTMLElement {
       event.origin === this.expectedClientOrigin() &&
       event.source === this.iframe.contentWindow
     ) {
-        //TODO: Update this for IE11 support
+      //TODO: Update this for IE11 support
       let msgEvent = new CustomEvent("clientMessage", { detail: event.data });
       this.dispatchEvent(msgEvent);
     }

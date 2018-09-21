@@ -1,6 +1,30 @@
 import { Client } from "../elm/Client.elm";
 
 let worker = null;
+let messageHandlers = [];
+
+export default {
+  start: start,
+
+  subscribe(topic: string): void {
+    sendMessage("subscribe", topic);
+  },
+
+  unsubscribe(topic: string): void {
+    sendMessage("unsubscribe", topic);
+  },
+
+  publish(topic: string, data: any): void {
+    sendMessage("publish", {
+      topic: topic,
+      payload: data
+    });
+  },
+
+  onPubsub(callback) {
+    messageHandlers.push(callback);
+  }
+};
 
 function start(expectedOrigin) {
   if (!worker) {
@@ -15,6 +39,14 @@ function start(expectedOrigin) {
 
     worker.ports.toHost.subscribe(message => {
       window.parent.postMessage(message, "*");
+    });
+
+    worker.ports.toClient.subscribe(message => {
+      if (message.msgType == "publish") {
+        messageHandlers.forEach(handler => {
+          handler(message.msg);
+        });
+      }
     });
 
     onLinkClick((location: LocationMsg) => {
@@ -76,13 +108,3 @@ function onLinkClick(callback) {
     }
   });
 }
-
-export default {
-  start: start,
-  publish(topic: string, data: any): void {
-    sendMessage("publish", {
-      topic: topic,
-      payload: data
-    });
-  }
-};

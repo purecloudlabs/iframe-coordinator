@@ -1,4 +1,4 @@
-module CommonMessages exposing (Publication, encodePublication, publicationDecoder, publishLabel)
+module CommonMessages exposing (Publication, encodePublication, publicationDecoder, publishLabel, subscribeLabel, unsubscribeLabel)
 
 import Json.Decode as Decode exposing (Decoder, Value)
 import Json.Encode as Encode
@@ -28,3 +28,13 @@ encodePublication publication =
         [ ( "topic", Encode.string publication.topic )
         , ( "payload", publication.payload )
         ]
+
+
+subscribeLabel : String
+subscribeLabel =
+    "subscribe"
+
+
+unsubscribeLabel : String
+unsubscribeLabel =
+    "unsubscribe"

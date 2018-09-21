@@ -24,6 +24,8 @@ import Navigation exposing (Location)
 type ClientMessage
     = NavRequest Location
     | Publish Publication
+    | Subscribe String
+    | Unsubscribe String
 
 
 navRequestLabel : String
@@ -38,7 +40,9 @@ decoder =
     LabeledMessage.decoder
         (Dict.fromList
             [ ( navRequestLabel, navRequestDecoder )
-            , ( CommonMessages.publishLabel, publishDecoder )
+            , ( CommonMessages.publishLabel, Decode.map Publish CommonMessages.publicationDecoder )
+            , ( CommonMessages.subscribeLabel, Decode.map Subscribe Decode.string )
+            , ( CommonMessages.unsubscribeLabel, Decode.map Unsubscribe Decode.string )
             ]
         )
 
@@ -55,6 +59,12 @@ encode msg =
 
                 Publish publication ->
                     ( CommonMessages.publishLabel, CommonMessages.encodePublication publication )
+
+                Subscribe topic ->
+                    ( CommonMessages.subscribeLabel, Encode.string topic )
+
+                Unsubscribe topic ->
+                    ( CommonMessages.unsubscribeLabel, Encode.string topic )
     in
     LabeledMessage.encode label value
 
@@ -96,12 +106,3 @@ encodeLocation loc =
         , ( "username", Encode.string loc.username )
         , ( "password", Encode.string loc.password )
         ]
-
-
-
--- Publish
-
-
-publishDecoder : Decoder ClientMessage
-publishDecoder =
-    Decode.map Publish CommonMessages.publicationDecoder
