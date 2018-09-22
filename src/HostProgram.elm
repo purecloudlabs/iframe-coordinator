@@ -11,28 +11,33 @@ custom elements defined in LINK_TO_JS_LIB to create seamless iframe applications
 
 -}
 
-import ClientRegistry exposing (Client, ClientRegistry)
+import ClientRegistry exposing (ClientRegistry)
 import Html exposing (Attribute, Html)
 import Html.Attributes exposing (attribute)
 import Json.Decode as Decode exposing (decodeValue)
 import ClientMessage exposing (ClientMessage)
 import Navigation exposing (Location)
 import Path exposing (Path)
+import Set exposing (Set)
+import LabeledMessage
 
 
 {-| Create a program to handle routing. Takes an input port to listen to messages on.
 port binding is handled in the custom frame-router element in LINK_TO_JS_LIB_HERE
 -}
-create : ((Decode.Value -> Msg) -> Sub Msg) -> Program Decode.Value Model Msg
-create inputPort =
-    Navigation.programWithFlags
-        (RouteChange << parseLocation)
+create :
+    { fromClient : (Decode.Value -> Msg) -> Sub Msg
+    , toHost : Decode.Value -> Cmd Msg
+    }
+    -> Program Decode.Value Model Msg
+create ports =
+    Html.programWithFlags
         { init = init
-        , update = update
+        , update = update ports.toHost
         , view = view
         , subscriptions =
             \_ ->
-                inputPort decodeClientMsg
+                ports.fromClient decodeClientMsg
         }
 
 
@@ -42,47 +47,43 @@ create inputPort =
 
 type alias Model =
     { clients : ClientRegistry
+    , hostSubscriptions : Set String
     , route : Path
     }
 
 
-init : Decode.Value -> Location -> ( Model, Cmd Msg )
-init clientJson location =
-    ( { clients = ClientRegistry.decode clientJson
-      , route = parseLocation location
-      }
-    , Cmd.none
-    )
-
+init : Decode.Value -> ( Model, Cmd Msg )
+init clientJson =
+    ( { clients = ClientRegistry.decode clientJson, hostSubscriptions = Set.empty, route = Path.parse("/") }, Cmd.none )
 
 
 -- Update
 
 
 type Msg
-    = RouteChange Path
-    | ClientMsg ClientMessage
+    = ClientMsg ClientMessage
     | Unknown String
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update : (Decode.Value -> Cmd Msg) -> Msg -> Model -> ( Model, Cmd Msg )
+update toHost msg model =
     case msg of
-        RouteChange route ->
-            ( { model | route = route }, Cmd.none )
-
         ClientMsg msg ->
-            handleClientMsg model msg
+            handleClientMsg toHost model msg
 
         Unknown err ->
             ( model, logWarning ("Unknown Msg: " ++ err) )
 
 
-handleClientMsg : Model -> ClientMessage -> ( Model, Cmd Msg )
-handleClientMsg model msg =
+handleClientMsg :
+    (Decode.Value -> Cmd Msg)
+    -> Model
+    -> ClientMessage
+    -> ( Model, Cmd Msg)
+handleClientMsg toHost model msg =
     case msg of
         ClientMessage.NavRequest location ->
-            ( model, Navigation.newUrl location.hash )
+            ( { model | route = parseLocation location }, toHost (ClientMessage.encode msg ) )
 
 
 parseLocation : Location -> Path
@@ -98,7 +99,6 @@ logWarning errMsg =
             Debug.log errMsg
     in
     Cmd.none
-
 
 
 -- View
