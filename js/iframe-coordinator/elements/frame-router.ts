@@ -1,9 +1,19 @@
 import { Host } from "../elm/Host.elm";
+import { LabeledMsg } from "../libs/types";
+
+const ROUTE_ATTR = "route";
+
+interface SubscribeHandler {
+  (msg: LabeledMsg): void;
+}
 
 interface Host {
   ports: {
     fromClient: {
       send: (message) => void;
+    };
+    toHost: {
+      subscribe(SubscribeHandler): void;
     };
   };
 }
@@ -13,6 +23,10 @@ class FrameRouterElement extends HTMLElement {
 
   constructor() {
     super();
+  }
+
+  static get observedAttributes() {
+    return [ROUTE_ATTR];
   }
 
   connectedCallback() {
@@ -25,6 +39,38 @@ class FrameRouterElement extends HTMLElement {
     window.addEventListener("message", event => {
       this.router.ports.fromClient.send(event.data);
     });
+
+    this.router.ports.toHost.subscribe(message => {
+      if (message.msgType === "navRequest") {
+        this.setAttribute("route", message.msg.hash);
+      }
+    });
+  }
+
+  changeRoute (location) {
+    this.router.ports.fromClient.send({
+      msgType: "navRequest",
+      msg: location
+    });
+  }
+
+  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    if ((name === ROUTE_ATTR) && (oldValue !== newValue)) {
+      let location = {
+        href: '',
+        host: '',
+        hostname: '',
+        protocol: '',
+        origin: '',
+        port: '',
+        pathname: '',
+        search: '',
+        hash: newValue,
+        username: '',
+        password: ''
+      };
+      this.changeRoute(location);
+    }
   }
 }
 
