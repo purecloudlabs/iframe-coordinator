@@ -8,12 +8,14 @@
     <li><a href="#/two/second">/two/second</a></li>
 </ul>
 
+<button class="toast" data-component-name="Component #1">Send Toast</button>
+
 <script type="text/javascript" src="/component-app.js"></script>
 <script type="text/javascript">
- console.log("RENDERED");
- document.getElementById("path").innerHTML = window.location.hash;
-
- window.onhashchange = function () {
-    document.getElementById("path").innerHTML = window.location.hash;
- }
+  console.log("RENDERED");
+  document.getElementById("path").innerHTML = window.location.hash;
+  
+  window.onhashchange = function () {
+      document.getElementById("path").innerHTML = window.location.hash;
+  }
 </script>

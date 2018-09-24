@@ -11,6 +11,7 @@ import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode as Encode
 import LabeledMessage
+import Message.Toast as Toast exposing (Toast)
 import Navigation exposing (Location)
 
 
@@ -18,6 +19,7 @@ import Navigation exposing (Location)
 -}
 type ClientMessage
     = NavRequest Location
+    | ToastRequest Toast
 
 
 {-| Decoder for client messages. Messages are expected to be part of a labeled structure as defined in the LabeledMsg module.
@@ -27,6 +29,7 @@ decoder =
     LabeledMessage.decoder
         (Dict.fromList
             [ ( "navRequest", navRequestDecoder )
+            , ( "toastRequest", toastRequestDecoder )
             ]
         )
 
@@ -40,8 +43,11 @@ encode msg =
             case msg of
                 NavRequest location ->
                     ( "navRequest", encodeLocation location )
+
+                ToastRequest toast ->
+                    ( "toastRequest", Toast.encode toast )
     in
-        LabeledMessage.encode label value
+    LabeledMessage.encode label value
 
 
 
@@ -81,3 +87,8 @@ encodeLocation loc =
         , ( "username", Encode.string loc.username )
         , ( "password", Encode.string loc.password )
         ]
+
+
+toastRequestDecoder : Decoder ClientMessage
+toastRequestDecoder =
+    Decode.map ToastRequest Toast.decoder

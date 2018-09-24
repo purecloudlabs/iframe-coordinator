@@ -1,34 +1,35 @@
-module HostProgram exposing (create, Model, Msg)
+module HostProgram exposing (Model, Msg, create)
 
 {-| The FrameRouter module is the Elm code that backs the frame-router custom element
 in the iframe-coordinator toolkit. It handles mapping URL routes to clients displayed
 in a child frame as well as message validation and routing within the parent application.
 
 This module is not currently designed for stand-alone use. You should instead use the
-custom elements defined in LINK_TO_JS_LIB to create seamless iframe applications
+custom elements defined in LINK\_TO\_JS\_LIB to create seamless iframe applications
 
 @docs createRouter
 
 -}
 
+import ClientMessage exposing (ClientMessage)
 import ClientRegistry exposing (Client, ClientRegistry)
 import Html exposing (Attribute, Html)
 import Html.Attributes exposing (attribute)
 import Json.Decode as Decode exposing (decodeValue)
-import ClientMessage exposing (ClientMessage)
 import Navigation exposing (Location)
 import Path exposing (Path)
 
 
-{-| Create a program to handle routing. Takes an input port to listen to messages on.
-port binding is handled in the custom frame-router element in LINK_TO_JS_LIB_HERE
+{-| Create a program to handle routing. Takes an input port to listen to messages on
+and and outputPort to deliver messages to the js embedder.
+port binding is handled in the custom frame-router element in LINK\_TO\_JS\_LIB\_HERE
 -}
-create : ((Decode.Value -> Msg) -> Sub Msg) -> Program Decode.Value Model Msg
-create inputPort =
+create : ((Decode.Value -> Msg) -> Sub Msg) -> (Decode.Value -> Cmd Msg) -> Program Decode.Value Model Msg
+create inputPort outputPort =
     Navigation.programWithFlags
         (RouteChange << parseLocation)
         { init = init
-        , update = update
+        , update = update outputPort
         , view = view
         , subscriptions =
             \_ ->
@@ -65,24 +66,27 @@ type Msg
     | Unknown String
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update : (Decode.Value -> Cmd Msg) -> Msg -> Model -> ( Model, Cmd Msg )
+update outputPort msg model =
     case msg of
         RouteChange route ->
             ( { model | route = route }, Cmd.none )
 
         ClientMsg msg ->
-            handleClientMsg model msg
+            handleClientMsg outputPort model msg
 
         Unknown err ->
             ( model, logWarning ("Unknown Msg: " ++ err) )
 
 
-handleClientMsg : Model -> ClientMessage -> ( Model, Cmd Msg )
-handleClientMsg model msg =
+handleClientMsg : (Decode.Value -> Cmd Msg) -> Model -> ClientMessage -> ( Model, Cmd Msg )
+handleClientMsg outputPort model msg =
     case msg of
         ClientMessage.NavRequest location ->
             ( model, Navigation.newUrl location.hash )
+
+        ClientMessage.ToastRequest toast ->
+            ( model, outputPort (ClientMessage.encode msg) )
 
 
 parseLocation : Location -> Path
