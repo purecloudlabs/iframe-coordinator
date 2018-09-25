@@ -25,7 +25,8 @@ import Path exposing (Path)
 import Set exposing (Set)
 
 
-{-| Create a program to handle routing. Takes an input port to listen to messages on.
+{-| Create a program to handle routing. Takes an input port to listen to messages on
+and and outputPort to deliver messages to the js embedder.
 port binding is handled in the custom frame-router element in LINK\_TO\_JS\_LIB\_HERE
 -}
 create :
@@ -86,7 +87,7 @@ update :
     -> Model
     -> ( Model, Cmd Msg )
 update ports msg model =
-    case Debug.log "HostEvent" msg of
+    case msg of
         RouteChange route ->
             ( { model | route = route }, Cmd.none )
 
@@ -126,6 +127,9 @@ handleClientMsg toHostPort model msg =
         --TODO: We should probably decorate messages outbound to the host app with details about the client they came from
         ClientMessage.Publish publication ->
             ( model, dispatchHostPublication toHostPort model.hostSubscriptions publication )
+
+        ClientMessage.ToastRequest toast ->
+            ( model, toHostPort (ClientMessage.encode msg) )
 
         _ ->
             Debug.crash "Need to distinguish between internal and external messages"

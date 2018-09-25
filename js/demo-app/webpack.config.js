@@ -13,7 +13,6 @@ module.exports = [{
     devServer: {
         contentBase: './dist'
     }
-
 },{
     entry: './src/component.js',
     mode: 'development',
