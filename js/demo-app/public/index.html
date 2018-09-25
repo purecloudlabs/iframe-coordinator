@@ -26,24 +26,32 @@
         var toggle = document.getElementById('toggle');
         var router = document.getElementById('router');
 
-        // On hash change, update route attribute
         window.onhashchange = function () {
             if (routing) {
-                console.log('HashChange');
-                router.setAttribute('route', window.location.hash);
+                // On hash change & routing mode, update route attribute
+                setRoute(window.location.hash);
             }
         };
 
+        router.addEventListener('navRequest', function (data) {
+            if (routing) {
+                location.hash = data.detail.hash;
+                // On navRequest & routing mode, change url
+            }
+            setRoute(data.detail.hash);
+        });
+
         setRoute = function (route) {
-            console.log('SetRoute');
             router.setAttribute('route', route);
         };
 
         toggleRouting = function () {
             routing = !routing;
             if (routing) {
+                setRoute(window.location.hash);
                 toggle.innerText = 'Disable Routing';
             } else {
+                location.hash = '';
                 toggle.innerText = 'Enable Routing';
             }
         }

@@ -12,6 +12,9 @@ interface Host {
     fromClient: {
       send: (message) => void;
     };
+    fromHost: {
+      send: (message) => void;
+    };
     toHost: {
       subscribe(SubscribeHandler): void;
     };
@@ -42,13 +45,14 @@ class FrameRouterElement extends HTMLElement {
 
     this.router.ports.toHost.subscribe(message => {
       if (message.msgType === "navRequest") {
-        this.setAttribute("route", message.msg.hash);
+        let event = new CustomEvent("navRequest", { detail: message.msg });
+        this.dispatchEvent(event);
       }
     });
   }
 
   changeRoute (location) {
-    this.router.ports.fromClient.send({
+    this.router.ports.fromHost.send({
       msgType: "navRequest",
       msg: location
     });

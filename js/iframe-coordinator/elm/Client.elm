@@ -10,6 +10,7 @@ main =
         { fromHost = fromHost
         , toHost = toHost
         , fromClient = fromClient
+        , toClient = toClient
         }
 
 
@@ -20,3 +21,6 @@ port toHost : Decode.Value -> Cmd msg
 
 
 port fromClient : (Decode.Value -> msg) -> Sub msg
+
+
+port toClient : Decode.Value -> Cmd msg
