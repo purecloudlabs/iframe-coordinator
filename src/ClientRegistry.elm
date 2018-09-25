@@ -1,4 +1,4 @@
-module ClientRegistry exposing (Client, Id, ClientRegistry, decode, urlForRoute)
+module ClientRegistry exposing (Client, ClientRegistry, Id, decode, urlForRoute)
 
 {-| The Client module defines the data structures used to represent individual client definitions and a registry of clients.
 -}
@@ -25,10 +25,10 @@ type Id
 
 
 urlForRoute : ClientRegistry -> Path -> Maybe String
-urlForRoute registry route =
+urlForRoute registry hostRoute =
     Dict.values (unwrapClientRegistry registry)
-        |> ListEx.find (matchesRoute route)
-        |> Maybe.map (getUrl route)
+        |> List.filterMap (getUrl hostRoute)
+        |> List.head
 
 
 decode : Decode.Value -> ClientRegistry
@@ -55,19 +55,25 @@ unwrapId id =
             identifier
 
 
-matchesRoute : Path -> Client -> Bool
-matchesRoute path client =
-    Path.startsWith client.assignedRoute path
+getUrl : Path -> Client -> Maybe String
+getUrl hostRoute client =
+    getClientRoute client hostRoute
+        |> Maybe.map (buildUrl client)
 
 
-getUrl : Path -> Client -> String
-getUrl route client =
+getClientRoute : Client -> Path -> Maybe Path
+getClientRoute client hostRoute =
+    Path.stripPrefix client.assignedRoute hostRoute
+
+
+buildUrl : Client -> Path -> String
+buildUrl client clientRoute =
     let
         clientUrl =
             client.url
 
         newHash =
-            Path.join (Path.parse clientUrl.hash) route
+            Path.join (Path.parse clientUrl.hash) clientRoute
     in
     { clientUrl | hash = Path.asString newHash }
         |> Url.toString
