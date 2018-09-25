@@ -15,10 +15,10 @@ client library defined in iframe-coordinator to create seamless iframe applicati
 -}
 
 import ClientMessage exposing (ClientMessage)
-import CommonMessages exposing (Publication)
 import HostMessage exposing (HostMessage)
 import Json.Decode as Decode exposing (Decoder)
 import LabeledMessage
+import Message.PubSub as PubSub exposing (Publication)
 import Platform exposing (Program, program)
 import Set exposing (Set)
 
@@ -123,8 +123,8 @@ dispatchPublication : (Decode.Value -> Cmd Msg) -> Set String -> Publication -> 
 dispatchPublication destinationPort subscriptions publication =
     if Set.member publication.topic subscriptions then
         destinationPort
-            (CommonMessages.encodePublication publication
-                |> LabeledMessage.encode CommonMessages.publishLabel
+            (PubSub.encodePublication publication
+                |> LabeledMessage.encode PubSub.publishLabel
             )
 
     else

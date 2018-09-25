@@ -1,4 +1,4 @@
-module CommonMessages exposing (Publication, encodePublication, publicationDecoder, publishLabel, subscribeLabel, unsubscribeLabel)
+module Message.PubSub exposing (Publication, encodePublication, publicationDecoder, publishLabel, subscribeLabel, unsubscribeLabel)
 
 import Json.Decode as Decode exposing (Decoder, Value)
 import Json.Encode as Encode

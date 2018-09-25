@@ -6,18 +6,14 @@ module ClientMessage exposing (ClientMessage(..), decoder, encode)
 
 -}
 
-import CommonMessages exposing (Publication)
 import Dict exposing (Dict)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode as Encode
 import LabeledMessage
+import Message.PubSub as PubSub exposing (Publication)
 import Message.Toast as Toast exposing (Toast)
 import Navigation exposing (Location)
-
-
-
--- ClientMessage
 
 
 {-| Message types that can be sent to the parent app
@@ -42,9 +38,9 @@ decoder =
     LabeledMessage.decoder
         (Dict.fromList
             [ ( navRequestLabel, navRequestDecoder )
-            , ( CommonMessages.publishLabel, Decode.map Publish CommonMessages.publicationDecoder )
-            , ( CommonMessages.subscribeLabel, Decode.map Subscribe Decode.string )
-            , ( CommonMessages.unsubscribeLabel, Decode.map Unsubscribe Decode.string )
+            , ( PubSub.publishLabel, Decode.map Publish PubSub.publicationDecoder )
+            , ( PubSub.subscribeLabel, Decode.map Subscribe Decode.string )
+            , ( PubSub.unsubscribeLabel, Decode.map Unsubscribe Decode.string )
             , ( "toastRequest", toastRequestDecoder )
             ]
         )
@@ -61,13 +57,13 @@ encode msg =
                     ( navRequestLabel, encodeLocation location )
 
                 Publish publication ->
-                    ( CommonMessages.publishLabel, CommonMessages.encodePublication publication )
+                    ( PubSub.publishLabel, PubSub.encodePublication publication )
 
                 Subscribe topic ->
-                    ( CommonMessages.subscribeLabel, Encode.string topic )
+                    ( PubSub.subscribeLabel, Encode.string topic )
 
                 Unsubscribe topic ->
-                    ( CommonMessages.unsubscribeLabel, Encode.string topic )
+                    ( PubSub.unsubscribeLabel, Encode.string topic )
 
                 ToastRequest toast ->
                     ( "toastRequest", Toast.encode toast )
