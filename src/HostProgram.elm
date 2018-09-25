@@ -13,13 +13,13 @@ custom elements defined in LINK\_TO\_JS\_LIB to create seamless iframe applicati
 
 import ClientMessage exposing (ClientMessage)
 import ClientRegistry exposing (Client, ClientRegistry)
-import CommonMessages exposing (Publication)
 import HostMessage exposing (HostMessage)
 import Html exposing (Attribute, Html)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (on)
 import Json.Decode as Decode exposing (Decoder, decodeValue)
 import LabeledMessage
+import Message.PubSub as PubSub exposing (Publication)
 import Navigation exposing (Location)
 import Path exposing (Path)
 import Set exposing (Set)
@@ -139,8 +139,8 @@ dispatchHostPublication : (Decode.Value -> Cmd Msg) -> Set String -> Publication
 dispatchHostPublication toHostPort hostSubscriptions publication =
     if Set.member publication.topic hostSubscriptions then
         toHostPort
-            (CommonMessages.encodePublication publication
-                |> LabeledMessage.encode CommonMessages.publishLabel
+            (PubSub.encodePublication publication
+                |> LabeledMessage.encode PubSub.publishLabel
             )
 
     else
@@ -150,8 +150,8 @@ dispatchHostPublication toHostPort hostSubscriptions publication =
 dispatchClientPublication : (Decode.Value -> Cmd Msg) -> Publication -> Cmd Msg
 dispatchClientPublication toClientPort publication =
     toClientPort
-        (CommonMessages.encodePublication publication
-            |> LabeledMessage.encode CommonMessages.publishLabel
+        (PubSub.encodePublication publication
+            |> LabeledMessage.encode PubSub.publishLabel
         )
 
 
