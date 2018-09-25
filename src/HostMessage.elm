@@ -1,47 +1,32 @@
-module ClientMessage exposing (ClientMessage(..), decoder, encode)
-
-{-| The ClientMsg module describes message formats used by clients to communicate with the parent application.
-@docs ClientMessage, decoder, encode
--}
+module HostMessage exposing (HostMessage(..), decoder)
 
 import CommonMessages exposing (Publication)
-import Dict exposing (Dict)
+import Dict
 import Json.Decode as Decode exposing (Decoder)
-import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode as Encode
 import LabeledMessage
 import Navigation exposing (Location)
 
 
-
--- ClientMessage
-
-
-{-| Message types that can be sent to the parent app
--}
-type ClientMessage
-    = NavRequest Location
-    | Publish Publication
-    | Subscribe String
+type HostMessage
+    = Subscribe String
     | Unsubscribe String
+    | Publish Publication
+    | NavRequest Location
 
-{-| Decoder for client messages. Messages are expected to be part of a labeled structure as defined in the LabeledMsg module.
--}
-decoder : Decoder ClientMessage
+
+decoder : Decoder HostMessage
 decoder =
     LabeledMessage.decoder
         (Dict.fromList
             [ ( CommonMessages.navRequestLabel, Decode.map NavRequest CommonMessages.navRequestDecoder )
-            , ( CommonMessages.publishLabel, Decode.map Publish CommonMessages.publicationDecoder )
             , ( CommonMessages.subscribeLabel, Decode.map Subscribe Decode.string )
             , ( CommonMessages.unsubscribeLabel, Decode.map Unsubscribe Decode.string )
+            , ( CommonMessages.publishLabel, Decode.map Publish CommonMessages.publicationDecoder )
             ]
         )
 
-
-{-| Encodes a ClientMsg into a LabeledMsg format suitable for sending to a parent app.
--}
-encode : ClientMessage -> Encode.Value
+encode : HostMessage -> Encode.Value
 encode msg =
     let
         ( label, value ) =
