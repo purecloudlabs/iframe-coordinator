@@ -12,6 +12,7 @@ import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode as Encode
 import LabeledMessage
+import Message.Toast as Toast exposing (Toast)
 import Navigation exposing (Location)
 
 
@@ -26,6 +27,7 @@ type ClientMessage
     | Publish Publication
     | Subscribe String
     | Unsubscribe String
+    | ToastRequest Toast
 
 
 navRequestLabel : String
@@ -43,6 +45,7 @@ decoder =
             , ( CommonMessages.publishLabel, Decode.map Publish CommonMessages.publicationDecoder )
             , ( CommonMessages.subscribeLabel, Decode.map Subscribe Decode.string )
             , ( CommonMessages.unsubscribeLabel, Decode.map Unsubscribe Decode.string )
+            , ( "toastRequest", toastRequestDecoder )
             ]
         )
 
@@ -65,6 +68,9 @@ encode msg =
 
                 Unsubscribe topic ->
                     ( CommonMessages.unsubscribeLabel, Encode.string topic )
+
+                ToastRequest toast ->
+                    ( "toastRequest", Toast.encode toast )
     in
     LabeledMessage.encode label value
 
@@ -106,3 +112,8 @@ encodeLocation loc =
         , ( "username", Encode.string loc.username )
         , ( "password", Encode.string loc.password )
         ]
+
+
+toastRequestDecoder : Decoder ClientMessage
+toastRequestDecoder =
+    Decode.map ToastRequest Toast.decoder

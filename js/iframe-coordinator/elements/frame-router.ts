@@ -1,10 +1,13 @@
 import { Host } from "../elm/Host.elm";
 import ClientFrame from "./x-ifc-frame";
-import {LabeledMsg, Publication} from "../libs/types";
+import { LabeledMsg, Publication } from "../libs/types";
 
 interface SubscribeHandler {
   (msg: LabeledMsg): void;
 }
+
+const TOAST_REQUEST_MSG_TYPE = "toastRequest";
+const TOAST_REQUEST_EVENT_TYPE = "toastRequest";
 
 interface Host {
   ports: {
@@ -20,6 +23,17 @@ interface Host {
   };
 }
 
+/**
+ * The frame-router custom element
+ *
+ * Events:
+ * @event toastRequest
+ * @type {object}
+ * @param {object} detail - Details of the toast.
+ * @param {string} detail.message - Toast message.
+ * @param {string=} detail.title - Optional toast title.
+ * @param {object=} detail.x - Optional, custom properties for application-specific toast features
+ */
 class FrameRouterElement extends HTMLElement {
   router: Host;
 
@@ -38,14 +52,20 @@ class FrameRouterElement extends HTMLElement {
       if (message.msgType == "publish") {
         let event = new CustomEvent("publish", { detail: message.msg });
         this.dispatchEvent(event);
+      } else if (message.msgType === TOAST_REQUEST_MSG_TYPE) {
+        this.dispatchEvent(
+          new CustomEvent(TOAST_REQUEST_EVENT_TYPE, { detail: message.msg })
+        );
+      } else {
+        console.error("Unexpected Message from Host Program", message.msgType);
       }
     });
 
     this.router.ports.toClient.subscribe(message => {
-        let frame = this.getElementsByTagName('x-ifc-frame')[0] as ClientFrame;
-        if (frame) {
-            frame.send(message);
-        } 
+      let frame = this.getElementsByTagName("x-ifc-frame")[0] as ClientFrame;
+      if (frame) {
+        frame.send(message);
+      }
     });
   }
 
@@ -69,7 +89,6 @@ class FrameRouterElement extends HTMLElement {
       msg: publication
     });
   }
-
 }
 
 export default FrameRouterElement;

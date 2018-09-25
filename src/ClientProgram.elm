@@ -105,6 +105,9 @@ handleClientMessage toHostPort msg model =
         ClientMessage.Unsubscribe topic ->
             ( { model | subscriptions = Set.remove topic model.subscriptions }, Cmd.none )
 
+        ClientMessage.ToastRequest _ ->
+            ( model, toHostPort (ClientMessage.encode msg) )
+
 
 handleHostMessage : (Decode.Value -> Cmd Msg) -> HostMessage -> Model -> ( Model, Cmd Msg )
 handleHostMessage toClientPort msg model =
