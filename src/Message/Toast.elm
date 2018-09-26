@@ -1,4 +1,4 @@
-module Message.Toast exposing (Toast, decoder, encode)
+module Message.Toast exposing (Toast, decoder, encode, label)
 
 import Json.Decode as D
 import Json.Decode.Pipeline exposing (decode, optional, required)
@@ -10,6 +10,11 @@ type alias Toast =
     , message : String
     , custom : Maybe D.Value
     }
+
+
+label : String
+label =
+    "toastRequest"
 
 
 decoder : D.Decoder Toast

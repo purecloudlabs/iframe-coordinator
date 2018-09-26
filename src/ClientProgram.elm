@@ -14,10 +14,12 @@ client library defined in iframe-coordinator to create seamless iframe applicati
 
 -}
 
-import ClientMessage exposing (ClientMessage)
-import HostMessage exposing (HostMessage)
 import Json.Decode as Decode exposing (Decoder)
 import LabeledMessage
+import Message.AppToClient as AppToClient exposing (AppToClient)
+import Message.ClientToApp as ClientToApp exposing (ClientToApp)
+import Message.ClientToHost as ClientToHost exposing (ClientToHost)
+import Message.HostToClient as HostToClient exposing (HostToClient)
 import Message.PubSub as PubSub exposing (Publication)
 import Platform exposing (Program, program)
 import Set exposing (Set)
@@ -66,8 +68,8 @@ init =
 
 type Msg
     = Unknown String
-    | ClientMsg ClientMessage
-    | HostMsg HostMessage
+    | ClientMsg AppToClient
+    | HostMsg HostToClient
 
 
 update :
@@ -84,51 +86,62 @@ update ports msg model =
             ( model, logWarning ("No handler for unknown message: " ++ toString value) )
 
         ClientMsg message ->
-            handleClientMessage ports.toHost message model
+            handleAppMessage ports.toHost message model
 
         HostMsg message ->
             handleHostMessage ports.toClient message model
 
 
-handleClientMessage : (Decode.Value -> Cmd Msg) -> ClientMessage -> Model -> ( Model, Cmd Msg )
-handleClientMessage toHostPort msg model =
+handleAppMessage : (Decode.Value -> Cmd Msg) -> AppToClient -> Model -> ( Model, Cmd Msg )
+handleAppMessage toHostPort msg model =
+    let
+        sendToHost =
+            sendHostMessage toHostPort
+    in
     case msg of
-        ClientMessage.NavRequest _ ->
-            ( model, toHostPort (ClientMessage.encode msg) )
+        AppToClient.NavRequest navigation ->
+            ( model, sendToHost (ClientToHost.NavRequest navigation) )
 
-        ClientMessage.Publish _ ->
-            ( model, toHostPort (ClientMessage.encode msg) )
+        AppToClient.Publish publication ->
+            ( model
+            , if Set.member publication.topic model.subscriptions then
+                sendToHost (ClientToHost.Publish publication)
 
-        ClientMessage.Subscribe topic ->
-            ( { model | subscriptions = Set.insert topic model.subscriptions }, Cmd.none )
-
-        ClientMessage.Unsubscribe topic ->
-            ( { model | subscriptions = Set.remove topic model.subscriptions }, Cmd.none )
-
-        ClientMessage.ToastRequest _ ->
-            ( model, toHostPort (ClientMessage.encode msg) )
-
-
-handleHostMessage : (Decode.Value -> Cmd Msg) -> HostMessage -> Model -> ( Model, Cmd Msg )
-handleHostMessage toClientPort msg model =
-    case msg of
-        HostMessage.Publish publication ->
-            ( model, dispatchPublication toClientPort model.subscriptions publication )
-
-        _ ->
-            Debug.crash "Need to distinguish between internal and external messages"
-
-
-dispatchPublication : (Decode.Value -> Cmd Msg) -> Set String -> Publication -> Cmd Msg
-dispatchPublication destinationPort subscriptions publication =
-    if Set.member publication.topic subscriptions then
-        destinationPort
-            (PubSub.encodePublication publication
-                |> LabeledMessage.encode PubSub.publishLabel
+              else
+                Cmd.none
             )
 
-    else
-        Cmd.none
+        AppToClient.Subscribe topic ->
+            ( { model | subscriptions = Set.insert topic model.subscriptions }, Cmd.none )
+
+        AppToClient.Unsubscribe topic ->
+            ( { model | subscriptions = Set.remove topic model.subscriptions }, Cmd.none )
+
+        AppToClient.ToastRequest toast ->
+            ( model, sendToHost (ClientToHost.ToastRequest toast) )
+
+
+handleHostMessage : (Decode.Value -> Cmd Msg) -> HostToClient -> Model -> ( Model, Cmd Msg )
+handleHostMessage toClientPort msg model =
+    let
+        sendToApp =
+            sendAppMessage toClientPort
+    in
+    case msg of
+        HostToClient.Publish publication ->
+            ( model, sendToApp (ClientToApp.Publish publication) )
+
+
+sendHostMessage : (Decode.Value -> Cmd Msg) -> ClientToHost -> Cmd Msg
+sendHostMessage hostPort message =
+    ClientToHost.encodeToHost message
+        |> hostPort
+
+
+sendAppMessage : (Decode.Value -> Cmd Msg) -> ClientToApp -> Cmd Msg
+sendAppMessage appPort message =
+    ClientToApp.encodeToApp message
+        |> appPort
 
 
 logWarning : String -> Cmd Msg
@@ -147,8 +160,8 @@ subscriptions :
     -> Sub Msg
 subscriptions fromClient fromHost _ =
     Sub.batch
-        [ fromClient (messageDecoder ClientMsg ClientMessage.decoder)
-        , fromHost (messageDecoder HostMsg (Decode.field "data" HostMessage.decoder))
+        [ fromClient (messageDecoder ClientMsg AppToClient.decodeFromApp)
+        , fromHost (messageDecoder HostMsg (Decode.field "data" HostToClient.decodeFromHost))
         ]
 
 
