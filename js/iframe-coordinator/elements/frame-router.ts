@@ -7,6 +7,11 @@ interface SubscribeHandler {
   (msg: LabeledMsg): void;
 }
 
+const TOAST_REQUEST_MSG_TYPE = 'toastRequest';
+const TOAST_REQUEST_EVENT_TYPE = 'toastRequest';
+const NAV_REQUEST_MSG_TYPE = 'navRequest';
+const NAV_REQUEST_EVENT_TYPE = 'navRequest';
+
 interface Host {
   ports: {
     fromClient: {
@@ -21,6 +26,17 @@ interface Host {
   };
 }
 
+/**
+ * The frame-router custom element
+ * 
+ * Events:
+ * @event toastRequest
+ * @type {object} 
+ * @param {object} detail - Details of the toast.
+ * @param {string} detail.message - Toast message.
+ * @param {string=} detail.title - Optional toast title.
+ * @param {object=} detail.x - Optional, custom properties for application-specific toast features
+ */
 class FrameRouterElement extends HTMLElement {
   router: Host;
 
@@ -41,6 +57,19 @@ class FrameRouterElement extends HTMLElement {
 
     window.addEventListener("message", event => {
       this.router.ports.fromClient.send(event.data);
+    });
+
+
+    // Subscribe to component out port to handle messages 
+    this.router.ports.toHost.subscribe(labeledMsg => {
+      if (labeledMsg.msgType === TOAST_REQUEST_MSG_TYPE) {
+        this.dispatchEvent(new CustomEvent(TOAST_REQUEST_EVENT_TYPE, {detail: labeledMsg.msg}));
+      } else if (labeledMsg.msgType === NAV_REQUEST_MSG_TYPE) {
+        let event = new CustomEvent(NAV_REQUEST_EVENT_TYPE, { detail: labeledMsg.msg });
+        this.dispatchEvent(event);
+      } else {
+        console.error('Unexpected Message from Host Program', labeledMsg.msgType);
+      }
     });
 
     this.router.ports.toHost.subscribe(message => {
