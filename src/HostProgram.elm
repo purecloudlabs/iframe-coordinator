@@ -11,14 +11,16 @@ custom elements defined in LINK\_TO\_JS\_LIB to create seamless iframe applicati
 
 -}
 
-import ClientMessage exposing (ClientMessage)
 import ClientRegistry exposing (Client, ClientRegistry)
-import HostMessage exposing (HostMessage)
 import Html exposing (Attribute, Html)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (on)
 import Json.Decode as Decode exposing (Decoder, decodeValue)
 import LabeledMessage
+import Message.AppToHost as AppToHost exposing (AppToHost)
+import Message.ClientToHost as ClientToHost exposing (ClientToHost)
+import Message.HostToApp as HostToApp exposing (HostToApp)
+import Message.HostToClient as HostToClient exposing (HostToClient)
 import Message.PubSub as PubSub exposing (Publication)
 import Navigation exposing (Location)
 import Path exposing (Path)
@@ -52,7 +54,7 @@ create ports =
 
 type alias Model =
     { clients : ClientRegistry
-    , hostSubscriptions : Set String
+    , subscriptions : Set String
     , route : Path
     }
 
@@ -60,7 +62,7 @@ type alias Model =
 init : Decode.Value -> Location -> ( Model, Cmd Msg )
 init clientJson location =
     ( { clients = ClientRegistry.decode clientJson
-      , hostSubscriptions = Set.empty
+      , subscriptions = Set.empty
       , route = parseLocation location
       }
     , Cmd.none
@@ -73,8 +75,8 @@ init clientJson location =
 
 type Msg
     = RouteChange Path
-    | ClientMsg ClientMessage
-    | HostMsg HostMessage
+    | ClientMsg ClientToHost
+    | HostMsg AppToHost
     | BadMessage String
 
 
@@ -101,50 +103,49 @@ update ports msg model =
             ( model, logWarning ("Bad Message: " ++ err) )
 
 
-handleHostMsg : (Decode.Value -> Cmd Msg) -> Model -> HostMessage -> ( Model, Cmd Msg )
+handleHostMsg : (Decode.Value -> Cmd Msg) -> Model -> AppToHost -> ( Model, Cmd Msg )
 handleHostMsg toClientPort model msg =
+    let
+        sendToClient =
+            sendClientMessage toClientPort
+    in
     case msg of
-        HostMessage.Subscribe topic ->
-            ( { model | hostSubscriptions = Set.insert topic model.hostSubscriptions }
+        AppToHost.Subscribe topic ->
+            ( { model | subscriptions = Set.insert topic model.subscriptions }
             , Cmd.none
             )
 
-        HostMessage.Unsubscribe topic ->
-            ( { model | hostSubscriptions = Set.remove topic model.hostSubscriptions }
+        AppToHost.Unsubscribe topic ->
+            ( { model | subscriptions = Set.remove topic model.subscriptions }
             , Cmd.none
             )
 
-        HostMessage.Publish publication ->
-            ( model, dispatchClientPublication toClientPort publication )
+        AppToHost.Publish publication ->
+            ( model, sendToClient (HostToClient.Publish publication) )
 
 
-handleClientMsg : (Decode.Value -> Cmd Msg) -> Model -> ClientMessage -> ( Model, Cmd Msg )
-handleClientMsg toHostPort model msg =
+handleClientMsg : (Decode.Value -> Cmd Msg) -> Model -> ClientToHost -> ( Model, Cmd Msg )
+handleClientMsg toAppPort model msg =
+    let
+        sendToApp =
+            sendAppMessage toAppPort
+    in
     case msg of
-        ClientMessage.NavRequest location ->
+        ClientToHost.NavRequest location ->
             ( model, Navigation.newUrl location.hash )
 
         --TODO: We should probably decorate messages outbound to the host app with details about the client they came from
-        ClientMessage.Publish publication ->
-            ( model, dispatchHostPublication toHostPort model.hostSubscriptions publication )
+        ClientToHost.Publish publication ->
+            ( model
+            , if Set.member publication.topic model.subscriptions then
+                sendToApp (HostToApp.Publish publication)
 
-        ClientMessage.ToastRequest toast ->
-            ( model, toHostPort (ClientMessage.encode msg) )
-
-        _ ->
-            Debug.crash "Need to distinguish between internal and external messages"
-
-
-dispatchHostPublication : (Decode.Value -> Cmd Msg) -> Set String -> Publication -> Cmd Msg
-dispatchHostPublication toHostPort hostSubscriptions publication =
-    if Set.member publication.topic hostSubscriptions then
-        toHostPort
-            (PubSub.encodePublication publication
-                |> LabeledMessage.encode PubSub.publishLabel
+              else
+                Cmd.none
             )
 
-    else
-        Cmd.none
+        ClientToHost.ToastRequest toast ->
+            ( model, sendToApp (HostToApp.ToastRequest toast) )
 
 
 dispatchClientPublication : (Decode.Value -> Cmd Msg) -> Publication -> Cmd Msg
@@ -168,6 +169,18 @@ logWarning errMsg =
             Debug.log errMsg
     in
     Cmd.none
+
+
+sendAppMessage : (Decode.Value -> Cmd Msg) -> HostToApp -> Cmd Msg
+sendAppMessage appPort message =
+    HostToApp.encodeToApp message
+        |> appPort
+
+
+sendClientMessage : (Decode.Value -> Cmd Msg) -> HostToClient -> Cmd Msg
+sendClientMessage clientPort message =
+    HostToClient.encodeToClient message
+        |> clientPort
 
 
 
@@ -197,7 +210,7 @@ src value =
 
 onClientMessage : Attribute Msg
 onClientMessage =
-    on "clientMessage" (Decode.field "detail" ClientMessage.decoder |> Decode.map ClientMsg)
+    on "clientMessage" (Decode.field "detail" ClientToHost.decodeFromClient |> Decode.map ClientMsg)
 
 
 
@@ -208,7 +221,7 @@ subscriptions : ((Decode.Value -> Msg) -> Sub Msg) -> Model -> Sub Msg
 subscriptions fromHost model =
     fromHost
         (messageDecoder
-            (Decode.map HostMsg HostMessage.decoder)
+            (Decode.map HostMsg AppToHost.decodeFromApp)
             "Bad message from host app:"
         )
 
