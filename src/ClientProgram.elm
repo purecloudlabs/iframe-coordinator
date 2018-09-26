@@ -12,6 +12,7 @@ client library defined in iframe-coordinator to create seamless iframe applicati
 -}
 
 import ClientMessage exposing (ClientMessage)
+import Json.Decode as Decode
 import CommonMessages exposing (Publication)
 import HostMessage exposing (HostMessage)
 import Json.Decode as Decode exposing (Decoder)
@@ -88,13 +89,16 @@ update ports msg model =
 
 
 handleClientMessage : (Decode.Value -> Cmd Msg) -> ClientMessage -> Model -> ( Model, Cmd Msg )
-handleClientMessage toHostPort msg model =
+handleClientMessage toHost msg model =
     case msg of
         ClientMessage.NavRequest _ ->
-            ( model, toHostPort (ClientMessage.encode msg) )
+            ( model, toHost (ClientMessage.encode msg) )
+
+        ClientMessage.ToastRequest _ ->
+            ( model, toHost (ClientMessage.encode msg) )
 
         ClientMessage.Publish _ ->
-            ( model, toHostPort (ClientMessage.encode msg) )
+            ( model, toHost (ClientMessage.encode msg) )
 
         ClientMessage.Subscribe topic ->
             ( { model | subscriptions = Set.insert topic model.subscriptions }, Cmd.none )
@@ -128,7 +132,6 @@ dispatchPublication destinationPort subscriptions publication =
 logWarning : String -> Cmd Msg
 logWarning errMsg =
     Debug.log errMsg Cmd.none
-
 
 
 -- Subscriptions

@@ -1,21 +1,21 @@
-module HostProgram exposing (create, Model, Msg)
+module HostProgram exposing (Model, Msg, create)
 
 {-| The FrameRouter module is the Elm code that backs the frame-router custom element
 in the iframe-coordinator toolkit. It handles mapping URL routes to clients displayed
 in a child frame as well as message validation and routing within the parent application.
 
 This module is not currently designed for stand-alone use. You should instead use the
-custom elements defined in LINK_TO_JS_LIB to create seamless iframe applications
+custom elements defined in LINK\_TO\_JS\_LIB to create seamless iframe applications
 
 @docs createRouter
 
 -}
 
-import ClientRegistry exposing (ClientRegistry)
+import ClientMessage exposing (ClientMessage)
+import ClientRegistry exposing (Client, ClientRegistry)
+import Json.Decode as Decode exposing (decodeValue)
 import Html exposing (Attribute, Html)
 import Html.Attributes exposing (attribute)
-import Json.Decode as Decode exposing (decodeValue)
-import ClientMessage exposing (ClientMessage)
 import HostMessage exposing (HostMessage)
 import Navigation exposing (Location)
 import Path exposing (Path)
@@ -24,9 +24,11 @@ import LabeledMessage
 import CommonMessages exposing (Publication)
 
 
-{-| Create a program to handle routing. Takes an input port to listen to messages on.
-port binding is handled in the custom frame-router element in LINK_TO_JS_LIB_HERE
+{-| Create a program to handle routing. Takes an input port to listen to messages on
+and and outputPort to deliver messages to the js embedder.
+port binding is handled in the custom frame-router element in LINK\_TO\_JS\_LIB\_HERE
 -}
+
 create :
     { fromHost : (Decode.Value -> Msg) -> Sub Msg
     , fromClient : (Decode.Value -> Msg) -> Sub Msg
@@ -100,6 +102,9 @@ handleClientMsg toHost model msg =
     case msg of
         ClientMessage.NavRequest location ->
             ( model, toHost (ClientMessage.encode msg ) )
+
+        ClientMessage.ToastRequest toast ->
+            ( model, toHost (ClientMessage.encode msg) )
 
         _ ->
             Debug.crash "Need to distinguish between internal and external messages"
