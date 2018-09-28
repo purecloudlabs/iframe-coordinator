@@ -71,13 +71,6 @@ class FrameRouterElement extends HTMLElement {
         console.error('Unexpected Message from Host Program', labeledMsg.msgType);
       }
     });
-
-    this.router.ports.toHost.subscribe(message => {
-      if (message.msgType === "navRequest") {
-        let event = new CustomEvent("navRequest", { detail: message.msg });
-        this.dispatchEvent(event);
-      }
-    });
   }
 
   changeRoute (location) {
