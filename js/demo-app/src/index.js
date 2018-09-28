@@ -18,14 +18,48 @@ document.getElementById("router").registerClients({
   }
 });
 
+// Routing helpers
+window.setRoute = function (route) {
+  document.getElementById('router').setAttribute('route', route);
+};
+window.toggleRouting = function () {
+  window.routing = ! window.routing;
+  if ( window.routing) {
+    setRoute(window.location.hash);
+    document.getElementById('toggle').innerText = 'Disable Routing';
+  } else {
+    location.hash = '';
+    document.getElementById('toggle').innerText = 'Enable Routing';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+
+  // Routing behavior
+  window.routing = false;
+  
+  window.onhashchange = function () {
+    if (routing) {
+      // On hash change & routing mode, update route attribute
+      window.setRoute(window.location.hash);
+    }
+  };
+
+  document.getElementById('router').addEventListener('navRequest', function (data) {
+    if ( window.routing) {
+      location.hash = data.detail.hash;
+      // On navRequest & routing mode, change url
+    }
+    window.setRoute(data.detail.hash);
+  });
+
   // Set up Toast Messages
   window.toastada.setOptions({
-      prependTo: document.querySelector('root-container'),
-      lifeSpan: 5000,
-      position: 'top-right',
-      animate: false,
-      animateDuration: 0
+    prependTo: document.querySelector('root-container'),
+    lifeSpan: 5000,
+    position: 'top-right',
+    animate: false,
+    animateDuration: 0
   });
 
   document.querySelector('frame-router').addEventListener('toastRequest', ({ detail:msgPayload }) => {

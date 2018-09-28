@@ -29,40 +29,5 @@
         <frame-router id="router"></frame-router>
     </div>
     <script type="text/javascript" src="/app.js"></script>
-    <script>
-        var routing = false;
-        var toggle = document.getElementById('toggle');
-        var router = document.getElementById('router');
-
-        window.onhashchange = function () {
-            if (routing) {
-                // On hash change & routing mode, update route attribute
-                setRoute(window.location.hash);
-            }
-        };
-
-        router.addEventListener('navRequest', function (data) {
-            if (routing) {
-                location.hash = data.detail.hash;
-                // On navRequest & routing mode, change url
-            }
-            setRoute(data.detail.hash);
-        });
-
-        setRoute = function (route) {
-            router.setAttribute('route', route);
-        };
-
-        toggleRouting = function () {
-            routing = !routing;
-            if (routing) {
-                setRoute(window.location.hash);
-                toggle.innerText = 'Disable Routing';
-            } else {
-                location.hash = '';
-                toggle.innerText = 'Enable Routing';
-            }
-        }
-    </script>
 </body>
 </html>
