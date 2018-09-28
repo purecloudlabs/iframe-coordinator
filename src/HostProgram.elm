@@ -13,27 +13,38 @@ custom elements defined in LINK\_TO\_JS\_LIB to create seamless iframe applicati
 
 import ClientMessage exposing (ClientMessage)
 import ClientRegistry exposing (Client, ClientRegistry)
+import Json.Decode as Decode exposing (decodeValue)
 import Html exposing (Attribute, Html)
 import Html.Attributes exposing (attribute)
-import Json.Decode as Decode exposing (decodeValue)
+import HostMessage exposing (HostMessage)
 import Navigation exposing (Location)
 import Path exposing (Path)
+import Set exposing (Set)
+import LabeledMessage
+import CommonMessages exposing (Publication)
 
 
 {-| Create a program to handle routing. Takes an input port to listen to messages on
 and and outputPort to deliver messages to the js embedder.
 port binding is handled in the custom frame-router element in LINK\_TO\_JS\_LIB\_HERE
 -}
-create : ((Decode.Value -> Msg) -> Sub Msg) -> (Decode.Value -> Cmd Msg) -> Program Decode.Value Model Msg
-create inputPort outputPort =
-    Navigation.programWithFlags
-        (RouteChange << parseLocation)
+
+create :
+    { fromHost : (Decode.Value -> Msg) -> Sub Msg
+    , fromClient : (Decode.Value -> Msg) -> Sub Msg
+    , toHost : Decode.Value -> Cmd Msg
+    , toClient : Decode.Value -> Cmd Msg
+    }
+    -> Program Decode.Value Model Msg
+create ports =
+    Html.programWithFlags
         { init = init
-        , update = update outputPort
+        , update = update ports
         , view = view
         , subscriptions =
-            \_ ->
-                inputPort decodeClientMsg
+            subscriptions
+                ports.fromClient
+                ports.fromHost
         }
 
 
@@ -43,51 +54,102 @@ create inputPort outputPort =
 
 type alias Model =
     { clients : ClientRegistry
+    , hostSubscriptions : Set String
     , route : Path
     }
 
 
-init : Decode.Value -> Location -> ( Model, Cmd Msg )
-init clientJson location =
-    ( { clients = ClientRegistry.decode clientJson
-      , route = parseLocation location
-      }
-    , Cmd.none
-    )
-
+init : Decode.Value -> ( Model, Cmd Msg )
+init clientJson =
+    ( { clients = ClientRegistry.decode clientJson, hostSubscriptions = Set.empty, route = Path.parse("/") }, Cmd.none )
 
 
 -- Update
 
 
 type Msg
-    = RouteChange Path
-    | ClientMsg ClientMessage
+    = ClientMsg ClientMessage
+    | HostMsg HostMessage
     | Unknown String
 
 
-update : (Decode.Value -> Cmd Msg) -> Msg -> Model -> ( Model, Cmd Msg )
-update outputPort msg model =
+update :
+    { a
+        | toHost : Decode.Value -> Cmd Msg
+        , toClient : Decode.Value -> Cmd Msg
+    }
+    -> Msg
+    -> Model
+    -> ( Model, Cmd Msg )
+update ports msg model =
     case msg of
-        RouteChange route ->
-            ( { model | route = route }, Cmd.none )
-
         ClientMsg msg ->
-            handleClientMsg outputPort model msg
+            handleClientMsg ports.toHost model msg
+
+        HostMsg msg ->
+            handleHostMsg ports.toClient model msg
 
         Unknown err ->
             ( model, logWarning ("Unknown Msg: " ++ err) )
 
 
-handleClientMsg : (Decode.Value -> Cmd Msg) -> Model -> ClientMessage -> ( Model, Cmd Msg )
-handleClientMsg outputPort model msg =
+handleClientMsg :
+    (Decode.Value -> Cmd Msg)
+    -> Model
+    -> ClientMessage
+    -> (Model, Cmd Msg)
+handleClientMsg toHost model msg =
     case msg of
         ClientMessage.NavRequest location ->
-            ( model, Navigation.newUrl location.hash )
+            ( model, toHost (ClientMessage.encode msg ) )
 
         ClientMessage.ToastRequest toast ->
-            ( model, outputPort (ClientMessage.encode msg) )
+            ( model, toHost (ClientMessage.encode msg) )
 
+        _ ->
+            Debug.crash "Need to distinguish between internal and external messages"
+
+handleHostMsg :
+    (Decode.Value -> Cmd Msg)
+    -> Model
+    -> HostMessage
+    -> (Model, Cmd Msg)
+handleHostMsg toClient model msg =
+    case msg of
+        HostMessage.NavRequest location ->
+            ( { model | route = parseLocation location }, Cmd.none )
+
+        HostMessage.Subscribe topic ->
+            ( { model | hostSubscriptions = Set.insert topic model.hostSubscriptions }
+            , Cmd.none
+            )
+
+        HostMessage.Unsubscribe topic ->
+            ( { model | hostSubscriptions = Set.remove topic model.hostSubscriptions }
+            , Cmd.none
+            )
+
+        HostMessage.Publish publication ->
+            ( model, dispatchClientPublication toClient publication )
+
+dispatchHostPublication : (Decode.Value -> Cmd Msg) -> Set String -> Publication -> Cmd Msg
+dispatchHostPublication toHost hostSubscriptions publication =
+    if Set.member publication.topic hostSubscriptions then
+        toHost
+            (CommonMessages.encodePublication publication
+                |> LabeledMessage.encode CommonMessages.publishLabel
+            )
+
+    else
+        Cmd.none
+
+
+dispatchClientPublication : (Decode.Value -> Cmd Msg) -> Publication -> Cmd Msg
+dispatchClientPublication toClient publication =
+    toClient
+        (CommonMessages.encodePublication publication
+            |> LabeledMessage.encode CommonMessages.publishLabel
+        )
 
 parseLocation : Location -> Path
 parseLocation location =
@@ -102,7 +164,6 @@ logWarning errMsg =
             Debug.log errMsg
     in
     Cmd.none
-
 
 
 -- View
@@ -145,3 +206,30 @@ decodeClientMsg json =
 
         Err err ->
             Unknown err
+
+decodeHostMsg : Decode.Value -> Msg
+decodeHostMsg json =
+    case
+        Decode.decodeValue
+            (Decode.map HostMsg HostMessage.decoder)
+            json
+    of
+        Ok msg ->
+            msg
+
+        Err err ->
+            Unknown err
+
+-- Subscriptions
+
+
+subscriptions :
+    ((Decode.Value -> Msg) -> Sub Msg)
+    -> ((Decode.Value -> Msg) -> Sub Msg)
+    -> Model
+    -> Sub Msg
+subscriptions fromClient fromHost _ =
+    Sub.batch
+        [ fromClient decodeClientMsg
+        , fromHost decodeHostMsg
+        ]

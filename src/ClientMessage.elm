@@ -1,11 +1,10 @@
 module ClientMessage exposing (ClientMessage(..), decoder, encode)
 
 {-| The ClientMsg module describes message formats used by clients to communicate with the parent application.
-
 @docs ClientMessage, decoder, encode
-
 -}
 
+import CommonMessages exposing (Publication)
 import Dict exposing (Dict)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (decode, required)
@@ -15,12 +14,18 @@ import Message.Toast as Toast exposing (Toast)
 import Navigation exposing (Location)
 
 
+
+-- ClientMessage
+
+
 {-| Message types that can be sent to the parent app
 -}
 type ClientMessage
     = NavRequest Location
     | ToastRequest Toast
-
+    | Publish Publication
+    | Subscribe String
+    | Unsubscribe String
 
 {-| Decoder for client messages. Messages are expected to be part of a labeled structure as defined in the LabeledMsg module.
 -}
@@ -28,8 +33,11 @@ decoder : Decoder ClientMessage
 decoder =
     LabeledMessage.decoder
         (Dict.fromList
-            [ ( "navRequest", navRequestDecoder )
-            , ( "toastRequest", toastRequestDecoder )
+            [ ( "toastRequest", toastRequestDecoder )
+            , ( CommonMessages.navRequestLabel, Decode.map NavRequest CommonMessages.navRequestDecoder )
+            , ( CommonMessages.publishLabel, Decode.map Publish CommonMessages.publicationDecoder )
+            , ( CommonMessages.subscribeLabel, Decode.map Subscribe Decode.string )
+            , ( CommonMessages.unsubscribeLabel, Decode.map Unsubscribe Decode.string )
             ]
         )
 
@@ -41,14 +49,22 @@ encode msg =
     let
         ( label, value ) =
             case msg of
-                NavRequest location ->
-                    ( "navRequest", encodeLocation location )
-
                 ToastRequest toast ->
                     ( "toastRequest", Toast.encode toast )
+                
+                NavRequest location ->
+                    ( CommonMessages.navRequestLabel, CommonMessages.encodeLocation location )
+
+                Publish publication ->
+                    ( CommonMessages.publishLabel, CommonMessages.encodePublication publication )
+
+                Subscribe topic ->
+                    ( CommonMessages.subscribeLabel, Encode.string topic )
+
+                Unsubscribe topic ->
+                                    ( CommonMessages.unsubscribeLabel, Encode.string topic )
     in
     LabeledMessage.encode label value
-
 
 
 -- Helpers
