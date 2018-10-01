@@ -38,7 +38,7 @@ host.registerElements();
  * path for that client. `url` is the page to load in the
  * iframe on that route. So in this example, the fragment
  * `#/one/my/path` would cause the `frame-router` element
- * to display the iframe at `//component/example1/#/one/my/path`
+ * to display the iframe at `//component/example1/#/my/path`
  */
 document.getElementById("frame-element").registerClients({
   client1: {

@@ -1,10 +1,11 @@
-module Path exposing (Path, asString, decoder, join, parse, startsWith)
+module Path exposing (Path, asString, decoder, join, parse, startsWith, stripPrefix)
 
 {-| The Path module provides utilities for working with URL paths in the context of the iframe-coordinator.
 -}
 
 import Json.Decode as Decode exposing (Decoder)
 import List.Extra as ListEx
+
 
 
 -- Exports
@@ -41,6 +42,14 @@ startsWith prefixPath path =
     case ( prefixPath, path ) of
         ( Absolute prefixSegments, Absolute segments ) ->
             ListEx.isPrefixOf prefixSegments segments
+
+
+stripPrefix : Path -> Path -> Maybe Path
+stripPrefix prefixPath path =
+    case ( prefixPath, path ) of
+        ( Absolute prefixSegments, Absolute segments ) ->
+            ListEx.stripPrefix prefixSegments segments
+                |> Maybe.map Absolute
 
 
 decoder : Decoder Path
