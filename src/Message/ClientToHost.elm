@@ -21,27 +21,21 @@ type ClientToHost
 
 encodeToHost : ClientToHost -> Encode.Value
 encodeToHost message =
-    let
-        ( label, value ) =
-            case message of
-                NavRequest location ->
-                    ( Navigation.label, Navigation.encode location )
+    case message of
+        NavRequest navigation ->
+            Navigation.encode navigation
 
-                Publish publication ->
-                    ( PubSub.publishLabel, PubSub.encodePublication publication )
+        Publish publication ->
+            PubSub.encodePublication publication
 
-                ToastRequest toast ->
-                    ( Toast.label, Toast.encode toast )
-    in
-    LabeledMessage.encode label value
+        ToastRequest toast ->
+            Toast.encode toast
 
 
 decodeFromClient : Decoder ClientToHost
 decodeFromClient =
-    LabeledMessage.decoder
-        (Dict.fromList
-            [ ( Navigation.label, Decode.map NavRequest Navigation.decoder )
-            , ( PubSub.publishLabel, Decode.map Publish PubSub.publicationDecoder )
-            , ( Toast.label, Decode.map ToastRequest Toast.decoder )
-            ]
-        )
+    Decode.oneOf
+        [ Decode.map NavRequest Navigation.decoder
+        , Decode.map Publish PubSub.publicationDecoder
+        , Decode.map ToastRequest Toast.decoder
+        ]

@@ -18,12 +18,10 @@ type AppToClient
 
 decodeFromApp : Decoder AppToClient
 decodeFromApp =
-    LabeledMessage.decoder
-        (Dict.fromList
-            [ ( Navigation.label, Decode.map NavRequest Navigation.decoder )
-            , ( PubSub.publishLabel, Decode.map Publish PubSub.publicationDecoder )
-            , ( PubSub.subscribeLabel, Decode.map Subscribe Decode.string )
-            , ( PubSub.unsubscribeLabel, Decode.map Unsubscribe Decode.string )
-            , ( Toast.label, Decode.map ToastRequest Toast.decoder )
-            ]
-        )
+    Decode.oneOf
+        [ Decode.map NavRequest Navigation.decoder
+        , Decode.map Publish PubSub.publicationDecoder
+        , Decode.map Subscribe PubSub.subscribeDecoder
+        , Decode.map Unsubscribe PubSub.unsubscribeDecoder
+        , Decode.map ToastRequest Toast.decoder
+        ]

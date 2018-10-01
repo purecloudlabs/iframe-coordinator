@@ -13,19 +13,11 @@ type HostToClient
 
 decodeFromHost : Decoder HostToClient
 decodeFromHost =
-    LabeledMessage.decoder
-        (Dict.fromList
-            [ ( PubSub.publishLabel, Decode.map Publish PubSub.publicationDecoder )
-            ]
-        )
+    Decode.map Publish PubSub.publicationDecoder
 
 
 encodeToClient : HostToClient -> Encode.Value
 encodeToClient message =
-    let
-        ( label, value ) =
-            case message of
-                Publish publication ->
-                    ( PubSub.publishLabel, PubSub.encodePublication publication )
-    in
-    LabeledMessage.encode label value
+    case message of
+        Publish publication ->
+            PubSub.encodePublication publication

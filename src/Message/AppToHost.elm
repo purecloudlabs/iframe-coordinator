@@ -14,10 +14,8 @@ type AppToHost
 
 decodeFromApp : Decoder AppToHost
 decodeFromApp =
-    LabeledMessage.decoder
-        (Dict.fromList
-            [ ( PubSub.publishLabel, Decode.map Publish PubSub.publicationDecoder )
-            , ( PubSub.subscribeLabel, Decode.map Subscribe Decode.string )
-            , ( PubSub.unsubscribeLabel, Decode.map Unsubscribe Decode.string )
-            ]
-        )
+    Decode.oneOf
+        [ Decode.map Publish PubSub.publicationDecoder
+        , Decode.map Subscribe PubSub.subscribeDecoder
+        , Decode.map Unsubscribe PubSub.unsubscribeDecoder
+        ]

@@ -3,6 +3,7 @@ module Message.Navigation exposing (Navigation, decoder, encode, label)
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (decode, required)
 import Json.Encode as Encode
+import LabeledMessage exposing (expectLabel, withLabel)
 import Navigation exposing (Location)
 
 
@@ -30,11 +31,12 @@ encode loc =
         , ( "username", Encode.string loc.username )
         , ( "password", Encode.string loc.password )
         ]
+        |> withLabel label
 
 
 decoder : Decoder Navigation
 decoder =
-    decode Location
+    (decode Location
         |> required "href" Decode.string
         |> required "host" Decode.string
         |> required "hostname" Decode.string
@@ -46,3 +48,5 @@ decoder =
         |> required "hash" Decode.string
         |> required "username" Decode.string
         |> required "password" Decode.string
+    )
+        |> expectLabel label

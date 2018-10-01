@@ -16,12 +16,10 @@ import Html exposing (Attribute, Html)
 import Html.Attributes exposing (attribute)
 import Html.Events exposing (on)
 import Json.Decode as Decode exposing (Decoder, decodeValue)
-import LabeledMessage
 import Message.AppToHost as AppToHost exposing (AppToHost)
 import Message.ClientToHost as ClientToHost exposing (ClientToHost)
 import Message.HostToApp as HostToApp exposing (HostToApp)
 import Message.HostToClient as HostToClient exposing (HostToClient)
-import Message.PubSub as PubSub exposing (Publication)
 import Navigation exposing (Location)
 import Path exposing (Path)
 import Set exposing (Set)
@@ -146,14 +144,6 @@ handleClientMsg toAppPort model msg =
 
         ClientToHost.ToastRequest toast ->
             ( model, sendToApp (HostToApp.ToastRequest toast) )
-
-
-dispatchClientPublication : (Decode.Value -> Cmd Msg) -> Publication -> Cmd Msg
-dispatchClientPublication toClientPort publication =
-    toClientPort
-        (PubSub.encodePublication publication
-            |> LabeledMessage.encode PubSub.publishLabel
-        )
 
 
 parseLocation : Location -> Path
