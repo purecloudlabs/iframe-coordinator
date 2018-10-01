@@ -1,5 +1,6 @@
 #!/bin/bash
 set +x
+set -e
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 PROJ_DIR="${SCRIPTS_DIR}/.."
