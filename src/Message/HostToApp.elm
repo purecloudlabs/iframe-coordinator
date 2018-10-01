@@ -14,13 +14,9 @@ type HostToApp
 
 encodeToApp : HostToApp -> Encode.Value
 encodeToApp message =
-    let
-        ( label, value ) =
-            case message of
-                Publish publication ->
-                    ( PubSub.publishLabel, PubSub.encodePublication publication )
+    case message of
+        Publish publication ->
+            PubSub.encodePublication publication
 
-                ToastRequest toast ->
-                    ( Toast.label, Toast.encode toast )
-    in
-    LabeledMessage.encode label value
+        ToastRequest toast ->
+            Toast.encode toast

@@ -1,4 +1,4 @@
-module LabeledMessage exposing (decoder, encode)
+module LabeledMessage exposing (expectLabel, withLabel)
 
 {-| The LabeledMessagae module provides a consistent format for labelling, encoding, and decoding messages that are sent & recieved via ports.
 
@@ -21,22 +21,25 @@ import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode
 
 
-decoder : Dict String (Decoder a) -> Decoder a
-decoder decoders =
+expectLabel : String -> Decoder a -> Decoder a
+expectLabel expectedLabel decoder =
     Decode.field msgTypeField Decode.string
-        |> Decode.andThen (decoderForType decoders)
+        |> Decode.andThen
+            (\label ->
+                if label /= expectedLabel then
+                    Decode.fail ("Unrecognized msg type: " ++ label)
+
+                else
+                    Decode.field msgDataField decoder
+            )
 
 
-encode : String -> Encode.Value -> Encode.Value
-encode label value =
+withLabel : String -> Encode.Value -> Encode.Value
+withLabel label value =
     Encode.object
         [ ( msgTypeField, Encode.string label )
         , ( msgDataField, value )
         ]
-
-
-
--- Helpers
 
 
 msgTypeField : String
@@ -47,10 +50,3 @@ msgTypeField =
 msgDataField : String
 msgDataField =
     "msg"
-
-
-decoderForType : Dict String (Decoder a) -> String -> Decoder a
-decoderForType decoders msgType =
-    Dict.get msgType decoders
-        |> Maybe.map (Decode.field msgDataField)
-        |> Maybe.withDefault (Decode.fail ("Unknown message type: " ++ msgType))

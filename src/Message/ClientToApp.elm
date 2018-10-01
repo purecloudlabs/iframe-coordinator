@@ -11,10 +11,6 @@ type ClientToApp
 
 encodeToApp : ClientToApp -> Encode.Value
 encodeToApp msg =
-    let
-        ( label, value ) =
-            case msg of
-                Publish publication ->
-                    ( PubSub.publishLabel, PubSub.encodePublication publication )
-    in
-    LabeledMessage.encode label value
+    case msg of
+        Publish publication ->
+            PubSub.encodePublication publication

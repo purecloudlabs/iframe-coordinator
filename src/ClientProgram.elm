@@ -15,12 +15,10 @@ client library defined in iframe-coordinator to create seamless iframe applicati
 -}
 
 import Json.Decode as Decode exposing (Decoder)
-import LabeledMessage
 import Message.AppToClient as AppToClient exposing (AppToClient)
 import Message.ClientToApp as ClientToApp exposing (ClientToApp)
 import Message.ClientToHost as ClientToHost exposing (ClientToHost)
 import Message.HostToClient as HostToClient exposing (HostToClient)
-import Message.PubSub as PubSub exposing (Publication)
 import Platform exposing (Program, program)
 import Set exposing (Set)
 
@@ -81,7 +79,7 @@ update :
     -> Model
     -> ( Model, Cmd Msg )
 update ports msg model =
-    case Debug.log "ClientEvent" msg of
+    case msg of
         Unknown value ->
             ( model, logWarning ("No handler for unknown message: " ++ toString value) )
 
@@ -103,13 +101,7 @@ handleAppMessage toHostPort msg model =
             ( model, sendToHost (ClientToHost.NavRequest navigation) )
 
         AppToClient.Publish publication ->
-            ( model
-            , if Set.member publication.topic model.subscriptions then
-                sendToHost (ClientToHost.Publish publication)
-
-              else
-                Cmd.none
-            )
+            ( model, sendToHost (ClientToHost.Publish publication) )
 
         AppToClient.Subscribe topic ->
             ( { model | subscriptions = Set.insert topic model.subscriptions }, Cmd.none )
@@ -129,7 +121,13 @@ handleHostMessage toClientPort msg model =
     in
     case msg of
         HostToClient.Publish publication ->
-            ( model, sendToApp (ClientToApp.Publish publication) )
+            ( model
+            , if Set.member publication.topic model.subscriptions then
+                sendToApp (ClientToApp.Publish publication)
+
+              else
+                Cmd.none
+            )
 
 
 sendHostMessage : (Decode.Value -> Cmd Msg) -> ClientToHost -> Cmd Msg
