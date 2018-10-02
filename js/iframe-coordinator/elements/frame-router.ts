@@ -2,12 +2,11 @@ import { Host } from "../elm/Host.elm";
 import ClientFrame from "./x-ifc-frame";
 import { LabeledMsg, Publication } from "../libs/types";
 
+const ROUTE_ATTR = "route";
+
 interface SubscribeHandler {
   (msg: LabeledMsg): void;
 }
-
-const TOAST_REQUEST_MSG_TYPE = "toastRequest";
-const TOAST_REQUEST_EVENT_TYPE = "toastRequest";
 
 interface Host {
   ports: {
@@ -41,6 +40,10 @@ class FrameRouterElement extends HTMLElement {
     super();
   }
 
+  static get observedAttributes() {
+    return [ROUTE_ATTR];
+  }
+
   connectedCallback() {
     this.setAttribute("style", "position: relative;");
   }
@@ -48,17 +51,10 @@ class FrameRouterElement extends HTMLElement {
   registerClients(clients) {
     this.router = Host.embed(this, clients);
 
-    this.router.ports.toHost.subscribe(message => {
-      if (message.msgType == "publish") {
-        let event = new CustomEvent("publish", { detail: message.msg });
-        this.dispatchEvent(event);
-      } else if (message.msgType === TOAST_REQUEST_MSG_TYPE) {
-        this.dispatchEvent(
-          new CustomEvent(TOAST_REQUEST_EVENT_TYPE, { detail: message.msg })
-        );
-      } else {
-        console.error("Unexpected Message from Host Program", message.msgType);
-      }
+    this.router.ports.toHost.subscribe(labeledMsg => {
+      this.dispatchEvent(
+        new CustomEvent(labeledMsg.msgType, { detail: labeledMsg.msg })
+      );
     });
 
     this.router.ports.toClient.subscribe(message => {
@@ -88,6 +84,32 @@ class FrameRouterElement extends HTMLElement {
       msgType: "publish",
       msg: publication
     });
+  }
+
+  changeRoute(location) {
+    this.router.ports.fromHost.send({
+      msgType: "navRequest",
+      msg: location
+    });
+  }
+
+  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    if (name === ROUTE_ATTR && oldValue !== newValue) {
+      let location = {
+        href: "",
+        host: "",
+        hostname: "",
+        protocol: "",
+        origin: "",
+        port: "",
+        pathname: "",
+        search: "",
+        hash: newValue,
+        username: "",
+        password: ""
+      };
+      this.changeRoute(location);
+    }
   }
 }
 

@@ -1,9 +1,9 @@
 export interface LabeledMsg {
-    msgType: string;
-    msg: any;
+  msgType: string;
+  msg: any;
 }
 
 export interface Publication {
-    topic: string;
-    payload: any;
+  topic: string;
+  payload: any;
 }

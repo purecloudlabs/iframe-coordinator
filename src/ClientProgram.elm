@@ -6,7 +6,6 @@ module ClientProgram exposing
 {-| The ClientProgram module is the Elm code that backs the client-side JS helper
 library in the iframe-coordinator library. It message handles message validation
 and delivery to and from clients.
-
 This module is not currently designed for stand-alone use. You should instead use the
 client library defined in iframe-coordinator to create seamless iframe applications
 
