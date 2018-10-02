@@ -5,7 +5,7 @@ module.exports = {
     host: "./libs/host.ts"
   },
   output: {
-    libraryTarget: "commonjs2",
+    libraryTarget: "umd",
     filename: "[name].js",
     path: __dirname + ""
   },
