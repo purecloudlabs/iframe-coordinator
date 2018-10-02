@@ -12,11 +12,11 @@ let router = document.getElementById("router");
 // Set up client URLs and Routes
 router.registerClients({
   client1: {
-    url: "//components/example1/",
+    url: new URL("/components/example1/", window.location).toString(),
     assignedRoute: "/one"
   },
   client2: {
-    url: "//components/example2/",
+    url: new URL("/components/example2/", window.location).toString(),
     assignedRoute: "/two"
   }
 });
@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
   window.onhashchange = function() {
     if (routing) {
       // On hash change & routing mode, update route attribute
-      window.setRoute(window.location.hash);
+      window.setRoute(window.location.hash.slice(1));
     }
   };
 
@@ -70,10 +70,10 @@ document.addEventListener("DOMContentLoaded", () => {
     .getElementById("router")
     .addEventListener("navRequest", function(data) {
       if (window.routing) {
-        location.hash = data.detail.hash;
+        location.hash = data.detail.fragment;
         // On navRequest & routing mode, change url
       }
-      window.setRoute(data.detail.hash);
+      window.setRoute(data.detail.fragment);
     });
 
   // Set up Toast Messages

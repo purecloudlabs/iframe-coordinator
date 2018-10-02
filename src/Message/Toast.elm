@@ -1,15 +1,15 @@
 module Message.Toast exposing (Toast, decoder, encode, label)
 
-import Json.Decode as D
-import Json.Decode.Pipeline exposing (decode, optional, required)
-import Json.Encode as E
+import Json.Decode as Decode exposing (Decoder)
+import Json.Decode.Pipeline exposing (optional, required)
+import Json.Encode as Encode
 import LabeledMessage exposing (expectLabel, withLabel)
 
 
 type alias Toast =
     { title : String
     , message : String
-    , custom : Maybe D.Value
+    , custom : Maybe Decode.Value
     }
 
 
@@ -18,21 +18,21 @@ label =
     "toastRequest"
 
 
-decoder : D.Decoder Toast
+decoder : Decoder Toast
 decoder =
-    (decode Toast
-        |> optional "title" D.string ""
-        |> required "message" D.string
-        |> optional "custom" (D.maybe D.value) Nothing
+    (Decode.succeed Toast
+        |> optional "title" Decode.string ""
+        |> required "message" Decode.string
+        |> optional "custom" (Decode.maybe Decode.value) Nothing
     )
         |> expectLabel label
 
 
-encode : Toast -> E.Value
+encode : Toast -> Encode.Value
 encode toast =
-    E.object
-        [ ( "title", E.string toast.title )
-        , ( "message", E.string toast.message )
-        , ( "custom", Maybe.withDefault E.null toast.custom )
+    Encode.object
+        [ ( "title", Encode.string toast.title )
+        , ( "message", Encode.string toast.message )
+        , ( "custom", Maybe.withDefault Encode.null toast.custom )
         ]
         |> withLabel label

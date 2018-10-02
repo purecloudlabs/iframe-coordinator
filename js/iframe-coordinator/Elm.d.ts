@@ -1,69 +1,58 @@
-declare module "*/Client.elm" {
-  export interface LabeledMsg {
-    msgType: string;
-    msg: any;
-  }
-
-  export interface MessageData {
-    origin: string;
-    data: any;
-  }
-
-  export interface Worker {
-    requestToast: Function;
-    ports: {
-      fromHost: {
-        send: (message: MessageData) => void;
-      };
-      fromClient: {
-        send: (message: LabeledMsg) => void;
-      };
-      toHost: {
-        subscribe: (message: any) => void;
-      };
-      toClient: {
-        subscribe: (message: any) => void;
-      };
-    };
-  }
-
-  interface Client {
-    worker(): Worker;
-  }
-
-  export var Client: Client;
+interface LabeledMsg {
+  msgType: string;
+  msg: any;
 }
 
+interface SubscribeHandler {
+  (msg: LabeledMsg): void;
+}
+
+interface InPort {
+  send(msg: LabeledMsg): void;
+}
+
+interface OutPort {
+  subscribe(handler: SubscribeHandler): void;
+}
+
+interface ClientProgram {
+  ports: {
+    fromHost: {
+      send({ origin: string, data: any });
+    };
+    toHost: OutPort;
+    fromClient: InPort;
+    toClient: OutPort;
+  };
+}
+
+declare module "*/Client.elm" {
+  export var Elm: {
+    Client: {
+      init(): ClientProgram;
+    };
+  };
+}
+
+interface HostProgram {
+  ports: {
+    fromHost: InPort;
+    toHost: OutPort;
+    toClient: OutPort;
+  };
+}
+
+interface ClientRegistrations {}
+
 declare module "*/Host.elm" {
-  export interface ClientRegistrations {}
-
-  export interface LabeledMsg {
-    msgType: string;
-    msg: any;
-  }
-
   export interface Publication {
     topic: string;
     payload: any;
   }
 
-  export interface HostRouter {
-    ports: {
-      fromHost: {
-        send: (message: LabeledMsg) => void;
-      };
-      toHost: {
-        subscribe(subscribeHandler: (msg: LabeledMsg) => void): void;
-      };
-      toClient: {
-        subscribe(subscribeHandler: (msg: LabeledMsg) => void): void;
-      };
+  export var Elm: {
+    Host: {
+      init(options: { node: HTMLElement; flags: ClientRegistrations }): HostApp;
     };
-  }
-
-  interface Host {
-    embed(baseElement: any, clientRegistrations: any): HostRouter;
-  }
-
-  export var Host: Host;
+  };
 }

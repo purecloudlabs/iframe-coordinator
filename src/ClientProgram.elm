@@ -18,7 +18,7 @@ import Message.AppToClient as AppToClient exposing (AppToClient)
 import Message.ClientToApp as ClientToApp exposing (ClientToApp)
 import Message.ClientToHost as ClientToHost exposing (ClientToHost)
 import Message.HostToClient as HostToClient exposing (HostToClient)
-import Platform exposing (Program, program)
+import Platform exposing (Program, worker)
 import Set exposing (Set)
 
 
@@ -34,9 +34,9 @@ create :
     , fromClient : (Decode.Value -> Msg) -> Sub Msg
     , toClient : Decode.Value -> Cmd Msg
     }
-    -> Program Never Model Msg
+    -> Program () Model Msg
 create ports =
-    program
+    worker
         { init = init
         , update = update ports
         , subscriptions =
@@ -54,8 +54,8 @@ type alias Model =
     { subscriptions : Set String }
 
 
-init : ( Model, Cmd Msg )
-init =
+init : () -> ( Model, Cmd Msg )
+init _ =
     ( { subscriptions = Set.empty }, Cmd.none )
 
 
@@ -64,7 +64,7 @@ init =
 
 
 type Msg
-    = Unknown String
+    = BadMessage Decode.Error
     | ClientMsg AppToClient
     | HostMsg HostToClient
 
@@ -79,14 +79,19 @@ update :
     -> ( Model, Cmd Msg )
 update ports msg model =
     case msg of
-        Unknown value ->
-            ( model, logWarning ("No handler for unknown message: " ++ toString value) )
-
         ClientMsg message ->
             handleAppMessage ports.toHost message model
 
         HostMsg message ->
             handleHostMessage ports.toClient message model
+
+        BadMessage error ->
+            ( model
+            , logWarning
+                ("Could not parse incoming message: "
+                    ++ Decode.errorToString error
+                )
+            )
 
 
 handleAppMessage : (Decode.Value -> Cmd Msg) -> AppToClient -> Model -> ( Model, Cmd Msg )
@@ -173,4 +178,4 @@ messageDecoder label decoder value =
             msg
 
         Err err ->
-            Unknown err
+            BadMessage err

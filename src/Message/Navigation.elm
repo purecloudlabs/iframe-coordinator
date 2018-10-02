@@ -1,14 +1,14 @@
-module Message.Navigation exposing (Navigation, decoder, encode, label)
+module Message.Navigation exposing (Navigation, decoder, encode, label, urlDecoder)
 
 import Json.Decode as Decode exposing (Decoder)
-import Json.Decode.Pipeline exposing (decode, required)
+import Json.Decode.Pipeline exposing (optional, required)
 import Json.Encode as Encode
 import LabeledMessage exposing (expectLabel, withLabel)
-import Navigation exposing (Location)
+import Url exposing (Protocol(..), Url)
 
 
 type alias Navigation =
-    Location
+    Url
 
 
 label : String
@@ -17,36 +17,78 @@ label =
 
 
 encode : Navigation -> Encode.Value
-encode loc =
+encode url =
     Encode.object
-        [ ( "href", Encode.string loc.href )
-        , ( "host", Encode.string loc.host )
-        , ( "hostname", Encode.string loc.hostname )
-        , ( "protocol", Encode.string loc.protocol )
-        , ( "origin", Encode.string loc.origin )
-        , ( "port", Encode.string loc.port_ )
-        , ( "pathname", Encode.string loc.pathname )
-        , ( "search", Encode.string loc.search )
-        , ( "hash", Encode.string loc.hash )
-        , ( "username", Encode.string loc.username )
-        , ( "password", Encode.string loc.password )
+        [ ( "protocol", encodeProtocol url.protocol )
+        , ( "host", Encode.string url.host )
+        , ( "port"
+          , Maybe.map Encode.int url.port_
+                |> Maybe.withDefault Encode.null
+          )
+        , ( "path", Encode.string url.path )
+        , ( "query"
+          , Maybe.map Encode.string url.query
+                |> Maybe.withDefault Encode.null
+          )
+        , ( "fragment"
+          , Maybe.map Encode.string url.fragment
+                |> Maybe.withDefault Encode.null
+          )
         ]
         |> withLabel label
 
 
 decoder : Decoder Navigation
 decoder =
-    (decode Location
-        |> required "href" Decode.string
+    (Decode.succeed Url
+        |> required "protocol" protocolDecoder
         |> required "host" Decode.string
-        |> required "hostname" Decode.string
-        |> required "protocol" Decode.string
-        |> required "origin" Decode.string
-        |> required "port" Decode.string
-        |> required "pathname" Decode.string
-        |> required "search" Decode.string
-        |> required "hash" Decode.string
-        |> required "username" Decode.string
-        |> required "password" Decode.string
+        |> required "port" (Decode.nullable Decode.int)
+        |> required "path" Decode.string
+        |> required "query" (Decode.nullable Decode.string)
+        |> required "fragment" (Decode.nullable Decode.string)
     )
         |> expectLabel label
+
+
+urlDecoder : Decoder Navigation
+urlDecoder =
+    (Decode.string
+        |> Decode.andThen
+            (\url ->
+                case Url.fromString (Debug.log "URL" url) of
+                    Just decoded ->
+                        Decode.succeed (Debug.log "Decoded" decoded)
+
+                    Nothing ->
+                        Decode.fail ("Unable to parse '" ++ url ++ "' as a URL.'")
+            )
+    )
+        |> expectLabel label
+
+
+encodeProtocol : Protocol -> Encode.Value
+encodeProtocol proto =
+    case proto of
+        Http ->
+            Encode.string "http"
+
+        Https ->
+            Encode.string "https"
+
+
+protocolDecoder : Decoder Protocol
+protocolDecoder =
+    Decode.string
+        |> Decode.andThen
+            (\protoStr ->
+                case protoStr of
+                    "http" ->
+                        Decode.succeed Http
+
+                    "https" ->
+                        Decode.succeed Https
+
+                    _ ->
+                        Decode.fail ("Unknown protocol: " ++ protoStr)
+            )

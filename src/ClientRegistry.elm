@@ -4,16 +4,19 @@ module ClientRegistry exposing (Client, ClientRegistry, Id, decode, urlForRoute)
 -}
 
 import Dict exposing (Dict)
-import Erl as Url exposing (Url)
 import Json.Decode as Decode exposing (Decoder, decodeValue)
 import List.Extra as ListEx
 import Path exposing (Path)
+import Url exposing (Url)
 
 
 type ClientRegistry
     = ClientRegistry (Dict String Client)
 
 
+{-| TODO: Add an accessiblityTitle that's set on the frame based on which
+cleint is loaded
+-}
 type alias Client =
     { url : Url
     , assignedRoute : Path
@@ -35,6 +38,11 @@ decode : Decode.Value -> ClientRegistry
 decode json =
     decodeValue registryDecoder json
         |> Result.withDefault (ClientRegistry Dict.empty)
+
+
+fragmentPath : Client -> Path
+fragmentPath client =
+    Path.parse (Maybe.withDefault "" client.url.fragment)
 
 
 
@@ -72,10 +80,10 @@ buildUrl client clientRoute =
         clientUrl =
             client.url
 
-        newHash =
-            Path.join (Path.parse clientUrl.hash) clientRoute
+        newFragment =
+            Path.join (fragmentPath client) clientRoute
     in
-    { clientUrl | hash = Path.asString newHash }
+    { clientUrl | fragment = Just (Path.asString newFragment) }
         |> Url.toString
 
 
@@ -103,4 +111,13 @@ clientDecoder =
 
 urlDecoder : Decoder Url
 urlDecoder =
-    Decode.map Url.parse Decode.string
+    Decode.string
+        |> Decode.andThen
+            (\str ->
+                case Url.fromString str of
+                    Just url ->
+                        Decode.succeed url
+
+                    Nothing ->
+                        Decode.fail ("'" ++ str ++ "'" ++ " is not a valid URL.")
+            )
