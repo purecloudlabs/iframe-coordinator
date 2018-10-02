@@ -36,8 +36,7 @@ create :
     }
     -> Program Decode.Value Model Msg
 create ports =
-    Navigation.programWithFlags
-        (RouteChange << parseLocation)
+    Html.programWithFlags
         { init = init
         , update = update ports
         , view = view
@@ -57,11 +56,11 @@ type alias Model =
     }
 
 
-init : Decode.Value -> Location -> ( Model, Cmd Msg )
-init clientJson location =
+init : Decode.Value -> ( Model, Cmd Msg )
+init clientJson =
     ( { clients = ClientRegistry.decode clientJson
       , subscriptions = Set.empty
-      , route = parseLocation location
+      , route = Path.parse "/"
       }
     , Cmd.none
     )
@@ -72,8 +71,7 @@ init clientJson location =
 
 
 type Msg
-    = RouteChange Path
-    | ClientMsg ClientToHost
+    = ClientMsg ClientToHost
     | HostMsg AppToHost
     | BadMessage String
 
@@ -88,9 +86,6 @@ update :
     -> ( Model, Cmd Msg )
 update ports msg model =
     case msg of
-        RouteChange route ->
-            ( { model | route = route }, Cmd.none )
-
         ClientMsg clientMsg ->
             handleClientMsg ports.toHost model clientMsg
 
@@ -108,6 +103,9 @@ handleHostMsg toClientPort model msg =
             sendClientMessage toClientPort
     in
     case msg of
+        AppToHost.NavRequest location ->
+            ( { model | route = parseLocation location }, Cmd.none )
+
         AppToHost.Subscribe topic ->
             ( { model | subscriptions = Set.insert topic model.subscriptions }
             , Cmd.none
@@ -130,7 +128,7 @@ handleClientMsg toAppPort model msg =
     in
     case msg of
         ClientToHost.NavRequest location ->
-            ( model, Navigation.newUrl location.hash )
+            ( model, sendToApp (HostToApp.NavRequest location) )
 
         --TODO: We should probably decorate messages outbound to the host app with details about the client they came from
         ClientToHost.Publish publication ->
