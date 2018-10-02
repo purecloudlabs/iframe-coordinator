@@ -11,6 +11,7 @@ custom elements defined in LINK\_TO\_JS\_LIB to create seamless iframe applicati
 
 -}
 
+import Browser
 import ClientRegistry exposing (Client, ClientRegistry)
 import Html exposing (Attribute, Html)
 import Html.Attributes exposing (attribute)
@@ -20,7 +21,6 @@ import Message.AppToHost as AppToHost exposing (AppToHost)
 import Message.ClientToHost as ClientToHost exposing (ClientToHost)
 import Message.HostToApp as HostToApp exposing (HostToApp)
 import Message.HostToClient as HostToClient exposing (HostToClient)
-import Navigation exposing (Location)
 import Path exposing (Path)
 import Set exposing (Set)
 
@@ -36,7 +36,7 @@ create :
     }
     -> Program Decode.Value Model Msg
 create ports =
-    Html.programWithFlags
+    Browser.element
         { init = init
         , update = update ports
         , view = view
@@ -58,6 +58,7 @@ type alias Model =
 
 init : Decode.Value -> ( Model, Cmd Msg )
 init clientJson =
+    --TODO: Warn somehow if some clients fail to decode
     ( { clients = ClientRegistry.decode clientJson
       , subscriptions = Set.empty
       , route = Path.parse "/"
@@ -103,8 +104,8 @@ handleHostMsg toClientPort model msg =
             sendClientMessage toClientPort
     in
     case msg of
-        AppToHost.NavRequest location ->
-            ( { model | route = parseLocation location }, Cmd.none )
+        AppToHost.RouteChange path ->
+            ( { model | route = path }, Cmd.none )
 
         AppToHost.Subscribe topic ->
             ( { model | subscriptions = Set.insert topic model.subscriptions }
@@ -142,12 +143,6 @@ handleClientMsg toAppPort model msg =
 
         ClientToHost.ToastRequest toast ->
             ( model, sendToApp (HostToApp.ToastRequest toast) )
-
-
-parseLocation : Location -> Path
-parseLocation location =
-    String.dropLeft 1 location.hash
-        |> Path.parse
 
 
 logWarning : String -> Cmd Msg
@@ -221,4 +216,4 @@ messageDecoder decoder errorText value =
             msg
 
         Err err ->
-            BadMessage (errorText ++ " " ++ err)
+            BadMessage (errorText ++ " " ++ Decode.errorToString err)
