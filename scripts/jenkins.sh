@@ -9,7 +9,7 @@ NPM_UTILS="${PROJ_DIR}/npm-utils"
 cd ${PROJ_DIR}
 
 # Check out the latest npm-utils
-git clone --depth=1 git@bitbucket.org:inindca/npm-utils.git ${NPM_UTILS}
+rm -rf ${NPM_UTILS} && git clone --depth=1 git@bitbucket.org:inindca/npm-utils.git ${NPM_UTILS}
 
 cd ${PROJ_DIR}/js/iframe-coordinator
 
