@@ -2,4 +2,5 @@ elm-stuff/
 node_modules/
 client.js
 host.js
+index.js
 .npmrc
