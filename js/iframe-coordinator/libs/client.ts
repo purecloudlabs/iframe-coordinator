@@ -1,23 +1,24 @@
-import { Client } from "../elm/Client.elm";
+import { Client, Worker } from "../elm/Client.elm";
+import { Location, WorkaroundAnchor } from "../libs/types";
 
-let worker = null;
+let worker: Worker = null;
 
-function start(expectedOrigin) {
+function start() {
   if (!worker) {
     worker = Client.worker();
 
-    window.addEventListener("message", event => {
+    window.addEventListener("message", (event: MessageEvent) => {
       worker.ports.fromHost.send({
         origin: event.origin,
         data: event.data
       });
     });
 
-    worker.ports.toHost.subscribe(message => {
+    worker.ports.toHost.subscribe((message: any) => {
       window.parent.postMessage(message, "*");
     });
 
-    onLinkClick((location: LocationMsg) => {
+    onLinkClick((location: Location) => {
       worker.ports.fromClient.send({
         msgType: "navRequest",
         msg: location
@@ -61,30 +62,8 @@ function start(expectedOrigin) {
   return worker;
 }
 
-
-interface LocationMsg {
-  href: string;
-  host: string;
-  hostname: string;
-  protocol: string;
-  origin: string;
-  port: string;
-  pathname: string;
-  search: string;
-  hash: string;
-  username: string;
-  password: string;
-}
-
-// For some reason, HTMLAnchorElement doesn't define username and password
-// TODO: verify username/password support on anchors across browsers.
-interface WorkaroundAnchor extends HTMLAnchorElement {
-  username: string;
-  password: string;
-}
-
-function onLinkClick(callback) {
-  window.addEventListener("click", event => {
+function onLinkClick(callback: (loc: Location) => void) {
+  window.addEventListener("click", (event: MouseEvent) => {
     let target = event.target as HTMLElement;
     if (target.tagName.toLowerCase() === "a" && event.button == 0) {
       event.preventDefault();
