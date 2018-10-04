@@ -1,7 +1,64 @@
 import { Client, Worker } from "../elm/Client.elm";
-import { Location, WorkaroundAnchor } from "../libs/types";
+import { Location, WorkaroundAnchor, PublicationHandler } from "../libs/types";
 
 let worker: Worker = null;
+let messageHandlers: Array<PublicationHandler> = [];
+
+export default {
+  start: start,
+
+  subscribe(topic: string): void {
+    sendMessage("subscribe", topic);
+  },
+
+  unsubscribe(topic: string): void {
+    sendMessage("unsubscribe", topic);
+  },
+
+  publish(topic: string, data: any): void {
+    sendMessage("publish", {
+      topic: topic,
+      payload: data
+    });
+  },
+
+  onPubsub(callback: PublicationHandler) {
+    messageHandlers.push(callback);
+  },
+
+  /**
+   * Request a toast message be displayed by the host.
+   *
+   * The page embedding the host is responsible for handling the fired custom event and
+   * presenting/styling the toast.  Application-specific concerns such as level, TTLs,
+   * ids for action callbacks (toast click, toast action buttons), etc. can be passed via an object
+   * as the custom property of the options param.
+   *
+   * @param {string} message - The message content of the toast
+   * @param {object=} options - Supplimental toast options.
+   * @param {string=} options.title - Optional title for the toast.
+   * @param {object=} options.custom - Optional, application-specific toast properties.  Note: Properties must be JSON serializable.
+   *
+   * @example
+   * worker.requestToast('Hello world');
+   *
+   * @example
+   * worker.requestToast('World', {title: 'Hello'});
+   *
+   * @example
+   * worker.requestToast('World', {title: 'Hello', custom: {ttl: 5, level: 'info'}});
+   */
+  requestToast(
+    message: string,
+    { title = null, custom = null }: undefined | ToastOptions = {}
+  ): void {
+    sendMessage("toastRequest", {
+      title,
+      message,
+      custom
+    });
+  }
+};
 
 function start() {
   if (!worker) {
@@ -18,48 +75,25 @@ function start() {
       window.parent.postMessage(message, "*");
     });
 
-    onLinkClick((location: Location) => {
-      worker.ports.fromClient.send({
-        msgType: "navRequest",
-        msg: location
-      });
+    worker.ports.toClient.subscribe((message: any) => {
+      if (message.msgType == "publish") {
+        messageHandlers.forEach(handler => {
+          handler(message.msg);
+        });
+      }
     });
 
-    /**
-     * Request a toast message be displayed by the host.
-     * 
-     * The page embedding the host is responsible for handling the fired custom event and
-     * presenting/styling the toast.  Application-specific concerns such as level, TTLs,
-     * ids for action callbacks (toast click, toast action buttons), etc. can be passed via an object
-     * as the custom property of the options param.
-     * 
-     * @param {string} message - The message content of the toast
-     * @param {object=} options - Supplimental toast options.
-     * @param {string=} options.title - Optional title for the toast.
-     * @param {object=} options.custom - Optional, application-specific toast properties.  Note: Properties must be JSON serializable.
-     * 
-     * @example
-     * worker.requestToast('Hello world');
-     * 
-     * @example
-     * worker.requestToast('World', {title: 'Hello'});
-     * 
-     * @example
-     * worker.requestToast('World', {title: 'Hello', custom: {ttl: 5, level: 'info'}});
-     */
-    worker.requestToast = function (message: string, {title = null, custom = null}: undefined | ToastOptions = {}): void {
-      worker.ports.fromClient.send({
-        msgType: "toastRequest",
-        msg: {
-          title,
-          message,
-          custom
-        }
-      });
-    };
+    onLinkClick((location: Location) => {
+      sendMessage("navRequest", location);
+    });
   }
+}
 
-  return worker;
+function sendMessage(type: string, data: any) {
+  worker.ports.fromClient.send({
+    msgType: type,
+    msg: data
+  });
 }
 
 function onLinkClick(callback: (loc: Location) => void) {
@@ -88,10 +122,6 @@ function onLinkClick(callback: (loc: Location) => void) {
 }
 
 interface ToastOptions {
-  title?: string,
-  custom?: { [x: string]: any }
+  title?: string;
+  custom?: { [x: string]: any };
 }
-
-export default {
-  start: start
-};

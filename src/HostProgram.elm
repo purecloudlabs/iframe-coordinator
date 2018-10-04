@@ -11,27 +11,26 @@ custom elements defined in LINK\_TO\_JS\_LIB to create seamless iframe applicati
 
 -}
 
-import ClientMessage exposing (ClientMessage)
 import ClientRegistry exposing (Client, ClientRegistry)
-import Json.Decode as Decode exposing (decodeValue)
 import Html exposing (Attribute, Html)
 import Html.Attributes exposing (attribute)
-import HostMessage exposing (HostMessage)
+import Html.Events exposing (on)
+import Json.Decode as Decode exposing (Decoder, decodeValue)
+import Message.AppToHost as AppToHost exposing (AppToHost)
+import Message.ClientToHost as ClientToHost exposing (ClientToHost)
+import Message.HostToApp as HostToApp exposing (HostToApp)
+import Message.HostToClient as HostToClient exposing (HostToClient)
 import Navigation exposing (Location)
 import Path exposing (Path)
 import Set exposing (Set)
-import LabeledMessage
-import CommonMessages exposing (Publication)
 
 
 {-| Create a program to handle routing. Takes an input port to listen to messages on
 and and outputPort to deliver messages to the js embedder.
 port binding is handled in the custom frame-router element in LINK\_TO\_JS\_LIB\_HERE
 -}
-
 create :
     { fromHost : (Decode.Value -> Msg) -> Sub Msg
-    , fromClient : (Decode.Value -> Msg) -> Sub Msg
     , toHost : Decode.Value -> Cmd Msg
     , toClient : Decode.Value -> Cmd Msg
     }
@@ -42,9 +41,7 @@ create ports =
         , update = update ports
         , view = view
         , subscriptions =
-            subscriptions
-                ports.fromClient
-                ports.fromHost
+            subscriptions ports.fromHost
         }
 
 
@@ -54,23 +51,29 @@ create ports =
 
 type alias Model =
     { clients : ClientRegistry
-    , hostSubscriptions : Set String
+    , subscriptions : Set String
     , route : Path
     }
 
 
 init : Decode.Value -> ( Model, Cmd Msg )
 init clientJson =
-    ( { clients = ClientRegistry.decode clientJson, hostSubscriptions = Set.empty, route = Path.parse("/") }, Cmd.none )
+    ( { clients = ClientRegistry.decode clientJson
+      , subscriptions = Set.empty
+      , route = Path.parse "/"
+      }
+    , Cmd.none
+    )
+
 
 
 -- Update
 
 
 type Msg
-    = ClientMsg ClientMessage
-    | HostMsg HostMessage
-    | Unknown String
+    = ClientMsg ClientToHost
+    | HostMsg AppToHost
+    | BadMessage String
 
 
 update :
@@ -83,73 +86,63 @@ update :
     -> ( Model, Cmd Msg )
 update ports msg model =
     case msg of
-        ClientMsg msg ->
-            handleClientMsg ports.toHost model msg
+        ClientMsg clientMsg ->
+            handleClientMsg ports.toHost model clientMsg
 
-        HostMsg msg ->
-            handleHostMsg ports.toClient model msg
+        HostMsg hostMsg ->
+            handleHostMsg ports.toClient model hostMsg
 
-        Unknown err ->
-            ( model, logWarning ("Unknown Msg: " ++ err) )
+        BadMessage err ->
+            ( model, logWarning ("Bad Message: " ++ err) )
 
 
-handleClientMsg :
-    (Decode.Value -> Cmd Msg)
-    -> Model
-    -> ClientMessage
-    -> (Model, Cmd Msg)
-handleClientMsg toHost model msg =
+handleHostMsg : (Decode.Value -> Cmd Msg) -> Model -> AppToHost -> ( Model, Cmd Msg )
+handleHostMsg toClientPort model msg =
+    let
+        sendToClient =
+            sendClientMessage toClientPort
+    in
     case msg of
-        ClientMessage.NavRequest location ->
-            ( model, toHost (ClientMessage.encode msg ) )
-
-        ClientMessage.ToastRequest toast ->
-            ( model, toHost (ClientMessage.encode msg) )
-
-        _ ->
-            Debug.crash "Need to distinguish between internal and external messages"
-
-handleHostMsg :
-    (Decode.Value -> Cmd Msg)
-    -> Model
-    -> HostMessage
-    -> (Model, Cmd Msg)
-handleHostMsg toClient model msg =
-    case msg of
-        HostMessage.NavRequest location ->
+        AppToHost.NavRequest location ->
             ( { model | route = parseLocation location }, Cmd.none )
 
-        HostMessage.Subscribe topic ->
-            ( { model | hostSubscriptions = Set.insert topic model.hostSubscriptions }
+        AppToHost.Subscribe topic ->
+            ( { model | subscriptions = Set.insert topic model.subscriptions }
             , Cmd.none
             )
 
-        HostMessage.Unsubscribe topic ->
-            ( { model | hostSubscriptions = Set.remove topic model.hostSubscriptions }
+        AppToHost.Unsubscribe topic ->
+            ( { model | subscriptions = Set.remove topic model.subscriptions }
             , Cmd.none
             )
 
-        HostMessage.Publish publication ->
-            ( model, dispatchClientPublication toClient publication )
+        AppToHost.Publish publication ->
+            ( model, sendToClient (HostToClient.Publish publication) )
 
-dispatchHostPublication : (Decode.Value -> Cmd Msg) -> Set String -> Publication -> Cmd Msg
-dispatchHostPublication toHost hostSubscriptions publication =
-    if Set.member publication.topic hostSubscriptions then
-        toHost
-            (CommonMessages.encodePublication publication
-                |> LabeledMessage.encode CommonMessages.publishLabel
+
+handleClientMsg : (Decode.Value -> Cmd Msg) -> Model -> ClientToHost -> ( Model, Cmd Msg )
+handleClientMsg toAppPort model msg =
+    let
+        sendToApp =
+            sendAppMessage toAppPort
+    in
+    case msg of
+        ClientToHost.NavRequest location ->
+            ( model, sendToApp (HostToApp.NavRequest location) )
+
+        --TODO: We should probably decorate messages outbound to the host app with details about the client they came from
+        ClientToHost.Publish publication ->
+            ( model
+            , if Set.member publication.topic model.subscriptions then
+                sendToApp (HostToApp.Publish publication)
+
+              else
+                Cmd.none
             )
 
-    else
-        Cmd.none
+        ClientToHost.ToastRequest toast ->
+            ( model, sendToApp (HostToApp.ToastRequest toast) )
 
-
-dispatchClientPublication : (Decode.Value -> Cmd Msg) -> Publication -> Cmd Msg
-dispatchClientPublication toClient publication =
-    toClient
-        (CommonMessages.encodePublication publication
-            |> LabeledMessage.encode CommonMessages.publishLabel
-        )
 
 parseLocation : Location -> Path
 parseLocation location =
@@ -166,12 +159,25 @@ logWarning errMsg =
     Cmd.none
 
 
+sendAppMessage : (Decode.Value -> Cmd Msg) -> HostToApp -> Cmd Msg
+sendAppMessage appPort message =
+    HostToApp.encodeToApp message
+        |> appPort
+
+
+sendClientMessage : (Decode.Value -> Cmd Msg) -> HostToClient -> Cmd Msg
+sendClientMessage clientPort message =
+    HostToClient.encodeToClient message
+        |> clientPort
+
+
+
 -- View
 
 
 view : Model -> Html Msg
 view model =
-    clientFrame [ src (url model.clients model.route) ] []
+    clientFrame [ src (url model.clients model.route), onClientMessage ] []
 
 
 url : ClientRegistry -> Path -> String
@@ -190,46 +196,29 @@ src value =
     attribute "src" value
 
 
+onClientMessage : Attribute Msg
+onClientMessage =
+    on "clientMessage" (Decode.field "detail" ClientToHost.decodeFromClient |> Decode.map ClientMsg)
 
--- Subs
 
 
-decodeClientMsg : Decode.Value -> Msg
-decodeClientMsg json =
-    case
-        Decode.decodeValue
-            (Decode.map ClientMsg ClientMessage.decoder)
-            json
-    of
+-- subscriptions
+
+
+subscriptions : ((Decode.Value -> Msg) -> Sub Msg) -> Model -> Sub Msg
+subscriptions fromHost model =
+    fromHost
+        (messageDecoder
+            (Decode.map HostMsg AppToHost.decodeFromApp)
+            "Bad message from host app:"
+        )
+
+
+messageDecoder : Decoder Msg -> String -> Decode.Value -> Msg
+messageDecoder decoder errorText value =
+    case Decode.decodeValue decoder value of
         Ok msg ->
             msg
 
         Err err ->
-            Unknown err
-
-decodeHostMsg : Decode.Value -> Msg
-decodeHostMsg json =
-    case
-        Decode.decodeValue
-            (Decode.map HostMsg HostMessage.decoder)
-            json
-    of
-        Ok msg ->
-            msg
-
-        Err err ->
-            Unknown err
-
--- Subscriptions
-
-
-subscriptions :
-    ((Decode.Value -> Msg) -> Sub Msg)
-    -> ((Decode.Value -> Msg) -> Sub Msg)
-    -> Model
-    -> Sub Msg
-subscriptions fromClient fromHost _ =
-    Sub.batch
-        [ fromClient decodeClientMsg
-        , fromHost decodeHostMsg
-        ]
+            BadMessage (errorText ++ " " ++ err)

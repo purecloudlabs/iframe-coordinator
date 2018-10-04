@@ -1,13 +1,29 @@
-<h1>Component #1</h1>
-<div id="path"></div>
+<html>
+  <head>
+    <link rel="stylesheet" href="../../client.css">
+  </head>
+  <body>
+    <h1>Component #1</h1>
+    <div id="path"></div>
 
-<ul>
-    <li><a href="#/one/first" >/one/first</a></li>
-    <li><a href="#/one/second">/one/second</a></li>
-    <li><a href="#/two/first">/two/first</a></li>
-    <li><a href="#/two/second">/two/second</a></li>
-</ul>
+    <ul>
+        <li><a href="#/one/first" >/one/first</a></li>
+        <li><a href="#/one/second">/one/second</a></li>
+        <li><a href="#/two/first">/two/first</a></li>
+        <li><a href="#/two/second">/two/second</a></li>
+    </ul>
 
-<button class="toast" data-component-name="Component #1">Send Toast</button>
+    <button class="toast" data-component-name="Component #1">Send Toast</button>
 
-<script type="text/javascript" src="/component-app.js"></script>
+    <div id="pub-sub">
+      <h3>Pub-Sub</h3>
+      <input id="pub-topic" type="text" value="publish.topic"></input>
+      <textarea id="pub-data">{
+        "data": 1234
+    }</textarea>
+      <button id="do-publish">Publish!</button>
+    </div>
+
+    <script type="text/javascript" src="/component-app.js"></script>
+  </body>
+</html>

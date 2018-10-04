@@ -3,11 +3,14 @@ import "@webcomponents/custom-elements/src/custom-elements.js";
 import coordinator from "iframe-coordinator/host.js";
 import toastada from "toastada";
 
-const TOAST_LEVELS = ['info', 'success', 'error']
+const TOAST_LEVELS = ["info", "success", "error"];
 
 coordinator.registerElements();
 
-document.getElementById("router").registerClients({
+let router = document.getElementById("router");
+
+// Set up client URLs and Routes
+router.registerClients({
   client1: {
     url: "//components/example1/",
     assignedRoute: "/one"
@@ -18,68 +21,90 @@ document.getElementById("router").registerClients({
   }
 });
 
+// Subscribe to pub-sub events on the topic `publish.topic`
+router.subscribe("publish.topic");
+
+// Listen to publication events (will only be emitted for subscribed topics)
+router.addEventListener("publish", event => {
+  let publication = event.detail;
+  console.log(
+    `Recieved pub-sub data on topic ${publication.topic}:`,
+    publication.payload
+  );
+});
+
+document.getElementById("publish").addEventListener("click", event => {
+  router.publish({
+    topic: "host.topic",
+    payload: { message: "Hello, Client!" }
+  });
+});
+
 // Routing helpers
-window.setRoute = function (route) {
-  document.getElementById('router').setAttribute('route', route);
+window.setRoute = function(route) {
+  document.getElementById("router").setAttribute("route", route);
 };
-window.toggleRouting = function () {
-  window.routing = ! window.routing;
-  if ( window.routing) {
+window.toggleRouting = function() {
+  window.routing = !window.routing;
+  if (window.routing) {
     setRoute(window.location.hash);
-    document.getElementById('toggle').innerText = 'Disable Routing';
+    document.getElementById("toggle").innerText = "Disable Routing";
   } else {
-    location.hash = '';
-    document.getElementById('toggle').innerText = 'Enable Routing';
+    location.hash = "";
+    document.getElementById("toggle").innerText = "Enable Routing";
   }
-}
+};
 
-document.addEventListener('DOMContentLoaded', () => {
-
+document.addEventListener("DOMContentLoaded", () => {
   // Routing behavior
   window.routing = false;
-  
-  window.onhashchange = function () {
+
+  window.onhashchange = function() {
     if (routing) {
       // On hash change & routing mode, update route attribute
       window.setRoute(window.location.hash);
     }
   };
 
-  document.getElementById('router').addEventListener('navRequest', function (data) {
-    if ( window.routing) {
-      location.hash = data.detail.hash;
-      // On navRequest & routing mode, change url
-    }
-    window.setRoute(data.detail.hash);
-  });
+  document
+    .getElementById("router")
+    .addEventListener("navRequest", function(data) {
+      if (window.routing) {
+        location.hash = data.detail.hash;
+        // On navRequest & routing mode, change url
+      }
+      window.setRoute(data.detail.hash);
+    });
 
   // Set up Toast Messages
   window.toastada.setOptions({
-    prependTo: document.querySelector('root-container'),
+    prependTo: document.querySelector("root-container"),
     lifeSpan: 5000,
-    position: 'top-right',
+    position: "top-right",
     animate: false,
     animateDuration: 0
   });
 
-  document.querySelector('frame-router').addEventListener('toastRequest', ({ detail:msgPayload }) => {
-    let toastLevel = null;
-    if (msgPayload && msgPayload.custom) {
-      toastLevel = msgPayload.custom.level;
-      if (TOAST_LEVELS.indexOf(toastLevel) === -1) {
-        console.error('Received unknown toast level', toastLevel);
-        toastLevel = null; 
+  document
+    .querySelector("frame-router")
+    .addEventListener("toastRequest", ({ detail: msgPayload }) => {
+      let toastLevel = null;
+      if (msgPayload && msgPayload.custom) {
+        toastLevel = msgPayload.custom.level;
+        if (TOAST_LEVELS.indexOf(toastLevel) === -1) {
+          console.error("Received unknown toast level", toastLevel);
+          toastLevel = null;
+        }
       }
-    }
-    toastLevel = toastLevel || TOAST_LEVELS[0];
+      toastLevel = toastLevel || TOAST_LEVELS[0];
 
-    // Note: In production, we would sanitize this provided content
-    let toastHtml = '';
-    if (msgPayload.title && msgPayload.title.trim().length > 0) {
-      toastHtml += `<div class="title">${msgPayload.title}</div>`;
-    }
-    toastHtml += `<div class="msg">${msgPayload.message}</div>`; 
+      // Note: In production, we would sanitize this provided content
+      let toastHtml = "";
+      if (msgPayload.title && msgPayload.title.trim().length > 0) {
+        toastHtml += `<div class="title">${msgPayload.title}</div>`;
+      }
+      toastHtml += `<div class="msg">${msgPayload.message}</div>`;
 
-    window.toastada[toastLevel](toastHtml);
-  });
-})
+      window.toastada[toastLevel](toastHtml);
+    });
+});
