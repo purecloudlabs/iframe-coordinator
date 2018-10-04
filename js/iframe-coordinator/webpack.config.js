@@ -1,11 +1,12 @@
 module.exports = {
   mode: "none",
   entry: {
+    index: "./libs/index.ts",
     client: "./libs/client.ts",
     host: "./libs/host.ts"
   },
   output: {
-    libraryTarget: "commonjs2",
+    libraryTarget: "umd",
     filename: "[name].js",
     path: __dirname + ""
   },
