@@ -36,17 +36,19 @@ host.registerElements();
  * element with an id of `coordinator`. `assignedRoute` is the
  * fragment path in the current page that represents the root
  * path for that client. `url` is the page to load in the
- * iframe on that route. So in this example, the fragment
+ * iframe on that route. It must be a full Url, but you can 
+ * use the URL construtor as shown below to simplify handling
+ * clients on the same domain. In this example, the fragment
  * `#/one/my/path` would cause the `frame-router` element
- * to display the iframe at `//component/example1/#/my/path`
+ * to display the iframe at `/component/example1/#/my/path`
  */
 document.getElementById("frame-element").registerClients({
   client1: {
-    url: "//components/example1/",
+    url: new URL("/components/example1/", window.location).toString(),
     assignedRoute: "/one"
   },
   client2: {
-    url: "//components/example2/",
+    url: new URL("/components/example2/", window.location).toString(),
     assignedRoute: "/two"
   }
 });

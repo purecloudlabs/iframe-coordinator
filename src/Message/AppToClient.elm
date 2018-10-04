@@ -19,7 +19,7 @@ type AppToClient
 decodeFromApp : Decoder AppToClient
 decodeFromApp =
     Decode.oneOf
-        [ Decode.map NavRequest Navigation.decoder
+        [ Decode.map NavRequest Navigation.urlDecoder
         , Decode.map Publish PubSub.publicationDecoder
         , Decode.map Subscribe PubSub.subscribeDecoder
         , Decode.map Unsubscribe PubSub.unsubscribeDecoder
