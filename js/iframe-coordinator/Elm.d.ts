@@ -10,18 +10,21 @@ declare module "*/Client.elm" {
   }
 
   export interface Worker {
-    requestToast: Function,
+    requestToast: Function;
     ports: {
       fromHost: {
         send: (message: MessageData) => void;
-      },
+      };
       fromClient: {
         send: (message: LabeledMsg) => void;
-      }
+      };
       toHost: {
         subscribe: (message: any) => void;
-      }
-    }
+      };
+      toClient: {
+        subscribe: (message: any) => void;
+      };
+    };
   }
 
   interface Client {
@@ -39,15 +42,20 @@ declare module "*/Host.elm" {
     msg: any;
   }
 
+  export interface Publication {
+    topic: string;
+    payload: any;
+  }
+
   export interface HostRouter {
     ports: {
-      fromClient: {
-        send: (message: LabeledMsg) => void;
-      };
       fromHost: {
         send: (message: LabeledMsg) => void;
       };
       toHost: {
+        subscribe(subscribeHandler: (msg: LabeledMsg) => void): void;
+      };
+      toClient: {
         subscribe(subscribeHandler: (msg: LabeledMsg) => void): void;
       };
     };

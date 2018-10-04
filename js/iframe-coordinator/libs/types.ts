@@ -1,3 +1,5 @@
+import { Publication } from "../elm/Host.elm";
+
 export interface Location {
   href: string;
   host: string;
@@ -17,4 +19,8 @@ export interface Location {
 export interface WorkaroundAnchor extends HTMLAnchorElement {
   username: string;
   password: string;
+}
+
+export interface PublicationHandler {
+  (publication: Publication): void;
 }
