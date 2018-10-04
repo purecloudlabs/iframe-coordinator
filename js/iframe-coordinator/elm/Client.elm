@@ -4,7 +4,7 @@ import ClientProgram
 import Json.Decode as Decode
 
 
-main : Program Never ClientProgram.Model ClientProgram.Msg
+main : Program () ClientProgram.Model ClientProgram.Msg
 main =
     ClientProgram.create
         { fromHost = fromHost

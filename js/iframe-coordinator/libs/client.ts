@@ -1,9 +1,10 @@
-import { Client, Worker } from "../elm/Client.elm";
-import { Location, WorkaroundAnchor, PublicationHandler } from "../libs/types";
+import { Elm } from "../elm/Client.elm";
+import { PublicationHandler } from "./types";
 
-let worker: Worker = null;
+let worker: ClientProgram = null;
 let messageHandlers: Array<PublicationHandler> = [];
 
+//TODO: make this a class, for a more idiomatic API?
 export default {
   start: start,
 
@@ -62,7 +63,7 @@ export default {
 
 function start() {
   if (!worker) {
-    worker = Client.worker();
+    worker = Elm.Client.init();
 
     window.addEventListener("message", (event: MessageEvent) => {
       worker.ports.fromHost.send({
@@ -83,8 +84,13 @@ function start() {
       }
     });
 
-    onLinkClick((location: Location) => {
-      sendMessage("navRequest", location);
+    window.addEventListener("click", event => {
+      let target = event.target as HTMLElement;
+      if (target.tagName.toLowerCase() === "a" && event.button == 0) {
+        event.preventDefault();
+        let a = event.target as HTMLAnchorElement;
+        sendMessage("navRequest", a.href);
+      }
     });
   }
 }
@@ -93,31 +99,6 @@ function sendMessage(type: string, data: any) {
   worker.ports.fromClient.send({
     msgType: type,
     msg: data
-  });
-}
-
-function onLinkClick(callback: (loc: Location) => void) {
-  window.addEventListener("click", (event: MouseEvent) => {
-    let target = event.target as HTMLElement;
-    if (target.tagName.toLowerCase() === "a" && event.button == 0) {
-      event.preventDefault();
-      let a = event.target as WorkaroundAnchor;
-      let location = {
-        href: a.href,
-        host: a.host,
-        hostname: a.hostname,
-        protocol: a.protocol,
-        origin: a.origin,
-        port: a.port,
-        pathname: a.pathname,
-        search: a.search,
-        hash: a.hash,
-        username: a.username,
-        password: a.password
-      };
-
-      callback(location);
-    }
   });
 }
 

@@ -1,19 +1,7 @@
-import {
-  Host,
-  HostRouter,
-  ClientRegistrations,
-  LabeledMsg,
-  Publication
-} from "../elm/Host.elm";
+import { Elm, Publication } from "../elm/Host.elm";
 import ClientFrame from "./x-ifc-frame";
-import { Location } from "../libs/types";
 
 const ROUTE_ATTR = "route";
-
-const TOAST_REQUEST_MSG_TYPE = "toastRequest";
-const TOAST_REQUEST_EVENT_TYPE = "toastRequest";
-const NAV_REQUEST_MSG_TYPE = "navRequest";
-const NAV_REQUEST_EVENT_TYPE = "navRequest";
 
 /**
  * The frame-router custom element
@@ -27,7 +15,7 @@ const NAV_REQUEST_EVENT_TYPE = "navRequest";
  * @param {object=} detail.x - Optional, custom properties for application-specific toast features
  */
 class FrameRouterElement extends HTMLElement {
-  router: HostRouter;
+  router: HostProgram;
 
   constructor() {
     super();
@@ -42,7 +30,12 @@ class FrameRouterElement extends HTMLElement {
   }
 
   registerClients(clients: ClientRegistrations) {
-    this.router = Host.embed(this, clients);
+    let embedTarget = document.createElement("div");
+    this.appendChild(embedTarget);
+    this.router = Elm.Host.init({
+      node: embedTarget,
+      flags: clients
+    });
 
     this.router.ports.toHost.subscribe(labeledMsg => {
       this.dispatchEvent(
@@ -79,29 +72,16 @@ class FrameRouterElement extends HTMLElement {
     });
   }
 
-  changeRoute(location: Location) {
+  changeRoute(newPath: String) {
     this.router.ports.fromHost.send({
-      msgType: "navRequest",
-      msg: location
+      msgType: "routeChange",
+      msg: newPath
     });
   }
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string) {
     if (name === ROUTE_ATTR && oldValue !== newValue) {
-      let location: Location = {
-        href: "",
-        host: "",
-        hostname: "",
-        protocol: "",
-        origin: "",
-        port: "",
-        pathname: "",
-        search: "",
-        hash: newValue,
-        username: "",
-        password: ""
-      };
-      this.changeRoute(location);
+      this.changeRoute(newValue);
     }
   }
 }
