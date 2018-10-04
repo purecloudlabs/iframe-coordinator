@@ -1,13 +1,13 @@
-module HostProgram exposing (Model, Msg, create)
+module HostProgram exposing (create)
 
-{-| The FrameRouter module is the Elm code that backs the frame-router custom element
-in the iframe-coordinator toolkit. It handles mapping URL routes to clients displayed
+{-| The HostProgram module is the Elm code that backs the frame-router custom element
+used in host applications. It handles mapping application routes to clients displayed
 in a child frame as well as message validation and routing within the parent application.
 
-This module is not currently designed for stand-alone use. You should instead use the
-custom elements defined in LINK\_TO\_JS\_LIB to create seamless iframe applications
 
-@docs createRouter
+# Create a program
+
+@docs create
 
 -}
 
@@ -147,10 +147,7 @@ handleClientMsg toAppPort model msg =
 
 logWarning : String -> Cmd Msg
 logWarning errMsg =
-    let
-        _ =
-            Debug.log errMsg
-    in
+    -- TODO: message app to trigger logging
     Cmd.none
 
 
