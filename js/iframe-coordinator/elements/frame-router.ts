@@ -1,26 +1,19 @@
-import { Host } from "../elm/Host.elm";
+import {
+  Host,
+  HostRouter,
+  ClientRegistrations,
+  LabeledMsg,
+  Publication
+} from "../elm/Host.elm";
 import ClientFrame from "./x-ifc-frame";
-import { LabeledMsg, Publication } from "../libs/types";
+import { Location } from "../libs/types";
 
 const ROUTE_ATTR = "route";
 
-interface SubscribeHandler {
-  (msg: LabeledMsg): void;
-}
-
-interface Host {
-  ports: {
-    fromHost: {
-      send(message): void;
-    };
-    toHost: {
-      subscribe(SubscribeHandler): void;
-    };
-    toClient: {
-      subscribe(SubscribeHandler): void;
-    };
-  };
-}
+const TOAST_REQUEST_MSG_TYPE = "toastRequest";
+const TOAST_REQUEST_EVENT_TYPE = "toastRequest";
+const NAV_REQUEST_MSG_TYPE = "navRequest";
+const NAV_REQUEST_EVENT_TYPE = "navRequest";
 
 /**
  * The frame-router custom element
@@ -34,7 +27,7 @@ interface Host {
  * @param {object=} detail.x - Optional, custom properties for application-specific toast features
  */
 class FrameRouterElement extends HTMLElement {
-  router: Host;
+  router: HostRouter;
 
   constructor() {
     super();
@@ -48,7 +41,7 @@ class FrameRouterElement extends HTMLElement {
     this.setAttribute("style", "position: relative;");
   }
 
-  registerClients(clients) {
+  registerClients(clients: ClientRegistrations) {
     this.router = Host.embed(this, clients);
 
     this.router.ports.toHost.subscribe(labeledMsg => {
@@ -86,7 +79,7 @@ class FrameRouterElement extends HTMLElement {
     });
   }
 
-  changeRoute(location) {
+  changeRoute(location: Location) {
     this.router.ports.fromHost.send({
       msgType: "navRequest",
       msg: location
@@ -95,7 +88,7 @@ class FrameRouterElement extends HTMLElement {
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string) {
     if (name === ROUTE_ATTR && oldValue !== newValue) {
-      let location = {
+      let location: Location = {
         href: "",
         host: "",
         hostname: "",
