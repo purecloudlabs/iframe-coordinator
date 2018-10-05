@@ -1,6 +1,6 @@
 {
   "type": "package",
-  "name": "purecloudlabs/iframe-coordinator",
+  "name": "MattCheely/tryframe-coordinator",
   "summary": "Tools for coordinating embedded apps via iframes.",
   "license": "MIT",
   "version": "1.0.0",
