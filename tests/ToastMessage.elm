@@ -3,7 +3,7 @@ module ToastMessage exposing (suite)
 import Expect exposing (Expectation)
 import Fixture.ToastMessage as Fixture exposing (toastFuzzer, v1Fuzzer)
 import Json.Decode as Decode exposing (decodeValue)
-import Message.Toast as Toast
+import Message.Toast as Toast exposing (Toast)
 import Test exposing (..)
 
 
@@ -21,10 +21,11 @@ suite =
                     |> decodeValue Toast.decoder
                     |> Expect.equal
                         (Ok
-                            { title = v1Toast.title |> Maybe.withDefault "Notification!"
-                            , message = v1Toast.message
-                            , custom = v1Toast.custom
-                            , icon = "info"
-                            }
+                            (Toast
+                                (v1Toast.title |> Maybe.withDefault "Notification!")
+                                v1Toast.message
+                                v1Toast.custom
+                                "info"
+                            )
                         )
         ]
