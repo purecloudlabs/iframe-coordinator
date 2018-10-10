@@ -4,8 +4,12 @@
   </head>
   <body>
     <h1>Component #1</h1>
+    
+    <h2>Routing</h2>
+    <h3>Current Local Route:</h3>
     <div id="path"></div>
 
+    <h3>Change Route</h3>
     <ul>
         <li><a href="#/one/first" >/one/first</a></li>
         <li><a href="#/one/second">/one/second</a></li>
@@ -13,11 +17,15 @@
         <li><a href="#/two/second">/two/second</a></li>
     </ul>
 
+    <h2>Toasts</h2>
     <button class="toast" data-component-name="Component #1">Send Toast</button>
 
+    <h2>Pub-Sub</h2>
     <div id="pub-sub">
-      <h3>Pub-Sub</h3>
+      <h3>Outbound</h3>
+      <label for="pub-topic">Topic Name:</label>
       <input id="pub-topic" type="text" value="publish.topic"></input>
+      <label for="pub-data">Payload:</label>
       <textarea id="pub-data">{
         "data": 1234
     }</textarea>
