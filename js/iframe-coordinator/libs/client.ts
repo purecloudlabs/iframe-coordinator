@@ -1,31 +1,74 @@
 import { Elm } from "../elm/Client.elm";
 import { PublicationHandler } from "./types";
 
-let worker: ClientProgram = null;
-let messageHandlers: Array<PublicationHandler> = [];
+interface ToastOptions {
+  title?: string;
+  custom?: { [x: string]: any };
+}
 
-//TODO: make this a class, for a more idiomatic API?
-export default {
-  start: start,
+class Client {
+  private _worker: ClientProgram;
+  private _messageHandlers: Array<PublicationHandler> = [];
+
+  start(): void {
+    if (!this._worker) {
+      this._worker = Elm.Client.init();
+  
+      window.addEventListener("message", (event: MessageEvent) => {
+        this._worker.ports.fromHost.send({
+          origin: event.origin,
+          data: event.data
+        });
+      });
+  
+      this._worker.ports.toHost.subscribe((message: any) => {
+        window.parent.postMessage(message, "*");
+      });
+  
+      this._worker.ports.toClient.subscribe((message: any) => {
+        if (message.msgType == "publish") {
+          this._messageHandlers.forEach(handler => {
+            handler(message.msg);
+          });
+        }
+      });
+  
+      window.addEventListener("click", event => {
+        let target = event.target as HTMLElement;
+        if (target.tagName.toLowerCase() === "a" && event.button == 0) {
+          event.preventDefault();
+          let a = event.target as HTMLAnchorElement;
+          this._sendMessage("navRequest", a.href);
+        }
+      });
+    }
+  }
+
+  _sendMessage(type: string, data: any): void {
+    this._worker.ports.fromClient.send({
+      msgType: type,
+      msg: data
+    });
+  }
 
   subscribe(topic: string): void {
-    sendMessage("subscribe", topic);
-  },
+    this._sendMessage("subscribe", topic);
+  }
 
   unsubscribe(topic: string): void {
-    sendMessage("unsubscribe", topic);
-  },
+    this._sendMessage("unsubscribe", topic);
+  }
 
   publish(topic: string, data: any): void {
-    sendMessage("publish", {
+    this._sendMessage("publish", {
       topic: topic,
       payload: data
     });
-  },
+  }
 
-  onPubsub(callback: PublicationHandler) {
-    messageHandlers.push(callback);
-  },
+  onPubsub(callback: PublicationHandler): void {
+    this._messageHandlers.push(callback);
+  }
 
   /**
    * Request a toast message be displayed by the host.
@@ -53,56 +96,13 @@ export default {
     message: string,
     { title = null, custom = null }: undefined | ToastOptions = {}
   ): void {
-    sendMessage("toastRequest", {
+    this._sendMessage("toastRequest", {
       title,
       message,
       custom
     });
   }
-};
-
-function start() {
-  if (!worker) {
-    worker = Elm.Client.init();
-
-    window.addEventListener("message", (event: MessageEvent) => {
-      worker.ports.fromHost.send({
-        origin: event.origin,
-        data: event.data
-      });
-    });
-
-    worker.ports.toHost.subscribe((message: any) => {
-      window.parent.postMessage(message, "*");
-    });
-
-    worker.ports.toClient.subscribe((message: any) => {
-      if (message.msgType == "publish") {
-        messageHandlers.forEach(handler => {
-          handler(message.msg);
-        });
-      }
-    });
-
-    window.addEventListener("click", event => {
-      let target = event.target as HTMLElement;
-      if (target.tagName.toLowerCase() === "a" && event.button == 0) {
-        event.preventDefault();
-        let a = event.target as HTMLAnchorElement;
-        sendMessage("navRequest", a.href);
-      }
-    });
-  }
 }
 
-function sendMessage(type: string, data: any) {
-  worker.ports.fromClient.send({
-    msgType: type,
-    msg: data
-  });
-}
-
-interface ToastOptions {
-  title?: string;
-  custom?: { [x: string]: any };
-}
+const client = new Client();
+export default client;
