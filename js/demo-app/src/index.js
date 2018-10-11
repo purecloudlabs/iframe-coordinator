@@ -4,22 +4,54 @@ import coordinator from "iframe-coordinator/host.js";
 import toastada from "toastada";
 
 const TOAST_LEVELS = ["info", "success", "error"];
+const TOP_ROUTE_EXTRACTOR = /^#?(\/[^\/]+).*/;
+const NAV_CONFIGS = [
+  {
+    id: 'client1',
+    title: 'Component 1',
+    url: new URL("/components/example1/", window.location).toString(),
+    assignedRoute: "/one",
+    children: ['first', 'second']
+  },
+  {
+    id: 'client2',
+    title: 'Component 2',
+    url: new URL("/components/example2/", window.location).toString(),
+    assignedRoute: "/two",
+    children: ['first', 'second']
+  },
+  {
+    id: 'wikipedia',
+    title: 'Wikipedia',
+    url: new URL("https://en.wikipedia.org").toString(),
+    assignedRoute: "/wikipedia",
+    children: []
+  }
+];
+
+let urlRoutingEnabled = false;
+
+// ----- Env Setup
 
 coordinator.registerElements();
 
-let router = document.getElementById("router");
+// ----- Client/Nav Setup
 
-// Set up client URLs and Routes
-router.registerClients({
-  client1: {
-    url: new URL("/components/example1/", window.location).toString(),
-    assignedRoute: "/one"
-  },
-  client2: {
-    url: new URL("/components/example2/", window.location).toString(),
-    assignedRoute: "/two"
-  }
-});
+let router = document.getElementById("router");
+router.registerClients(
+  NAV_CONFIGS.reduce((clientMap, {id, url, assignedRoute}) => {
+    clientMap[id] = {
+      url,
+      assignedRoute
+    }
+
+    return clientMap;
+  }, {})
+);
+
+buildNavMarkup(NAV_CONFIGS);
+
+// ----- Pub-Sub Setup
 
 // Subscribe to pub-sub events on the topic `publish.topic`
 router.subscribe("publish.topic");
@@ -40,43 +72,30 @@ document.getElementById("publish").addEventListener("click", event => {
   });
 });
 
-// Routing helpers
-window.setRoute = function(route) {
-  document.getElementById("router").setAttribute("route", route);
-};
-window.toggleRouting = function() {
-  window.routing = !window.routing;
-  if (window.routing) {
-    setRoute(window.location.hash);
-    document.getElementById("toggle").innerText = "Disable Routing";
-  } else {
-    location.hash = "";
-    document.getElementById("toggle").innerText = "Enable Routing";
-  }
-};
-
 document.addEventListener("DOMContentLoaded", () => {
-  // Routing behavior
-  window.routing = false;
+  // ----- Routing Setup 
+  document.querySelector('button.url-routing.toggle-switch').addEventListener('click', toggleRouting);
 
   window.onhashchange = function() {
-    if (routing) {
+    if (urlRoutingEnabled) {
       // On hash change & routing mode, update route attribute
-      window.setRoute(window.location.hash.slice(1));
+      setRoute(window.location.hash.slice(1));
+      updateActiveNav();
     }
   };
 
   document
     .getElementById("router")
     .addEventListener("navRequest", function(data) {
-      if (window.routing) {
+      if (urlRoutingEnabled) {
         location.hash = data.detail.fragment;
         // On navRequest & routing mode, change url
+      } else {
+        setRoute(data.detail.fragment);
       }
-      window.setRoute(data.detail.fragment);
     });
 
-  // Set up Toast Messages
+  // ----- Toast Message Setup
   window.toastada.setOptions({
     prependTo: document.querySelector("root-container"),
     lifeSpan: 5000,
@@ -107,4 +126,93 @@ document.addEventListener("DOMContentLoaded", () => {
 
       window.toastada[toastLevel](toastHtml);
     });
+
+    // ----- Initialize State
+    // Turn on URL Routing by default
+    toggleRouting();
+    // Set a default route; if needed
+    if (!window.location.hash) {
+      window.location.hash = NAV_CONFIGS[0].assignedRoute; 
+    }
 });
+
+// ----- Helpers 
+
+// Routing helpers
+
+function setRoute(route) {
+  document.getElementById("router").setAttribute("route", route);
+};
+
+function toggleRouting() {
+  urlRoutingEnabled = !urlRoutingEnabled;
+
+  if (urlRoutingEnabled) {
+    setRoute(window.location.hash.slice(1));
+  } else {
+    location.hash = "";
+  }
+
+  // Update UI
+  document.querySelector('button.url-routing.toggle-switch').setAttribute('aria-checked', urlRoutingEnabled);
+  document.querySelector('header nav ul.nav-menu').style.display = urlRoutingEnabled ? 'flex' : 'none';
+  document.querySelector('header nav div.programmatic-nav').style.display = urlRoutingEnabled ? 'none' : 'flex';
+  updateActiveNav();
+};
+
+// UI Helpers
+function buildNavMarkup(navConfigs) {
+  let navMenu = document.querySelector('header nav ul.nav-menu');
+  let programmaticNav = document.querySelector('header nav div.programmatic-nav');
+
+  navConfigs.forEach(curr => {
+    // Build Nav Menu Item
+    let currLi = document.createElement('li');
+    currLi.setAttribute('class', `nav-id-${curr.id}`);
+
+    let currLink = document.createElement('a');
+    currLink.setAttribute('class', `nav-id-${curr.id}`);
+    currLink.setAttribute('href', `#${curr.assignedRoute}`);
+    currLink.appendChild(document.createTextNode(curr.title));
+
+    currLi.appendChild(currLink);
+    // TODO: Build sub-navigation with children
+
+    navMenu.appendChild(currLi);
+
+    // Build Programmatic Button
+    let currButton = document.createElement('button');
+    currButton.setAttribute('class', `nav-id-${curr.id}`);
+    currButton.addEventListener('click', () => {
+      setRoute(curr.assignedRoute);
+    });
+    currButton.appendChild(document.createTextNode(curr.title));
+    programmaticNav.appendChild(currButton);
+  })
+}
+
+function updateActiveNav(navConfigs = NAV_CONFIGS, fqRoute = window.location.hash) {
+  let activeNavId = null;
+  if (urlRoutingEnabled) {
+    let result = TOP_ROUTE_EXTRACTOR.exec(fqRoute);
+    if (result && result.length == 2) {
+      let currRoute = result[1];
+
+      let activeNavItem = navConfigs.find(toMatch => {
+        return (toMatch.assignedRoute === currRoute);
+      });
+
+      activeNavId = (activeNavItem ? activeNavItem.id : null);
+    }
+  }
+
+  let navMenu = document.querySelector('header nav ul.nav-menu');
+  let navEntries = navMenu.querySelectorAll('ul li').forEach(el => {
+    let currClassList = el.classList;
+    if (currClassList.contains(`nav-id-${activeNavId}`)) {
+      currClassList.add('active');
+    } else {
+      currClassList.remove('active');
+    }
+  })
+}
