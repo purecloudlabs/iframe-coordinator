@@ -121,7 +121,21 @@ header nav .programmatic-nav {
 }
 
 header nav .programmatic-nav button {
-    margin: 0 24px;
+    padding: 0;
+    font-size: 1em;
+    font-family: 'Source Sans Pro', 'Trebuchet MS', 'Lucida Grande', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
+    background-color: transparent;
+    outline: none;
+    height: 100%;
+    margin: 0 0 0 24px;
+    border: none;
+    border-top: 5px solid transparent;
+    color: #9BAAB8;
+    cursor: pointer;
+}
+header nav .programmatic-nav button.active {
+    border-top: 5px solid #FF4F1F;
+    color: #FDFDFD;
 }
 
 /* Toggle Switch Styles */

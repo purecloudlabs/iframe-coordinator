@@ -151,6 +151,10 @@ function toggleRouting() {
     setRoute(window.location.hash.slice(1));
   } else {
     location.hash = "";
+    setRoute('');
+    document.querySelector('header nav div.programmatic-nav').querySelectorAll('button').forEach(el => {
+      el.className = '';
+    });
   }
 
   // Update UI
@@ -183,7 +187,11 @@ function buildNavMarkup(navConfigs) {
     // Build Programmatic Button
     let currButton = document.createElement('button');
     currButton.setAttribute('class', `nav-id-${curr.id}`);
-    currButton.addEventListener('click', () => {
+    currButton.addEventListener('click', (e) => {
+      programmaticNav.querySelectorAll('button').forEach(el => {
+        el.className = '';
+      });
+      e.target.classList.add('active');
       setRoute(curr.assignedRoute);
     });
     currButton.appendChild(document.createTextNode(curr.title));
