@@ -80,7 +80,7 @@ header nav a:active
   text-decoration: none;
 }
 
-header nav .nav-menu {
+header nav ul {
     margin: 0;
     padding: 0;
     height: 100%;
@@ -92,10 +92,10 @@ header nav .nav-menu {
     align-items: stretch;
 }
 
-header nav .nav-menu li {
+header nav ul li {
     box-sizing: border-box;
     height: 100%;
-    margin: 0 0 0 24px;
+    padding: 0 12px;
     border-top: 5px solid transparent;
 
     display: flex;
@@ -103,39 +103,29 @@ header nav .nav-menu li {
     align-items: center;
 }
 
-header nav .nav-menu li.active {
+header nav ul li.active {
     border-top: 5px solid #FF4F1F;
+    background-color: #FFFFFF;
 }
-header nav .nav-menu li.active a {
-    color: #FDFDFD;
-}
-
-header nav .programmatic-nav {
-    margin: 0;
-    height: 100%;
-
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
+header nav ul li.active a {
+    color: #000000;
 }
 
-header nav .programmatic-nav button {
+header nav ul li button {
+    background-color: transparent;
     padding: 0;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    height: inherit;
+    width: inherit;
     font-size: 1em;
     font-family: 'Source Sans Pro', 'Trebuchet MS', 'Lucida Grande', 'Bitstream Vera Sans', 'Helvetica Neue', sans-serif;
-    background-color: transparent;
-    outline: none;
-    height: 100%;
-    margin: 0 0 0 24px;
-    border: none;
-    border-top: 5px solid transparent;
-    color: #9BAAB8;
-    cursor: pointer;
+    color: #98A7B8;
 }
-header nav .programmatic-nav button.active {
-    border-top: 5px solid #FF4F1F;
-    color: #FDFDFD;
+
+header nav ul li.active button {
+    color: #000000;
 }
 
 /* Toggle Switch Styles */
