@@ -92,6 +92,10 @@ document.addEventListener("DOMContentLoaded", () => {
         // On navRequest & routing mode, change url
       } else {
         setRoute(data.detail.fragment);
+        let activeNavItem = NAV_CONFIGS.find(toMatch => {
+          return (data.detail.fragment.startsWith(toMatch.assignedRoute));
+        });
+        updateActiveNav(NAV_CONFIGS, activeNavItem.id);
       }
     });
 
@@ -152,22 +156,20 @@ function toggleRouting() {
   } else {
     location.hash = "";
     setRoute('');
-    document.querySelector('header nav div.programmatic-nav').querySelectorAll('button').forEach(el => {
-      el.className = '';
-    });
+    updateActiveNav();
   }
 
   // Update UI
   document.querySelector('button.url-routing.toggle-switch').setAttribute('aria-checked', urlRoutingEnabled);
   document.querySelector('header nav ul.nav-menu').style.display = urlRoutingEnabled ? 'flex' : 'none';
-  document.querySelector('header nav div.programmatic-nav').style.display = urlRoutingEnabled ? 'none' : 'flex';
+  document.querySelector('header nav ul.programmatic-nav').style.display = urlRoutingEnabled ? 'none' : 'flex';
   updateActiveNav();
 };
 
 // UI Helpers
 function buildNavMarkup(navConfigs) {
   let navMenu = document.querySelector('header nav ul.nav-menu');
-  let programmaticNav = document.querySelector('header nav div.programmatic-nav');
+  let programmaticNav = document.querySelector('header nav ul.programmatic-nav');
 
   navConfigs.forEach(curr => {
     // Build Nav Menu Item
@@ -185,17 +187,17 @@ function buildNavMarkup(navConfigs) {
     navMenu.appendChild(currLi);
 
     // Build Programmatic Button
+    let currLinkButton = document.createElement('li');
+    currLinkButton.setAttribute('class', `nav-id-${curr.id}`);
     let currButton = document.createElement('button');
     currButton.setAttribute('class', `nav-id-${curr.id}`);
-    currButton.addEventListener('click', (e) => {
-      programmaticNav.querySelectorAll('button').forEach(el => {
-        el.className = '';
-      });
-      e.target.classList.add('active');
+    currButton.addEventListener('click', () => {
+      updateActiveNav(NAV_CONFIGS, curr.id);
       setRoute(curr.assignedRoute);
     });
     currButton.appendChild(document.createTextNode(curr.title));
-    programmaticNav.appendChild(currButton);
+    currLinkButton.appendChild(currButton);
+    programmaticNav.appendChild(currLinkButton);
   })
 }
 
@@ -209,18 +211,21 @@ function updateActiveNav(navConfigs = NAV_CONFIGS, fqRoute = window.location.has
       let activeNavItem = navConfigs.find(toMatch => {
         return (toMatch.assignedRoute === currRoute);
       });
-
       activeNavId = (activeNavItem ? activeNavItem.id : null);
     }
+  } else {
+    activeNavId = fqRoute;
   }
 
-  let navMenu = document.querySelector('header nav ul.nav-menu');
-  let navEntries = navMenu.querySelectorAll('ul li').forEach(el => {
-    let currClassList = el.classList;
-    if (currClassList.contains(`nav-id-${activeNavId}`)) {
-      currClassList.add('active');
-    } else {
-      currClassList.remove('active');
-    }
-  })
+  let navMenus = document.querySelectorAll('header nav ul');
+  navMenus.forEach(menu => {
+    let navEntries = menu.querySelectorAll('ul li').forEach(el => {
+      let currClassList = el.classList;
+      if (currClassList.contains(`nav-id-${activeNavId}`)) {
+        currClassList.add('active');
+      } else {
+        currClassList.remove('active');
+      }
+    })
+  });
 }
