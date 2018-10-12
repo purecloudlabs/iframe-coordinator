@@ -61,11 +61,15 @@ export default {
   }
 };
 
-function start() {
+function start(frameWindow: Window) {
+  if (!frameWindow) {
+    frameWindow = window;
+  }
+
   if (!worker) {
     worker = Elm.Client.init();
 
-    window.addEventListener("message", (event: MessageEvent) => {
+    frameWindow.addEventListener("message", (event: MessageEvent) => {
       worker.ports.fromHost.send({
         origin: event.origin,
         data: event.data
@@ -73,7 +77,7 @@ function start() {
     });
 
     worker.ports.toHost.subscribe((message: any) => {
-      window.parent.postMessage(message, "*");
+      frameWindow.parent.postMessage(message, "*");
     });
 
     worker.ports.toClient.subscribe((message: any) => {
@@ -84,7 +88,7 @@ function start() {
       }
     });
 
-    window.addEventListener("click", event => {
+    frameWindow.addEventListener("click", event => {
       let target = event.target as HTMLElement;
       if (target.tagName.toLowerCase() === "a" && event.button == 0) {
         event.preventDefault();
