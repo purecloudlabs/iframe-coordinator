@@ -18,7 +18,7 @@ interface OutPort {
 interface ClientProgram {
   ports: {
     fromHost: {
-      send({ origin: string, data: any });
+      send({ origin: string, data: any }): any;
     };
     toHost: OutPort;
     fromClient: InPort;
