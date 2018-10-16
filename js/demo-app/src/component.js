@@ -1,4 +1,4 @@
-import iframeClient from "iframe-coordinator/client.js";
+import { Client } from "iframe-coordinator/client";
 
 document.getElementById("path").innerHTML = window.location.hash;
 
@@ -7,7 +7,9 @@ window.onhashchange = function() {
 };
 
 // Start intercepting link click events for routing
+let iframeClient = new Client();
 iframeClient.start();
+
 iframeClient.onPubsub(publication => {
   console.log("Got Publish event:", publication);
 });

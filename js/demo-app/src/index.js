@@ -1,11 +1,11 @@
 import "@webcomponents/custom-elements/src/native-shim.js";
 import "@webcomponents/custom-elements/src/custom-elements.js";
-import coordinator from "iframe-coordinator/host.js";
-import toastada from "toastada";
+import { registerElements } from "iframe-coordinator/host";
+import "toastada";
 
 const TOAST_LEVELS = ["info", "success", "error"];
 
-coordinator.registerElements();
+registerElements();
 
 let router = document.getElementById("router");
 
