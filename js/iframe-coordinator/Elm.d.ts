@@ -13,12 +13,13 @@ interface InPort {
 
 interface OutPort {
   subscribe(handler: SubscribeHandler): void;
+  unsubscribe(handler: SubscribeHandler): void;
 }
 
 interface ClientProgram {
   ports: {
     fromHost: {
-      send({ origin: string, data: any });
+      send({ origin: string, data: any }): void;
     };
     toHost: OutPort;
     fromClient: InPort;

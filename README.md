@@ -25,12 +25,12 @@ import "@webcomponents/custom-elements/src/native-shim.js";
 import "@webcomponents/custom-elements/src/custom-elements.js";
 
 /* Import the host library */
-import host from "iframe-coordinator/host.js";
+import { registerElements } from "iframe-coordinator/host.js";
 
 /* This will register two custom elements, `frame-router` and
  * `component-frame`. Only frame-router should be used directly.
  */
-host.registerElements();
+registerElements();
 
 /* This registers three client apps with the `frame-router`
  * element with an id of `coordinator`. `assignedRoute` is the
@@ -70,7 +70,10 @@ document.getElementById("frame-element").registerClients({
 
 ```js
 /* Import the client library */
-import client from "iframe-coordinator/client.js";
+import { Client } from "iframe-coordinator/client.js";
+
+/* Create a new instance of the client */
+const client = new Client();
 
 /* Start intercepting links, which will prevent the
  * default link action, and instead send a message to the

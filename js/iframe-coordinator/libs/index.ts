@@ -1,5 +1,4 @@
-import client from './client';
-import host from './host';
+import { Client } from './client';
+import { registerElements } from './host';
 
-let IframeCoordinator = {client, host}
-export {IframeCoordinator};
+export { Client, registerElements };
