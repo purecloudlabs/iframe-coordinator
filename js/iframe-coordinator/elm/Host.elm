@@ -4,7 +4,6 @@ import HostProgram
 import Json.Decode as Decode
 
 
-main : Program Decode.Value HostProgram.Model HostProgram.Msg
 main =
     HostProgram.create
         { fromHost = fromHost

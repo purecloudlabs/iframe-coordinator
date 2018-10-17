@@ -1,4 +1,11 @@
-module Message.Navigation exposing (Navigation, decoder, encode, label, urlDecoder)
+module Message.Navigation exposing (Navigation, encode, decoder, urlDecoder, label)
+
+{-| The Message.Navigation module defines and handles messages for navigation
+requests from the client app to the host app.
+
+@docs Navigation, encode, decoder, urlDecoder, label
+
+-}
 
 import Json.Decode as Decode exposing (Decoder)
 import Json.Decode.Pipeline exposing (optional, required)
@@ -7,15 +14,23 @@ import LabeledMessage exposing (expectLabel, withLabel)
 import Url exposing (Protocol(..), Url)
 
 
+{-| Navigation requests are represented with an alias to the Url type.
+-}
 type alias Navigation =
     Url
 
 
+{-| This is the label that navigation events are tagged with when serialized
+to JSON. Other modules should not need to reference it, but it is exposed to
+force a package version bump if it changes.
+-}
 label : String
 label =
     "navRequest"
 
 
+{-| Encodes a Navigation request to JSON and tags it with `label`.
+-}
 encode : Navigation -> Encode.Value
 encode url =
     Encode.object
@@ -38,6 +53,8 @@ encode url =
         |> withLabel label
 
 
+{-| Decodes a Navigation request from JSON, if it is tagged with `label`.
+-}
 decoder : Decoder Navigation
 decoder =
     (Decode.succeed Url
@@ -51,14 +68,16 @@ decoder =
         |> expectLabel label
 
 
+{-| Decodes a Navigation request from a URL string, if it is tagged with `label`.
+-}
 urlDecoder : Decoder Navigation
 urlDecoder =
     (Decode.string
         |> Decode.andThen
             (\url ->
-                case Url.fromString (Debug.log "URL" url) of
+                case Url.fromString url of
                     Just decoded ->
-                        Decode.succeed (Debug.log "Decoded" decoded)
+                        Decode.succeed decoded
 
                     Nothing ->
                         Decode.fail ("Unable to parse '" ++ url ++ "' as a URL.'")
