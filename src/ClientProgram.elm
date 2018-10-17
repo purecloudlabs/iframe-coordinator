@@ -1,7 +1,4 @@
-module ClientProgram exposing
-    ( create
-    , Model, Msg
-    )
+module ClientProgram exposing (create)
 
 {-| The ClientProgram module is the Elm code that backs the client-side JS helper
 library in the iframe-coordinator library. It message handles message validation
@@ -148,7 +145,8 @@ sendAppMessage appPort message =
 
 logWarning : String -> Cmd Msg
 logWarning errMsg =
-    Debug.log errMsg Cmd.none
+    -- TODO: message app to trigger logging
+    Cmd.none
 
 
 
