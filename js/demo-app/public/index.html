@@ -13,20 +13,27 @@
         You need to enable JavaScript to run this app.
     </noscript>
     <div class="root-container">
-        <div class="nav">
-            <span>With URL routing:</span>
-            <br/>
-            <a class="nav-item" href="#/one">Component 1</a>
-            <a class="nav-item" href="#/two">Component 2</a>
-            <button id="publish">Publish on host.topic</button>
-            <button id="toggle" onclick="toggleRouting()" style="float: right;">Enable Routing</button>
-        </div>
-        <div class="nav">
-            <span>Programmatically:</span>
-            <br/>
-            <button class="nav-item" onclick="setRoute('/one')">Component 1</button>
-            <button class="nav-item" onclick="setRoute('/two')">Component 2</button>
-        </div>
+        <header>
+            <div class="title">
+                IFrame Coordinator Demo
+            </div>
+            <nav>
+                <ul class="nav-menu"></ul>
+                <div class="programmatic-nav"></div>
+            </nav>
+            <div class="tools">
+                <button id="publish" class="icon"
+                    title="Publish example message on 'host.topic'. Open a component to consume the message.">&nearrow;</button>
+                <button class="toggle-switch url-routing"
+                    data-action="aria-switch"
+                    role="switch"
+                    aria-checked="false">
+                    <span aria-hidden="true" class="track"></span>
+                    URL Routing
+                </button>
+            </div>
+        </header>
+
         <frame-router id="router"></frame-router>
     </div>
     <script type="text/javascript" src="/app.js"></script>
