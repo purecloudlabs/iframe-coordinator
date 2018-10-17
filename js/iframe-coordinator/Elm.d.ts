@@ -13,6 +13,7 @@ interface InPort {
 
 interface OutPort {
   subscribe(handler: SubscribeHandler): void;
+  unsubscribe(handler: SubscribeHandler): void;
 }
 
 interface ClientProgram {

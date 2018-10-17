@@ -1,31 +1,114 @@
 import { Elm } from "../elm/Client.elm";
 import { PublicationHandler } from "./types";
 
-let worker: ClientProgram = null;
-let messageHandlers: Array<PublicationHandler> = [];
+interface ToastOptions {
+  title?: string;
+  custom?: any;
+}
 
-//TODO: make this a class, for a more idiomatic API?
-export default {
-  start: start,
+interface ClientConfigOptions {
+  clientWindow?: Window
+}
 
-  subscribe(topic: string): void {
-    sendMessage("subscribe", topic);
-  },
+class Client {
+  private _worker: ClientProgram;
+  private _isStarted: boolean;
+  private _clientWindow: Window;
+  private _messageHandlers: Array<PublicationHandler> = [];
 
-  unsubscribe(topic: string): void {
-    sendMessage("unsubscribe", topic);
-  },
+  public constructor(configOptions: ClientConfigOptions = {}) {
+    this._clientWindow = (configOptions.clientWindow) || window;
+    this._worker = Elm.Client.init();
+  }
 
-  publish(topic: string, data: any): void {
-    sendMessage("publish", {
+
+  private _sendingMessageToHost = (message: LabeledMsg) => {
+    this._clientWindow.parent.postMessage(message, "*");
+  }
+
+  private _publishMessageToHandlers = (message: LabeledMsg) => {
+    if (message.msgType != "publish") {
+      return;
+    }
+
+    this._messageHandlers.forEach(handler => {
+      handler(message.msg);
+    });
+  }
+
+  private _onWindowMessageReceived = (event: MessageEvent) => {
+    this._worker.ports.fromHost.send({
+      origin: event.origin,
+      data: event.data
+    });
+  }
+
+  private _onWindowClick = (event: MouseEvent) => {
+    let target = event.target as HTMLElement;
+    if (target.tagName.toLowerCase() === "a" && event.button == 0) {
+      event.preventDefault();
+      let a = event.target as HTMLAnchorElement;
+      this._sendMessage("navRequest", a.href);
+    }
+  }
+
+  public start(): void {
+    if (this._isStarted) {
+      return;
+    }
+
+    this._isStarted = true;
+  
+    this._clientWindow.addEventListener("message", this._onWindowMessageReceived);
+    this._clientWindow.addEventListener("click", this._onWindowClick);
+    this._worker.ports.toHost.subscribe(this._sendingMessageToHost);
+    this._worker.ports.toClient.subscribe(this._publishMessageToHandlers);
+  }
+
+  public stop(): void {
+    if (!this._isStarted) {
+      return;
+    }
+    
+    this._isStarted = false;
+    this._clientWindow.removeEventListener("message", this._onWindowMessageReceived);
+    this._clientWindow.removeEventListener("click", this._onWindowClick);
+    this._worker.ports.toHost.unsubscribe(this._sendingMessageToHost);
+    this._worker.ports.toClient.unsubscribe(this._publishMessageToHandlers);
+  }
+
+  private _checkStarted(): void {
+    if (!this._isStarted) {
+      throw new Error('Unable to perform action since this client object was not started');
+    }
+  }
+
+  private _sendMessage(type: string, data: any): void {
+    this._checkStarted();
+    this._worker.ports.fromClient.send({
+      msgType: type,
+      msg: data
+    });
+  }
+
+  public subscribe(topic: string): void {
+    this._sendMessage("subscribe", topic);
+  }
+
+  public unsubscribe(topic: string): void {
+    this._sendMessage("unsubscribe", topic);
+  }
+
+  public publish(topic: string, data: any): void {
+    this._sendMessage("publish", {
       topic: topic,
       payload: data
     });
-  },
+  }
 
-  onPubsub(callback: PublicationHandler) {
-    messageHandlers.push(callback);
-  },
+  public onPubsub(callback: PublicationHandler): void {
+    this._messageHandlers.push(callback);
+  }
 
   /**
    * Request a toast message be displayed by the host.
@@ -49,64 +132,16 @@ export default {
    * @example
    * worker.requestToast('World', {title: 'Hello', custom: {ttl: 5, level: 'info'}});
    */
-  requestToast(
+  public requestToast(
     message: string,
-    { title = null, custom = null }: undefined | ToastOptions = {}
+    { title = null, custom = null }: ToastOptions = {}
   ): void {
-    sendMessage("toastRequest", {
+    this._sendMessage("toastRequest", {
       title,
       message,
       custom
     });
   }
-};
-
-function start(frameWindow: Window) {
-  if (!frameWindow) {
-    frameWindow = window;
-  }
-
-  if (!worker) {
-    worker = Elm.Client.init();
-
-    frameWindow.addEventListener("message", (event: MessageEvent) => {
-      worker.ports.fromHost.send({
-        origin: event.origin,
-        data: event.data
-      });
-    });
-
-    worker.ports.toHost.subscribe((message: any) => {
-      frameWindow.parent.postMessage(message, "*");
-    });
-
-    worker.ports.toClient.subscribe((message: any) => {
-      if (message.msgType == "publish") {
-        messageHandlers.forEach(handler => {
-          handler(message.msg);
-        });
-      }
-    });
-
-    frameWindow.addEventListener("click", event => {
-      let target = event.target as HTMLElement;
-      if (target.tagName.toLowerCase() === "a" && event.button == 0) {
-        event.preventDefault();
-        let a = event.target as HTMLAnchorElement;
-        sendMessage("navRequest", a.href);
-      }
-    });
-  }
 }
 
-function sendMessage(type: string, data: any) {
-  worker.ports.fromClient.send({
-    msgType: type,
-    msg: data
-  });
-}
-
-interface ToastOptions {
-  title?: string;
-  custom?: { [x: string]: any };
-}
+export { Client };

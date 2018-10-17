@@ -1,7 +1,8 @@
 import * as ClientInjector from 'inject-loader!../client';
 
 describe("client", () => {
-  let client: any,
+  let Client: any,
+      client: any,
       elmMock: any,
       mockWorker: any,
       mockFrameWindow: any;
@@ -53,9 +54,11 @@ describe("client", () => {
       }
     };
     
-    client = ClientInjector({
+    Client = ClientInjector({
       '../elm/Client.elm': elmMock
-    }).default;
+    }).Client;
+
+    client = new Client({ clientWindow: mockFrameWindow });
   });
 
   describe('when starting the client', () => {
