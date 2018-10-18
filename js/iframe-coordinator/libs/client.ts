@@ -21,7 +21,6 @@ class Client {
     this._worker = Elm.Client.init();
   }
 
-
   private _sendingMessageToHost = (message: LabeledMsg) => {
     this._clientWindow.parent.postMessage(message, "*");
   }
