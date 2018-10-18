@@ -3,9 +3,10 @@
     "outDir": "./",
     "noImplicitAny": true,
     "module": "commonjs",
-    "target": "es5",
-    "allowJs": true
+    "declaration": true,
+    "declarationDir": "./",
+    "target": "es5"
   },
-  "include": ["**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["libs"],
+  "exclude": []
 }
