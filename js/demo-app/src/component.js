@@ -1,3 +1,7 @@
+import "@babel/polyfill";
+import "custom-event-polyfill/polyfill.js";
+import "nodelist-foreach-polyfill";
+import "url-polyfill";
 import { Client } from "iframe-coordinator/client";
 
 document.getElementById("path").innerHTML = window.location.hash;
