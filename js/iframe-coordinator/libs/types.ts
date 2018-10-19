@@ -1,4 +1,4 @@
-import { Publication } from "../elm/Host.elm";
+import { Publication } from '../elm/Host.elm';
 
 export interface Location {
   href: string;
@@ -21,6 +21,4 @@ export interface WorkaroundAnchor extends HTMLAnchorElement {
   password: string;
 }
 
-export interface PublicationHandler {
-  (publication: Publication): void;
-}
+export type PublicationHandler = (publication: Publication) => void;
