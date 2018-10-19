@@ -54,7 +54,8 @@
   "lint-staged": {
     "*.ts": [
       "npm run lint.fix",
-      "npm run format.fix"
+      "npm run format.fix",
+      "git add"
     ]
   },
   "author": "",
