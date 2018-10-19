@@ -1,0 +1,15 @@
+{
+    "extends": ["tslint:recommended", "tslint-config-prettier"],
+    "linterOptions": {
+      "exclude": ["node_modules/**/*.ts"]
+    },
+    "rules": {
+      "interface-name": [true, "never-prefix"],
+      "member-access": true,
+      "member-ordering": false,
+      "no-trailing-whitespace": [true, "ignore-blank-lines"],
+      "object-literal-sort-keys": false,
+      "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
+    }
+  }
+  
