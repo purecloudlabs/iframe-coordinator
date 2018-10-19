@@ -27,7 +27,7 @@ class Client {
 
   private _publishMessageToHandlers = (message: LabeledMsg) => {
     if (message.msgType !== 'publish') {
-      return;
+      return; 
     }
 
     this._messageHandlers.forEach(handler => {
