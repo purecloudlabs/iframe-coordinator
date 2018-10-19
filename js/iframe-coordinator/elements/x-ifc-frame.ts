@@ -1,10 +1,10 @@
-const SRC_ATTR = "src";
+const SRC_ATTR = 'src';
 
 const IFRAME_STYLE =
-  "position: absolute; top: 0; left: 0; width: 100%; height: 100%;";
+  'position: absolute; top: 0; left: 0; width: 100%; height: 100%;';
 
 class ClientFrame extends HTMLElement {
-  iframe: HTMLIFrameElement;
+  public iframe: HTMLIFrameElement;
 
   static get observedAttributes() {
     return [SRC_ATTR];
@@ -14,31 +14,35 @@ class ClientFrame extends HTMLElement {
     super();
   }
 
-  connectedCallback() {
-    this.iframe = document.createElement("iframe");
-    this.iframe.setAttribute("frameborder", "0");
-    this.iframe.setAttribute("style", IFRAME_STYLE);
-    this.iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
-    this.setAttribute("style", IFRAME_STYLE);
-    if (this.children[0] != this.iframe) {
+  public connectedCallback() {
+    this.iframe = document.createElement('iframe');
+    this.iframe.setAttribute('frameborder', '0');
+    this.iframe.setAttribute('style', IFRAME_STYLE);
+    this.iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+    this.setAttribute('style', IFRAME_STYLE);
+    if (this.children[0] !== this.iframe) {
       this.appendChild(this.iframe);
     }
-    window.addEventListener("message", this.handleClientMessages.bind(this));
+    window.addEventListener('message', this.handleClientMessages.bind(this));
     this.syncLocation();
   }
 
-  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
-    if (this.iframe && name == SRC_ATTR) {
+  public attributeChangedCallback(
+    name: string,
+    oldValue: string,
+    newValue: string
+  ) {
+    if (this.iframe && name === SRC_ATTR) {
       this.updateFrameLoc(newValue);
     }
   }
 
   /* Syncs the iframe state to the current src attribute */
-  syncLocation() {
-    this.updateFrameLoc(this.getAttribute("src"));
+  public syncLocation() {
+    this.updateFrameLoc(this.getAttribute('src'));
   }
 
-  updateFrameLoc(newSrc: string) {
+  public updateFrameLoc(newSrc: string) {
     if (this.iframe.contentWindow) {
       this.iframe.contentWindow.location.replace(newSrc);
     } else {
@@ -50,25 +54,25 @@ class ClientFrame extends HTMLElement {
     }
   }
 
-  send(message: any) {
-    let clientOrigin = this.expectedClientOrigin();
-    if (clientOrigin != "null") {
+  public send(message: any) {
+    const clientOrigin = this.expectedClientOrigin();
+    if (clientOrigin !== 'null') {
       this.iframe.contentWindow.postMessage(message, clientOrigin);
     }
   }
 
-  expectedClientOrigin() {
-    let clientUrl = new URL(this.getAttribute("src"), window.location.href);
+  public expectedClientOrigin() {
+    const clientUrl = new URL(this.getAttribute('src'), window.location.href);
     return clientUrl.origin;
   }
 
-  handleClientMessages(event: MessageEvent) {
+  public handleClientMessages(event: MessageEvent) {
     if (
       event.origin === this.expectedClientOrigin() &&
       event.source === this.iframe.contentWindow
     ) {
-      //TODO: Update this for IE11 support
-      let msgEvent = new CustomEvent("clientMessage", { detail: event.data });
+      // TODO: Update this for IE11 support
+      const msgEvent = new CustomEvent('clientMessage', { detail: event.data });
       this.dispatchEvent(msgEvent);
     }
   }

@@ -1,7 +1,7 @@
-import { Elm, Publication } from "../elm/Host.elm";
-import ClientFrame from "./x-ifc-frame";
+import { Elm, Publication } from '../elm/Host.elm';
+import ClientFrame from './x-ifc-frame';
 
-const ROUTE_ATTR = "route";
+const ROUTE_ATTR = 'route';
 
 /**
  * The frame-router custom element
@@ -15,7 +15,7 @@ const ROUTE_ATTR = "route";
  * @param {object=} detail.x - Optional, custom properties for application-specific toast features
  */
 class FrameRouterElement extends HTMLElement {
-  router: HostProgram;
+  public router: HostProgram;
 
   constructor() {
     super();
@@ -25,16 +25,16 @@ class FrameRouterElement extends HTMLElement {
     return [ROUTE_ATTR];
   }
 
-  connectedCallback() {
-    this.setAttribute("style", "position: relative;");
+  public connectedCallback() {
+    this.setAttribute('style', 'position: relative;');
   }
 
-  registerClients(clients: ClientRegistrations) {
-    let embedTarget = document.createElement("div");
+  public registerClients(clients: ClientRegistrations) {
+    const embedTarget = document.createElement('div');
     this.appendChild(embedTarget);
     this.router = Elm.Host.init({
-      node: embedTarget,
-      flags: clients
+      flags: clients,
+      node: embedTarget
     });
 
     this.router.ports.toHost.subscribe(labeledMsg => {
@@ -44,42 +44,46 @@ class FrameRouterElement extends HTMLElement {
     });
 
     this.router.ports.toClient.subscribe(message => {
-      let frame = this.getElementsByTagName("x-ifc-frame")[0] as ClientFrame;
+      const frame = this.getElementsByTagName('x-ifc-frame')[0] as ClientFrame;
       if (frame) {
         frame.send(message);
       }
     });
   }
 
-  subscribe(topic: string): void {
+  public subscribe(topic: string): void {
     this.router.ports.fromHost.send({
-      msgType: "subscribe",
-      msg: topic
+      msg: topic,
+      msgType: 'subscribe'
     });
   }
 
-  unsubscribe(topic: string): void {
+  public unsubscribe(topic: string): void {
     this.router.ports.fromHost.send({
-      msgType: "unsubscribe",
-      msg: topic
+      msg: topic,
+      msgType: 'unsubscribe'
     });
   }
 
-  publish(publication: Publication): void {
+  public publish(publication: Publication): void {
     this.router.ports.fromHost.send({
-      msgType: "publish",
-      msg: publication
+      msg: publication,
+      msgType: 'publish'
     });
   }
 
-  changeRoute(newPath: String) {
+  public changeRoute(newPath: string) {
     this.router.ports.fromHost.send({
-      msgType: "routeChange",
-      msg: newPath
+      msg: newPath,
+      msgType: 'routeChange'
     });
   }
 
-  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+  public attributeChangedCallback(
+    name: string,
+    oldValue: string,
+    newValue: string
+  ) {
     if (name === ROUTE_ATTR && oldValue !== newValue) {
       this.changeRoute(newValue);
     }

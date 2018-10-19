@@ -27,7 +27,7 @@ interface ClientProgram {
   };
 }
 
-declare module "*/Client.elm" {
+declare module '*/Client.elm' {
   export var Elm: {
     Client: {
       init(): ClientProgram;
@@ -45,7 +45,7 @@ interface HostProgram {
 
 interface ClientRegistrations {}
 
-declare module "*/Host.elm" {
+declare module '*/Host.elm' {
   export interface Publication {
     topic: string;
     payload: any;
