@@ -1,3 +1,7 @@
+import "@babel/polyfill";
+import "custom-event-polyfill/polyfill.js";
+import "nodelist-foreach-polyfill";
+import "url-polyfill";
 import "@webcomponents/custom-elements/src/native-shim.js";
 import "@webcomponents/custom-elements/src/custom-elements.js";
 import { registerElements } from "iframe-coordinator/host";
