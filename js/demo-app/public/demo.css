@@ -95,25 +95,26 @@ header nav ul {
 header nav ul li {
     box-sizing: border-box;
     height: 100%;
-    padding: 0 12px;
     border-top: 5px solid transparent;
 
     display: flex;
     flex-direction: row;
     align-items: center;
 }
-
+header nav ul li a {
+    padding: 0 12px;
+}
 header nav ul li.active {
     border-top: 5px solid #FF4F1F;
-    background-color: #FFFFFF;
 }
 header nav ul li.active a {
-    color: #000000;
+    color: #FFFFFF;
 }
 
-header nav ul li button {
+/* Programmatic specific */
+header nav ul.programmatic-nav li button {
     background-color: transparent;
-    padding: 0;
+    padding: 0 12px;
     outline: none;
     border: none;
     cursor: pointer;
@@ -124,7 +125,8 @@ header nav ul li button {
     color: #98A7B8;
 }
 
-header nav ul li.active button {
+header nav ul.programmatic-nav li.active button {
+    background-color: #FFFFFF;
     color: #000000;
 }
 

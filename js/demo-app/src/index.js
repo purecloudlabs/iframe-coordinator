@@ -92,10 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // On navRequest & routing mode, change url
       } else {
         setRoute(data.detail.fragment);
-        let activeNavItem = NAV_CONFIGS.find(toMatch => {
-          return (data.detail.fragment.startsWith(toMatch.assignedRoute));
-        });
-        updateActiveNav(NAV_CONFIGS, activeNavItem.id);
+        updateActiveNav(data.detail.fragment);
       }
     });
 
@@ -192,8 +189,8 @@ function buildNavMarkup(navConfigs) {
     let currButton = document.createElement('button');
     currButton.setAttribute('class', `nav-id-${curr.id}`);
     currButton.addEventListener('click', () => {
-      updateActiveNav(NAV_CONFIGS, curr.id);
       setRoute(curr.assignedRoute);
+      updateActiveNav(curr.assignedRoute);
     });
     currButton.appendChild(document.createTextNode(curr.title));
     currLinkButton.appendChild(currButton);
@@ -201,20 +198,16 @@ function buildNavMarkup(navConfigs) {
   })
 }
 
-function updateActiveNav(navConfigs = NAV_CONFIGS, fqRoute = window.location.hash) {
+function updateActiveNav(fqRoute = window.location.hash, navConfigs = NAV_CONFIGS) {
   let activeNavId = null;
-  if (urlRoutingEnabled) {
-    let result = TOP_ROUTE_EXTRACTOR.exec(fqRoute);
-    if (result && result.length == 2) {
-      let currRoute = result[1];
+  let result = TOP_ROUTE_EXTRACTOR.exec(fqRoute);
+  if (result && result.length == 2) {
+    let currRoute = result[1];
 
-      let activeNavItem = navConfigs.find(toMatch => {
-        return (toMatch.assignedRoute === currRoute);
-      });
-      activeNavId = (activeNavItem ? activeNavItem.id : null);
-    }
-  } else {
-    activeNavId = fqRoute;
+    let activeNavItem = navConfigs.find(toMatch => {
+      return (toMatch.assignedRoute === currRoute);
+    });
+    activeNavId = (activeNavItem ? activeNavItem.id : null);
   }
 
   let navMenus = document.querySelectorAll('header nav ul');
