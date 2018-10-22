@@ -212,7 +212,7 @@ function updateActiveNav(fqRoute = window.location.hash, navConfigs = NAV_CONFIG
 
   let navMenus = document.querySelectorAll('header nav ul');
   navMenus.forEach(menu => {
-    let navEntries = menu.querySelectorAll('ul li').forEach(el => {
+    let navEntries = menu.querySelectorAll('li').forEach(el => {
       let currClassList = el.classList;
       if (currClassList.contains(`nav-id-${activeNavId}`)) {
         currClassList.add('active');
