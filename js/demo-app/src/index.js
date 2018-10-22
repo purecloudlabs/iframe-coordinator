@@ -150,17 +150,17 @@ function toggleRouting() {
 
   if (urlRoutingEnabled) {
     setRoute(window.location.hash.slice(1));
+    updateActiveNav();
   } else {
     location.hash = "";
     setRoute('');
-    updateActiveNav();
+    updateActiveNav('');
   }
 
   // Update UI
   document.querySelector('button.url-routing.toggle-switch').setAttribute('aria-checked', urlRoutingEnabled);
   document.querySelector('header nav ul.nav-menu').style.display = urlRoutingEnabled ? 'flex' : 'none';
   document.querySelector('header nav ul.programmatic-nav').style.display = urlRoutingEnabled ? 'none' : 'flex';
-  updateActiveNav();
 };
 
 // UI Helpers
