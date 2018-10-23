@@ -6,5 +6,5 @@ index.js
 .npmrc
 
 /*.d.ts
-elements/
-specs/
+/elements/
+/specs/

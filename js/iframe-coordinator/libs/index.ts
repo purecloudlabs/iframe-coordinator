@@ -1,4 +1,4 @@
 import { Client } from './client';
-import { registerElements, FrameRouterElement } from './host';
+import { FrameRouterElement, registerElements } from './host';
 
 export { Client, registerElements, FrameRouterElement };

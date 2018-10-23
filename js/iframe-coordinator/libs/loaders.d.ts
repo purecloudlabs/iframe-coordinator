@@ -1,4 +1,4 @@
 declare module 'inject-loader!*' {
-    var _: any;
-    export = _;
+  const _: any;
+  export = _;
 }

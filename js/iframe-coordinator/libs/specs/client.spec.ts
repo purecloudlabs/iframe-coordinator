@@ -1,18 +1,18 @@
 import * as ClientInjector from 'inject-loader!../client';
 
-describe("client", () => {
-  let Client: any,
-      client: any,
-      elmMock: any,
-      mockWorker: any,
-      mockFrameWindow: any;
+describe('client', () => {
+  let client: any;
+  let elmMock: any;
+  let mockWorker: any;
+  let mockFrameWindow: any;
+
   beforeEach(() => {
     mockFrameWindow = {
       eventHandlers: {},
       trigger: (eventId: string, eventData: any) => {
         mockFrameWindow.eventHandlers[eventId](eventData);
       },
-      addEventListener: (eventId: string, handler: Function) => {
+      addEventListener: (eventId: string, handler: () => void) => {
         mockFrameWindow.eventHandlers[eventId] = handler;
       },
       parent: {
@@ -29,17 +29,21 @@ describe("client", () => {
           send: jasmine.createSpy('elm.client.fromClient.send')
         },
         toHost: {
-          subscribe: jasmine.createSpy('elm.client.toHost.subscribe').and.callFake((subscribeHandler: Function) => {
-            mockWorker.ports.toHost.handler = subscribeHandler;
-          }),
+          subscribe: jasmine
+            .createSpy('elm.client.toHost.subscribe')
+            .and.callFake((subscribeHandler: () => void) => {
+              mockWorker.ports.toHost.handler = subscribeHandler;
+            }),
           publish: (data: any) => {
             mockWorker.ports.toHost.handler(data);
           }
         },
         toClient: {
-          subscribe: jasmine.createSpy('elm.client.toClient.subscribe').and.callFake((subscribeHandler: Function) => {
-            mockWorker.ports.toClient.handler = subscribeHandler;
-          }),
+          subscribe: jasmine
+            .createSpy('elm.client.toClient.subscribe')
+            .and.callFake((subscribeHandler: () => void) => {
+              mockWorker.ports.toClient.handler = subscribeHandler;
+            }),
           publish: (data: any) => {
             mockWorker.ports.toClient.handler(data);
           }
@@ -53,10 +57,12 @@ describe("client", () => {
         }
       }
     };
-    
-    Client = ClientInjector({
+
+    /* tslint:disable */
+    let Client = ClientInjector({
       '../elm/Client.elm': elmMock
     }).Client;
+    /* tslint:enable */
 
     client = new Client({ clientWindow: mockFrameWindow });
   });
@@ -87,8 +93,8 @@ describe("client", () => {
 
       it('should send a message to the worker', () => {
         expect(mockWorker.ports.fromClient.send).toHaveBeenCalledWith({
-           msgType: 'toastRequest', 
-           msg: {
+          msgType: 'toastRequest',
+          msg: {
             title: null,
             message: 'Test notification message',
             custom: null
@@ -99,13 +105,16 @@ describe("client", () => {
 
     describe('with message and extra data', () => {
       beforeEach(() => {
-        client.requestToast('Test notification message', { title: 'Test title', custom: { data: 'test data' }});
+        client.requestToast('Test notification message', {
+          title: 'Test title',
+          custom: { data: 'test data' }
+        });
       });
 
       it('should send a message to the worker', () => {
         expect(mockWorker.ports.fromClient.send).toHaveBeenCalledWith({
-           msgType: 'toastRequest',
-           msg: {
+          msgType: 'toastRequest',
+          msg: {
             title: 'Test title',
             message: 'Test notification message',
             custom: { data: 'test data' }
@@ -123,7 +132,7 @@ describe("client", () => {
 
     it('should notify worker of subscription', () => {
       expect(mockWorker.ports.fromClient.send).toHaveBeenCalledWith({
-        msgType: 'subscribe', 
+        msgType: 'subscribe',
         msg: 'test.topic'
       });
     });
@@ -137,7 +146,7 @@ describe("client", () => {
 
     it('should notify worker of unsubscription', () => {
       expect(mockWorker.ports.fromClient.send).toHaveBeenCalledWith({
-        msgType: 'unsubscribe', 
+        msgType: 'unsubscribe',
         msg: 'test.topic'
       });
     });
@@ -151,7 +160,7 @@ describe("client", () => {
 
     it('should notify worker of new publication', () => {
       expect(mockWorker.ports.fromClient.send).toHaveBeenCalledWith({
-        msgType: 'publish', 
+        msgType: 'publish',
         msg: {
           topic: 'test.topic',
           payload: 'custom data'
@@ -159,15 +168,21 @@ describe("client", () => {
       });
     });
   });
-  
+
   describe('when recieving a window message from the host application', () => {
     beforeEach(() => {
       client.start(mockFrameWindow);
-      mockFrameWindow.trigger('message', { origin: 'origin', data: 'test data' });
+      mockFrameWindow.trigger('message', {
+        origin: 'origin',
+        data: 'test data'
+      });
     });
 
     it('should notify worker of incoming message', () => {
-      expect(mockWorker.ports.fromHost.send).toHaveBeenCalledWith({ origin: 'origin', data: 'test data' });
+      expect(mockWorker.ports.fromHost.send).toHaveBeenCalledWith({
+        origin: 'origin',
+        data: 'test data'
+      });
     });
   });
 
@@ -178,17 +193,21 @@ describe("client", () => {
     });
 
     it('should post outgoing window message to host application', () => {
-      expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith('Test Publish', '*');
+      expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+        'Test Publish',
+        '*'
+      );
     });
   });
 
   describe('when client is publishing an outgoing message', () => {
-    let pubSubHandlerCallCount: number, pubSubHandlerData: any;
+    let pubSubHandlerCallCount: number;
+    let pubSubHandlerData: any;
     beforeEach(() => {
       pubSubHandlerCallCount = 0;
       client.start(mockFrameWindow);
       client.onPubsub((data: any) => {
-        pubSubHandlerCallCount++
+        pubSubHandlerCallCount++;
         pubSubHandlerData = data;
       });
       client.onPubsub(() => pubSubHandlerCallCount++);
@@ -198,7 +217,7 @@ describe("client", () => {
       });
     });
 
-    it('should notify each of the application\'s publication handlers', () => {
+    it("should notify each of the application's publication handlers", () => {
       expect(pubSubHandlerCallCount).toBe(2);
     });
 
@@ -213,17 +232,19 @@ describe("client", () => {
       beforeEach(() => {
         client.start(mockFrameWindow);
         mockElement = document.createElement('a');
-        mockElement.setAttribute('href', 'http://www.example.com/')
+        mockElement.setAttribute('href', 'http://www.example.com/');
         mockFrameWindow.trigger('click', {
           target: mockElement,
           button: 0,
-          preventDefault: () => {}
+          preventDefault: () => {
+            // Doesn't need to do anything
+          }
         });
       });
-  
+
       it('should notify worker of navigation request', () => {
         expect(mockWorker.ports.fromClient.send).toHaveBeenCalledWith({
-          msgType: 'navRequest', 
+          msgType: 'navRequest',
           msg: 'http://www.example.com/'
         });
       });
@@ -236,10 +257,12 @@ describe("client", () => {
         mockFrameWindow.trigger('click', {
           target: mockElement,
           button: 0,
-          preventDefault: () => {}
+          preventDefault: () => {
+            // Doesn't need to do anything
+          }
         });
       });
-  
+
       it('should not notify worker of navigation request', () => {
         expect(mockWorker.ports.fromClient.send).not.toHaveBeenCalled();
       });
