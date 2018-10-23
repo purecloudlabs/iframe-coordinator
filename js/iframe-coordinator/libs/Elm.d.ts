@@ -1,4 +1,3 @@
-/* tslint:disable:variable-name no-empty-interface */
 interface LabeledMsg {
   msgType: string;
   msg: any;
