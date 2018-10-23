@@ -1,11 +1,10 @@
+/* tslint:disable:variable-name */
 interface LabeledMsg {
   msgType: string;
   msg: any;
 }
 
-interface SubscribeHandler {
-  (msg: LabeledMsg): void;
-}
+type SubscribeHandler = (msg: LabeledMsg) => void;
 
 interface InPort {
   send(msg: LabeledMsg): void;
@@ -16,10 +15,15 @@ interface OutPort {
   unsubscribe(handler: SubscribeHandler): void;
 }
 
+interface HostMessage {
+  origin: string;
+  data: any;
+}
+
 interface ClientProgram {
   ports: {
     fromHost: {
-      send({ origin: string, data: any }): any;
+      send(msg: HostMessage): any;
     };
     toHost: OutPort;
     fromClient: InPort;
@@ -28,7 +32,7 @@ interface ClientProgram {
 }
 
 declare module '*/Client.elm' {
-  export var Elm: {
+  export const Elm: {
     Client: {
       init(): ClientProgram;
     };
@@ -43,17 +47,15 @@ interface HostProgram {
   };
 }
 
-interface ClientRegistrations {}
-
 declare module '*/Host.elm' {
   export interface Publication {
     topic: string;
     payload: any;
   }
 
-  export var Elm: {
+  export const Elm: {
     Host: {
-      init(options: { node: HTMLElement; flags: ClientRegistrations }): HostApp;
+      init(options: { node: HTMLElement; flags: {} }): HostApp;
     };
   };
 }
