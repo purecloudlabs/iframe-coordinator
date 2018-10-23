@@ -1,5 +1,3 @@
-const path = require('path');
-
 module.exports = {
   mode: "none",
   entry: {
@@ -10,7 +8,7 @@ module.exports = {
   output: {
     libraryTarget: "umd",
     filename: "[name].js",
-    path: path.resolve(__dirname, "")
+    path: __dirname + ""
   },
   module: {
     rules: [

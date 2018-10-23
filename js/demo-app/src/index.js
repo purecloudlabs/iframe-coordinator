@@ -92,6 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // On navRequest & routing mode, change url
       } else {
         setRoute(data.detail.fragment);
+        updateActiveNav(data.detail.fragment);
       }
     });
 
@@ -149,21 +150,23 @@ function toggleRouting() {
 
   if (urlRoutingEnabled) {
     setRoute(window.location.hash.slice(1));
+    updateActiveNav();
   } else {
     location.hash = "";
+    setRoute('');
+    updateActiveNav('');
   }
 
   // Update UI
   document.querySelector('button.url-routing.toggle-switch').setAttribute('aria-checked', urlRoutingEnabled);
   document.querySelector('header nav ul.nav-menu').style.display = urlRoutingEnabled ? 'flex' : 'none';
-  document.querySelector('header nav div.programmatic-nav').style.display = urlRoutingEnabled ? 'none' : 'flex';
-  updateActiveNav();
+  document.querySelector('header nav ul.programmatic-nav').style.display = urlRoutingEnabled ? 'none' : 'flex';
 };
 
 // UI Helpers
 function buildNavMarkup(navConfigs) {
   let navMenu = document.querySelector('header nav ul.nav-menu');
-  let programmaticNav = document.querySelector('header nav div.programmatic-nav');
+  let programmaticNav = document.querySelector('header nav ul.programmatic-nav');
 
   navConfigs.forEach(curr => {
     // Build Nav Menu Item
@@ -181,38 +184,41 @@ function buildNavMarkup(navConfigs) {
     navMenu.appendChild(currLi);
 
     // Build Programmatic Button
+    let currLinkButton = document.createElement('li');
+    currLinkButton.setAttribute('class', `nav-id-${curr.id}`);
     let currButton = document.createElement('button');
     currButton.setAttribute('class', `nav-id-${curr.id}`);
     currButton.addEventListener('click', () => {
       setRoute(curr.assignedRoute);
+      updateActiveNav(curr.assignedRoute);
     });
     currButton.appendChild(document.createTextNode(curr.title));
-    programmaticNav.appendChild(currButton);
+    currLinkButton.appendChild(currButton);
+    programmaticNav.appendChild(currLinkButton);
   })
 }
 
-function updateActiveNav(navConfigs = NAV_CONFIGS, fqRoute = window.location.hash) {
+function updateActiveNav(fqRoute = window.location.hash, navConfigs = NAV_CONFIGS) {
   let activeNavId = null;
-  if (urlRoutingEnabled) {
-    let result = TOP_ROUTE_EXTRACTOR.exec(fqRoute);
-    if (result && result.length == 2) {
-      let currRoute = result[1];
+  let result = TOP_ROUTE_EXTRACTOR.exec(fqRoute);
+  if (result && result.length == 2) {
+    let currRoute = result[1];
 
-      let activeNavItem = navConfigs.find(toMatch => {
-        return (toMatch.assignedRoute === currRoute);
-      });
-
-      activeNavId = (activeNavItem ? activeNavItem.id : null);
-    }
+    let activeNavItem = navConfigs.find(toMatch => {
+      return (toMatch.assignedRoute === currRoute);
+    });
+    activeNavId = (activeNavItem ? activeNavItem.id : null);
   }
 
-  let navMenu = document.querySelector('header nav ul.nav-menu');
-  let navEntries = navMenu.querySelectorAll('ul li').forEach(el => {
-    let currClassList = el.classList;
-    if (currClassList.contains(`nav-id-${activeNavId}`)) {
-      currClassList.add('active');
-    } else {
-      currClassList.remove('active');
-    }
-  })
+  let navMenus = document.querySelectorAll('header nav ul');
+  navMenus.forEach(menu => {
+    let navEntries = menu.querySelectorAll('li').forEach(el => {
+      let currClassList = el.classList;
+      if (currClassList.contains(`nav-id-${activeNavId}`)) {
+        currClassList.add('active');
+      } else {
+        currClassList.remove('active');
+      }
+    })
+  });
 }

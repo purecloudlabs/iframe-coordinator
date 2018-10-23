@@ -1,5 +1,5 @@
-import { Elm } from "../elm/Client.elm";
-import { PublicationHandler } from "./types";
+import { Elm } from '../elm/Client.elm';
+import { PublicationHandler } from './types';
 
 interface ToastOptions {
   title?: string;
@@ -7,49 +7,49 @@ interface ToastOptions {
 }
 
 interface ClientConfigOptions {
-  clientWindow?: Window
+  clientWindow?: Window;
 }
 
 class Client {
   private _worker: ClientProgram;
   private _isStarted: boolean;
   private _clientWindow: Window;
-  private _messageHandlers: Array<PublicationHandler> = [];
+  private _messageHandlers: PublicationHandler[] = [];
 
   public constructor(configOptions: ClientConfigOptions = {}) {
-    this._clientWindow = (configOptions.clientWindow) || window;
+    this._clientWindow = configOptions.clientWindow || window;
     this._worker = Elm.Client.init();
   }
 
   private _sendingMessageToHost = (message: LabeledMsg) => {
-    this._clientWindow.parent.postMessage(message, "*");
-  }
+    this._clientWindow.parent.postMessage(message, '*');
+  };
 
   private _publishMessageToHandlers = (message: LabeledMsg) => {
-    if (message.msgType != "publish") {
+    if (message.msgType !== 'publish') {
       return;
     }
 
     this._messageHandlers.forEach(handler => {
       handler(message.msg);
     });
-  }
+  };
 
   private _onWindowMessageReceived = (event: MessageEvent) => {
     this._worker.ports.fromHost.send({
       origin: event.origin,
       data: event.data
     });
-  }
+  };
 
   private _onWindowClick = (event: MouseEvent) => {
-    let target = event.target as HTMLElement;
-    if (target.tagName.toLowerCase() === "a" && event.button == 0) {
+    const target = event.target as HTMLElement;
+    if (target.tagName.toLowerCase() === 'a' && event.button === 0) {
       event.preventDefault();
-      let a = event.target as HTMLAnchorElement;
-      this._sendMessage("navRequest", a.href);
+      const a = event.target as HTMLAnchorElement;
+      this._sendMessage('navRequest', a.href);
     }
-  }
+  };
 
   public start(): void {
     if (this._isStarted) {
@@ -57,9 +57,12 @@ class Client {
     }
 
     this._isStarted = true;
-  
-    this._clientWindow.addEventListener("message", this._onWindowMessageReceived);
-    this._clientWindow.addEventListener("click", this._onWindowClick);
+
+    this._clientWindow.addEventListener(
+      'message',
+      this._onWindowMessageReceived
+    );
+    this._clientWindow.addEventListener('click', this._onWindowClick);
     this._worker.ports.toHost.subscribe(this._sendingMessageToHost);
     this._worker.ports.toClient.subscribe(this._publishMessageToHandlers);
   }
@@ -68,17 +71,22 @@ class Client {
     if (!this._isStarted) {
       return;
     }
-    
+
     this._isStarted = false;
-    this._clientWindow.removeEventListener("message", this._onWindowMessageReceived);
-    this._clientWindow.removeEventListener("click", this._onWindowClick);
+    this._clientWindow.removeEventListener(
+      'message',
+      this._onWindowMessageReceived
+    );
+    this._clientWindow.removeEventListener('click', this._onWindowClick);
     this._worker.ports.toHost.unsubscribe(this._sendingMessageToHost);
     this._worker.ports.toClient.unsubscribe(this._publishMessageToHandlers);
   }
 
   private _checkStarted(): void {
     if (!this._isStarted) {
-      throw new Error('Unable to perform action since this client object was not started');
+      throw new Error(
+        'Unable to perform action since this client object was not started'
+      );
     }
   }
 
@@ -91,16 +99,16 @@ class Client {
   }
 
   public subscribe(topic: string): void {
-    this._sendMessage("subscribe", topic);
+    this._sendMessage('subscribe', topic);
   }
 
   public unsubscribe(topic: string): void {
-    this._sendMessage("unsubscribe", topic);
+    this._sendMessage('unsubscribe', topic);
   }
 
   public publish(topic: string, data: any): void {
-    this._sendMessage("publish", {
-      topic: topic,
+    this._sendMessage('publish', {
+      topic,
       payload: data
     });
   }
@@ -135,7 +143,7 @@ class Client {
     message: string,
     { title = null, custom = null }: ToastOptions = {}
   ): void {
-    this._sendMessage("toastRequest", {
+    this._sendMessage('toastRequest', {
       title,
       message,
       custom
