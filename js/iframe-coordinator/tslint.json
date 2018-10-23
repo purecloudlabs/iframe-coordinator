@@ -1,7 +1,7 @@
 {
     "extends": ["tslint:recommended", "tslint-config-prettier"],
     "linterOptions": {
-      "exclude": ["node_modules/**/*.ts"]
+      "exclude": ["node_modules/**/*.ts", "**/*.d.ts"]
     },
     "rules": {
       "interface-name": [true, "never-prefix"],
