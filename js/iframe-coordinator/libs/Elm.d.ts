@@ -1,4 +1,4 @@
-/* tslint:disable:variable-name */
+/* tslint:disable:variable-name no-empty-interface */
 interface LabeledMsg {
   msgType: string;
   msg: any;
@@ -47,6 +47,8 @@ interface HostProgram {
   };
 }
 
+interface ClientRegistrations {}
+
 declare module '*/Host.elm' {
   export interface Publication {
     topic: string;
@@ -55,7 +57,7 @@ declare module '*/Host.elm' {
 
   export const Elm: {
     Host: {
-      init(options: { node: HTMLElement; flags: {} }): HostApp;
+      init(options: { node: HTMLElement; flags: ClientRegistrations }): HostApp;
     };
   };
 }
