@@ -1,4 +1,4 @@
-import { Elm, Publication } from '../elm/Host.elm';
+import { Elm, Publication } from '../../elm/Host.elm';
 import ClientFrame from './x-ifc-frame';
 
 const ROUTE_ATTR = 'route';
