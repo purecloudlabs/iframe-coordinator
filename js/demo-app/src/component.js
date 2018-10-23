@@ -25,7 +25,10 @@ document.getElementById("do-publish").addEventListener("click", () => {
   let data = JSON.parse(document.getElementById("pub-data").value);
 
   //Publish the data
-  iframeClient.publish(topic, data);
+  iframeClient.publish({
+    topic: topic,
+    payload: data
+  });
 });
 
 const TOAST_LEVELS = ["info", "success", "error"];
@@ -33,17 +36,15 @@ const TOAST_LEVELS = ["info", "success", "error"];
 document.addEventListener("DOMContentLoaded", () => {
   let toastBtnEl = document.querySelector("button.toast");
   toastBtnEl.addEventListener("click", () => {
-    let options = {
+    let toast = {
       title: "Hello iframe World",
+      message: `From ${toastBtnEl.getAttribute("data-component-name")}`,
       // Custom, App-specific props here
       custom: {
         level: TOAST_LEVELS[Math.round(Math.random() * 2)]
       }
     };
 
-    iframeClient.requestToast(
-      `From ${toastBtnEl.getAttribute("data-component-name")}`,
-      options
-    );
+    iframeClient.requestToast(toast);
   });
 });

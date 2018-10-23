@@ -1,10 +1,8 @@
 import { Elm } from '../elm/Client.elm';
+import { ClientToHost } from '../messages/ClientToHost';
+import { Publication } from '../messages/Publication';
+import { Toast } from '../messages/Toast';
 import { PublicationHandler } from './types';
-
-interface ToastOptions {
-  title?: string;
-  custom?: any;
-}
 
 interface ClientConfigOptions {
   clientWindow?: Window;
@@ -20,6 +18,10 @@ class Client {
     this._clientWindow = configOptions.clientWindow || window;
     this._worker = Elm.Client.init();
   }
+
+  private _sendToHost = (message: ClientToHost) => {
+    this._clientWindow.parent.postMessage(message, '*');
+  };
 
   private _sendingMessageToHost = (message: LabeledMsg) => {
     this._clientWindow.parent.postMessage(message, '*');
@@ -106,10 +108,10 @@ class Client {
     this._sendMessage('unsubscribe', topic);
   }
 
-  public publish(topic: string, data: any): void {
-    this._sendMessage('publish', {
-      topic,
-      payload: data
+  public publish(publication: Publication): void {
+    this._sendToHost({
+      msgType: 'publish',
+      msg: publication
     });
   }
 
@@ -139,14 +141,10 @@ class Client {
    * @example
    * worker.requestToast('World', {title: 'Hello', custom: {ttl: 5, level: 'info'}});
    */
-  public requestToast(
-    message: string,
-    { title = null, custom = null }: ToastOptions = {}
-  ): void {
-    this._sendMessage('toastRequest', {
-      title,
-      message,
-      custom
+  public requestToast(toast: Toast) {
+    this._sendToHost({
+      msgType: 'toastRequest',
+      msg: toast
     });
   }
 }
