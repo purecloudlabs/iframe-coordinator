@@ -1,4 +1,4 @@
-import { Publication } from '../elm/Host.elm';
+import { Publication } from './HostProgram';
 
 export interface Location {
   href: string;

@@ -1,4 +1,4 @@
-import { Elm, Publication } from '../../elm/Host.elm';
+import { HostProgram, Publication } from '../HostProgram';
 import ClientFrame from './x-ifc-frame';
 
 const ROUTE_ATTR = 'route';
@@ -29,10 +29,10 @@ class FrameRouterElement extends HTMLElement {
     this.setAttribute('style', 'position: relative;');
   }
 
-  public registerClients(clients: ClientRegistrations) {
+  public registerClients(clients: {}) {
     const embedTarget = document.createElement('div');
     this.appendChild(embedTarget);
-    this.router = Elm.Host.init({
+    this.router = new HostProgram({
       flags: clients,
       node: embedTarget
     });
@@ -73,10 +73,7 @@ class FrameRouterElement extends HTMLElement {
   }
 
   public changeRoute(newPath: string) {
-    this.router.ports.fromHost.send({
-      msg: newPath,
-      msgType: 'routeChange'
-    });
+    this.router.changeRoute(newPath);
   }
 
   public attributeChangedCallback(

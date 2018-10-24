@@ -1,4 +1,4 @@
-import { Elm } from '../elm/Client.elm';
+import { ClientProgram } from './ClientProgram';
 import { ClientToHost } from './messages/ClientToHost';
 import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
@@ -16,7 +16,7 @@ class Client {
 
   public constructor(configOptions: ClientConfigOptions = {}) {
     this._clientWindow = configOptions.clientWindow || window;
-    this._worker = Elm.Client.init();
+    this._worker = new ClientProgram();
   }
 
   private _sendToHost = (message: ClientToHost) => {
@@ -65,8 +65,12 @@ class Client {
       this._onWindowMessageReceived
     );
     this._clientWindow.addEventListener('click', this._onWindowClick);
+    this._worker.subscribe(this._sendingMessageToHost);
+    /*
+    TODO
     this._worker.ports.toHost.subscribe(this._sendingMessageToHost);
     this._worker.ports.toClient.subscribe(this._publishMessageToHandlers);
+    */
   }
 
   public stop(): void {
@@ -80,8 +84,11 @@ class Client {
       this._onWindowMessageReceived
     );
     this._clientWindow.removeEventListener('click', this._onWindowClick);
+    /*
+    TODO
     this._worker.ports.toHost.unsubscribe(this._sendingMessageToHost);
     this._worker.ports.toClient.unsubscribe(this._publishMessageToHandlers);
+    */
   }
 
   private _checkStarted(): void {
@@ -94,10 +101,16 @@ class Client {
 
   private _sendMessage(type: string, data: any): void {
     this._checkStarted();
+    this._worker.send({
+      msgType: type,
+      msg: data
+    });
+    /*
     this._worker.ports.fromClient.send({
       msgType: type,
       msg: data
     });
+    */
   }
 
   public subscribe(topic: string): void {
