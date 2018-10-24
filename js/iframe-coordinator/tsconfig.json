@@ -7,6 +7,6 @@
     "declarationDir": "./",
     "target": "es5"
   },
-  "include": ["libs"],
+  "include": ["src"],
   "exclude": []
 }
