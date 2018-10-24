@@ -1,8 +1,8 @@
 import { LabeledMsg } from './LabeledMsg';
 
 export interface Toast {
-  title: String | null;
-  message: String;
+  title: string | null;
+  message: string;
   custom: any;
 }
 
