@@ -1,9 +1,9 @@
 module.exports = {
   mode: "none",
   entry: {
-    index: "./libs/index.ts",
-    client: "./libs/client.ts",
-    host: "./libs/host.ts"
+    index: "./src/index.ts",
+    client: "./src/client.ts",
+    host: "./src/host.ts"
   },
   output: {
     libraryTarget: "umd",
