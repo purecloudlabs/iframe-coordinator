@@ -1,7 +1,7 @@
 import { LabeledMsg } from './LabeledMsg';
 
 export interface Publication {
-  topic: String;
+  topic: string;
   payload: any;
 }
 

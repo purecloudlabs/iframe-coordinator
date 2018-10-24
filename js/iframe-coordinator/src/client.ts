@@ -1,7 +1,7 @@
 import { Elm } from '../elm/Client.elm';
-import { ClientToHost } from '../messages/ClientToHost';
-import { Publication } from '../messages/Publication';
-import { Toast } from '../messages/Toast';
+import { ClientToHost } from './messages/ClientToHost';
+import { Publication } from './messages/Publication';
+import { Toast } from './messages/Toast';
 import { PublicationHandler } from './types';
 
 interface ClientConfigOptions {
