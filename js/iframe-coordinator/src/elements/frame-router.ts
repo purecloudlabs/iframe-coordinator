@@ -37,41 +37,40 @@ class FrameRouterElement extends HTMLElement {
       node: embedTarget
     });
 
-    this.router.ports.toHost.subscribe(labeledMsg => {
+    // Somebody tells us to send a message to the host
+    this.router.onMessageToHost((labeledMsg: LabeledMsg) => {
       this.dispatchEvent(
         new CustomEvent(labeledMsg.msgType, { detail: labeledMsg.msg })
       );
     });
 
-    this.router.ports.toClient.subscribe(message => {
+    // The host is telling us to send something to the client
+    this.router.onSendToClient((labeledMsg: LabeledMsg) => {
       const frame = this.getElementsByTagName('x-ifc-frame')[0] as ClientFrame;
       if (frame) {
-        frame.send(message);
+        frame.send(labeledMsg);
       }
     });
   }
 
+  // Only dispatch events that we are subscribed for.
   public subscribe(topic: string): void {
-    this.router.ports.fromHost.send({
-      msg: topic,
-      msgType: 'subscribe'
-    });
+    this.router.subscribeToMessages(topic);
   }
 
   public unsubscribe(topic: string): void {
-    this.router.ports.fromHost.send({
-      msg: topic,
-      msgType: 'unsubscribe'
-    });
+    this.router.unsubscribeToMessages(topic);
   }
 
+  // Publish a messages down to the client
   public publish(publication: Publication): void {
-    this.router.ports.fromHost.send({
+    this.router.publishGenericMessage({
       msg: publication,
       msgType: 'publish'
     });
   }
 
+  // Changes the route of the client
   public changeRoute(newPath: string) {
     this.router.changeRoute(newPath);
   }

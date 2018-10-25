@@ -23,11 +23,8 @@ class Client {
     this._clientWindow.parent.postMessage(message, '*');
   };
 
-  private _sendingMessageToHost = (message: LabeledMsg) => {
-    this._clientWindow.parent.postMessage(message, '*');
-  };
-
   private _publishMessageToHandlers = (message: LabeledMsg) => {
+    // Message from
     if (message.msgType !== 'publish') {
       return;
     }
@@ -38,10 +35,8 @@ class Client {
   };
 
   private _onWindowMessageReceived = (event: MessageEvent) => {
-    this._worker.ports.fromHost.send({
-      origin: event.origin,
-      data: event.data
-    });
+    // Send the window message down to the client
+    this._worker.messageEventReceived(event);
   };
 
   private _onWindowClick = (event: MouseEvent) => {
@@ -49,7 +44,11 @@ class Client {
     if (target.tagName.toLowerCase() === 'a' && event.button === 0) {
       event.preventDefault();
       const a = event.target as HTMLAnchorElement;
-      this._sendMessage('navRequest', a.href);
+      const url = new URL(a.href);
+      const urlData = {
+        fragment: url.hash
+      };
+      this._sendMessage('navRequest', urlData);
     }
   };
 
@@ -65,12 +64,7 @@ class Client {
       this._onWindowMessageReceived
     );
     this._clientWindow.addEventListener('click', this._onWindowClick);
-    this._worker.subscribe(this._sendingMessageToHost);
-    /*
-    TODO
-    this._worker.ports.toHost.subscribe(this._sendingMessageToHost);
-    this._worker.ports.toClient.subscribe(this._publishMessageToHandlers);
-    */
+    this._worker.onMessageToPublish(this._publishMessageToHandlers);
   }
 
   public stop(): void {
@@ -84,11 +78,6 @@ class Client {
       this._onWindowMessageReceived
     );
     this._clientWindow.removeEventListener('click', this._onWindowClick);
-    /*
-    TODO
-    this._worker.ports.toHost.unsubscribe(this._sendingMessageToHost);
-    this._worker.ports.toClient.unsubscribe(this._publishMessageToHandlers);
-    */
   }
 
   private _checkStarted(): void {
@@ -105,20 +94,15 @@ class Client {
       msgType: type,
       msg: data
     });
-    /*
-    this._worker.ports.fromClient.send({
-      msgType: type,
-      msg: data
-    });
-    */
   }
 
+  // Subscribe to messages from host
   public subscribe(topic: string): void {
-    this._sendMessage('subscribe', topic);
+    this._worker.subscribe(topic);
   }
 
   public unsubscribe(topic: string): void {
-    this._sendMessage('unsubscribe', topic);
+    this._worker.unsubscribe(topic);
   }
 
   public publish(publication: Publication): void {
@@ -129,6 +113,7 @@ class Client {
   }
 
   public onPubsub(callback: PublicationHandler): void {
+    // Message
     this._messageHandlers.push(callback);
   }
 

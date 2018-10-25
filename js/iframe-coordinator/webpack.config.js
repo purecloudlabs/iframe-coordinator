@@ -13,14 +13,6 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.elm$/,
-        exclude: [/elm-stuff/, /node_modules/],
-        use: {
-          loader: "elm-webpack-loader",
-          options: { debug: true }
-        }
-      },
-      {
         test: /\.ts$/,
         exclude: [/node_modules/],
         use: {
