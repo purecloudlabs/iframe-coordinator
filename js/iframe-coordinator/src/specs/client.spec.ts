@@ -1,10 +1,11 @@
 import * as ClientInjector from 'inject-loader!../client';
+import { ClientProgram } from '../ClientProgram';
 
 describe('client', () => {
   let client: any;
-  let elmMock: any;
   let mockWorker: any;
   let mockFrameWindow: any;
+  let mockClientProgramObj: any;
 
   beforeEach(() => {
     mockFrameWindow = {
@@ -20,47 +21,42 @@ describe('client', () => {
       }
     };
 
-    mockWorker = {
-      ports: {
-        fromHost: {
-          send: jasmine.createSpy('elm.client.fromHost.send')
-        },
-        fromClient: {
-          send: jasmine.createSpy('elm.client.fromClient.send')
-        },
-        toHost: {
-          subscribe: jasmine
-            .createSpy('elm.client.toHost.subscribe')
-            .and.callFake((subscribeHandler: () => void) => {
-              mockWorker.ports.toHost.handler = subscribeHandler;
-            }),
-          publish: (data: any) => {
-            mockWorker.ports.toHost.handler(data);
-          }
-        },
-        toClient: {
-          subscribe: jasmine
-            .createSpy('elm.client.toClient.subscribe')
-            .and.callFake((subscribeHandler: () => void) => {
-              mockWorker.ports.toClient.handler = subscribeHandler;
-            }),
-          publish: (data: any) => {
-            mockWorker.ports.toClient.handler(data);
-          }
-        }
-      }
+    mockClientProgramObj = {
+      onMessageToPublish: jasmine
+        .createSpy('onMessageToPublish')
+        .and.callFake((handler: (data: any) => void) => {
+          mockClientProgramObj.messageToPublishHandler = handler;
+        }),
+      raiseMessageToPublish: (data: any) => {
+        mockClientProgramObj.messageToPublishHandler(data);
+      },
+      onMessageToHost: jasmine
+        .createSpy('onMessageToHost')
+        .and.callFake((handler: (data: any) => void) => {
+          mockClientProgramObj.messageToHostHandler = handler;
+        }),
+      raiseMessageToHost: (data: any) => {
+        mockClientProgramObj.messageToHostHandler(data);
+      },
+      send: jasmine.createSpy('clientProgramSend'),
+      subscribe: jasmine.createSpy('subscribe'),
+      unsubscribe: jasmine.createSpy('unsubscribe'),
+      messageEventReceived: jasmine.createSpy('messageEventReceived')
     };
-    elmMock = {
-      Elm: {
-        Client: {
-          init: jasmine.createSpy('elm.client.init').and.returnValue(mockWorker)
-        }
-      }
+
+    /* tslint:disable */
+    const mockClientProgram = function() {
+      return mockClientProgramObj;
+    };
+    /* tslint:enable */
+
+    mockWorker = {
+      ClientProgram: mockClientProgram
     };
 
     /* tslint:disable */
     let Client = ClientInjector({
-      '../elm/Client.elm': elmMock
+      './ClientProgram': mockWorker
     }).Client;
     /* tslint:enable */
 
@@ -72,12 +68,12 @@ describe('client', () => {
       client.start(mockFrameWindow);
     });
 
-    it('should initialize the elm client', () => {
-      expect(elmMock.Elm.Client.init).toHaveBeenCalled();
+    it('should subscribe to host messages', () => {
+      expect(mockClientProgramObj.onMessageToPublish).toHaveBeenCalled();
     });
 
     it('should subscribe to host messages', () => {
-      expect(mockWorker.ports.toHost.subscribe).toHaveBeenCalled();
+      expect(mockClientProgramObj.onMessageToPublish).toHaveBeenCalled();
     });
   });
 
@@ -88,16 +84,16 @@ describe('client', () => {
 
     describe('with only a message', () => {
       beforeEach(() => {
-        client.requestToast('Test notification message');
+        client.requestToast({ message: 'Test notification message' });
       });
 
       it('should send a message to the worker', () => {
-        expect(mockWorker.ports.fromClient.send).toHaveBeenCalledWith({
+        expect(mockClientProgramObj.send).toHaveBeenCalledWith({
           msgType: 'toastRequest',
           msg: {
-            title: null,
+            title: undefined,
             message: 'Test notification message',
-            custom: null
+            custom: undefined
           }
         });
       });
@@ -105,14 +101,15 @@ describe('client', () => {
 
     describe('with message and extra data', () => {
       beforeEach(() => {
-        client.requestToast('Test notification message', {
+        client.requestToast({
           title: 'Test title',
+          message: 'Test notification message',
           custom: { data: 'test data' }
         });
       });
 
       it('should send a message to the worker', () => {
-        expect(mockWorker.ports.fromClient.send).toHaveBeenCalledWith({
+        expect(mockClientProgramObj.send).toHaveBeenCalledWith({
           msgType: 'toastRequest',
           msg: {
             title: 'Test title',
@@ -131,10 +128,7 @@ describe('client', () => {
     });
 
     it('should notify worker of subscription', () => {
-      expect(mockWorker.ports.fromClient.send).toHaveBeenCalledWith({
-        msgType: 'subscribe',
-        msg: 'test.topic'
-      });
+      expect(mockClientProgramObj.subscribe).toHaveBeenCalledWith('test.topic');
     });
   });
 
@@ -145,21 +139,20 @@ describe('client', () => {
     });
 
     it('should notify worker of unsubscription', () => {
-      expect(mockWorker.ports.fromClient.send).toHaveBeenCalledWith({
-        msgType: 'unsubscribe',
-        msg: 'test.topic'
-      });
+      expect(mockClientProgramObj.unsubscribe).toHaveBeenCalledWith(
+        'test.topic'
+      );
     });
   });
 
   describe('when publishing a new message', () => {
     beforeEach(() => {
       client.start(mockFrameWindow);
-      client.publish('test.topic', 'custom data');
+      client.publish({ topic: 'test.topic', payload: 'custom data' });
     });
 
     it('should notify worker of new publication', () => {
-      expect(mockWorker.ports.fromClient.send).toHaveBeenCalledWith({
+      expect(mockClientProgramObj.send).toHaveBeenCalledWith({
         msgType: 'publish',
         msg: {
           topic: 'test.topic',
@@ -179,7 +172,7 @@ describe('client', () => {
     });
 
     it('should notify worker of incoming message', () => {
-      expect(mockWorker.ports.fromHost.send).toHaveBeenCalledWith({
+      expect(mockClientProgramObj.messageEventReceived).toHaveBeenCalledWith({
         origin: 'origin',
         data: 'test data'
       });
@@ -189,7 +182,7 @@ describe('client', () => {
   describe('when recieving a message directed towards the host application', () => {
     beforeEach(() => {
       client.start(mockFrameWindow);
-      mockWorker.ports.toHost.publish('Test Publish');
+      mockClientProgramObj.raiseMessageToHost('Test Publish');
     });
 
     it('should post outgoing window message to host application', () => {
@@ -211,7 +204,7 @@ describe('client', () => {
         pubSubHandlerData = data;
       });
       client.onPubsub(() => pubSubHandlerCallCount++);
-      mockWorker.ports.toClient.publish({
+      mockClientProgramObj.raiseMessageToPublish({
         msgType: 'publish',
         msg: { data: 'custom data' }
       });
@@ -243,9 +236,9 @@ describe('client', () => {
       });
 
       it('should notify worker of navigation request', () => {
-        expect(mockWorker.ports.fromClient.send).toHaveBeenCalledWith({
+        expect(mockClientProgramObj.send).toHaveBeenCalledWith({
           msgType: 'navRequest',
-          msg: 'http://www.example.com/'
+          msg: { fragment: '' }
         });
       });
     });
@@ -264,7 +257,7 @@ describe('client', () => {
       });
 
       it('should not notify worker of navigation request', () => {
-        expect(mockWorker.ports.fromClient.send).not.toHaveBeenCalled();
+        expect(mockClientProgramObj.send).not.toHaveBeenCalled();
       });
     });
   });

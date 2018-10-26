@@ -1,4 +1,4 @@
-import { HostProgram, Publication } from '../HostProgram';
+import { HostRouter, Publication } from '../HostRouter';
 import ClientFrame from './x-ifc-frame';
 
 const ROUTE_ATTR = 'route';
@@ -15,7 +15,7 @@ const ROUTE_ATTR = 'route';
  * @param {object=} detail.x - Optional, custom properties for application-specific toast features
  */
 class FrameRouterElement extends HTMLElement {
-  public router: HostProgram;
+  public router: HostRouter;
 
   constructor() {
     super();
@@ -32,19 +32,19 @@ class FrameRouterElement extends HTMLElement {
   public registerClients(clients: {}) {
     const embedTarget = document.createElement('div');
     this.appendChild(embedTarget);
-    this.router = new HostProgram({
-      flags: clients,
+    this.router = new HostRouter({
+      routingMap: clients,
       node: embedTarget
     });
 
-    // Somebody tells us to send a message to the host
-    this.router.onMessageToHost((labeledMsg: LabeledMsg) => {
+    // Router requests a message sent to the host.
+    this.router.onSendToHost((labeledMsg: LabeledMsg) => {
       this.dispatchEvent(
         new CustomEvent(labeledMsg.msgType, { detail: labeledMsg.msg })
       );
     });
 
-    // The host is telling us to send something to the client
+    // Router requests a message sent to the client
     this.router.onSendToClient((labeledMsg: LabeledMsg) => {
       const frame = this.getElementsByTagName('x-ifc-frame')[0] as ClientFrame;
       if (frame) {
@@ -53,16 +53,30 @@ class FrameRouterElement extends HTMLElement {
     });
   }
 
-  // Only dispatch events that we are subscribed for.
+  /**
+   * Subscribes to a topic published by the client fragment.
+   *
+   * @param topic - The topic name the host is interested in.
+   */
   public subscribe(topic: string): void {
     this.router.subscribeToMessages(topic);
   }
 
+  /**
+   * Unsubscribes to a topic published by the client fragment.
+   *
+   * @param topic - The topic name the host is no longer interested in.
+   */
   public unsubscribe(topic: string): void {
     this.router.unsubscribeToMessages(topic);
   }
 
-  // Publish a messages down to the client
+  /**
+   * Publish a message to the client fragment.
+   *
+   * @param publication - The information published to the client fragment.
+   * The topic may not be of interest, and could be ignored.
+   */
   public publish(publication: Publication): void {
     this.router.publishGenericMessage({
       msg: publication,
@@ -70,7 +84,11 @@ class FrameRouterElement extends HTMLElement {
     });
   }
 
-  // Changes the route of the client
+  /**
+   * Changes the route the client fragment is rendering.
+   *
+   * @param newPath a new route which matches those provided originally.
+   */
   public changeRoute(newPath: string) {
     this.router.changeRoute(newPath);
   }
