@@ -65,6 +65,7 @@ class Client {
     );
     this._clientWindow.addEventListener('click', this._onWindowClick);
     this._worker.onMessageToPublish(this._publishMessageToHandlers);
+    this._worker.onMessageToHost(this._sendToHost);
   }
 
   public stop(): void {
@@ -78,6 +79,8 @@ class Client {
       this._onWindowMessageReceived
     );
     this._clientWindow.removeEventListener('click', this._onWindowClick);
+
+    // TODO offMessageToPublish
   }
 
   private _checkStarted(): void {
@@ -106,10 +109,7 @@ class Client {
   }
 
   public publish(publication: Publication): void {
-    this._sendToHost({
-      msgType: 'publish',
-      msg: publication
-    });
+    this._sendMessage('publish', publication);
   }
 
   public onPubsub(callback: PublicationHandler): void {
@@ -140,9 +140,10 @@ class Client {
    * worker.requestToast('World', {title: 'Hello', custom: {ttl: 5, level: 'info'}});
    */
   public requestToast(toast: Toast) {
-    this._sendToHost({
-      msgType: 'toastRequest',
-      msg: toast
+    this._sendMessage('toastRequest', {
+      title: toast.title,
+      message: toast.message,
+      custom: toast.custom
     });
   }
 }

@@ -10,8 +10,8 @@ interface Publication {
   payload: any;
 }
 
-class HostProgram {
-  private _flags: { [key: string]: ClientRegistration };
+class HostRouter {
+  private _routingMap: { [key: string]: ClientRegistration };
   private _clientFrame: ClientFrame;
   private _subscriptions: SubscribeHandler[];
   private _subscriptions2: SubscribeHandler[];
@@ -19,9 +19,9 @@ class HostProgram {
 
   constructor(options: {
     node: HTMLElement;
-    flags: { [key: string]: ClientRegistration };
+    routingMap: { [key: string]: ClientRegistration };
   }) {
-    this._flags = options.flags;
+    this._routingMap = options.routingMap;
     this._interestedTopics = new Set();
     this._subscriptions = [];
     this._subscriptions2 = [];
@@ -42,7 +42,7 @@ class HostProgram {
     this._interestedTopics.delete(topic);
   }
 
-  public onMessageToHost(handler: SubscribeHandler): void {
+  public onSendToHost(handler: SubscribeHandler): void {
     this._subscriptions.push(handler);
   }
 
@@ -79,9 +79,9 @@ class HostProgram {
 
   public changeRoute(route: string) {
     let urlRoute: string = 'about:blank';
-    for (const key in this._flags) {
-      if (this._flags.hasOwnProperty(key)) {
-        const element = this._flags[key];
+    for (const key in this._routingMap) {
+      if (this._routingMap.hasOwnProperty(key)) {
+        const element = this._routingMap[key];
         if (element.assignedRoute === route) {
           urlRoute = element.url;
         }
@@ -92,4 +92,4 @@ class HostProgram {
   }
 }
 
-export { HostProgram, Publication };
+export { HostRouter, Publication };

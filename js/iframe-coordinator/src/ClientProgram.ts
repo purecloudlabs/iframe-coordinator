@@ -1,9 +1,11 @@
 class ClientProgram {
   private _subscriptions: SubscribeHandler[];
+  private _subscriptions2: SubscribeHandler[];
   private _interestedTopics: Set<string>;
 
   constructor() {
     this._subscriptions = [];
+    this._subscriptions2 = [];
     this._interestedTopics = new Set();
   }
 
@@ -44,6 +46,10 @@ class ClientProgram {
 
   public onMessageToPublish(handler: SubscribeHandler): void {
     this._subscriptions.push(handler);
+  }
+
+  public onMessageToHost(handler: SubscribeHandler): void {
+    this._subscriptions2.push(handler);
   }
 }
 

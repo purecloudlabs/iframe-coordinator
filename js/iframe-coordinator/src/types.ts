@@ -1,4 +1,4 @@
-import { Publication } from './HostProgram';
+import { Publication } from './HostRouter';
 
 export interface Location {
   href: string;
