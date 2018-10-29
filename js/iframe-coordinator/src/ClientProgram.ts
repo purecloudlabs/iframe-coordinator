@@ -1,11 +1,11 @@
 class ClientProgram {
   private _subscriptions: SubscribeHandler[];
-  private _subscriptions2: SubscribeHandler[];
+  private _toHostSubscriptions: SubscribeHandler[];
   private _interestedTopics: Set<string>;
 
   constructor() {
     this._subscriptions = [];
-    this._subscriptions2 = [];
+    this._toHostSubscriptions = [];
     this._interestedTopics = new Set();
   }
 
@@ -18,7 +18,7 @@ class ClientProgram {
   }
 
   public send(message: LabeledMsg): void {
-    for (const handler of this._subscriptions2) {
+    for (const handler of this._toHostSubscriptions) {
       handler(message);
     }
   }
@@ -48,7 +48,7 @@ class ClientProgram {
   }
 
   public onMessageToHost(handler: SubscribeHandler): void {
-    this._subscriptions2.push(handler);
+    this._toHostSubscriptions.push(handler);
   }
 }
 

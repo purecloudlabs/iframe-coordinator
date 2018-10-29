@@ -13,8 +13,8 @@ interface Publication {
 class HostRouter {
   private _routingMap: { [key: string]: ClientRegistration };
   private _clientFrame: ClientFrame;
-  private _subscriptions: SubscribeHandler[];
-  private _subscriptions2: SubscribeHandler[];
+  private _toHostSubscriptions: SubscribeHandler[];
+  private _toClientSubscriptions: SubscribeHandler[];
   private _interestedTopics: Set<string>;
 
   constructor(options: {
@@ -23,8 +23,8 @@ class HostRouter {
   }) {
     this._routingMap = options.routingMap;
     this._interestedTopics = new Set();
-    this._subscriptions = [];
-    this._subscriptions2 = [];
+    this._toHostSubscriptions = [];
+    this._toClientSubscriptions = [];
 
     this._clientFrame = new ClientFrame();
     this._clientFrame.setAttribute('src', 'about:blank');
@@ -43,21 +43,21 @@ class HostRouter {
   }
 
   public onSendToHost(handler: SubscribeHandler): void {
-    this._subscriptions.push(handler);
+    this._toHostSubscriptions.push(handler);
   }
 
   public onSendToClient(handler: SubscribeHandler): void {
-    this._subscriptions2.push(handler);
+    this._toClientSubscriptions.push(handler);
   }
 
   public publishGenericMessage(message: LabeledMsg) {
-    for (const handler of this._subscriptions) {
+    for (const handler of this._toClientSubscriptions) {
       handler(message);
     }
   }
 
   private _send(message: LabeledMsg): void {
-    for (const handler of this._subscriptions) {
+    for (const handler of this._toHostSubscriptions) {
       if (this._handleMessageType(message)) {
         handler(message);
       }
