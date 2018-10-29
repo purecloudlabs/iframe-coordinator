@@ -22,13 +22,13 @@ describe('client', () => {
     };
 
     mockClientProgramObj = {
-      onMessageToPublish: jasmine
-        .createSpy('onMessageToPublish')
+      onMessageFromHost: jasmine
+        .createSpy('onMessageFromHost')
         .and.callFake((handler: (data: any) => void) => {
-          mockClientProgramObj.messageToPublishHandler = handler;
+          mockClientProgramObj.messageFromHostHandler = handler;
         }),
-      raiseMessageToPublish: (data: any) => {
-        mockClientProgramObj.messageToPublishHandler(data);
+      raiseMessageFromHost: (data: any) => {
+        mockClientProgramObj.messageFromHostHandler(data);
       },
       onMessageToHost: jasmine
         .createSpy('onMessageToHost')
@@ -69,11 +69,11 @@ describe('client', () => {
     });
 
     it('should subscribe to host messages', () => {
-      expect(mockClientProgramObj.onMessageToPublish).toHaveBeenCalled();
+      expect(mockClientProgramObj.onMessageFromHost).toHaveBeenCalled();
     });
 
     it('should subscribe to host messages', () => {
-      expect(mockClientProgramObj.onMessageToPublish).toHaveBeenCalled();
+      expect(mockClientProgramObj.onMessageFromHost).toHaveBeenCalled();
     });
   });
 
@@ -172,10 +172,9 @@ describe('client', () => {
     });
 
     it('should notify worker of incoming message', () => {
-      expect(mockClientProgramObj.messageEventReceived).toHaveBeenCalledWith({
-        origin: 'origin',
-        data: 'test data'
-      });
+      expect(mockClientProgramObj.messageEventReceived).toHaveBeenCalledWith(
+        'test data'
+      );
     });
   });
 
@@ -204,7 +203,7 @@ describe('client', () => {
         pubSubHandlerData = data;
       });
       client.onPubsub(() => pubSubHandlerCallCount++);
-      mockClientProgramObj.raiseMessageToPublish({
+      mockClientProgramObj.raiseMessageFromHost({
         msgType: 'publish',
         msg: { data: 'custom data' }
       });

@@ -18,7 +18,7 @@ class ClientProgram {
   }
 
   public send(message: LabeledMsg): void {
-    for (const handler of this._subscriptions) {
+    for (const handler of this._subscriptions2) {
       handler(message);
     }
   }
@@ -35,8 +35,7 @@ class ClientProgram {
     }
   }
 
-  public messageEventReceived(event: MessageEvent): void {
-    const message = event.data as LabeledMsg;
+  public messageEventReceived(message: LabeledMsg): void {
     for (const handler of this._subscriptions) {
       if (this._handleMessageType(message)) {
         handler(message);
@@ -44,7 +43,7 @@ class ClientProgram {
     }
   }
 
-  public onMessageToPublish(handler: SubscribeHandler): void {
+  public onMessageFromHost(handler: SubscribeHandler): void {
     this._subscriptions.push(handler);
   }
 
