@@ -1,5 +1,5 @@
 import { ClientProgram } from './ClientProgram';
-import { ClientToHost } from './messages/ClientToHost';
+import { ClientToHost, validate } from './messages/ClientToHost';
 import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 import { PublicationHandler } from './types';
@@ -20,7 +20,10 @@ class Client {
   }
 
   private _sendToHost = (message: ClientToHost) => {
-    this._clientWindow.parent.postMessage(message, '*');
+    let validated = validate(message);
+    if (validated) {
+      this._clientWindow.parent.postMessage(validated, '*');
+    }
   };
 
   private _publishMessageToHandlers = (message: LabeledMsg) => {
