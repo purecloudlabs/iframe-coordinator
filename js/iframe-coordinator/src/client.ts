@@ -36,7 +36,7 @@ class Client {
 
   private _onWindowMessageReceived = (event: MessageEvent) => {
     // Send the window message down to the client
-    this._worker.messageEventReceived(event);
+    this._worker.messageEventReceived(event.data);
   };
 
   private _onWindowClick = (event: MouseEvent) => {
@@ -64,7 +64,7 @@ class Client {
       this._onWindowMessageReceived
     );
     this._clientWindow.addEventListener('click', this._onWindowClick);
-    this._worker.onMessageToPublish(this._publishMessageToHandlers);
+    this._worker.onMessageFromHost(this._publishMessageToHandlers);
     this._worker.onMessageToHost(this._sendToHost);
   }
 
