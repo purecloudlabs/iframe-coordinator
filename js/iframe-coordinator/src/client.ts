@@ -45,10 +45,12 @@ class Client {
       event.preventDefault();
       const a = event.target as HTMLAnchorElement;
       const url = new URL(a.href);
-      const urlData = {
-        fragment: url.hash
-      };
-      this._sendMessage('navRequest', urlData);
+      this._sendToHost({
+        msgType: 'navRequest',
+        msg: {
+          url: url.toString()
+        }
+      });
     }
   };
 
@@ -140,10 +142,9 @@ class Client {
    * worker.requestToast('World', {title: 'Hello', custom: {ttl: 5, level: 'info'}});
    */
   public requestToast(toast: Toast) {
-    this._sendMessage('toastRequest', {
-      title: toast.title,
-      message: toast.message,
-      custom: toast.custom
+    this._sendToHost({
+      msgType: 'toastRequest',
+      msg: toast
     });
   }
 }

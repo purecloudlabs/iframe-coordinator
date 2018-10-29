@@ -39,7 +39,10 @@ class ClientFrame extends HTMLElement {
 
   /* Syncs the iframe state to the current src attribute */
   public syncLocation() {
-    this.updateFrameLoc(this.getAttribute('src'));
+    let src = this.getAttribute('src');
+    if (src != null) {
+      this.updateFrameLoc(src);
+    }
   }
 
   public updateFrameLoc(newSrc: string) {
@@ -56,14 +59,19 @@ class ClientFrame extends HTMLElement {
 
   public send(message: any) {
     const clientOrigin = this.expectedClientOrigin();
-    if (clientOrigin !== 'null') {
+    if (clientOrigin !== 'null' && this.iframe.contentWindow) {
       this.iframe.contentWindow.postMessage(message, clientOrigin);
     }
   }
 
   public expectedClientOrigin() {
-    const clientUrl = new URL(this.getAttribute('src'), window.location.href);
-    return clientUrl.origin;
+    let src = this.getAttribute('src');
+    if (src != null) {
+      const clientUrl = new URL(src, window.location.href);
+      return clientUrl.origin;
+    } else {
+      return 'about:blank';
+    }
   }
 
   public handleClientMessages(event: MessageEvent) {
