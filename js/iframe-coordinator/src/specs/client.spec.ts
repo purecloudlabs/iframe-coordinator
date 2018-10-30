@@ -167,7 +167,7 @@ describe('client', () => {
     });
   });
 
-  describe('when recieving a window message from the host application', () => {
+  describe('when recieving an invalid window message from the host application', () => {
     beforeEach(() => {
       client.start(mockFrameWindow);
       mockFrameWindow.trigger('message', {
@@ -177,9 +177,28 @@ describe('client', () => {
     });
 
     it('should notify worker of incoming message', () => {
-      expect(mockClientProgramObj.messageEventReceived).toHaveBeenCalledWith(
-        'test data'
-      );
+      expect(
+        mockClientProgramObj.messageEventReceived
+      ).not.toHaveBeenCalledWith('test data');
+    });
+  });
+
+  describe('when recieving an valid window message from the host application', () => {
+    beforeEach(() => {
+      client.start(mockFrameWindow);
+      mockFrameWindow.trigger('message', {
+        origin: 'origin',
+        data: {
+          msgType: 'publish',
+          msg: 'test data'
+        }
+      });
+    });
+
+    it('should notify worker of incoming message', () => {
+      expect(
+        mockClientProgramObj.messageEventReceived
+      ).not.toHaveBeenCalledWith('test data');
     });
   });
 

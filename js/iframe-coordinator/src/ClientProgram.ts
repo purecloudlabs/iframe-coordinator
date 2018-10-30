@@ -1,3 +1,5 @@
+import { HostToClient, validate } from './messages/HostToClient';
+
 class ClientProgram {
   private _subscriptions: SubscribeHandler[];
   private _interestedTopics: Set<string>;
@@ -15,7 +17,7 @@ class ClientProgram {
     this._interestedTopics.delete(topic);
   }
 
-  private _handleMessageType(message: LabeledMsg) {
+  private _isMessageInteresting(message: HostToClient) {
     switch (message.msgType) {
       case 'publish':
         if (this._interestedTopics.has(message.msg.topic)) {
@@ -27,9 +29,9 @@ class ClientProgram {
     }
   }
 
-  public messageEventReceived(message: LabeledMsg): void {
+  public messageEventReceived(message: HostToClient): void {
     for (const handler of this._subscriptions) {
-      if (this._handleMessageType(message)) {
+      if (this._isMessageInteresting(message)) {
         handler(message);
       }
     }
