@@ -1,7 +1,7 @@
 import { LabeledMsg } from './LabeledMsg';
 
 export interface NavRequest {
-  url: String;
+  url: string;
 }
 
 export interface LabeledNavRequest extends LabeledMsg {
