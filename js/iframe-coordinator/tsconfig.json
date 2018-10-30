@@ -2,6 +2,7 @@
   "compilerOptions": {
     "outDir": "./",
     "noImplicitAny": true,
+    "strictNullChecks": true,
     "module": "commonjs",
     "declaration": true,
     "declarationDir": "./",
