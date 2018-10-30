@@ -20,7 +20,7 @@ class Client {
   }
 
   private _sendToHost = (message: ClientToHost) => {
-    let validated = validate(message);
+    const validated = validate(message);
     if (validated) {
       this._clientWindow.parent.postMessage(validated, '*');
     }

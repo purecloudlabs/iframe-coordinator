@@ -39,7 +39,7 @@ class ClientFrame extends HTMLElement {
 
   /* Syncs the iframe state to the current src attribute */
   public syncLocation() {
-    let src = this.getAttribute('src');
+    const src = this.getAttribute('src');
     if (src != null) {
       this.updateFrameLoc(src);
     }
@@ -65,7 +65,7 @@ class ClientFrame extends HTMLElement {
   }
 
   public expectedClientOrigin() {
-    let src = this.getAttribute('src');
+    const src = this.getAttribute('src');
     if (src != null) {
       const clientUrl = new URL(src, window.location.href);
       return clientUrl.origin;

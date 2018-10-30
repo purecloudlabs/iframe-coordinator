@@ -1,6 +1,6 @@
+import { LabeledNavRequest } from './NavRequest';
 import { LabeledPublication } from './Publication';
 import { LabeledToast } from './Toast';
-import { LabeledNavRequest } from './NavRequest';
 
 export type ClientToHost =
   | LabeledPublication
@@ -8,7 +8,7 @@ export type ClientToHost =
   | LabeledNavRequest;
 
 export function validate(msg: ClientToHost) {
-  //TODO: actually validate cases
+  // TODO: actually validate cases
   switch (msg.msgType) {
     case 'navRequest':
       return msg;
