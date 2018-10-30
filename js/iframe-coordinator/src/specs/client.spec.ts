@@ -88,14 +88,13 @@ describe('client', () => {
       });
 
       it('should send a message to the worker', () => {
-        expect(mockClientProgramObj.send).toHaveBeenCalledWith({
-          msgType: 'toastRequest',
-          msg: {
-            title: undefined,
-            message: 'Test notification message',
-            custom: undefined
-          }
-        });
+        expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+          {
+            msgType: 'toastRequest',
+            msg: { message: 'Test notification message' }
+          },
+          '*'
+        );
       });
     });
 
@@ -109,14 +108,17 @@ describe('client', () => {
       });
 
       it('should send a message to the worker', () => {
-        expect(mockClientProgramObj.send).toHaveBeenCalledWith({
-          msgType: 'toastRequest',
-          msg: {
-            title: 'Test title',
-            message: 'Test notification message',
-            custom: { data: 'test data' }
-          }
-        });
+        expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+          {
+            msgType: 'toastRequest',
+            msg: {
+              title: 'Test title',
+              message: 'Test notification message',
+              custom: { data: 'test data' }
+            }
+          },
+          '*'
+        );
       });
     });
   });
@@ -181,12 +183,18 @@ describe('client', () => {
   describe('when recieving a message directed towards the host application', () => {
     beforeEach(() => {
       client.start(mockFrameWindow);
-      mockClientProgramObj.raiseMessageToHost('Test Publish');
+      mockClientProgramObj.raiseMessageToHost({
+        msgType: 'publish',
+        msg: 'Test Publish'
+      });
     });
 
     it('should post outgoing window message to host application', () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-        'Test Publish',
+        {
+          msgType: 'publish',
+          msg: 'Test Publish'
+        },
         '*'
       );
     });
@@ -235,10 +243,13 @@ describe('client', () => {
       });
 
       it('should notify worker of navigation request', () => {
-        expect(mockClientProgramObj.send).toHaveBeenCalledWith({
-          msgType: 'navRequest',
-          msg: { fragment: '' }
-        });
+        expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+          {
+            msgType: 'navRequest',
+            msg: { url: 'http://www.example.com/' }
+          },
+          '*'
+        );
       });
     });
 

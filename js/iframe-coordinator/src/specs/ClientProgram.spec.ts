@@ -69,7 +69,7 @@ describe('ClientProgram', () => {
       });
 
       it('should not raise a message', () => {
-        expect(handlerData).toBeUndefined();
+        expect(handlerData).toBeNull();
       });
     });
 
