@@ -1,4 +1,5 @@
 import { ClientProgram } from '../ClientProgram';
+import { HostToClient } from '../messages/HostToClient';
 
 describe('ClientProgram', () => {
   let mocks: any;
@@ -28,7 +29,7 @@ describe('ClientProgram', () => {
 
   describe('when publish message from host is incoming', () => {
     let handlerData: LabeledMsg | null;
-    const recievedMessage: LabeledMsg = {
+    const recievedMessage: HostToClient = {
       msgType: 'publish',
       msg: {
         topic: 'test.topic',
@@ -62,27 +63,6 @@ describe('ClientProgram', () => {
       it('should raise a message', () => {
         expect(handlerData).toEqual(recievedMessage);
       });
-    });
-  });
-
-  describe('when non-publish message from host is incoming', () => {
-    let handlerData: LabeledMsg | null;
-    const recievedMessage: LabeledMsg = {
-      msgType: 'foobar',
-      msg: 'test.data'
-    };
-
-    beforeEach(() => {
-      handlerData = null;
-      clientProgram.onMessageFromHost((message: LabeledMsg) => {
-        handlerData = message;
-      });
-
-      clientProgram.messageEventReceived(recievedMessage);
-    });
-
-    it('should raise a message', () => {
-      expect(handlerData).toEqual(recievedMessage);
     });
   });
 });

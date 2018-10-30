@@ -79,8 +79,12 @@ class ClientFrame extends HTMLElement {
       event.origin === this.expectedClientOrigin() &&
       event.source === this.iframe.contentWindow
     ) {
+      const msg = {
+        detail: event.data
+      };
+
       // TODO: Update this for IE11 support
-      const msgEvent = new CustomEvent('clientMessage', { detail: event.data });
+      const msgEvent = new CustomEvent('clientMessage', msg);
       this.dispatchEvent(msgEvent);
     }
   }

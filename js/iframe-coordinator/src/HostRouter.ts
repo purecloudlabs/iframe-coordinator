@@ -1,5 +1,12 @@
 import ClientFrame from './elements/x-ifc-frame';
-import { HostToClient, validate } from './messages/HostToClient';
+import {
+  ClientToHost,
+  validate as validateIncoming
+} from './messages/ClientToHost';
+import {
+  HostToClient,
+  validate as validateOutgoing
+} from './messages/HostToClient';
 import { Publication } from './messages/Publication';
 
 interface ClientRegistration {
@@ -23,8 +30,11 @@ class HostRouter {
 
     this._clientFrame = new ClientFrame();
     this._clientFrame.setAttribute('src', 'about:blank');
-    this._clientFrame.addEventListener('clientMessage', (data: any) => {
-      this._clientMessageFromFrame(data.detail);
+    this._clientFrame.addEventListener('clientMessage', (data: CustomEvent) => {
+      const validate = validateIncoming(data.detail);
+      if (validate) {
+        this._clientMessageFromFrame(validate);
+      }
     });
     options.node.appendChild(this._clientFrame);
   }
@@ -42,7 +52,7 @@ class HostRouter {
   }
 
   public publishGenericMessage(message: HostToClient) {
-    const validated = validate(message);
+    const validated = validateOutgoing(message);
     if (validated) {
       this._clientFrame.send(message);
     }
