@@ -71,25 +71,8 @@ describe('HostRouter', () => {
     });
   });
 
-  describe('when publishing an invalid message to the client', () => {
-    const message: LabeledPublication = {
-      msgType: 'invalid',
-      msg: {
-        topic: 'test.topic',
-        payload: 'test.data'
-      }
-    };
-    beforeEach(() => {
-      hostRouter.publishGenericMessage(message);
-    });
-
-    it('shoud send the message to the client', () => {
-      expect(mocks.ifcFrameObj.send).not.toHaveBeenCalledWith();
-    });
-  });
-
   describe('when client is sending message to host', () => {
-    describe('if the message is a public from the client', () => {
+    describe('when the message is a publish message', () => {
       describe('if we are interested in the publication topic', () => {
         let handlerData: LabeledMsg;
         const incomingMessage = {
@@ -135,6 +118,52 @@ describe('HostRouter', () => {
         it('should route the message to the host', () => {
           expect(handlerData).toBeUndefined();
         });
+      });
+    });
+
+    describe('when the message is a toast request', () => {
+      let handlerData: LabeledMsg;
+      const incomingMessage = {
+        msgType: 'foobar',
+        msg: {
+          topic: 'test.topic',
+          payload: 'test.payload'
+        }
+      };
+      beforeEach(() => {
+        hostRouter.onSendToHost(data => {
+          handlerData = data;
+        });
+        mocks.ifcFrameObj.raise('clientMessage', {
+          detail: incomingMessage
+        });
+      });
+
+      it('should route the message to the host', () => {
+        expect(handlerData).toBeUndefined();
+      });
+    });
+
+    describe('when the message is invalid', () => {
+      let handlerData: LabeledMsg;
+      const incomingMessage = {
+        msgType: 'toastRequest',
+        msg: {
+          topic: 'test.topic',
+          payload: 'test.payload'
+        }
+      };
+      beforeEach(() => {
+        hostRouter.onSendToHost(data => {
+          handlerData = data;
+        });
+        mocks.ifcFrameObj.raise('clientMessage', {
+          detail: incomingMessage
+        });
+      });
+
+      it('should route the message to the host', () => {
+        expect(handlerData).not.toBeUndefined();
       });
     });
   });
