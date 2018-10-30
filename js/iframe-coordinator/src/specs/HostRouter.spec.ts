@@ -1,5 +1,6 @@
 import * as hostRouterInjector from 'inject-loader!../HostRouter';
 import { HostRouter } from '../HostRouter';
+import { LabeledPublication } from '../messages/Publication';
 
 describe('HostRouter', () => {
   let mocks: any;
@@ -17,7 +18,8 @@ describe('HostRouter', () => {
       raise(topic: string, data: any) {
         mocks.ifcFrameObj.handlers[topic](data);
       },
-      setAttribute: jasmine.createSpy('xifcSetAttribute')
+      setAttribute: jasmine.createSpy('xifcSetAttribute'),
+      send: jasmine.createSpy('xifcSend')
     };
     mocks.ifcFrame = {
       default: jasmine
@@ -53,20 +55,36 @@ describe('HostRouter', () => {
   });
 
   describe('when publishing a generic message to the client', () => {
-    let handlerData: LabeledMsg;
-    const message = {
-      msgType: 'test',
-      msg: 'test.data'
+    const message: LabeledPublication = {
+      msgType: 'publish',
+      msg: {
+        topic: 'test.topic',
+        payload: 'test.data'
+      }
     };
     beforeEach(() => {
-      hostRouter.onSendToClient(data => {
-        handlerData = data;
-      });
       hostRouter.publishGenericMessage(message);
     });
 
     it('shoud send the message to the client', () => {
-      expect(handlerData).toEqual(message);
+      expect(mocks.ifcFrameObj.send).toHaveBeenCalledWith(message);
+    });
+  });
+
+  describe('when publishing an invalid message to the client', () => {
+    const message: LabeledPublication = {
+      msgType: 'invalid',
+      msg: {
+        topic: 'test.topic',
+        payload: 'test.data'
+      }
+    };
+    beforeEach(() => {
+      hostRouter.publishGenericMessage(message);
+    });
+
+    it('shoud send the message to the client', () => {
+      expect(mocks.ifcFrameObj.send).not.toHaveBeenCalledWith();
     });
   });
 

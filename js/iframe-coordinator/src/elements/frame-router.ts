@@ -43,14 +43,6 @@ class FrameRouterElement extends HTMLElement {
         new CustomEvent(labeledMsg.msgType, { detail: labeledMsg.msg })
       );
     });
-
-    // Router requests a message sent to the client
-    this.router.onSendToClient((labeledMsg: LabeledMsg) => {
-      const frame = this.getElementsByTagName('x-ifc-frame')[0] as ClientFrame;
-      if (frame) {
-        frame.send(labeledMsg);
-      }
-    });
   }
 
   /**

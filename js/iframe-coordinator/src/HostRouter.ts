@@ -1,20 +1,16 @@
 import ClientFrame from './elements/x-ifc-frame';
+import { HostToClient, validate } from './messages/HostToClient';
+import { Publication } from './messages/Publication';
 
 interface ClientRegistration {
   url: string;
   assignedRoute: string;
 }
 
-interface Publication {
-  topic: string;
-  payload: any;
-}
-
 class HostRouter {
   private _routingMap: { [key: string]: ClientRegistration };
   private _clientFrame: ClientFrame;
   private _toHostSubscriptions: SubscribeHandler[];
-  private _toClientSubscriptions: SubscribeHandler[];
   private _interestedTopics: Set<string>;
 
   constructor(options: {
@@ -24,12 +20,11 @@ class HostRouter {
     this._routingMap = options.routingMap;
     this._interestedTopics = new Set();
     this._toHostSubscriptions = [];
-    this._toClientSubscriptions = [];
 
     this._clientFrame = new ClientFrame();
     this._clientFrame.setAttribute('src', 'about:blank');
     this._clientFrame.addEventListener('clientMessage', (data: any) => {
-      this._send(data.detail);
+      this._clientMessageFromFrame(data.detail);
     });
     options.node.appendChild(this._clientFrame);
   }
@@ -46,17 +41,14 @@ class HostRouter {
     this._toHostSubscriptions.push(handler);
   }
 
-  public onSendToClient(handler: SubscribeHandler): void {
-    this._toClientSubscriptions.push(handler);
-  }
-
-  public publishGenericMessage(message: LabeledMsg) {
-    for (const handler of this._toClientSubscriptions) {
-      handler(message);
+  public publishGenericMessage(message: HostToClient) {
+    const validated = validate(message);
+    if (validated) {
+      this._clientFrame.send(message);
     }
   }
 
-  private _send(message: LabeledMsg): void {
+  private _clientMessageFromFrame(message: LabeledMsg): void {
     for (const handler of this._toHostSubscriptions) {
       if (this._handleMessageType(message)) {
         handler(message);
