@@ -1,5 +1,5 @@
 import { ClientProgram } from './ClientProgram';
-import { ClientToHost } from './messages/ClientToHost';
+import { ClientToHost, validate } from './messages/ClientToHost';
 import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 import { PublicationHandler } from './types';
@@ -20,7 +20,10 @@ class Client {
   }
 
   private _sendToHost = (message: ClientToHost) => {
-    this._clientWindow.parent.postMessage(message, '*');
+    let validated = validate(message);
+    if (validated) {
+      this._clientWindow.parent.postMessage(validated, '*');
+    }
   };
 
   private _publishMessageToHandlers = (message: LabeledMsg) => {
@@ -45,10 +48,12 @@ class Client {
       event.preventDefault();
       const a = event.target as HTMLAnchorElement;
       const url = new URL(a.href);
-      const urlData = {
-        fragment: url.hash
-      };
-      this._sendMessage('navRequest', urlData);
+      this._sendToHost({
+        msgType: 'navRequest',
+        msg: {
+          url: url.toString()
+        }
+      });
     }
   };
 
@@ -140,10 +145,9 @@ class Client {
    * worker.requestToast('World', {title: 'Hello', custom: {ttl: 5, level: 'info'}});
    */
   public requestToast(toast: Toast) {
-    this._sendMessage('toastRequest', {
-      title: toast.title,
-      message: toast.message,
-      custom: toast.custom
+    this._sendToHost({
+      msgType: 'toastRequest',
+      msg: toast
     });
   }
 }

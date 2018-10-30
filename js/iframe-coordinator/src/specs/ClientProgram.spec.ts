@@ -47,7 +47,7 @@ describe('ClientProgram', () => {
   });
 
   describe('when publish message from host is incoming', () => {
-    let handlerData: LabeledMsg;
+    let handlerData: LabeledMsg | null;
     const recievedMessage: LabeledMsg = {
       msgType: 'publish',
       msg: {
@@ -57,7 +57,7 @@ describe('ClientProgram', () => {
     };
 
     beforeEach(() => {
-      handlerData = undefined;
+      handlerData = null;
       clientProgram.onMessageFromHost((message: LabeledMsg) => {
         handlerData = message;
       });
@@ -86,14 +86,14 @@ describe('ClientProgram', () => {
   });
 
   describe('when non-publish message from host is incoming', () => {
-    let handlerData: LabeledMsg;
+    let handlerData: LabeledMsg | null;
     const recievedMessage: LabeledMsg = {
       msgType: 'foobar',
       msg: 'test.data'
     };
 
     beforeEach(() => {
-      handlerData = undefined;
+      handlerData = null;
       clientProgram.onMessageFromHost((message: LabeledMsg) => {
         handlerData = message;
       });
