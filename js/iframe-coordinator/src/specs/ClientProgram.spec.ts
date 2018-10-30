@@ -1,4 +1,4 @@
-import { ClientProgram } from '../ClientProgram';
+import { SubscriptonManager } from '../SubscriptionManager';
 
 describe('ClientProgram', () => {
   let mocks: any;

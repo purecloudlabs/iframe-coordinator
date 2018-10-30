@@ -1,5 +1,5 @@
 import * as ClientInjector from 'inject-loader!../client';
-import { ClientProgram } from '../ClientProgram';
+import { SubscriptionManager } from '../SubscriptionManager';
 
 describe('client', () => {
   let client: any;
