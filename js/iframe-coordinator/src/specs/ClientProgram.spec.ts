@@ -26,26 +26,6 @@ describe('ClientProgram', () => {
     clientProgram = new ClientProgram();
   });
 
-  describe('when message events recieved by the program', () => {
-    let handlerData: LabeledMsg;
-    beforeEach(() => {
-      clientProgram.onMessageToHost(message => {
-        handlerData = message;
-      });
-      clientProgram.send({
-        msgType: 'test-mesg',
-        msg: { data: 'test-data' }
-      });
-    });
-
-    it('should allow properly formatted events', () => {
-      expect(handlerData).toEqual({
-        msgType: 'test-mesg',
-        msg: { data: 'test-data' }
-      });
-    });
-  });
-
   describe('when publish message from host is incoming', () => {
     let handlerData: LabeledMsg | null;
     const recievedMessage: LabeledMsg = {
