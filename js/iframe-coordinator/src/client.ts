@@ -1,5 +1,12 @@
 import { ClientProgram } from './ClientProgram';
-import { ClientToHost, validate } from './messages/ClientToHost';
+import {
+  ClientToHost,
+  validate as validateOutgoing
+} from './messages/ClientToHost';
+import {
+  HostToClient,
+  validate as validateIncoming
+} from './messages/HostToClient';
 import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 import { PublicationHandler } from './types';
@@ -31,8 +38,10 @@ class Client {
   };
 
   private _onWindowMessageReceived = (event: MessageEvent) => {
-    // Send the window message down to the client
-    this._worker.messageEventReceived(event.data);
+    const validated = validateIncoming(event.data);
+    if (validated) {
+      this._worker.messageEventReceived(event.data);
+    }
   };
 
   private _onWindowClick = (event: MouseEvent) => {
@@ -51,7 +60,7 @@ class Client {
   };
 
   private _sendToHost(message: ClientToHost): void {
-    const validated = validate(message);
+    const validated = validateOutgoing(message);
     if (validated) {
       this._clientWindow.parent.postMessage(validated, '*');
     }
