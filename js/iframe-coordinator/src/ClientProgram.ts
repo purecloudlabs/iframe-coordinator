@@ -1,11 +1,9 @@
 class ClientProgram {
   private _subscriptions: SubscribeHandler[];
-  private _toHostSubscriptions: SubscribeHandler[];
   private _interestedTopics: Set<string>;
 
   constructor() {
     this._subscriptions = [];
-    this._toHostSubscriptions = [];
     this._interestedTopics = new Set();
   }
 
@@ -15,12 +13,6 @@ class ClientProgram {
 
   public unsubscribe(topic: string): void {
     this._interestedTopics.delete(topic);
-  }
-
-  public send(message: LabeledMsg): void {
-    for (const handler of this._toHostSubscriptions) {
-      handler(message);
-    }
   }
 
   private _handleMessageType(message: LabeledMsg) {
@@ -45,10 +37,6 @@ class ClientProgram {
 
   public onMessageFromHost(handler: SubscribeHandler): void {
     this._subscriptions.push(handler);
-  }
-
-  public onMessageToHost(handler: SubscribeHandler): void {
-    this._toHostSubscriptions.push(handler);
   }
 }
 

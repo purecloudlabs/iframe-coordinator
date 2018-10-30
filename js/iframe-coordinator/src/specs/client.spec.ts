@@ -154,13 +154,16 @@ describe('client', () => {
     });
 
     it('should notify worker of new publication', () => {
-      expect(mockClientProgramObj.send).toHaveBeenCalledWith({
-        msgType: 'publish',
-        msg: {
-          topic: 'test.topic',
-          payload: 'custom data'
-        }
-      });
+      expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+        {
+          msgType: 'publish',
+          msg: {
+            topic: 'test.topic',
+            payload: 'custom data'
+          }
+        },
+        '*'
+      );
     });
   });
 
@@ -176,26 +179,6 @@ describe('client', () => {
     it('should notify worker of incoming message', () => {
       expect(mockClientProgramObj.messageEventReceived).toHaveBeenCalledWith(
         'test data'
-      );
-    });
-  });
-
-  describe('when recieving a message directed towards the host application', () => {
-    beforeEach(() => {
-      client.start(mockFrameWindow);
-      mockClientProgramObj.raiseMessageToHost({
-        msgType: 'publish',
-        msg: 'Test Publish'
-      });
-    });
-
-    it('should post outgoing window message to host application', () => {
-      expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-        {
-          msgType: 'publish',
-          msg: 'Test Publish'
-        },
-        '*'
       );
     });
   });

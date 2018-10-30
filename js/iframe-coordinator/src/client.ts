@@ -19,13 +19,6 @@ class Client {
     this._worker = new ClientProgram();
   }
 
-  private _sendToHost = (message: ClientToHost) => {
-    const validated = validate(message);
-    if (validated) {
-      this._clientWindow.parent.postMessage(validated, '*');
-    }
-  };
-
   private _publishMessageToHandlers = (message: LabeledMsg) => {
     // Message from
     if (message.msgType !== 'publish') {
@@ -57,6 +50,13 @@ class Client {
     }
   };
 
+  private _sendToHost(message: ClientToHost): void {
+    const validated = validate(message);
+    if (validated) {
+      this._clientWindow.parent.postMessage(validated, '*');
+    }
+  }
+
   public start(): void {
     if (this._isStarted) {
       return;
@@ -70,7 +70,6 @@ class Client {
     );
     this._clientWindow.addEventListener('click', this._onWindowClick);
     this._worker.onMessageFromHost(this._publishMessageToHandlers);
-    this._worker.onMessageToHost(this._sendToHost);
   }
 
   public stop(): void {
@@ -88,22 +87,6 @@ class Client {
     // TODO offMessageToPublish
   }
 
-  private _checkStarted(): void {
-    if (!this._isStarted) {
-      throw new Error(
-        'Unable to perform action since this client object was not started'
-      );
-    }
-  }
-
-  private _sendMessage(type: string, data: any): void {
-    this._checkStarted();
-    this._worker.send({
-      msgType: type,
-      msg: data
-    });
-  }
-
   // Subscribe to messages from host
   public subscribe(topic: string): void {
     this._worker.subscribe(topic);
@@ -114,7 +97,10 @@ class Client {
   }
 
   public publish(publication: Publication): void {
-    this._sendMessage('publish', publication);
+    this._sendToHost({
+      msgType: 'publish',
+      msg: publication
+    });
   }
 
   public onPubsub(callback: PublicationHandler): void {
