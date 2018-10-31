@@ -1,12 +1,12 @@
 import { LabeledMsg } from './LabeledMsg';
 
 export interface Toast {
-  title: string | null;
+  title?: string;
   message: string;
   custom: any;
 }
 
 export interface LabeledToast extends LabeledMsg {
-  msgType: 'toastRequest';
+  msgType: string;
   msg: Toast;
 }
