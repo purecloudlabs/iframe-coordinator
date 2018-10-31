@@ -6,6 +6,6 @@ export interface Publication {
 }
 
 export interface LabeledPublication extends LabeledMsg {
-  msgType: 'publish';
+  msgType: string;
   msg: Publication;
 }
