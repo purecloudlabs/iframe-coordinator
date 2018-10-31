@@ -1,4 +1,4 @@
-import { validate } from '../HostToClient';
+import { HostToClient, validate } from '../HostToClient';
 
 describe('HostToClient', () => {
   describe('validating an invalid message type', () => {
@@ -7,11 +7,11 @@ describe('HostToClient', () => {
       msg: 'test-data'
     };
 
-    let testResult: LabeledMsg | null;
+    let testResult: HostToClient | null;
     beforeEach(() => {
       testResult = validate(testMessage);
     });
-    it('should return test', () => {
+    it('should return a null message', () => {
       expect(testResult).toBeNull();
     });
   });
@@ -25,11 +25,11 @@ describe('HostToClient', () => {
           payload: 'test.payload'
         }
       };
-      let testResult: LabeledMsg | null;
+      let testResult: HostToClient | null;
       beforeEach(() => {
         testResult = validate(testMessage);
       });
-      it('should return test', () => {
+      it('should return the validated message', () => {
         expect(testResult).toEqual(testMessage);
       });
     });
@@ -42,11 +42,11 @@ describe('HostToClient', () => {
           payload: { testData: 'test.data' }
         }
       };
-      let testResult: LabeledMsg | null;
+      let testResult: HostToClient | null;
       beforeEach(() => {
         testResult = validate(testMessage);
       });
-      it('should return test', () => {
+      it('should return the validated message', () => {
         expect(testResult).toEqual(testMessage);
       });
     });
@@ -58,11 +58,11 @@ describe('HostToClient', () => {
           payload: { testData: 'test.data' }
         }
       };
-      let testResult: LabeledMsg | null;
+      let testResult: HostToClient | null;
       beforeEach(() => {
         testResult = validate(testMessage);
       });
-      it('should return test', () => {
+      it('should return a null message', () => {
         expect(testResult).toBeNull();
       });
     });
@@ -81,11 +81,11 @@ describe('HostToClient', () => {
           payload: undefined
         }
       };
-      let testResult: LabeledMsg | null;
+      let testResult: HostToClient | null;
       beforeEach(() => {
         testResult = validate(testMessage);
       });
-      it('should return test', () => {
+      it('should return the validated message', () => {
         expect(testResult).toEqual(expectedMessage);
       });
     });

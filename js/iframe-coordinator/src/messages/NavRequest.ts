@@ -5,6 +5,6 @@ export interface NavRequest {
 }
 
 export interface LabeledNavRequest extends LabeledMsg {
-  msgType: 'navRequest';
+  msgType: string;
   msg: NavRequest;
 }

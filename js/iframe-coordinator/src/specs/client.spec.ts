@@ -63,7 +63,11 @@ describe('client', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           {
             msgType: 'toastRequest',
-            msg: { message: 'Test notification message' }
+            msg: {
+              title: undefined,
+              message: 'Test notification message',
+              custom: undefined
+            }
           },
           '*'
         );

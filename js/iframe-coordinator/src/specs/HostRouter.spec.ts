@@ -121,29 +121,6 @@ describe('HostRouter', () => {
       });
     });
 
-    describe('when the message is a toast request', () => {
-      let handlerData: LabeledMsg;
-      const incomingMessage = {
-        msgType: 'foobar',
-        msg: {
-          topic: 'test.topic',
-          payload: 'test.payload'
-        }
-      };
-      beforeEach(() => {
-        hostRouter.onSendToHost(data => {
-          handlerData = data;
-        });
-        mocks.ifcFrameObj.raise('clientMessage', {
-          detail: incomingMessage
-        });
-      });
-
-      it('should route the message to the host', () => {
-        expect(handlerData).toBeUndefined();
-      });
-    });
-
     describe('when the message is invalid', () => {
       let handlerData: LabeledMsg;
       const incomingMessage = {
@@ -162,8 +139,8 @@ describe('HostRouter', () => {
         });
       });
 
-      it('should route the message to the host', () => {
-        expect(handlerData).not.toBeUndefined();
+      it('should not route the message to the host', () => {
+        expect(handlerData).toBeUndefined();
       });
     });
   });
