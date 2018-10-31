@@ -1,5 +1,7 @@
-import { HostRouter, Publication } from '../HostRouter';
-import ClientFrame from './x-ifc-frame';
+import { HostRouter, RoutingMap } from '../HostRouter';
+import { Publication } from '../messages/Publication';
+import { SubscriptionManager } from '../SubscriptionManager';
+import IframeManager from './IframeManager';
 
 const ROUTE_ATTR = 'route';
 
@@ -10,10 +12,14 @@ const ROUTE_ATTR = 'route';
  * the client content.
  */
 class FrameRouterElement extends HTMLElement {
-  private router: HostRouter;
+  private _frameManager: IframeManager;
+  private _subscriptionManager: SubscriptionManager;
+  public router: HostRouter;
 
   constructor() {
     super();
+    this._frameManager = new IframeManager();
+    this._subscriptionManager = new SubscriptionManager();
   }
 
   /**
@@ -28,6 +34,8 @@ class FrameRouterElement extends HTMLElement {
    */
   public connectedCallback() {
     this.setAttribute('style', 'position: relative;');
+    this._frameManager.embed(this);
+    // TODO: subscribe to winodow message events and add handler.
   }
 
   /**
@@ -35,20 +43,8 @@ class FrameRouterElement extends HTMLElement {
    *
    * @param clients The map of registrations for the available clients.
    */
-  public registerClients(clients: {}) {
-    const embedTarget = document.createElement('div');
-    this.appendChild(embedTarget);
-    this.router = new HostRouter({
-      routingMap: clients,
-      node: embedTarget
-    });
-
-    // Router requests a message sent to the host.
-    this.router.onSendToHost((labeledMsg: LabeledMsg) => {
-      this.dispatchEvent(
-        new CustomEvent(labeledMsg.msgType, { detail: labeledMsg.msg })
-      );
-    });
+  public registerClients(clients: RoutingMap) {
+    this.router = new HostRouter(clients);
   }
 
   /**
@@ -57,7 +53,7 @@ class FrameRouterElement extends HTMLElement {
    * @param topic - The topic name the host is interested in.
    */
   public subscribe(topic: string): void {
-    this.router.subscribeToMessages(topic);
+    this._subscriptionManager.subscribe(topic);
   }
 
   /**
@@ -66,7 +62,7 @@ class FrameRouterElement extends HTMLElement {
    * @param topic - The topic name the host is no longer interested in.
    */
   public unsubscribe(topic: string): void {
-    this.router.unsubscribeToMessages(topic);
+    this._subscriptionManager.unsubscribe(topic);
   }
 
   /**
@@ -76,7 +72,7 @@ class FrameRouterElement extends HTMLElement {
    * The topic may not be of interest, and could be ignored.
    */
   public publish(publication: Publication): void {
-    this.router.publishGenericMessage({
+    this._frameManager.sendtoClient({
       msg: publication,
       msgType: 'publish'
     });
@@ -88,7 +84,8 @@ class FrameRouterElement extends HTMLElement {
    * @param newPath a new route which matches those provided originally.
    */
   public changeRoute(newPath: string) {
-    this.router.changeRoute(newPath);
+    const clientUrl = this.router.getClientUrl(newPath);
+    this._frameManager.setFrameLocation(clientUrl);
   }
 
   /**
