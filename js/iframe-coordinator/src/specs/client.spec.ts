@@ -1,11 +1,9 @@
 import * as ClientInjector from 'inject-loader!../client';
-import { ClientProgram } from '../ClientProgram';
 
 describe('client', () => {
   let client: any;
-  let mockWorker: any;
   let mockFrameWindow: any;
-  let mockClientProgramObj: any;
+  let mockSubscriptionManagerObj: any;
 
   beforeEach(() => {
     mockFrameWindow = {
@@ -21,60 +19,34 @@ describe('client', () => {
       }
     };
 
-    mockClientProgramObj = {
-      onMessageFromHost: jasmine
-        .createSpy('onMessageFromHost')
-        .and.callFake((handler: (data: any) => void) => {
-          mockClientProgramObj.messageFromHostHandler = handler;
-        }),
-      raiseMessageFromHost: (data: any) => {
-        mockClientProgramObj.messageFromHostHandler(data);
-      },
-      onMessageToHost: jasmine
-        .createSpy('onMessageToHost')
-        .and.callFake((handler: (data: any) => void) => {
-          mockClientProgramObj.messageToHostHandler = handler;
-        }),
-      raiseMessageToHost: (data: any) => {
-        mockClientProgramObj.messageToHostHandler(data);
-      },
-      send: jasmine.createSpy('clientProgramSend'),
+    mockSubscriptionManagerObj = {
       subscribe: jasmine.createSpy('subscribe'),
       unsubscribe: jasmine.createSpy('unsubscribe'),
-      messageEventReceived: jasmine.createSpy('messageEventReceived')
+      setHandler: jasmine
+        .createSpy('setHandler')
+        .and.callFake((handler: any) => {
+          mockSubscriptionManagerObj.handler = handler;
+        }),
+      dispatchMessage: jasmine.createSpy('dispatchMessage')
     };
 
     /* tslint:disable */
-    const mockClientProgram = function() {
-      return mockClientProgramObj;
+    const mockSubscriptionManager = function() {
+      return mockSubscriptionManagerObj;
     };
     /* tslint:enable */
 
-    mockWorker = {
-      ClientProgram: mockClientProgram
+    const mockSubscriptionManagerImport = {
+      SubscriptionManager: mockSubscriptionManager
     };
 
     /* tslint:disable */
     let Client = ClientInjector({
-      './ClientProgram': mockWorker
+      './SubscriptionManager': mockSubscriptionManagerImport
     }).Client;
     /* tslint:enable */
 
     client = new Client({ clientWindow: mockFrameWindow });
-  });
-
-  describe('when starting the client', () => {
-    beforeEach(() => {
-      client.start(mockFrameWindow);
-    });
-
-    it('should subscribe to host messages', () => {
-      expect(mockClientProgramObj.onMessageFromHost).toHaveBeenCalled();
-    });
-
-    it('should subscribe to host messages', () => {
-      expect(mockClientProgramObj.onMessageFromHost).toHaveBeenCalled();
-    });
   });
 
   describe('when client requests a toast notification', () => {
@@ -130,7 +102,9 @@ describe('client', () => {
     });
 
     it('should notify worker of subscription', () => {
-      expect(mockClientProgramObj.subscribe).toHaveBeenCalledWith('test.topic');
+      expect(mockSubscriptionManagerObj.subscribe).toHaveBeenCalledWith(
+        'test.topic'
+      );
     });
   });
 
@@ -141,7 +115,7 @@ describe('client', () => {
     });
 
     it('should notify worker of unsubscription', () => {
-      expect(mockClientProgramObj.unsubscribe).toHaveBeenCalledWith(
+      expect(mockSubscriptionManagerObj.unsubscribe).toHaveBeenCalledWith(
         'test.topic'
       );
     });
@@ -176,10 +150,8 @@ describe('client', () => {
       });
     });
 
-    it('should notify worker of incoming message', () => {
-      expect(
-        mockClientProgramObj.messageEventReceived
-      ).not.toHaveBeenCalledWith('test data');
+    it('should not notify subscriptions of incoming message', () => {
+      expect(mockSubscriptionManagerObj.dispatchMessage).not.toHaveBeenCalled();
     });
   });
 
@@ -195,36 +167,23 @@ describe('client', () => {
       });
     });
 
-    it('should notify worker of incoming message', () => {
-      expect(
-        mockClientProgramObj.messageEventReceived
-      ).not.toHaveBeenCalledWith('test data');
+    it('should notify subscriptions of incoming message', () => {
+      expect(mockSubscriptionManagerObj.dispatchMessage).toHaveBeenCalledWith(
+        'test data'
+      );
     });
   });
 
-  describe('when client is publishing an outgoing message', () => {
-    let pubSubHandlerCallCount: number;
-    let pubSubHandlerData: any;
+  describe('when client is listening to published messages', () => {
     beforeEach(() => {
-      pubSubHandlerCallCount = 0;
       client.start(mockFrameWindow);
       client.onPubsub((data: any) => {
-        pubSubHandlerCallCount++;
-        pubSubHandlerData = data;
-      });
-      client.onPubsub(() => pubSubHandlerCallCount++);
-      mockClientProgramObj.raiseMessageFromHost({
-        msgType: 'publish',
-        msg: { data: 'custom data' }
+        // TODO Empty
       });
     });
 
-    it("should notify each of the application's publication handlers", () => {
-      expect(pubSubHandlerCallCount).toBe(2);
-    });
-
-    it('should send the publish data to the publication handlers', () => {
-      expect(pubSubHandlerData).toEqual({ data: 'custom data' });
+    it('should set the handlers of the subscription manager', () => {
+      expect(mockSubscriptionManagerObj.setHandler).toHaveBeenCalled();
     });
   });
 
@@ -269,7 +228,7 @@ describe('client', () => {
       });
 
       it('should not notify worker of navigation request', () => {
-        expect(mockClientProgramObj.send).not.toHaveBeenCalled();
+        expect(mockFrameWindow.parent.postMessage).not.toHaveBeenCalled();
       });
     });
   });
