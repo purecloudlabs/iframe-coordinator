@@ -1,10 +1,12 @@
 elm-stuff/
 node_modules/
-client.js
-host.js
-index.js
 .npmrc
 
+# Artifacts from ts build/serve
 /*.d.ts
 /elements/
 /specs/
+/workers/
+/client.js
+/host.js
+/index.js

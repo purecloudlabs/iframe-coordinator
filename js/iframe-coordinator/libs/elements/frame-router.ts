@@ -1,4 +1,7 @@
 import { Elm, Publication } from '../../elm/Host.elm';
+import WorkerManager, {
+  WORKER_MESSAGE_EVENT_TYPE
+} from '../workers/worker-manager';
 import ClientFrame from './x-ifc-frame';
 
 const ROUTE_ATTR = 'route';
@@ -16,6 +19,7 @@ const ROUTE_ATTR = 'route';
  */
 class FrameRouterElement extends HTMLElement {
   public router: HostProgram;
+  private _workerMgr: WorkerManager;
 
   constructor() {
     super();
@@ -36,6 +40,48 @@ class FrameRouterElement extends HTMLElement {
       flags: clients,
       node: embedTarget
     });
+
+    this._workerMgr = new WorkerManager();
+    this._workerMgr.addEventListener(
+      WORKER_MESSAGE_EVENT_TYPE,
+      (evt: CustomEvent) => {
+        if (evt && evt.detail && evt.detail.msgType) {
+          switch (evt.detail.msgType) {
+            case 'navRequest':
+              // TODO Talk about this api.  Should it be route based?
+              this.dispatchEvent(
+                new CustomEvent(evt.detail.msgType, {
+                  detail: { fragment: evt.detail.msg.fragment }
+                })
+              );
+              break;
+            case 'toastRequest':
+              this.dispatchEvent(
+                new CustomEvent(evt.detail.msgType, { detail: evt.detail.msg })
+              );
+              break;
+            // TODO pub/sub, others?
+            default:
+              // TODO Need to add proper logging support
+              // tslint:disable-next-line
+              console.error(
+                `Unknown msgType ${evt.detail.msgType}, received from worker`
+              );
+              break;
+          }
+        }
+      }
+    );
+
+    // TODO decide on api and start them here
+    for (let i = 0; i < 5; i++) {
+      this._workerMgr.start('http://localhost:8080/workers/demo-worker.js');
+    }
+    this._workerMgr.start('http://localhost:8080/workers/failure-worker.js');
+    // Tests the 404 case
+    this._workerMgr.start(
+      'http://localhost:8080/workers/non-existant-worker.js'
+    );
 
     this.router.ports.toHost.subscribe(labeledMsg => {
       this.dispatchEvent(
