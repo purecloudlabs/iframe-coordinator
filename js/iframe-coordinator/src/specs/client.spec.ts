@@ -162,15 +162,19 @@ describe('client', () => {
         origin: 'origin',
         data: {
           msgType: 'publish',
-          msg: 'test data'
+          msg: {
+            topic: 'test.topic',
+            payload: 'test data'
+          }
         }
       });
     });
 
     it('should notify subscriptions of incoming message', () => {
-      expect(mockSubscriptionManagerObj.dispatchMessage).toHaveBeenCalledWith(
-        'test data'
-      );
+      expect(mockSubscriptionManagerObj.dispatchMessage).toHaveBeenCalledWith({
+        topic: 'test.topic',
+        payload: 'test data'
+      });
     });
   });
 

@@ -7,7 +7,7 @@ export type ClientToHost =
   | LabeledToast
   | LabeledNavRequest;
 
-export function validate(msg: ClientToHost): ClientToHost {
+export function validate(msg: ClientToHost): ClientToHost | null {
   // TODO: actually validate cases
   switch (msg.msgType) {
     case 'navRequest':
@@ -17,4 +17,6 @@ export function validate(msg: ClientToHost): ClientToHost {
     case 'publish':
       return msg;
   }
+
+  return null;
 }
