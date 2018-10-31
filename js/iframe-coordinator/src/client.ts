@@ -1,45 +1,48 @@
-import { ClientProgram } from './ClientProgram';
-import { ClientToHost, validate } from './messages/ClientToHost';
+import {
+  ClientToHost,
+  validate as validateClientMsg
+} from './messages/ClientToHost';
 import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
-import { PublicationHandler } from './types';
+import {
+  HostToClient,
+  validate as validateHostMsg
+} from './messages/HostToClient';
+import { SubscriptionManager, PublicationHandler } from './SubscriptionManager';
 
 interface ClientConfigOptions {
   clientWindow?: Window;
 }
 
 class Client {
-  private _worker: ClientProgram;
+  private _subscriptionManager: SubscriptionManager;
   private _isStarted: boolean;
   private _clientWindow: Window;
-  private _messageHandlers: PublicationHandler[] = [];
 
   public constructor(configOptions: ClientConfigOptions = {}) {
     this._clientWindow = configOptions.clientWindow || window;
-    this._worker = new ClientProgram();
+    this._subscriptionManager = new SubscriptionManager();
   }
 
   private _sendToHost = (message: ClientToHost) => {
-    const validated = validate(message);
+    const validated = validateClientMsg(message);
     if (validated) {
       this._clientWindow.parent.postMessage(validated, '*');
     }
   };
 
-  private _publishMessageToHandlers = (message: LabeledMsg) => {
-    // Message from
-    if (message.msgType !== 'publish') {
-      return;
+  private _handleHostMessage = (message: HostToClient) => {
+    switch (message.msgType) {
+      case 'publish':
+        this._subscriptionManager.dispatchMessage(message.msg);
     }
-
-    this._messageHandlers.forEach(handler => {
-      handler(message.msg);
-    });
   };
 
-  private _onWindowMessageReceived = (event: MessageEvent) => {
-    // Send the window message down to the client
-    this._worker.messageEventReceived(event.data);
+  private _onWindowMessage = (event: MessageEvent) => {
+    const validated = validateHostMsg(event.data);
+    if (validated) {
+      this._handleHostMessage(validated);
+    }
   };
 
   private _onWindowClick = (event: MouseEvent) => {
@@ -64,13 +67,8 @@ class Client {
 
     this._isStarted = true;
 
-    this._clientWindow.addEventListener(
-      'message',
-      this._onWindowMessageReceived
-    );
+    this._clientWindow.addEventListener('message', this._onWindowMessage);
     this._clientWindow.addEventListener('click', this._onWindowClick);
-    this._worker.onMessageFromHost(this._publishMessageToHandlers);
-    this._worker.onMessageToHost(this._sendToHost);
   }
 
   public stop(): void {
@@ -79,13 +77,8 @@ class Client {
     }
 
     this._isStarted = false;
-    this._clientWindow.removeEventListener(
-      'message',
-      this._onWindowMessageReceived
-    );
+    this._clientWindow.removeEventListener('message', this._onWindowMessage);
     this._clientWindow.removeEventListener('click', this._onWindowClick);
-
-    // TODO offMessageToPublish
   }
 
   private _checkStarted(): void {
@@ -96,30 +89,24 @@ class Client {
     }
   }
 
-  private _sendMessage(type: string, data: any): void {
-    this._checkStarted();
-    this._worker.send({
-      msgType: type,
-      msg: data
-    });
-  }
-
   // Subscribe to messages from host
   public subscribe(topic: string): void {
-    this._worker.subscribe(topic);
+    this._subscriptionManager.subscribe(topic);
   }
 
   public unsubscribe(topic: string): void {
-    this._worker.unsubscribe(topic);
+    this._subscriptionManager.unsubscribe(topic);
   }
 
   public publish(publication: Publication): void {
-    this._sendMessage('publish', publication);
+    this._sendToHost({
+      msgType: 'publish',
+      msg: publication
+    });
   }
 
   public onPubsub(callback: PublicationHandler): void {
-    // Message
-    this._messageHandlers.push(callback);
+    this._subscriptionManager.setHandler(callback);
   }
 
   /**
