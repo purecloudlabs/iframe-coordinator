@@ -9,11 +9,18 @@ import {
 } from './messages/HostToClient';
 import { Publication } from './messages/Publication';
 
+/**
+ * Rendering and routing information for a client.
+ */
 interface ClientRegistration {
   url: string;
   assignedRoute: string;
 }
 
+/**
+ * HostRouter is responsible for routing messages from the {@link Host}
+ * to the underlying iframe.
+ */
 class HostRouter {
   private _routingMap: { [key: string]: ClientRegistration };
   private _clientFrame: ClientFrame;

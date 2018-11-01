@@ -4,15 +4,10 @@ import ClientFrame from './x-ifc-frame';
 const ROUTE_ATTR = 'route';
 
 /**
- * The frame-router custom element
- *
- * Events:
- * @event toastRequest
- * @type {object}
- * @param {object} detail - Details of the toast.
- * @param {string} detail.message - Toast message.
- * @param {string=} detail.title - Optional toast title.
- * @param {object=} detail.x - Optional, custom properties for application-specific toast features
+ * A DOM element responsible for communicating
+ * with the internal {@link ClientFrame} in order
+ * to recieve and send messages to and from
+ * the client content.
  */
 class FrameRouterElement extends HTMLElement {
   public router: HostRouter;
