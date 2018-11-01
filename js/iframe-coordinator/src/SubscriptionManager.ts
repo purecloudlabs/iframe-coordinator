@@ -2,6 +2,10 @@ import { Publication } from './messages/Publication';
 
 export type PublicationHandler = (publication: Publication) => void;
 
+/**
+ * Manages topic subscriptions and
+ * publish events for {@link Publication | Publications}.
+ */
 export class SubscriptionManager {
   private _handler: PublicationHandler | null;
   private _interestedTopics: Set<string>;

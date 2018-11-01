@@ -7,6 +7,13 @@
       "interface-name": [true, "never-prefix"],
       "member-access": true,
       "member-ordering": false,
+      "completed-docs": [true, {
+        "classes": true,
+        "enums": true,
+        "enum-members": true,
+        "functions": { "visibilties": ["exported"]},
+        "interfaces": true
+      }],
       "no-trailing-whitespace": [true, "ignore-blank-lines"],
       "object-literal-sort-keys": false,
       "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]

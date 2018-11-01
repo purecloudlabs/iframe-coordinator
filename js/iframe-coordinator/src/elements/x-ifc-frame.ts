@@ -3,6 +3,10 @@ const SRC_ATTR = 'src';
 const IFRAME_STYLE =
   'position: absolute; top: 0; left: 0; width: 100%; height: 100%;';
 
+/**
+ * A DOM element responsible for hosting content (i.e. the client)
+ * and routing client messages from the hosted content.
+ */
 class ClientFrame extends HTMLElement {
   public iframe: HTMLIFrameElement;
 

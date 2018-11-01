@@ -7,6 +7,11 @@ export type ClientToHost =
   | LabeledToast
   | LabeledNavRequest;
 
+/**
+ * Validates correctness of messages being sent from
+ * the client to the host.
+ * @param msg The message requiring validation.
+ */
 export function validate(msg: ClientToHost): ClientToHost {
   // TODO: actually validate cases
   switch (msg.msgType) {

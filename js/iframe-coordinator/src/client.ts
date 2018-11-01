@@ -11,10 +11,17 @@ import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 import { PublicationHandler, SubscriptionManager } from './SubscriptionManager';
 
+/**
+ * Configuration options given to the client
+ * from the host application.
+ */
 interface ClientConfigOptions {
   clientWindow?: Window;
 }
 
+/**
+ * The Client is access point for the embedded UI's in the host application.
+ */
 class Client {
   private _subscriptionManager: SubscriptionManager;
   private _isStarted: boolean;

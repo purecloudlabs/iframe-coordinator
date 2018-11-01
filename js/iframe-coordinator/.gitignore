@@ -1,5 +1,6 @@
 elm-stuff/
 node_modules/
+doc/
 client.js
 host.js
 index.js
