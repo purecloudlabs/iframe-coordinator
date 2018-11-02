@@ -20,7 +20,7 @@ describe('ClientToHost', () => {
 
   describe('validating publish type', () => {
     describe('when payload is a string', () => {
-      const testMessage = {
+      const testMessage: ClientToHost = {
         msgType: 'publish',
         msg: {
           topic: 'test.topic',
@@ -37,7 +37,7 @@ describe('ClientToHost', () => {
     });
 
     describe('when payload is an object', () => {
-      const testMessage = {
+      const testMessage: ClientToHost = {
         msgType: 'publish',
         msg: {
           topic: 'test.topic',
@@ -76,7 +76,7 @@ describe('ClientToHost', () => {
           topic: 'test.topic'
         }
       };
-      const expectedMessage = {
+      const expectedMessage: ClientToHost = {
         msgType: 'publish',
         msg: {
           topic: 'test.topic',
@@ -102,7 +102,7 @@ describe('ClientToHost', () => {
         }
       };
 
-      const expectedMessage: LabeledToast = {
+      const expectedMessage: ClientToHost = {
         msgType: 'toastRequest',
         msg: {
           title: undefined,
@@ -130,7 +130,7 @@ describe('ClientToHost', () => {
         }
       };
 
-      const expectedMessage: LabeledToast = {
+      const expectedMessage: ClientToHost = {
         msgType: 'toastRequest',
         msg: {
           title: 'toast.title',
@@ -159,7 +159,7 @@ describe('ClientToHost', () => {
         }
       };
 
-      const expectedMessage: LabeledToast = testMessage as LabeledToast;
+      const expectedMessage: ClientToHost = testMessage as LabeledToast;
       let testResult: ClientToHost | null;
       beforeEach(() => {
         testResult = validate(testMessage);

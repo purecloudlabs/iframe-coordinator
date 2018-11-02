@@ -18,7 +18,7 @@ describe('HostToClient', () => {
 
   describe('validating publish type', () => {
     describe('when payload is a string', () => {
-      const testMessage = {
+      const testMessage: HostToClient = {
         msgType: 'publish',
         msg: {
           topic: 'test.topic',
@@ -35,7 +35,7 @@ describe('HostToClient', () => {
     });
 
     describe('when payload is an object', () => {
-      const testMessage = {
+      const testMessage: HostToClient = {
         msgType: 'publish',
         msg: {
           topic: 'test.topic',
@@ -74,7 +74,7 @@ describe('HostToClient', () => {
           topic: 'test.topic'
         }
       };
-      const expectedMessage = {
+      const expectedMessage: HostToClient = {
         msgType: 'publish',
         msg: {
           topic: 'test.topic',
