@@ -46,18 +46,41 @@ class HostRouter {
     options.node.appendChild(this._clientFrame);
   }
 
+  /**
+   * Adds a new topic to the publications
+   * that will be dispatched.
+   *
+   * @param topic The new topic to dispatch messages for.
+   */
   public subscribeToMessages(topic: string): void {
     this._interestedTopics.add(topic);
   }
 
+  /**
+   * Removes a topic to be dispatched when attempting
+   * to publish.
+   *
+   * @param topic The topic to no longer dispatch messages for.
+   */
   public unsubscribeToMessages(topic: string): void {
     this._interestedTopics.delete(topic);
   }
 
+  /**
+   * Adds a handler to be called when dispatching
+   * a new publications.
+   *
+   * @param handler The callback for dispatched publications.
+   */
   public onSendToHost(handler: SubscribeHandler): void {
     this._toHostSubscriptions.push(handler);
   }
 
+  /**
+   * Sends one of the avaiable message payloads to the client.
+   *
+   * @param message The message payload to send.
+   */
   public publishGenericMessage(message: HostToClient) {
     const validated = validateOutgoing(message);
     if (validated) {
@@ -86,6 +109,11 @@ class HostRouter {
     }
   }
 
+  /**
+   * Change the content being hosted to a new client.
+   *
+   * @param route The route for the client to display.
+   */
   public changeRoute(route: string) {
     let urlRoute: string = 'about:blank';
     for (const key in this._routingMap) {

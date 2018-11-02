@@ -11,8 +11,20 @@
         "classes": true,
         "enums": true,
         "enum-members": true,
-        "functions": { "visibilties": ["exported"]},
-        "interfaces": true
+        "functions": { "visibilties": ["exported"] },
+        "interfaces": true,
+        "methods": { 
+          "locations": ["all"],
+          "privacies": ["public", "protected"],
+          "tags": { "content": { "see": ["#.*"] }, "existence": ["inheritdoc"] } 
+        },
+        "namespaces": true,
+        "properties": { 
+          "locations": ["all"],
+          "privacies": ["public", "protected"],
+          "tags": { "content": { "see": ["#.*"] }, "existence": ["inheritdoc"] } 
+        },
+        "types": true
       }],
       "no-trailing-whitespace": [true, "ignore-blank-lines"],
       "object-literal-sort-keys": false,

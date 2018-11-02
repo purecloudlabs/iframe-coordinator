@@ -2,6 +2,10 @@ import { LabeledNavRequest } from './NavRequest';
 import { LabeledPublication } from './Publication';
 import { LabeledToast } from './Toast';
 
+/**
+ * All avaiable message types that can be sent
+ * from the client content to the host application.
+ */
 export type ClientToHost =
   | LabeledPublication
   | LabeledToast

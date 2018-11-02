@@ -10,20 +10,31 @@ const ROUTE_ATTR = 'route';
  * the client content.
  */
 class FrameRouterElement extends HTMLElement {
-  public router: HostRouter;
+  private router: HostRouter;
 
   constructor() {
     super();
   }
 
+  /**
+   * @inheritdoc
+   */
   static get observedAttributes() {
     return [ROUTE_ATTR];
   }
 
+  /**
+   * @inheritdoc
+   */
   public connectedCallback() {
     this.setAttribute('style', 'position: relative;');
   }
 
+  /**
+   * Registers possible clients this frame will host.
+   *
+   * @param clients The map of registrations for the available clients.
+   */
   public registerClients(clients: {}) {
     const embedTarget = document.createElement('div');
     this.appendChild(embedTarget);
@@ -80,6 +91,9 @@ class FrameRouterElement extends HTMLElement {
     this.router.changeRoute(newPath);
   }
 
+  /**
+   * @inheritdoc
+   */
   public attributeChangedCallback(
     name: string,
     oldValue: string,
