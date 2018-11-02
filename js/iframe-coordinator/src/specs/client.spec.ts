@@ -63,7 +63,11 @@ describe('client', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           {
             msgType: 'toastRequest',
-            msg: { message: 'Test notification message' }
+            msg: {
+              title: undefined,
+              message: 'Test notification message',
+              custom: undefined
+            }
           },
           '*'
         );
@@ -162,15 +166,19 @@ describe('client', () => {
         origin: 'origin',
         data: {
           msgType: 'publish',
-          msg: 'test data'
+          msg: {
+            topic: 'test.topic',
+            payload: 'test data'
+          }
         }
       });
     });
 
     it('should notify subscriptions of incoming message', () => {
-      expect(mockSubscriptionManagerObj.dispatchMessage).toHaveBeenCalledWith(
-        'test data'
-      );
+      expect(mockSubscriptionManagerObj.dispatchMessage).toHaveBeenCalledWith({
+        topic: 'test.topic',
+        payload: 'test data'
+      });
     });
   });
 
