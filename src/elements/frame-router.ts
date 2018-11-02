@@ -2,6 +2,10 @@ import { HostRouter, RoutingMap } from '../HostRouter';
 import { Publication } from '../messages/Publication';
 import { SubscriptionManager } from '../SubscriptionManager';
 import IframeManager from './IframeManager';
+import {
+  ClientToHost,
+  validate as validateIncoming
+} from '../messages/ClientToHost';
 
 const ROUTE_ATTR = 'route';
 
@@ -35,7 +39,7 @@ class FrameRouterElement extends HTMLElement {
   public connectedCallback() {
     this.setAttribute('style', 'position: relative;');
     this._frameManager.embed(this);
-    // TODO: subscribe to winodow message events and add handler.
+    this._frameManager.listenToMessages(this._handleClientMessages.bind(this));
   }
 
   /**
@@ -99,6 +103,12 @@ class FrameRouterElement extends HTMLElement {
     if (name === ROUTE_ATTR && oldValue !== newValue) {
       this.changeRoute(newValue);
     }
+  }
+
+  private _handleClientMessages(message: ClientToHost) {
+    this.dispatchEvent(
+      new CustomEvent(message.msgType, { detail: message.msg })
+    );
   }
 }
 

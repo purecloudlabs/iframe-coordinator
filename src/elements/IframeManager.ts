@@ -1,4 +1,11 @@
-import { HostToClient, validate } from '../messages/HostToClient';
+import {
+  HostToClient,
+  validate as validateOutgoing
+} from '../messages/HostToClient';
+import {
+  ClientToHost,
+  validate as validateIncoming
+} from '../messages/ClientToHost';
 
 const IFRAME_STYLE =
   'position: absolute; top: 0; left: 0; width: 100%; height: 100%;';
@@ -32,8 +39,10 @@ class IframeManager {
   public sendtoClient(message: HostToClient) {
     const clientOrigin = this.expectedClientOrigin();
     if (this._iframe.contentWindow) {
-      const validated = validate(message);
-      this._iframe.contentWindow.postMessage(validated, clientOrigin);
+      const validated = validateIncoming(message);
+      if (validated) {
+        this._iframe.contentWindow.postMessage(validated, clientOrigin);
+      }
     }
   }
 
@@ -44,6 +53,19 @@ class IframeManager {
     } catch (err) {
       return 'about:blank';
     }
+  }
+
+  public listenToMessages(handler: ((event: ClientToHost) => void)) {
+    window.addEventListener('message', event => {
+      let validated = validateIncoming(event.data);
+      if (
+        event.origin == this.expectedClientOrigin() &&
+        event.source == this._iframe.contentWindow &&
+        validated
+      ) {
+        handler(validated);
+      }
+    });
   }
 
   public embed(parent: HTMLElement) {
