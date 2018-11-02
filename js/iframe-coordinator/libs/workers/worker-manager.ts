@@ -20,7 +20,6 @@ export const WORKER_MESSAGE_EVENT_TYPE: string = 'workermessage';
  * Make sure it works in IE
  *  check blob and fallback
  * get bi-directional comms working
- * Decide on api to configure workers
  * Deal with lenient shutdown?
  * Improve worker demo for the real, useful demo
  * Docs and tests

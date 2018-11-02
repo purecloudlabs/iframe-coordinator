@@ -34,10 +34,24 @@ class FrameRouterElement extends HTMLElement {
   }
 
   public registerClients(clients: ClientRegistrations) {
+    const routableClientConfigs: { [key: string]: ClientConfig } = {};
+    const backgroundClientConfigs: { [key: string]: ClientConfig } = {};
+    Object.keys(clients).forEach((currConfigId: string) => {
+      const currConfig: ClientConfig = clients[currConfigId];
+
+      if (currConfig && currConfig.url) {
+        if ((currConfig as BackgroundClientConfig).background === true) {
+          backgroundClientConfigs[currConfigId] = currConfig;
+        } else {
+          routableClientConfigs[currConfigId] = currConfig;
+        }
+      }
+    });
+
     const embedTarget = document.createElement('div');
     this.appendChild(embedTarget);
     this.router = Elm.Host.init({
-      flags: clients,
+      flags: routableClientConfigs,
       node: embedTarget
     });
 
@@ -73,15 +87,9 @@ class FrameRouterElement extends HTMLElement {
       }
     );
 
-    // TODO decide on api and start them here
-    for (let i = 0; i < 5; i++) {
-      this._workerMgr.start('http://localhost:8080/workers/demo-worker.js');
-    }
-    this._workerMgr.start('http://localhost:8080/workers/failure-worker.js');
-    // Tests the 404 case
-    this._workerMgr.start(
-      'http://localhost:8080/workers/non-existant-worker.js'
-    );
+    Object.keys(backgroundClientConfigs).forEach(currConfigId => {
+      this._workerMgr.start(backgroundClientConfigs[currConfigId].url);
+    });
 
     this.router.ports.toHost.subscribe(labeledMsg => {
       this.dispatchEvent(

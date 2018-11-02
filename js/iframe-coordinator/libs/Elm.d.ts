@@ -46,7 +46,21 @@ interface HostProgram {
   };
 }
 
-interface ClientRegistrations {}
+interface ClientRegistrations {
+  [key: string]: ClientConfig;
+}
+
+interface RoutableClientConfig {
+  url: string;
+  assignedRoute: string;
+}
+
+interface BackgroundClientConfig {
+  background: boolean;
+  url: string;
+}
+
+type ClientConfig = RoutableClientConfig | BackgroundClientConfig;
 
 declare module '*/Host.elm' {
   export interface Publication {

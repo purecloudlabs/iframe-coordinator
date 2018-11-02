@@ -41,17 +41,37 @@ registerElements();
 
 // ----- Client/Nav Setup
 
-let router = document.getElementById("router");
-router.registerClients(
-  NAV_CONFIGS.reduce((clientMap, {id, url, assignedRoute}) => {
+// Build client list from nav entries and background tasks
+let allClients = {
+  ...NAV_CONFIGS.reduce((clientMap, {id, url, assignedRoute}) => {
     clientMap[id] = {
       url,
       assignedRoute
     }
 
     return clientMap;
-  }, {})
-);
+  }, {}),
+  ...{
+    // Standard worker
+    'backgroundWorker1': {
+      background: true,
+      url: new URL("/workers/demo-worker.js", window.location).toString(),
+    },
+    // Tests js failures within the worker
+    'backgroundWorkerFailureTest': {
+      background: true,
+      url: new URL("/workers/failure-worker.js", window.location).toString(),
+    },
+    // Tests the 404 worker case
+    'backgroundWorkerNotFoundTest': {
+      background: true,
+      url: new URL("/workers/non-existant-worker.js", window.location).toString(),
+    },
+  }
+};
+
+let router = document.getElementById("router");
+router.registerClients(allClients);
 
 buildNavMarkup(NAV_CONFIGS);
 
