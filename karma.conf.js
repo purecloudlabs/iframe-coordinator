@@ -3,14 +3,12 @@ process.env.CHROME_BIN = require('puppeteer').executablePath();
 
 module.exports = function(config) {
   config.set({
-    basePath: '',
+    basePath: 'src',
     frameworks: ['jasmine'],
     files: [
       '**/*.spec.ts'
     ],
-    exclude: [
-      'node_modules/**/*.spec.ts'
-    ],
+    exclude: [],
     preprocessors: {
       '**/*.spec.ts': ['webpack']
     },
