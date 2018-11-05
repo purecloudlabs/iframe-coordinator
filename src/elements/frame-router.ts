@@ -48,6 +48,7 @@ class FrameRouterElement extends HTMLElement {
    * @param clients The map of registrations for the available clients.
    */
   public registerClients(clients: RoutingMap) {
+    console.log(clients);
     this.router = new HostRouter(clients);
   }
 
