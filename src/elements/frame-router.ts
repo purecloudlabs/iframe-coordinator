@@ -1,67 +1,48 @@
-import FrameManager from '../FrameManager';
-import { HostRouter, RoutingMap } from '../HostRouter';
-import { ClientToHost } from '../messages/ClientToHost';
-import { Publication } from '../messages/Publication';
-import { SubscriptionManager } from '../SubscriptionManager';
+import { HostRouter, Publication } from '../HostRouter';
+import ClientFrame from './x-ifc-frame';
 
 const ROUTE_ATTR = 'route';
 
 /**
- * A DOM element responsible for communicating
- * with the internal {@link ClientFrame} in order
- * to recieve and send messages to and from
- * the client content.
+ * The frame-router custom element
+ *
+ * Events:
+ * @event toastRequest
+ * @type {object}
+ * @param {object} detail - Details of the toast.
+ * @param {string} detail.message - Toast message.
+ * @param {string=} detail.title - Optional toast title.
+ * @param {object=} detail.x - Optional, custom properties for application-specific toast features
  */
 class FrameRouterElement extends HTMLElement {
-  private _frameManager: FrameManager;
-  private _subscriptionManager: SubscriptionManager;
-  private _router: HostRouter;
+  public router: HostRouter;
 
   constructor() {
     super();
-    this._frameManager = new FrameManager({
-      onMessage: this._handleClientMessages.bind(this)
-    });
-    this._subscriptionManager = new SubscriptionManager();
-    this._subscriptionManager.setHandler((publication: Publication) => {
-      this._dispatchClientMessage({
-        msgType: 'publish',
-        msg: publication
-      });
-    });
   }
 
-  /**
-   * @inheritdoc
-   */
   static get observedAttributes() {
     return [ROUTE_ATTR];
   }
 
-  /**
-   * @inheritdoc
-   */
   public connectedCallback() {
     this.setAttribute('style', 'position: relative;');
-    this._frameManager.embed(this);
-    this._frameManager.startMessageHandler();
   }
 
-  /**
-   * @inheritdoc
-   */
-  public disconnectedCallback() {
-    this._frameManager.stopMessageHandler();
-  }
+  public registerClients(clients: {}) {
+    const embedTarget = document.createElement('div');
+    this.appendChild(embedTarget);
+    this.router = new HostRouter({
+      routingMap: clients,
+      node: embedTarget
+    });
 
-  /**
-   * Registers possible clients this frame will host.
-   *
-   * @param clients The map of registrations for the available clients.
-   */
-  public registerClients(clients: RoutingMap) {
-    this._router = new HostRouter(clients);
-    this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
+    // Router requests a message sent to the host.
+    this.router.onSendToHost((labeledMsg: LabeledMsg) => {
+      this.dispatchEvent(
+        new CustomEvent(labeledMsg.msgType, { detail: labeledMsg.msg })
+      );
+    });
   }
 
   /**
@@ -70,7 +51,7 @@ class FrameRouterElement extends HTMLElement {
    * @param topic - The topic name the host is interested in.
    */
   public subscribe(topic: string): void {
-    this._subscriptionManager.subscribe(topic);
+    this.router.subscribeToMessages(topic);
   }
 
   /**
@@ -79,7 +60,7 @@ class FrameRouterElement extends HTMLElement {
    * @param topic - The topic name the host is no longer interested in.
    */
   public unsubscribe(topic: string): void {
-    this._subscriptionManager.unsubscribe(topic);
+    this.router.unsubscribeToMessages(topic);
   }
 
   /**
@@ -89,7 +70,7 @@ class FrameRouterElement extends HTMLElement {
    * The topic may not be of interest, and could be ignored.
    */
   public publish(publication: Publication): void {
-    this._frameManager.sendToClient({
+    this.router.publishGenericMessage({
       msg: publication,
       msgType: 'publish'
     });
@@ -101,13 +82,9 @@ class FrameRouterElement extends HTMLElement {
    * @param newPath a new route which matches those provided originally.
    */
   public changeRoute(newPath: string) {
-    const clientUrl = this._router.getClientUrl(newPath);
-    this._frameManager.setFrameLocation(clientUrl);
+    this.router.changeRoute(newPath);
   }
 
-  /**
-   * @inheritdoc
-   */
   public attributeChangedCallback(
     name: string,
     oldValue: string,
@@ -116,22 +93,6 @@ class FrameRouterElement extends HTMLElement {
     if (name === ROUTE_ATTR && oldValue !== newValue) {
       this.changeRoute(newValue);
     }
-  }
-
-  private _handleClientMessages(message: ClientToHost) {
-    switch (message.msgType) {
-      case 'publish':
-        this._subscriptionManager.dispatchMessage(message.msg);
-        break;
-      default:
-        this._dispatchClientMessage(message);
-    }
-  }
-
-  private _dispatchClientMessage(message: ClientToHost) {
-    this.dispatchEvent(
-      new CustomEvent(message.msgType, { detail: message.msg })
-    );
   }
 }
 

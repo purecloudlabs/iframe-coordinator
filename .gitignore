@@ -1,7 +1,13 @@
 node_modules/
+<<<<<<< HEAD
 /client.js
 /host.js
 /index.js
+=======
+client.js
+host.js
+index.js
+>>>>>>> Moving demo-app up a level and fixing an issue with the tests
 .npmrc
 
 /*.d.ts
