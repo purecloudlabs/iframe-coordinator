@@ -26,12 +26,15 @@ class HostRouter {
 
   public getClientUrl(rawRoute: string): string | null {
     const route = normalizeRoute(rawRoute);
+
+    let clientUrl = null;
     this._clients.forEach(client => {
-      if (matchAndStripPrefix(route, client.assignedRoute)) {
-        return applyRoute(client.url, route);
+      if (matchAndStripPrefix(route, client.assignedRoute) !== null) {
+        clientUrl = applyRoute(client.url, route);
       }
     });
-    return null;
+
+    return clientUrl;
   }
 }
 
