@@ -1,4 +1,6 @@
+import { guard, mixed, object, string } from 'decoders';
 import { LabeledMsg } from './LabeledMsg';
+import { createMessageValidator } from './validationUtils';
 
 /**
  * A publication configuration.
@@ -20,3 +22,16 @@ export interface LabeledPublication extends LabeledMsg {
   msgType: 'publish';
   msg: Publication;
 }
+
+const publicationDecoder = guard(
+  object({
+    topic: string,
+    payload: mixed
+  })
+);
+
+const validatePublication = createMessageValidator<LabeledPublication>(
+  'publish',
+  publicationDecoder
+);
+export { validatePublication };
