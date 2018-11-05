@@ -1,4 +1,4 @@
-import { LabeledPublication } from './Publication';
+import { LabeledPublication, validatePublication } from './Publication';
 
 /**
  * All avaiable message types that can be sent
@@ -11,10 +11,10 @@ export type HostToClient = LabeledPublication;
  * the host to the client.
  * @param msg The message requiring validation.
  */
-export function validate(msg: HostToClient): HostToClient {
-  // TODO: actually validate cases
-  switch (msg.msgType) {
-    case 'publish':
-      return msg;
+export function validate(msg: any): HostToClient | null {
+  if (!msg || !msg.msgType || !msg.msg) {
+    return null;
   }
+
+  return validatePublication(msg);
 }
