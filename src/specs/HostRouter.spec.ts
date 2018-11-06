@@ -2,7 +2,6 @@ import * as hostRouterInjector from 'inject-loader!../HostRouter';
 import { HostRouter } from '../HostRouter';
 
 describe('HostRouter', () => {
-  let mocks: any;
   let hostRouter: HostRouter;
   let clientUrl = 'http://example.com/#/test/one';
   beforeEach(() => {

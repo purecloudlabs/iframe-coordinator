@@ -1,7 +1,7 @@
 import { HostRouter, RoutingMap } from '../HostRouter';
 import { Publication } from '../messages/Publication';
 import { SubscriptionManager } from '../SubscriptionManager';
-import IframeManager from './IframeManager';
+import FrameManager from '../FrameManager';
 import {
   ClientToHost,
   validate as validateIncoming
@@ -16,13 +16,13 @@ const ROUTE_ATTR = 'route';
  * the client content.
  */
 class FrameRouterElement extends HTMLElement {
-  private _frameManager: IframeManager;
+  private _frameManager: FrameManager;
   private _subscriptionManager: SubscriptionManager;
   public router: HostRouter;
 
   constructor() {
     super();
-    this._frameManager = new IframeManager();
+    this._frameManager = new FrameManager();
     this._subscriptionManager = new SubscriptionManager();
   }
 
@@ -77,7 +77,7 @@ class FrameRouterElement extends HTMLElement {
    * The topic may not be of interest, and could be ignored.
    */
   public publish(publication: Publication): void {
-    this._frameManager.sendtoClient({
+    this._frameManager.sendToClient({
       msg: publication,
       msgType: 'publish'
     });
