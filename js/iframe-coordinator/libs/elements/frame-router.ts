@@ -1,4 +1,5 @@
 import { Elm, Publication } from '../../elm/Host.elm';
+import { WorkerToHostMessageTypes } from '../workers/constants';
 import WorkerManager, {
   WORKER_MESSAGE_EVENT_TYPE
 } from '../workers/worker-manager';
@@ -61,15 +62,9 @@ class FrameRouterElement extends HTMLElement {
       (evt: CustomEvent) => {
         if (evt && evt.detail && evt.detail.msgType) {
           switch (evt.detail.msgType) {
-            case 'navRequest':
-              // TODO Talk about this api.  Should it be route based?
-              this.dispatchEvent(
-                new CustomEvent(evt.detail.msgType, {
-                  detail: { fragment: evt.detail.msg.fragment }
-                })
-              );
-              break;
-            case 'toastRequest':
+            case WorkerToHostMessageTypes.NavRequest:
+            // Intentional fall-through. Consistent handling for known types
+            case WorkerToHostMessageTypes.ToastRequest:
               this.dispatchEvent(
                 new CustomEvent(evt.detail.msgType, { detail: evt.detail.msg })
               );
@@ -78,9 +73,9 @@ class FrameRouterElement extends HTMLElement {
             default:
               // TODO Need to add proper logging support
               // tslint:disable-next-line
-              console.error(
-                `Unknown msgType ${evt.detail.msgType}, received from worker`
-              );
+              console.error('Unhandled msgType received from worker', {
+                msgType: evt.detail.msgType
+              });
               break;
           }
         }

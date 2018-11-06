@@ -5,7 +5,8 @@ seems to export as a constructor function anyway.  So, the raw text version seem
 approach at this point*/
 import {
   WORKER_MESSAGING_PROTOCOL_NAME,
-  WorkerLifecycleEvents
+  WorkerLifecycleEvents,
+  WorkerToHostMessageTypes
 } from './constants';
 import * as SpawnWorker from './spawn-worker.worker.ts';
 
@@ -16,22 +17,31 @@ const DEFAULT_ERROR_WINDOW_MILLIS = 30000;
 
 /*
  * TODO for this feature:
+
+ * get bi-directional comms working
+ * Finalize backgroundClient api
+   * Check on impl interface idea and add NavigationRequester interface
+   * should navRequest be url based?
+   * Will docs get pulled in correctly? pull them from client.ts
+ * Message validation
+  * Add checks to ensure lifecycle is not updated to prior state?
+  * Ensure payload is valid for message types
+  * Better checks to ensure all enums and cases are handled?
+  * stronger types of messages between this manager and the workers?
+ * docs
+ *   dont forget that this is sorta dangerous with indexeddb
  *
  * Is the import of the worker good enough?
   * Decide on class or text of the worker
  * Make sure es6 target is ok
  * Make sure it works in IE
  *  check blob and fallback
- * get bi-directional comms working
- * Improve worker demo for the real, useful demo
- * Docs and tests
- *   dont forget that this is sorta dangerous with indexeddb
- *   tests for error rate
+ * Improve worker demo for the real, useful demo.
+ *  use subscribe?
+ *  allow dynamic addition?
+ * Tests
+ *  tests for error rate
  * better logging (these are important)
- * decide if i need the protocol in the message payload or not.
- *  check it inbound if so
- *  remove it from outbound if not
- * stronger types of messages between this manager and the workers?
  * support lenient shutdown?
  *  notification on shutdown?
  *  soft stop
@@ -188,7 +198,11 @@ export default class WorkerManager implements EventListenerObject, EventTarget {
   }
 
   private _onWorkerMsg(evt: MessageEvent) {
-    // TODO Check other base fields (protocol, etc)
+    if (evt.data.protocol !== WORKER_MESSAGING_PROTOCOL_NAME) {
+      // Not a handled message type
+      return;
+    }
+
     if (!evt.data.msgType) {
       // TODO Need to add proper logging support
       // tslint:disable-next-line
@@ -226,6 +240,7 @@ export default class WorkerManager implements EventListenerObject, EventTarget {
         // tslint:disable-next-line
         console.error('Failed to bootstrap the worker.  Stopping the worker', {
           workerId: managedWorker.id,
+          workerUrl: managedWorker.url,
           error: evt.data.msg.error
         });
         this.stop(managedWorker.id);
@@ -234,11 +249,27 @@ export default class WorkerManager implements EventListenerObject, EventTarget {
         managedWorker.phase = WorkerPhase.RUNNING;
         break;
       // TODO Other lifecycle event types (stopping, etc.)
-      default:
-        // TODO only re-dispatch known messaging event types (navRequest, toastRequest, etc)
+      case WorkerToHostMessageTypes.ToastRequest:
+        // TODO need more validation
         this.dispatchEvent(
           new CustomEvent(WORKER_MESSAGE_EVENT_TYPE, { detail: evt.data })
         );
+        break;
+      case WorkerToHostMessageTypes.NavRequest:
+        // TODO need more validation
+        this.dispatchEvent(
+          new CustomEvent(WORKER_MESSAGE_EVENT_TYPE, { detail: evt.data })
+        );
+        break;
+      // TODO Need better way to ensure all cases are handled
+      default:
+        // TODO Need to add proper logging support
+        // tslint:disable-next-line
+        console.error('Received unknown msgType from worker', {
+          workerDetails: managedWorker,
+          msgType: evt.data.msgType
+        });
+        return;
     }
   }
 

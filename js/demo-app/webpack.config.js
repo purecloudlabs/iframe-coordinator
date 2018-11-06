@@ -50,4 +50,21 @@ module.exports = [{
             babelRule
         ]
     }
+},{
+    entry: {
+        'demo-worker': './src/workers/demo-worker.js',
+        'failure-worker': './src/workers/failure-worker.js'
+    },
+    mode: 'development',
+    target: 'webworker',
+    output: {
+        library: '[name]',
+        libraryTarget: 'umd',
+        filename: 'workers/[name].js'
+    },
+    module: {
+        rules: [
+            babelRule
+        ]
+    }
 }];
