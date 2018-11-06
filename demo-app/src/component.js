@@ -2,7 +2,7 @@ import "@babel/polyfill";
 import "custom-event-polyfill/polyfill.js";
 import "nodelist-foreach-polyfill";
 import "url-polyfill";
-import { Client } from "iframe-coordinator/client";
+import { Client, EnvData } from "iframe-coordinator/client";
 
 document.getElementById("path").innerHTML = window.location.hash;
 
@@ -13,7 +13,9 @@ window.onhashchange = function() {
 // Start intercepting link click events for routing
 let iframeClient = new Client();
 iframeClient.start();
-
+iframeClient.getEnvData(envData => {
+  document.getElementById("client-data").value = JSON.stringify(envData);
+});
 iframeClient.onPubsub(publication => {
   console.log("Got Publish event:", publication);
 });

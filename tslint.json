@@ -9,6 +9,7 @@
       "member-ordering": false,
       "no-trailing-whitespace": [true, "ignore-blank-lines"],
       "object-literal-sort-keys": false,
+      "semicolon": [true, "always"],
       "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
     }
   }

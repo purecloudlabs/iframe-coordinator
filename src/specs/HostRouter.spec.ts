@@ -1,5 +1,6 @@
 import * as hostRouterInjector from 'inject-loader!../HostRouter';
 import { HostRouter } from '../HostRouter';
+import { LabeledEnvData } from '../messages/EnvData';
 import { LabeledPublication } from '../messages/Publication';
 
 describe('HostRouter', () => {
@@ -19,7 +20,8 @@ describe('HostRouter', () => {
         mocks.ifcFrameObj.handlers[topic](data);
       },
       setAttribute: jasmine.createSpy('xifcSetAttribute'),
-      send: jasmine.createSpy('xifcSend')
+      send: jasmine.createSpy('xifcSend'),
+      setEnvData: jasmine.createSpy('xifcSetEnvData')
     };
     mocks.ifcFrame = {
       default: jasmine
@@ -155,6 +157,26 @@ describe('HostRouter', () => {
         'src',
         '/test/one'
       );
+    });
+  });
+
+  describe('when setting client data', () => {
+    describe('providing the minimium requirements', () => {
+      const envDataMessage: LabeledEnvData = {
+        msgType: 'envData',
+        msg: {
+          locale: 'en'
+        }
+      };
+      beforeEach(() => {
+        hostRouter.setEnvData(envDataMessage);
+      });
+
+      it('should send the client data to the client', () => {
+        expect(mocks.ifcFrameObj.setEnvData).toHaveBeenCalledWith(
+          envDataMessage
+        );
+      });
     });
   });
 });

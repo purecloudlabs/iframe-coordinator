@@ -7,6 +7,7 @@ import {
   validate as validateIncoming
 } from './messages/HostToClient';
 
+import { EnvData } from './messages/EnvData';
 import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 import { PublicationHandler, SubscriptionManager } from './SubscriptionManager';
@@ -19,6 +20,8 @@ class Client {
   private _subscriptionManager: SubscriptionManager;
   private _isStarted: boolean;
   private _clientWindow: Window;
+  private _env: EnvData;
+  private _getEnvCb: (env: EnvData) => void;
 
   public constructor(configOptions: ClientConfigOptions = {}) {
     this._clientWindow = configOptions.clientWindow || window;
@@ -51,6 +54,20 @@ class Client {
     switch (message.msgType) {
       case 'publish':
         this._subscriptionManager.dispatchMessage(message.msg);
+      case 'envData':
+        this._env = message.msg as EnvData;
+        if (this._getEnvCb) {
+          this._getEnvCb(this._env);
+        }
+        return;
+    }
+  }
+
+  public getEnvData(callback: (env: EnvData) => void): void {
+    this._getEnvCb = callback;
+
+    if (this._env) {
+      this._getEnvCb(this._env);
     }
   }
 

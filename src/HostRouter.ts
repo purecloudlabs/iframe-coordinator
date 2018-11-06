@@ -1,8 +1,6 @@
 import ClientFrame from './elements/x-ifc-frame';
-import {
-  ClientToHost,
-  validate as validateIncoming
-} from './messages/ClientToHost';
+import { validate as validateIncoming } from './messages/ClientToHost';
+import { EnvData, LabeledEnvData } from './messages/EnvData';
 import {
   HostToClient,
   validate as validateOutgoing
@@ -19,6 +17,7 @@ class HostRouter {
   private _clientFrame: ClientFrame;
   private _toHostSubscriptions: SubscribeHandler[];
   private _interestedTopics: Set<string>;
+  private _clientData: LabeledEnvData;
 
   constructor(options: {
     node: HTMLElement;
@@ -92,6 +91,10 @@ class HostRouter {
 
     this._clientFrame.setAttribute('src', urlRoute);
   }
+
+  public setEnvData(labeledEnvData: LabeledEnvData) {
+    this._clientFrame.setEnvData(labeledEnvData);
+  }
 }
 
-export { HostRouter, Publication };
+export { HostRouter, Publication, EnvData };
