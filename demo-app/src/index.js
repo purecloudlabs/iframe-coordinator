@@ -52,6 +52,9 @@ router.registerClients(
     return clientMap;
   }, {})
 );
+router.setEnvData({
+  locale: "nl-NL"
+});
 
 buildNavMarkup(NAV_CONFIGS);
 

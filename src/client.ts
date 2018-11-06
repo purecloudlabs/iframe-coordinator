@@ -8,6 +8,7 @@ import {
   validate as validateIncoming
 } from './messages/HostToClient';
 
+import { EnvData } from './messages/EnvData';
 import { Publication, PublicationEventEmitter } from './messages/Publication';
 import { Toast } from './messages/Toast';
 
@@ -25,6 +26,8 @@ interface ClientConfigOptions {
 class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
   private _isStarted: boolean;
   private _clientWindow: Window;
+  private _env: EnvData;
+  private _getEnvCb: (env: EnvData) => void;
 
   public constructor(configOptions: ClientConfigOptions = {}) {
     super();
@@ -36,7 +39,7 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
     if (validated) {
       this._handleHostMessage(validated);
     }
-  };
+  }
 
   private _onWindowClick = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
@@ -51,15 +54,27 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
         }
       });
     }
-  };
+  }
 
   private _handleHostMessage(message: HostToClient): void {
     switch (message.msgType) {
       case 'publish':
         this.emit(message.msg.topic, message.msg);
         break;
-      default:
-      // Only emit events which are specifically handled.
+      case 'envData':
+        this._env = message.msg as EnvData;
+        if (this._getEnvCb) {
+          this._getEnvCb(this._env);
+        }
+        return;
+    }
+  }
+
+  public getEnvData(callback: (env: EnvData) => void): void {
+    this._getEnvCb = callback;
+
+    if (this._env) {
+      this._getEnvCb(this._env);
     }
   }
 

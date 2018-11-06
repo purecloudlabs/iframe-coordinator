@@ -1,10 +1,11 @@
+import { LabeledEnvData, validateEnvData } from './EnvData';
 import { LabeledPublication, validatePublication } from './Publication';
 
 /**
  * All avaiable message types that can be sent
  * from the host application to the client content.
  */
-export type HostToClient = LabeledPublication;
+export type HostToClient = LabeledPublication | LabeledEnvData;
 
 /**
  * Validates correctness of messages being sent from
@@ -16,5 +17,5 @@ export function validate(msg: any): HostToClient | null {
     return null;
   }
 
-  return validatePublication(msg);
+  return validatePublication(msg) || validateEnvData(msg);
 }

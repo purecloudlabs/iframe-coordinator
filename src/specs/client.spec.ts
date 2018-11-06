@@ -1,4 +1,5 @@
 import * as ClientInjector from 'inject-loader!../client';
+import { EnvData } from '../messages/EnvData';
 import { Publication } from '../messages/Publication';
 
 describe('client', () => {
@@ -202,6 +203,27 @@ describe('client', () => {
       it('should not notify worker of navigation request', () => {
         expect(mockFrameWindow.parent.postMessage).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('when the host environment data is sent', () => {
+    let actualEnvData: EnvData;
+    beforeEach(() => {
+      client.start(mockFrameWindow);
+      client.getEnvData((envData: EnvData) => (actualEnvData = envData));
+      mockFrameWindow.trigger('message', {
+        origin: 'origin',
+        data: {
+          msgType: 'envData',
+          msg: {
+            locale: 'nl-NL'
+          }
+        }
+      });
+    });
+
+    it('should update the client env data', () => {
+      expect(actualEnvData.locale).toEqual('nl-NL');
     });
   });
 });

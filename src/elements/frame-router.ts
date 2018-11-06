@@ -1,5 +1,4 @@
-import { HostRouter, Publication } from '../HostRouter';
-import ClientFrame from './x-ifc-frame';
+import { EnvData, HostRouter, Publication } from '../HostRouter';
 
 const ROUTE_ATTR = 'route';
 
@@ -42,6 +41,13 @@ class FrameRouterElement extends HTMLElement {
       this.dispatchEvent(
         new CustomEvent(labeledMsg.msgType, { detail: labeledMsg.msg })
       );
+    });
+  }
+
+  public setEnvData(envData: EnvData) {
+    this.router.setEnvData({
+      msgType: 'envData',
+      msg: envData
     });
   }
 
