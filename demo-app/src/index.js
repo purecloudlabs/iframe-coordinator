@@ -13,14 +13,14 @@ const NAV_CONFIGS = [
   {
     id: "client1",
     title: "Component 1",
-    url: new URL("/components/example1/", window.location).toString(),
+    url: new URL("/components/example1/#/", window.location).toString(),
     assignedRoute: "/one",
     children: ["first", "second"]
   },
   {
     id: "client2",
     title: "Component 2",
-    url: new URL("/components/example2/", window.location).toString(),
+    url: new URL("/components/example2/#/", window.location).toString(),
     assignedRoute: "/two",
     children: ["first", "second"]
   },
