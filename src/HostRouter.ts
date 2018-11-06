@@ -1,21 +1,10 @@
-interface ClientRegistration {
-  url: string;
-  assignedRoute: string;
-}
-
-interface RoutingMap {
-  [key: string]: ClientRegistration;
-}
-
-interface ClientInfo extends ClientRegistration {
-  id: string;
-}
+// Main Class
 
 /**
  * HostRouter is responsible for routing messages from the {@link Host}
  * to the underlying iframe.
  */
-class HostRouter {
+export class HostRouter {
   private _clients: ClientInfo[];
 
   constructor(clients: RoutingMap) {
@@ -24,13 +13,12 @@ class HostRouter {
     });
   }
 
-  public getClientUrl(rawRoute: string): string | null {
-    const route = normalizeRoute(rawRoute);
-
+  public getClientUrl(route: string): string | null {
     let clientUrl = null;
     this._clients.forEach(client => {
-      if (matchAndStripPrefix(route, client.assignedRoute) !== null) {
-        clientUrl = applyRoute(client.url, route);
+      let clientRoute = matchAndStripPrefix(route, client.assignedRoute);
+      if (clientRoute !== null) {
+        clientUrl = applyRoute(client.url, clientRoute);
       }
     });
 
@@ -38,13 +26,31 @@ class HostRouter {
   }
 }
 
+// Utility Types
+
+export interface RoutingMap {
+  [key: string]: ClientRegistration;
+}
+
+interface ClientRegistration {
+  url: string;
+  assignedRoute: string;
+}
+
+interface ClientInfo extends ClientRegistration {
+  id: string;
+}
+
+// Helper functions
+
 function matchAndStripPrefix(
-  targetRoute: string,
+  rawTargetRoute: string,
   clientRoute: string
 ): string | null {
+  const targetRoute = stripLeadingSlash(rawTargetRoute);
   if (targetRoute.startsWith(clientRoute)) {
     const newRoute = targetRoute.replace(clientRoute, '');
-    return normalizeRoute(newRoute);
+    return stripLeadingSlash(newRoute);
   } else {
     return null;
   }
@@ -60,8 +66,13 @@ function parseRegistration(key: string, value: ClientRegistration): ClientInfo {
 
 function applyRoute(urlStr: string, route: string): string {
   const newUrl = new URL(urlStr, window.location.href);
-  const baseClientRoute = stripTrailingSlash(newUrl.hash);
-  newUrl.hash = `${baseClientRoute}/${route}`;
+  if (newUrl.hash) {
+    const baseClientRoute = stripTrailingSlash(newUrl.hash);
+    newUrl.hash = `${baseClientRoute}/${route}`;
+  } else {
+    const baseClientPath = stripTrailingSlash(newUrl.pathname);
+    newUrl.pathname = `${baseClientPath}/${route}`;
+  }
   return newUrl.toString();
 }
 
@@ -76,5 +87,3 @@ function stripLeadingSlash(str: string): string {
 function stripTrailingSlash(str: string): string {
   return str.replace(/\/+$/, '');
 }
-
-export { HostRouter, RoutingMap };

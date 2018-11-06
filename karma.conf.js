@@ -1,14 +1,14 @@
 let webpackConfig = require('./webpack.config');
-process.env.CHROME_BIN = require('puppeteer').executablePath();
+if (!process.env.CHROME_BIN) {
+  process.env.CHROME_BIN = require('puppeteer').executablePath();
+}
 
 module.exports = function(config) {
   config.set({
     basePath: 'src',
     frameworks: ['jasmine'],
-    files: [
-      '**/*.spec.ts'
-    ],
-    exclude: [],
+    files: ['**/*.spec.ts'],
+    exclude: ['node_modules/**/*.spec.ts'],
     preprocessors: {
       '**/*.spec.ts': ['webpack']
     },
@@ -22,4 +22,4 @@ module.exports = function(config) {
     singleRun: false,
     concurrency: Infinity
   });
-}
+};
