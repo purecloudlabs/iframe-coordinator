@@ -11,10 +11,17 @@ import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 import { PublicationHandler, SubscriptionManager } from './SubscriptionManager';
 
+/**
+ * Configuration options given to the client
+ * from the host application.
+ */
 interface ClientConfigOptions {
   clientWindow?: Window;
 }
 
+/**
+ * The Client is access point for the embedded UI's in the host application.
+ */
 class Client {
   private _subscriptionManager: SubscriptionManager;
   private _isStarted: boolean;
@@ -61,6 +68,9 @@ class Client {
     }
   }
 
+  /**
+   * Initiates responding to events triggered by the host application.
+   */
   public start(): void {
     if (this._isStarted) {
       return;
@@ -72,6 +82,9 @@ class Client {
     this._clientWindow.addEventListener('click', this._onWindowClick);
   }
 
+  /**
+   * Deactivates responding to events triggered by the host application.
+   */
   public stop(): void {
     if (!this._isStarted) {
       return;
@@ -82,15 +95,31 @@ class Client {
     this._clientWindow.removeEventListener('click', this._onWindowClick);
   }
 
-  // Subscribe to messages from host
+  /**
+   * Subscribes to topics that may be published by the host application.
+   * You can subscribe to multiple topics, however, they will come through
+   * the onPubsub handler.
+   *
+   * @param topic The topic which is of interest to the client content.
+   */
   public subscribe(topic: string): void {
     this._subscriptionManager.subscribe(topic);
   }
 
+  /**
+   * Unsubscribes to topics being published by the host application.
+   *
+   * @param topic The topic which is no longer of interest to the client content.
+   */
   public unsubscribe(topic: string): void {
     this._subscriptionManager.unsubscribe(topic);
   }
 
+  /**
+   * Publish a general message to the host application.
+   *
+   * @param publication The data object to be published.
+   */
   public publish(publication: Publication): void {
     this._sendToHost({
       msgType: 'publish',
@@ -98,6 +127,13 @@ class Client {
     });
   }
 
+  /**
+   * Sets the callback for general publication messages coming from the host application.
+   *
+   * Only one callback may be set.
+   *
+   * @param callback The handler to be called when a message is published.
+   */
   public onPubsub(callback: PublicationHandler): void {
     this._subscriptionManager.setHandler(callback);
   }
@@ -110,19 +146,16 @@ class Client {
    * ids for action callbacks (toast click, toast action buttons), etc. can be passed via an object
    * as the custom property of the options param.
    *
-   * @param {string} message - The message content of the toast
-   * @param {object=} options - Supplimental toast options.
-   * @param {string=} options.title - Optional title for the toast.
-   * @param {object=} options.custom - Optional, application-specific toast properties.  Note: Properties must be JSON serializable.
+   * @param toast the desired toast configuration.
    *
    * @example
-   * worker.requestToast('Hello world');
+   * worker.requestToast({ title: 'Hello world' });
    *
    * @example
-   * worker.requestToast('World', {title: 'Hello'});
+   * worker.requestToast({ title: 'Hello', message: 'World' });
    *
    * @example
-   * worker.requestToast('World', {title: 'Hello', custom: {ttl: 5, level: 'info'}});
+   * worker.requestToast({ title: 'Hello', message: 'World', custom: { ttl: 5, level: 'info' } });
    */
   public requestToast(toast: Toast) {
     this._sendToHost({
