@@ -2,7 +2,7 @@ import { HostRouter } from '../HostRouter';
 
 describe('HostRouter', () => {
   let hostRouter: HostRouter;
-  let clientUrl = 'http://example.com/#/test/one';
+  const clientUrl = 'http://example.com/#/test/one';
   beforeEach(() => {
     hostRouter = new HostRouter({
       route1: {

@@ -16,7 +16,7 @@ export class HostRouter {
   public getClientUrl(route: string): string | null {
     let clientUrl = null;
     this._clients.forEach(client => {
-      let clientRoute = matchAndStripPrefix(route, client.assignedRoute);
+      const clientRoute = matchAndStripPrefix(route, client.assignedRoute);
       if (clientRoute !== null) {
         clientUrl = applyRoute(client.url, clientRoute);
       }

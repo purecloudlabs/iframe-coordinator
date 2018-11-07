@@ -1,11 +1,11 @@
 import {
-  HostToClient,
-  validate as validateOutgoing
-} from './messages/HostToClient';
-import {
   ClientToHost,
   validate as validateIncoming
 } from './messages/ClientToHost';
+import {
+  HostToClient,
+  validate as validateOutgoing
+} from './messages/HostToClient';
 
 const IFRAME_STYLE =
   'position: absolute; top: 0; left: 0; width: 100%; height: 100%;';
@@ -51,10 +51,10 @@ class FrameManager {
 
   public listenToMessages(handler: ((event: ClientToHost) => void)) {
     this._window.addEventListener('message', event => {
-      let validated = validateIncoming(event.data);
+      const validated = validateIncoming(event.data);
       if (
-        event.origin == this._expectedClientOrigin() &&
-        event.source == this._iframe.contentWindow &&
+        event.origin === this._expectedClientOrigin() &&
+        event.source === this._iframe.contentWindow &&
         validated
       ) {
         handler(validated);
