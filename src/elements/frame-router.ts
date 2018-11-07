@@ -18,7 +18,7 @@ const ROUTE_ATTR = 'route';
 class FrameRouterElement extends HTMLElement {
   private _frameManager: FrameManager;
   private _subscriptionManager: SubscriptionManager;
-  public router: HostRouter;
+  private _router: HostRouter;
 
   constructor() {
     super();
@@ -48,7 +48,7 @@ class FrameRouterElement extends HTMLElement {
    * @param clients The map of registrations for the available clients.
    */
   public registerClients(clients: RoutingMap) {
-    this.router = new HostRouter(clients);
+    this._router = new HostRouter(clients);
     this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
   }
 
@@ -89,7 +89,7 @@ class FrameRouterElement extends HTMLElement {
    * @param newPath a new route which matches those provided originally.
    */
   public changeRoute(newPath: string) {
-    const clientUrl = this.router.getClientUrl(newPath);
+    const clientUrl = this._router.getClientUrl(newPath);
     this._frameManager.setFrameLocation(clientUrl);
   }
 
