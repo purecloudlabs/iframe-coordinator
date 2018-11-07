@@ -21,7 +21,6 @@ const DEFAULT_UNLOAD_TIMEOUT_MILLIS = 10000;
  * TODO for this feature:
 
  * add config for spawned workers to shutdown
- * Feature detect for workers
  * Move config to be per-worker
  *  make a type/class
  *  add cleanup boolean here
@@ -111,6 +110,10 @@ export default class WorkerManager implements EventListenerObject, EventTarget {
     errorWindowMillis: number = DEFAULT_ERROR_WINDOW_MILLIS,
     unloadTimeoutMillis: number = DEFAULT_UNLOAD_TIMEOUT_MILLIS
   ) {
+    if (typeof Worker !== 'function') {
+      throw new Error('noWorkerSupport');
+    }
+
     this._errorWindowCountThreshold = errorWindowCountThreshold;
     this._errorWindowMillis = errorWindowMillis;
     this._unloadTimeoutMillis = unloadTimeoutMillis;

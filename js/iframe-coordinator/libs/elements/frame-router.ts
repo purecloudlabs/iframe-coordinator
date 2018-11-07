@@ -56,7 +56,31 @@ class FrameRouterElement extends HTMLElement {
       node: embedTarget
     });
 
-    this._workerMgr = new WorkerManager();
+    this.router.ports.toHost.subscribe(labeledMsg => {
+      this.dispatchEvent(
+        new CustomEvent(labeledMsg.msgType, { detail: labeledMsg.msg })
+      );
+    });
+
+    this.router.ports.toClient.subscribe(message => {
+      const frame = this.getElementsByTagName('x-ifc-frame')[0] as ClientFrame;
+      if (frame) {
+        frame.send(message);
+      }
+    });
+
+    try {
+      this._workerMgr = new WorkerManager();
+    } catch {
+      // TODO Need to add proper logging support
+      // tslint:disable-next-line
+      console.error(
+        'Your browser does not support Workers.  Background clients cannot be started.'
+      );
+
+      return;
+    }
+
     this._workerMgr.addEventListener(
       WORKER_MESSAGE_EVENT_TYPE,
       (evt: CustomEvent) => {
@@ -84,19 +108,6 @@ class FrameRouterElement extends HTMLElement {
 
     Object.keys(backgroundClientConfigs).forEach(currConfigId => {
       this._workerMgr.load(backgroundClientConfigs[currConfigId].url);
-    });
-
-    this.router.ports.toHost.subscribe(labeledMsg => {
-      this.dispatchEvent(
-        new CustomEvent(labeledMsg.msgType, { detail: labeledMsg.msg })
-      );
-    });
-
-    this.router.ports.toClient.subscribe(message => {
-      const frame = this.getElementsByTagName('x-ifc-frame')[0] as ClientFrame;
-      if (frame) {
-        frame.send(message);
-      }
     });
   }
 
