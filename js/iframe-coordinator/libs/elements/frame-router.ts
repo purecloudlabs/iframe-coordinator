@@ -83,7 +83,7 @@ class FrameRouterElement extends HTMLElement {
     );
 
     Object.keys(backgroundClientConfigs).forEach(currConfigId => {
-      this._workerMgr.start(backgroundClientConfigs[currConfigId].url);
+      this._workerMgr.load(backgroundClientConfigs[currConfigId].url);
     });
 
     this.router.ports.toHost.subscribe(labeledMsg => {

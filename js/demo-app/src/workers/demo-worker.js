@@ -6,7 +6,7 @@ const client = new BackgroundClient();
 // Routing example
 // client.requestNavigation('/wikipedia');
 
-setTimeout(sendToastMessage, getTimeout(5000, 10000));
+let currTimeout = setTimeout(sendToastMessage, getTimeout(5000, 10000));
 
 function sendToastMessage() {
   client.requestToast('from a Headless Worker', {
@@ -16,8 +16,21 @@ function sendToastMessage() {
     title: 'Hello worker World'
   });
 
-  setTimeout(sendToastMessage, getTimeout());
+  currTimeout = setTimeout(sendToastMessage, getTimeout());
 }
+
+// TODO - better listener from client api - with auto cleanup
+addEventListener('message', evt => {
+  if (evt.data.msgType === 'before_unload') {
+    // Shutdown requested from host.  Clean-up and acknowledge
+    if (currTimeout) {
+      clearTimeout(currTimeout);
+      currTimeout = null;
+    }
+
+    client.unloadReady();
+  }
+});
 
 function getTimeout(min=30000, max=60000) {
   return Math.max(min, Math.round(Math.random() * max));

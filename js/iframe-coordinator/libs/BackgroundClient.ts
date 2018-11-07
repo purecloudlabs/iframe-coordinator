@@ -1,6 +1,7 @@
 import { ToastingClient, ToastOptions } from './types';
 import {
   WORKER_MESSAGING_PROTOCOL_NAME,
+  WorkerLifecycleEvents,
   WorkerToHostMessageTypes
 } from './workers/constants';
 
@@ -23,6 +24,10 @@ export default class BackgroundClient implements ToastingClient {
     this._publishMessageToHost(WorkerToHostMessageTypes.NavRequest, {
       fragment: route
     });
+  }
+
+  public unloadReady(): void {
+    this._publishMessageToHost(WorkerLifecycleEvents.unload_ready);
   }
 
   private _publishMessageToHost(msgType: string, msg?: object): void {

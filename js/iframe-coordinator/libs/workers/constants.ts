@@ -9,7 +9,8 @@ export const enum WorkerToHostMessageTypes {
 export const enum WorkerLifecycleEvents {
   loaded = 'loaded',
   bootstrap = 'bootstrap',
-  bootstrap_failure = 'bootstrap_failure',
+  bootstrap_failed = 'bootstrap_failed',
   bootstrapped = 'bootstrapped',
-  shut_down = 'shut_down'
+  before_unload = 'before_unload',
+  unload_ready = 'unload_ready'
 }
