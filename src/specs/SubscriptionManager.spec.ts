@@ -1,6 +1,6 @@
 import {
-  SubscriptionManager,
-  PublicationHandler
+  PublicationHandler,
+  SubscriptionManager
 } from '../SubscriptionManager';
 
 describe('SubscriptionManager', () => {

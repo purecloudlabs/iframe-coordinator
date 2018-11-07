@@ -1,11 +1,11 @@
-import { HostRouter, RoutingMap } from '../HostRouter';
-import { Publication } from '../messages/Publication';
-import { SubscriptionManager } from '../SubscriptionManager';
 import FrameManager from '../FrameManager';
+import { HostRouter, RoutingMap } from '../HostRouter';
 import {
   ClientToHost,
   validate as validateIncoming
 } from '../messages/ClientToHost';
+import { Publication } from '../messages/Publication';
+import { SubscriptionManager } from '../SubscriptionManager';
 
 const ROUTE_ATTR = 'route';
 
