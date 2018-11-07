@@ -49,6 +49,7 @@ class FrameRouterElement extends HTMLElement {
    */
   public registerClients(clients: RoutingMap) {
     this.router = new HostRouter(clients);
+    this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
   }
 
   /**
