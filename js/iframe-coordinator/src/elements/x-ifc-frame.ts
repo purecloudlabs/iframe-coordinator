@@ -1,11 +1,20 @@
+import { Client } from '../client';
+
 const SRC_ATTR = 'src';
 
 const IFRAME_STYLE =
   'position: absolute; top: 0; left: 0; width: 100%; height: 100%;';
 
+/**
+ * A DOM element responsible for hosting content (i.e. the client)
+ * and routing client messages from the hosted content.
+ */
 class ClientFrame extends HTMLElement {
-  public iframe: HTMLIFrameElement;
+  private iframe: HTMLIFrameElement;
 
+  /**
+   * @inheritdoc
+   */
   static get observedAttributes() {
     return [SRC_ATTR];
   }
@@ -14,6 +23,9 @@ class ClientFrame extends HTMLElement {
     super();
   }
 
+  /**
+   * @inheritdoc
+   */
   public connectedCallback() {
     this.iframe = document.createElement('iframe');
     this.iframe.setAttribute('frameborder', '0');
@@ -27,6 +39,9 @@ class ClientFrame extends HTMLElement {
     this.syncLocation();
   }
 
+  /**
+   * @inheritdoc
+   */
   public attributeChangedCallback(
     name: string,
     oldValue: string,
@@ -37,15 +52,17 @@ class ClientFrame extends HTMLElement {
     }
   }
 
-  /* Syncs the iframe state to the current src attribute */
-  public syncLocation() {
+  /**
+   *  Syncs the iframe state to the current src attribute
+   */
+  private syncLocation() {
     const src = this.getAttribute('src');
     if (src != null) {
       this.updateFrameLoc(src);
     }
   }
 
-  public updateFrameLoc(newSrc: string) {
+  private updateFrameLoc(newSrc: string) {
     if (this.iframe.contentWindow) {
       this.iframe.contentWindow.location.replace(newSrc);
     } else {
@@ -57,6 +74,15 @@ class ClientFrame extends HTMLElement {
     }
   }
 
+  /**
+   * Sends a message to the client content.
+   *
+   * @remarks
+   * The message will need to be in the format expected by
+   * the host and the client in order for it be processed.
+   *
+   * @param message The message payload to send to the client.
+   */
   public send(message: any) {
     const clientOrigin = this.expectedClientOrigin();
     if (clientOrigin !== 'null' && this.iframe.contentWindow) {
@@ -64,7 +90,7 @@ class ClientFrame extends HTMLElement {
     }
   }
 
-  public expectedClientOrigin() {
+  private expectedClientOrigin() {
     const src = this.getAttribute('src');
     if (src != null) {
       const clientUrl = new URL(src, window.location.href);
@@ -74,7 +100,7 @@ class ClientFrame extends HTMLElement {
     }
   }
 
-  public handleClientMessages(event: MessageEvent) {
+  private handleClientMessages(event: MessageEvent) {
     if (
       event.origin === this.expectedClientOrigin() &&
       event.source === this.iframe.contentWindow

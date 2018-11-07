@@ -39,6 +39,7 @@
     "ts-loader": "^5.0.0",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
+    "typedoc": "^0.13.0",
     "typescript": "^3.0.3",
     "webpack": "^4.16.3",
     "webpack-cli": "^3.1.0"
@@ -53,7 +54,8 @@
     "format": "prettier **/*.ts **/*.tsx",
     "format.fix": "npm run format -- --write",
     "lint": "tslint --project tsconfig.json",
-    "lint.fix": "npm run lint -- --fix"
+    "lint.fix": "npm run lint -- --fix",
+    "doc": "typedoc --excludePrivate --mode file --readme README.md --module umd --target ES6 --out doc/ src/"
   },
   "husky": {
     "hooks": {
