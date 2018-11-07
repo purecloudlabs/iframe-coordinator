@@ -1,4 +1,3 @@
-import * as hostRouterInjector from 'inject-loader!../HostRouter';
 import { HostRouter } from '../HostRouter';
 
 describe('HostRouter', () => {

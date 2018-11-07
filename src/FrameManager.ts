@@ -52,7 +52,6 @@ class FrameManager {
   public listenToMessages(handler: ((event: ClientToHost) => void)) {
     this._window.addEventListener('message', event => {
       let validated = validateIncoming(event.data);
-      console.log(event.source, this._iframe.contentWindow);
       if (
         event.origin == this._expectedClientOrigin() &&
         event.source == this._iframe.contentWindow &&

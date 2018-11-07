@@ -1,4 +1,3 @@
-import * as frameManagerInjector from 'inject-loader!../FrameManager';
 import FrameManager from '../FrameManager';
 import { HostToClient } from '../messages/HostToClient';
 
