@@ -1,4 +1,5 @@
+import BackgroundClient from './BackgroundClient';
 import { Client } from './client';
 import { FrameRouterElement, registerElements } from './host';
 
-export { Client, registerElements, FrameRouterElement };
+export { BackgroundClient, Client, FrameRouterElement, registerElements };

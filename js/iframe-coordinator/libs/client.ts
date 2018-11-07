@@ -1,16 +1,11 @@
 import { Elm } from '../elm/Client.elm';
-import { PublicationHandler } from './types';
-
-interface ToastOptions {
-  title?: string;
-  custom?: any;
-}
+import { PublicationHandler, ToastingClient, ToastOptions } from './types';
 
 interface ClientConfigOptions {
   clientWindow?: Window;
 }
 
-class Client {
+class Client implements ToastingClient {
   private _worker: ClientProgram;
   private _isStarted: boolean;
   private _clientWindow: Window;
@@ -117,6 +112,7 @@ class Client {
     this._messageHandlers.push(callback);
   }
 
+  // TODO Remove these docs if they can be pulled in from the interface
   /**
    * Request a toast message be displayed by the host.
    *

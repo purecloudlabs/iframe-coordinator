@@ -1,4 +1,8 @@
 import { Elm, Publication } from '../../elm/Host.elm';
+import { WorkerToHostMessageTypes } from '../workers/constants';
+import WorkerManager, {
+  WORKER_MESSAGE_EVENT_TYPE
+} from '../workers/worker-manager';
 import ClientFrame from './x-ifc-frame';
 
 const ROUTE_ATTR = 'route';
@@ -16,6 +20,7 @@ const ROUTE_ATTR = 'route';
  */
 class FrameRouterElement extends HTMLElement {
   public router: HostProgram;
+  private _workerMgr: WorkerManager;
 
   constructor() {
     super();
@@ -30,11 +35,55 @@ class FrameRouterElement extends HTMLElement {
   }
 
   public registerClients(clients: ClientRegistrations) {
+    const routableClientConfigs: { [key: string]: ClientConfig } = {};
+    const backgroundClientConfigs: { [key: string]: ClientConfig } = {};
+    Object.keys(clients).forEach((currConfigId: string) => {
+      const currConfig: ClientConfig = clients[currConfigId];
+
+      if (currConfig && currConfig.url) {
+        if ((currConfig as BackgroundClientConfig).background === true) {
+          backgroundClientConfigs[currConfigId] = currConfig;
+        } else {
+          routableClientConfigs[currConfigId] = currConfig;
+        }
+      }
+    });
+
     const embedTarget = document.createElement('div');
     this.appendChild(embedTarget);
     this.router = Elm.Host.init({
-      flags: clients,
+      flags: routableClientConfigs,
       node: embedTarget
+    });
+
+    this._workerMgr = new WorkerManager();
+    this._workerMgr.addEventListener(
+      WORKER_MESSAGE_EVENT_TYPE,
+      (evt: CustomEvent) => {
+        if (evt && evt.detail && evt.detail.msgType) {
+          switch (evt.detail.msgType) {
+            case WorkerToHostMessageTypes.NavRequest:
+            // Intentional fall-through. Consistent handling for known types
+            case WorkerToHostMessageTypes.ToastRequest:
+              this.dispatchEvent(
+                new CustomEvent(evt.detail.msgType, { detail: evt.detail.msg })
+              );
+              break;
+            // TODO pub/sub, others?
+            default:
+              // TODO Need to add proper logging support
+              // tslint:disable-next-line
+              console.error('Unhandled msgType received from worker', {
+                msgType: evt.detail.msgType
+              });
+              break;
+          }
+        }
+      }
+    );
+
+    Object.keys(backgroundClientConfigs).forEach(currConfigId => {
+      this._workerMgr.load(backgroundClientConfigs[currConfigId].url);
     });
 
     this.router.ports.toHost.subscribe(labeledMsg => {
