@@ -22,7 +22,9 @@ class FrameRouterElement extends HTMLElement {
 
   constructor() {
     super();
-    this._frameManager = new FrameManager();
+    this._frameManager = new FrameManager({
+      onMessage: this._handleClientMessages.bind(this)
+    });
     this._subscriptionManager = new SubscriptionManager();
   }
 
@@ -39,7 +41,14 @@ class FrameRouterElement extends HTMLElement {
   public connectedCallback() {
     this.setAttribute('style', 'position: relative;');
     this._frameManager.embed(this);
-    this._frameManager.listenToMessages(this._handleClientMessages.bind(this));
+    this._frameManager.startMessageHandler();
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public disconnectedCallback() {
+    this._frameManager.stopMessageHandler();
   }
 
   /**

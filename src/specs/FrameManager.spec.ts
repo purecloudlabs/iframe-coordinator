@@ -20,12 +20,19 @@ describe('FrameManager', () => {
       handlers: {},
       document: mocks.document,
       addEventListener: jasmine
-        .createSpy('frameAddEventListener')
+        .createSpy('windowAddEventListener')
         .and.callFake((topic: string, handler: (data: any) => void) => {
           mocks.window.handlers[topic] = handler;
         }),
+      removeEventListener: jasmine
+        .createSpy('windowRemoveEventListener')
+        .and.callFake((topic: string, handler: (data: any) => void) => {
+          mocks.window.handlers[topic] = undefined;
+        }),
       raise(topic: string, data: any) {
-        mocks.window.handlers[topic](data);
+        if (mocks.window.handlers[topic]) {
+          mocks.window.handlers[topic](data);
+        }
       },
       location: {
         href: 'http://test.example.com/foo/'
@@ -53,7 +60,12 @@ describe('FrameManager', () => {
       appendChild: jasmine.createSpy('nodeAppendChild')
     };
 
-    frameManager = new FrameManager(mocks.window);
+    mocks.handler = jasmine.createSpy('messageHandler');
+
+    frameManager = new FrameManager({
+      onMessage: mocks.handler,
+      mockWindow: mocks.window
+    });
   });
 
   it('Creates a sandboxed iframe when created', () => {
@@ -132,7 +144,6 @@ describe('FrameManager', () => {
 
   describe('Can be used to subscribe to client messages', () => {
     beforeEach(() => {
-      mocks.handler = jasmine.createSpy('messageHandler');
       mocks.frame.load();
       frameManager.setFrameLocation('http://example.com/');
       mocks.messageEvent = {
@@ -146,7 +157,7 @@ describe('FrameManager', () => {
           }
         }
       };
-      frameManager.listenToMessages(mocks.handler);
+      frameManager.startMessageHandler();
     });
 
     it('if the messages are sent correctly', () => {
@@ -168,6 +179,12 @@ describe('FrameManager', () => {
 
     it('which are blocked if sent with invalid data', () => {
       mocks.messageEvent.data = { msgType: 'notValid', msg: {} };
+      mocks.window.raise('message', mocks.messageEvent);
+      expect(mocks.handler).not.toHaveBeenCalled();
+    });
+
+    it('and can unsubscribe as well.', () => {
+      frameManager.stopMessageHandler();
       mocks.window.raise('message', mocks.messageEvent);
       expect(mocks.handler).not.toHaveBeenCalled();
     });
