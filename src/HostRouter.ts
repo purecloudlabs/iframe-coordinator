@@ -5,7 +5,8 @@ import {
   HostToClient,
   validate as validateOutgoing
 } from './messages/HostToClient';
-import { Publication } from './messages/Publication';
+import { LabeledLifecycle } from './messages/Lifecycle';
+import { LabeledPublication, Publication } from './messages/Publication';
 
 interface ClientRegistration {
   url: string;
@@ -17,7 +18,7 @@ class HostRouter {
   private _clientFrame: ClientFrame;
   private _toHostSubscriptions: SubscribeHandler[];
   private _interestedTopics: Set<string>;
-  private _clientData: LabeledEnvData;
+  private _clientData: EnvData;
 
   constructor(options: {
     node: HTMLElement;
@@ -58,23 +59,41 @@ class HostRouter {
   }
 
   private _clientMessageFromFrame(message: LabeledMsg): void {
-    for (const handler of this._toHostSubscriptions) {
-      if (this._handleMessageType(message)) {
-        handler(message);
-      }
+    switch (message.msgType) {
+      case 'publish':
+        this._handlePublishMessage(message as LabeledPublication);
+        break;
+      case 'lifecycle':
+        this._handleLifecycleMessage(message as LabeledLifecycle);
+        break;
+      default:
+        this._raiseToHostMessage(message);
     }
   }
 
-  // TODO this is where we will need to decode properly.
-  private _handleMessageType(message: LabeledMsg) {
-    switch (message.msgType) {
-      case 'publish':
-        if (this._interestedTopics.has(message.msg.topic)) {
-          return true;
+  private _handleLifecycleMessage(message: LabeledLifecycle) {
+    if (message.msg.stage === 'started') {
+      // Client has indicated it is started. Send an acknowledgment
+      // with the environmental data to use.
+      this._clientFrame.send({
+        msgType: 'lifecycle',
+        msg: {
+          stage: 'init',
+          data: this._clientData
         }
-        return false;
-      default:
-        return true;
+      });
+    }
+  }
+
+  private _handlePublishMessage(message: LabeledPublication) {
+    if (this._interestedTopics.has(message.msg.topic)) {
+      this._raiseToHostMessage(message);
+    }
+  }
+
+  private _raiseToHostMessage(message: LabeledMsg) {
+    for (const handler of this._toHostSubscriptions) {
+      handler(message);
     }
   }
 
@@ -92,8 +111,15 @@ class HostRouter {
     this._clientFrame.setAttribute('src', urlRoute);
   }
 
-  public setEnvData(labeledEnvData: LabeledEnvData) {
-    this._clientFrame.setEnvData(labeledEnvData);
+  public setEnvData(envData: EnvData) {
+    this._clientData = envData;
+    this._clientFrame.send({
+      msgType: 'lifecycle',
+      msg: {
+        stage: 'init',
+        data: this._clientData
+      }
+    });
   }
 }
 

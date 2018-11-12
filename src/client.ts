@@ -8,6 +8,7 @@ import {
 } from './messages/HostToClient';
 
 import { EnvData } from './messages/EnvData';
+import { Lifecycle } from './messages/Lifecycle';
 import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 import { PublicationHandler, SubscriptionManager } from './SubscriptionManager';
@@ -54,10 +55,10 @@ class Client {
     switch (message.msgType) {
       case 'publish':
         this._subscriptionManager.dispatchMessage(message.msg);
-      case 'envData':
-        this._env = message.msg as EnvData;
-        if (this._getEnvCb) {
-          this._getEnvCb(this._env);
+      case 'lifecycle':
+        const lifecycleMsg = message.msg as Lifecycle;
+        if (lifecycleMsg.stage === 'init') {
+          this._env = lifecycleMsg.data;
         }
         return;
     }
@@ -87,6 +88,12 @@ class Client {
 
     this._clientWindow.addEventListener('message', this._onWindowMessage);
     this._clientWindow.addEventListener('click', this._onWindowClick);
+    this._sendToHost({
+      msgType: 'lifecycle',
+      msg: {
+        stage: 'started'
+      }
+    });
   }
 
   public stop(): void {
@@ -97,6 +104,12 @@ class Client {
     this._isStarted = false;
     this._clientWindow.removeEventListener('message', this._onWindowMessage);
     this._clientWindow.removeEventListener('click', this._onWindowClick);
+    this._sendToHost({
+      msgType: 'lifecycle',
+      msg: {
+        stage: 'stopped'
+      }
+    });
   }
 
   // Subscribe to messages from host

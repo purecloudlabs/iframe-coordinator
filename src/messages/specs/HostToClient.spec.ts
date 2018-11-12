@@ -90,38 +90,4 @@ describe('HostToClient', () => {
       });
     });
   });
-
-  describe('validating envData type', () => {
-    describe('when given the required data', () => {
-      const testMessage: HostToClient = {
-        msgType: 'envData',
-        msg: {
-          locale: 'en-US'
-        }
-      };
-      let testResult: HostToClient | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
-      });
-      it('should return the validated message', () => {
-        expect(testResult).toEqual(testMessage);
-      });
-    });
-
-    describe('when required data is missing', () => {
-      const testMessage = {
-        msgType: 'envData',
-        msg: {
-          custom: 'en-US'
-        }
-      };
-      let testResult: HostToClient | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
-      });
-      it('should return a null message', () => {
-        expect(testResult).toBeNull();
-      });
-    });
-  });
 });

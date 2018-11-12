@@ -1,6 +1,6 @@
 import * as hostRouterInjector from 'inject-loader!../HostRouter';
 import { HostRouter } from '../HostRouter';
-import { LabeledEnvData } from '../messages/EnvData';
+import { EnvData } from '../messages/EnvData';
 import { LabeledPublication } from '../messages/Publication';
 
 describe('HostRouter', () => {
@@ -20,8 +20,7 @@ describe('HostRouter', () => {
         mocks.ifcFrameObj.handlers[topic](data);
       },
       setAttribute: jasmine.createSpy('xifcSetAttribute'),
-      send: jasmine.createSpy('xifcSend'),
-      setEnvData: jasmine.createSpy('xifcSetEnvData')
+      send: jasmine.createSpy('xifcSend')
     };
     mocks.ifcFrame = {
       default: jasmine
@@ -161,21 +160,44 @@ describe('HostRouter', () => {
   });
 
   describe('when setting client data', () => {
-    describe('providing the minimium requirements', () => {
-      const envDataMessage: LabeledEnvData = {
-        msgType: 'envData',
+    const envDataMessage: EnvData = {
+      locale: 'en'
+    };
+    beforeEach(() => {
+      hostRouter.setEnvData(envDataMessage);
+    });
+
+    it('should send the client data to the client', () => {
+      expect(mocks.ifcFrameObj.send).toHaveBeenCalledWith({
+        msgType: 'lifecycle',
         msg: {
-          locale: 'en'
+          stage: 'init',
+          data: envDataMessage
         }
-      };
+      });
+    });
+
+    describe('after a client is started', () => {
       beforeEach(() => {
-        hostRouter.setEnvData(envDataMessage);
+        mocks.ifcFrameObj.send.calls.reset();
+        mocks.ifcFrameObj.raise('clientMessage', {
+          detail: {
+            msgType: 'lifecycle',
+            msg: {
+              stage: 'started'
+            }
+          }
+        });
       });
 
-      it('should send the client data to the client', () => {
-        expect(mocks.ifcFrameObj.setEnvData).toHaveBeenCalledWith(
-          envDataMessage
-        );
+      it('should resend the initial environment data', () => {
+        expect(mocks.ifcFrameObj.send).toHaveBeenCalledWith({
+          msgType: 'lifecycle',
+          msg: {
+            stage: 'init',
+            data: envDataMessage
+          }
+        });
       });
     });
   });

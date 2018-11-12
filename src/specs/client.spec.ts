@@ -15,6 +15,9 @@ describe('client', () => {
       addEventListener: (eventId: string, handler: () => void) => {
         mockFrameWindow.eventHandlers[eventId] = handler;
       },
+      removeEventListener: (eventId: string) => {
+        delete mockFrameWindow.eventHandlers[eventId];
+      },
       parent: {
         postMessage: jasmine.createSpy('window.parent.postMessage')
       }
@@ -48,6 +51,61 @@ describe('client', () => {
     /* tslint:enable */
 
     client = new Client({ clientWindow: mockFrameWindow });
+  });
+
+  describe('when the client is started', () => {
+    beforeEach(() => {
+      client.start(mockFrameWindow);
+    });
+
+    it('should send a loaded lifecycle notification', () => {
+      expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+        {
+          msgType: 'lifecycle',
+          msg: {
+            stage: 'started',
+            data: undefined
+          }
+        },
+        '*'
+      );
+    });
+  });
+
+  describe('when the client is stopped', () => {
+    beforeEach(() => {
+      client.start(mockFrameWindow);
+      mockFrameWindow.parent.postMessage.calls.reset();
+      client.stop();
+    });
+
+    it('should send a loaded lifecycle notification', () => {
+      expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+        {
+          msgType: 'lifecycle',
+          msg: {
+            stage: 'stopped',
+            data: undefined
+          }
+        },
+        '*'
+      );
+    });
+  });
+
+  describe('when an initial data lifecycle is recieved', () => {
+    beforeEach(() => {
+      mockFrameWindow.trigger('message', {
+        origin: 'origin',
+        data: {
+          msgType: 'lifecycle',
+          msg: {
+            stage: 'init',
+            data: 'test data'
+          }
+        }
+      });
+    });
   });
 
   describe('when client requests a toast notification', () => {
@@ -226,6 +284,7 @@ describe('client', () => {
     describe('when click event target is not an anchor', () => {
       beforeEach(() => {
         client.start(mockFrameWindow);
+        mockFrameWindow.parent.postMessage.calls.reset();
         mockElement = document.createElement('div');
         mockFrameWindow.trigger('click', {
           target: mockElement,
@@ -239,27 +298,6 @@ describe('client', () => {
       it('should not notify worker of navigation request', () => {
         expect(mockFrameWindow.parent.postMessage).not.toHaveBeenCalled();
       });
-    });
-  });
-
-  describe('when the host environment data is sent', () => {
-    let actualEnvData: EnvData;
-    beforeEach(() => {
-      client.start(mockFrameWindow);
-      client.getEnvData((envData: EnvData) => (actualEnvData = envData));
-      mockFrameWindow.trigger('message', {
-        origin: 'origin',
-        data: {
-          msgType: 'envData',
-          msg: {
-            locale: 'nl-NL'
-          }
-        }
-      });
-    });
-
-    it('should update the client env data', () => {
-      expect(actualEnvData.locale).toEqual('nl-NL');
     });
   });
 });
