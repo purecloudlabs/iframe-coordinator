@@ -11,22 +11,22 @@ const TOAST_LEVELS = ["info", "success", "error"];
 const TOP_ROUTE_EXTRACTOR = /^#?(\/[^\/]+).*/;
 const NAV_CONFIGS = [
   {
-    id: 'client1',
-    title: 'Component 1',
-    url: new URL("/components/example1/", window.location).toString(),
+    id: "client1",
+    title: "Component 1",
+    url: new URL("/components/example1/#/", window.location).toString(),
     assignedRoute: "/one",
-    children: ['first', 'second']
+    children: ["first", "second"]
   },
   {
-    id: 'client2',
-    title: 'Component 2',
-    url: new URL("/components/example2/", window.location).toString(),
+    id: "client2",
+    title: "Component 2",
+    url: new URL("/components/example2/#/", window.location).toString(),
     assignedRoute: "/two",
-    children: ['first', 'second']
+    children: ["first", "second"]
   },
   {
-    id: 'wikipedia',
-    title: 'Wikipedia',
+    id: "wikipedia",
+    title: "Wikipedia",
     url: new URL("https://en.wikipedia.org").toString(),
     assignedRoute: "/wikipedia",
     children: []
@@ -43,11 +43,11 @@ registerElements();
 
 let router = document.getElementById("router");
 router.registerClients(
-  NAV_CONFIGS.reduce((clientMap, {id, url, assignedRoute}) => {
+  NAV_CONFIGS.reduce((clientMap, { id, url, assignedRoute }) => {
     clientMap[id] = {
       url,
       assignedRoute
-    }
+    };
 
     return clientMap;
   }, {})
@@ -77,8 +77,10 @@ document.getElementById("publish").addEventListener("click", event => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ----- Routing Setup 
-  document.querySelector('button.url-routing.toggle-switch').addEventListener('click', toggleRouting);
+  // ----- Routing Setup
+  document
+    .querySelector("button.url-routing.toggle-switch")
+    .addEventListener("click", toggleRouting);
 
   window.onhashchange = function() {
     if (urlRoutingEnabled) {
@@ -91,12 +93,14 @@ document.addEventListener("DOMContentLoaded", () => {
   document
     .getElementById("router")
     .addEventListener("navRequest", function(data) {
+      let requestedUrl = new URL(data.detail.url);
+      let requestedRoute = requestedUrl.hash.substr(1);
       if (urlRoutingEnabled) {
-        location.hash = data.detail.fragment;
+        location.hash = requestedUrl.hash;
         // On navRequest & routing mode, change url
       } else {
-        setRoute(data.detail.fragment);
-        updateActiveNav(data.detail.fragment);
+        setRoute(requestedRoute);
+        updateActiveNav(requestedRoute);
       }
     });
 
@@ -132,54 +136,59 @@ document.addEventListener("DOMContentLoaded", () => {
       window.toastada[toastLevel](toastHtml);
     });
 
-    // ----- Initialize State
-    // Turn on URL Routing by default
-    toggleRouting();
-    // Set a default route; if needed
-    if (!window.location.hash) {
-      window.location.hash = NAV_CONFIGS[0].assignedRoute; 
-    }
+  // ----- Initialize State
+  // Turn on URL Routing by default
+  toggleRouting();
+  // Set a default route; if needed
+  if (!window.location.hash) {
+    window.location.hash = NAV_CONFIGS[0].assignedRoute;
+  }
 });
 
-// ----- Helpers 
+// ----- Helpers
 
 // Routing helpers
 
 function setRoute(route) {
   document.getElementById("router").setAttribute("route", route);
-};
+}
 
 function toggleRouting() {
   urlRoutingEnabled = !urlRoutingEnabled;
 
   if (urlRoutingEnabled) {
-    setRoute(window.location.hash.slice(1));
     updateActiveNav();
   } else {
     location.hash = "";
-    setRoute('');
-    updateActiveNav('');
   }
 
   // Update UI
-  document.querySelector('button.url-routing.toggle-switch').setAttribute('aria-checked', urlRoutingEnabled);
-  document.querySelector('header nav ul.nav-menu').style.display = urlRoutingEnabled ? 'flex' : 'none';
-  document.querySelector('header nav ul.programmatic-nav').style.display = urlRoutingEnabled ? 'none' : 'flex';
-};
+  document
+    .querySelector("button.url-routing.toggle-switch")
+    .setAttribute("aria-checked", urlRoutingEnabled);
+  document.querySelector(
+    "header nav ul.nav-menu"
+  ).style.display = urlRoutingEnabled ? "flex" : "none";
+  document.querySelector(
+    "header nav ul.programmatic-nav"
+  ).style.display = urlRoutingEnabled ? "none" : "flex";
+}
 
 // UI Helpers
 function buildNavMarkup(navConfigs) {
-  let navMenu = document.querySelector('header nav ul.nav-menu');
-  let programmaticNav = document.querySelector('header nav ul.programmatic-nav');
+  let navMenu = document.querySelector("header nav ul.nav-menu");
+  let programmaticNav = document.querySelector(
+    "header nav ul.programmatic-nav"
+  );
 
   navConfigs.forEach(curr => {
     // Build Nav Menu Item
-    let currLi = document.createElement('li');
-    currLi.setAttribute('class', `nav-id-${curr.id}`);
+    let currLi = document.createElement("li");
+    currLi.setAttribute("class", `nav-id-${curr.id}`);
 
-    let currLink = document.createElement('a');
-    currLink.setAttribute('class', `nav-id-${curr.id}`);
-    currLink.setAttribute('href', `#${curr.assignedRoute}`);
+    let currLink = document.createElement("a");
+    currLink.setAttribute("class", `nav-id-${curr.id}`);
+    currLink.setAttribute("href", `#${curr.assignedRoute}`);
     currLink.appendChild(document.createTextNode(curr.title));
 
     currLi.appendChild(currLink);
@@ -188,41 +197,44 @@ function buildNavMarkup(navConfigs) {
     navMenu.appendChild(currLi);
 
     // Build Programmatic Button
-    let currLinkButton = document.createElement('li');
-    currLinkButton.setAttribute('class', `nav-id-${curr.id}`);
-    let currButton = document.createElement('button');
-    currButton.setAttribute('class', `nav-id-${curr.id}`);
-    currButton.addEventListener('click', () => {
+    let currLinkButton = document.createElement("li");
+    currLinkButton.setAttribute("class", `nav-id-${curr.id}`);
+    let currButton = document.createElement("button");
+    currButton.setAttribute("class", `nav-id-${curr.id}`);
+    currButton.addEventListener("click", () => {
       setRoute(curr.assignedRoute);
       updateActiveNav(curr.assignedRoute);
     });
     currButton.appendChild(document.createTextNode(curr.title));
     currLinkButton.appendChild(currButton);
     programmaticNav.appendChild(currLinkButton);
-  })
+  });
 }
 
-function updateActiveNav(fqRoute = window.location.hash, navConfigs = NAV_CONFIGS) {
+function updateActiveNav(
+  fqRoute = window.location.hash,
+  navConfigs = NAV_CONFIGS
+) {
   let activeNavId = null;
   let result = TOP_ROUTE_EXTRACTOR.exec(fqRoute);
   if (result && result.length == 2) {
     let currRoute = result[1];
 
     let activeNavItem = navConfigs.find(toMatch => {
-      return (toMatch.assignedRoute === currRoute);
+      return toMatch.assignedRoute === currRoute;
     });
-    activeNavId = (activeNavItem ? activeNavItem.id : null);
+    activeNavId = activeNavItem ? activeNavItem.id : null;
   }
 
-  let navMenus = document.querySelectorAll('header nav ul');
+  let navMenus = document.querySelectorAll("header nav ul");
   navMenus.forEach(menu => {
-    let navEntries = menu.querySelectorAll('li').forEach(el => {
+    let navEntries = menu.querySelectorAll("li").forEach(el => {
       let currClassList = el.classList;
       if (currClassList.contains(`nav-id-${activeNavId}`)) {
-        currClassList.add('active');
+        currClassList.add("active");
       } else {
-        currClassList.remove('active');
+        currClassList.remove("active");
       }
-    })
+    });
   });
 }
