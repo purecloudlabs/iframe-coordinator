@@ -7,7 +7,6 @@ const IFRAME_STYLE =
 
 class ClientFrame extends HTMLElement {
   public iframe: HTMLIFrameElement;
-  private _hostEnvData: LabeledEnvData;
 
   static get observedAttributes() {
     return [SRC_ATTR];
@@ -48,22 +47,8 @@ class ClientFrame extends HTMLElement {
     }
   }
 
-  private initializeEnv(): void {
-    if (!this._hostEnvData) {
-      return;
-    }
-
-    // Give the iframe time to load the Client
-    // and listen for messages.
-    this.iframe.onload = () => {
-      this.send(this._hostEnvData);
-      this.iframe.onload = null;
-    };
-  }
-
   public updateFrameLoc(newSrc: string) {
     if (this.iframe.contentWindow) {
-      this.initializeEnv();
       this.iframe.contentWindow.location.replace(newSrc);
     } else {
       // Handle the case where the frame isn't ready yet.
@@ -79,10 +64,6 @@ class ClientFrame extends HTMLElement {
     if (clientOrigin !== 'null' && this.iframe.contentWindow) {
       this.iframe.contentWindow.postMessage(message, clientOrigin);
     }
-  }
-
-  public setEnvData(labeledEnvData: LabeledEnvData) {
-    this._hostEnvData = labeledEnvData;
   }
 
   public expectedClientOrigin() {

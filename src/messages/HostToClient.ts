@@ -1,4 +1,4 @@
-import { LabeledEnvData, validateEnvData } from './EnvData';
+import { LabeledLifecycle, validateLifecycle } from './Lifecycle';
 import { LabeledPublication, validatePublication } from './Publication';
 
 /**
@@ -17,5 +17,5 @@ export function validate(msg: any): HostToClient | null {
     return null;
   }
 
-  return validatePublication(msg) || validateEnvData(msg);
+  return validatePublication(msg) || validateLifecycle(msg);
 }

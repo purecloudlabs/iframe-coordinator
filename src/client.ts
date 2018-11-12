@@ -97,6 +97,12 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
 
     this._clientWindow.addEventListener('message', this._onWindowMessage);
     this._clientWindow.addEventListener('click', this._onWindowClick);
+    this._sendToHost({
+      msgType: 'lifecycle',
+      msg: {
+        stage: 'started'
+      }
+    });
   }
 
   /**
@@ -110,6 +116,12 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
     this._isStarted = false;
     this._clientWindow.removeEventListener('message', this._onWindowMessage);
     this._clientWindow.removeEventListener('click', this._onWindowClick);
+    this._sendToHost({
+      msgType: 'lifecycle',
+      msg: {
+        stage: 'stopped'
+      }
+    });
   }
 
   /**

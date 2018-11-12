@@ -1,3 +1,4 @@
+import { LabeledLifecycle, validateLifecycle } from './Lifecycle';
 import { LabeledNavRequest, validateNavRequest } from './NavRequest';
 import { LabeledPublication, validatePublication } from './Publication';
 import { LabeledToast, validateToast } from './Toast';
@@ -9,7 +10,8 @@ import { LabeledToast, validateToast } from './Toast';
 export type ClientToHost =
   | LabeledPublication
   | LabeledToast
-  | LabeledNavRequest;
+  | LabeledNavRequest
+  | LabeledLifecycle;
 
 /**
  * Validates correctness of messages being sent from
@@ -22,6 +24,9 @@ export function validate(msg: any): ClientToHost | null {
   }
 
   return (
-    validateNavRequest(msg) || validatePublication(msg) || validateToast(msg)
+    validateNavRequest(msg) ||
+    validatePublication(msg) ||
+    validateToast(msg) ||
+    validateLifecycle(msg)
   );
 }

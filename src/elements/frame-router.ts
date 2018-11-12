@@ -45,10 +45,7 @@ class FrameRouterElement extends HTMLElement {
   }
 
   public setEnvData(envData: EnvData) {
-    this.router.setEnvData({
-      msgType: 'envData',
-      msg: envData
-    });
+    this.router.setEnvData(envData);
   }
 
   /**
