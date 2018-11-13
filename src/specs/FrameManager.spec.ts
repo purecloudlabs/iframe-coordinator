@@ -107,6 +107,19 @@ describe('FrameManager', () => {
       mocks.frame.load();
     });
 
+    it('unless the frame location is the default', () => {
+      const message = {
+        msgType: 'publish',
+        msg: {
+          topic: 'test.topic',
+          payload: {}
+        }
+      } as HostToClient;
+      frameManager.sendToClient(message);
+
+      expect(mocks.frame.contentWindow.postMessage).not.toHaveBeenCalled();
+    });
+
     it('restricted by set location origin', () => {
       const message = {
         msgType: 'publish',

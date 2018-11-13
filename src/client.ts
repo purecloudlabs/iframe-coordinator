@@ -7,7 +7,12 @@ import {
   validate as validateIncoming
 } from './messages/HostToClient';
 
-import { EnvData, Lifecycle } from './messages/Lifecycle';
+import {
+  EnvData,
+  Lifecycle,
+  LifecycleEnvironmentInit,
+  LifecycleStage
+} from './messages/Lifecycle';
 import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 import { PublicationHandler, SubscriptionManager } from './SubscriptionManager';
@@ -27,8 +32,8 @@ class Client {
   private _subscriptionManager: SubscriptionManager;
   private _isStarted: boolean;
   private _clientWindow: Window;
-  private _env: EnvData;
-  private _getEnvCb: (env: EnvData) => void;
+  private _environmentData: EnvData;
+  private _getEnvData: (env: EnvData) => void;
 
   public constructor(configOptions: ClientConfigOptions = {}) {
     this._clientWindow = configOptions.clientWindow || window;
@@ -62,9 +67,11 @@ class Client {
       case 'publish':
         this._subscriptionManager.dispatchMessage(message.msg);
       case 'lifecycle':
-        const lifecycleMsg = message.msg as Lifecycle;
-        if (lifecycleMsg.stage === 'init') {
-          this._env = lifecycleMsg.data;
+        const lifecycleMsg = message.msg as LifecycleStage;
+        if (Lifecycle.isEnvInitStage(lifecycleMsg)) {
+          const envInitMsg = message.msg as LifecycleEnvironmentInit;
+          this._environmentData = envInitMsg.data;
+          this._getEnvData(this._environmentData);
         }
         return;
     }
@@ -89,12 +96,7 @@ class Client {
 
     this._clientWindow.addEventListener('message', this._onWindowMessage);
     this._clientWindow.addEventListener('click', this._onWindowClick);
-    this._sendToHost({
-      msgType: 'lifecycle',
-      msg: {
-        stage: 'started'
-      }
-    });
+    this._sendToHost(Lifecycle.startedMessage);
   }
 
   /**
@@ -108,12 +110,7 @@ class Client {
     this._isStarted = false;
     this._clientWindow.removeEventListener('message', this._onWindowMessage);
     this._clientWindow.removeEventListener('click', this._onWindowClick);
-    this._sendToHost({
-      msgType: 'lifecycle',
-      msg: {
-        stage: 'stopped'
-      }
-    });
+    this._sendToHost(Lifecycle.stoppedMessage);
   }
 
   /**
@@ -137,14 +134,17 @@ class Client {
   }
 
   /**
-   * TODO Get the data
-   * @param callback data
+   * Get the environmental data.  The environmental
+   * data may be returned immediatly or delayed until sent
+   * from the host.
+   *
+   * @param callback Handler for changing environmental data.
    */
   public getEnvData(callback: (env: EnvData) => void): void {
-    this._getEnvCb = callback;
+    this._getEnvData = callback;
 
-    if (this._env) {
-      this._getEnvCb(this._env);
+    if (this._environmentData) {
+      this._getEnvData(this._environmentData);
     }
   }
 

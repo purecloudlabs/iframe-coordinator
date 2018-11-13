@@ -1,9 +1,7 @@
 import FrameManager from '../FrameManager';
 import { HostRouter, RoutingMap } from '../HostRouter';
-import {
-  ClientToHost,
-  validate as validateIncoming
-} from '../messages/ClientToHost';
+import { ClientToHost } from '../messages/ClientToHost';
+import { EnvData, Lifecycle, LifecycleStage } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 import { SubscriptionManager } from '../SubscriptionManager';
 
@@ -19,13 +17,20 @@ class FrameRouterElement extends HTMLElement {
   private _frameManager: FrameManager;
   private _subscriptionManager: SubscriptionManager;
   private _router: HostRouter;
+  private _envData: EnvData;
 
   constructor() {
     super();
     this._frameManager = new FrameManager({
-      onMessage: this._handleClientMessages.bind(this)
+      onMessage: this._handleClientMessage.bind(this)
     });
     this._subscriptionManager = new SubscriptionManager();
+    this._subscriptionManager.setHandler((publication: Publication) => {
+      this._dispatchClientMessag({
+        msgType: 'publish',
+        msg: publication
+      });
+    });
   }
 
   /**
@@ -103,6 +108,16 @@ class FrameRouterElement extends HTMLElement {
   }
 
   /**
+   * Set the environment data from the host to pass to each client.
+   *
+   * @param envData Information about the host environment.
+   */
+  public setEnvData(envData: EnvData) {
+    this._envData = envData;
+    this._frameManager.sendToClient(Lifecycle.genEnvInitMessage(this._envData));
+  }
+
+  /**
    * @inheritdoc
    */
   public attributeChangedCallback(
@@ -115,7 +130,28 @@ class FrameRouterElement extends HTMLElement {
     }
   }
 
-  private _handleClientMessages(message: ClientToHost) {
+  private _handleClientMessage(message: ClientToHost): void {
+    switch (message.msgType) {
+      case 'publish':
+        this._subscriptionManager.dispatchMessage(message.msg);
+        break;
+      case 'lifecycle':
+        this._handleLifecycleMessage(message.msg as LifecycleStage);
+        break;
+      default:
+        this._dispatchClientMessag(message);
+    }
+  }
+
+  private _handleLifecycleMessage(message: LifecycleStage) {
+    if (Lifecycle.isStartedStage(message)) {
+      this._frameManager.sendToClient(
+        Lifecycle.genEnvInitMessage(this._envData)
+      );
+    }
+  }
+
+  private _dispatchClientMessag(message: ClientToHost) {
     this.dispatchEvent(
       new CustomEvent(message.msgType, { detail: message.msg })
     );

@@ -2,10 +2,7 @@ import {
   ClientToHost,
   validate as validateIncoming
 } from './messages/ClientToHost';
-import {
-  HostToClient,
-  validate as validateOutgoing
-} from './messages/HostToClient';
+import { HostToClient } from './messages/HostToClient';
 
 const IFRAME_STYLE =
   'position: absolute; top: 0; left: 0; width: 100%; height: 100%;';
@@ -73,7 +70,7 @@ class FrameManager {
    */
   public sendToClient(message: HostToClient) {
     const clientOrigin = this._expectedClientOrigin();
-    if (this._iframe.contentWindow) {
+    if (this._iframe.contentWindow && clientOrigin) {
       const validated = validateIncoming(message);
       if (validated) {
         this._iframe.contentWindow.postMessage(validated, clientOrigin);
@@ -122,6 +119,10 @@ class FrameManager {
   }
 
   private _expectedClientOrigin(): string {
+    if (this._frameLocation === 'about:blank') {
+      return '';
+    }
+
     try {
       const clientUrl = new URL(
         this._frameLocation,
