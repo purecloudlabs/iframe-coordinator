@@ -3,6 +3,14 @@ import { LabeledMsg } from './LabeledMsg';
 import { createMessageValidator } from './validationUtils';
 
 /**
+ * Environmental data provided to all clients
+ * in order to match behavior of the host application.
+ */
+export interface EnvData {
+  locale: string;
+}
+
+/**
  * A lifecylcle message for coordination between host and client.
  *
  * @remarks

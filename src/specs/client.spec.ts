@@ -1,5 +1,4 @@
 import * as ClientInjector from 'inject-loader!../client';
-import { EnvData } from '../messages/EnvData';
 
 describe('client', () => {
   let client: any;
