@@ -9,7 +9,13 @@ import {
 } from './messages/HostToClient';
 
 import { EnvData } from './messages/EnvData';
-import { Publication, PublicationEventEmitter } from './messages/Publication';
+import {
+  EnvData,
+  Lifecycle,
+  LifecycleEnvironmentInit,
+  LifecycleStage
+} from './messages/Lifecycle';
+import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 
 /**
@@ -26,8 +32,8 @@ interface ClientConfigOptions {
 class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
   private _isStarted: boolean;
   private _clientWindow: Window;
-  private _env: EnvData;
-  private _getEnvCb: (env: EnvData) => void;
+  private _environmentData: EnvData;
+  private _getEnvData: (env: EnvData) => void;
 
   public constructor(configOptions: ClientConfigOptions = {}) {
     super();
@@ -61,10 +67,12 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
       case 'publish':
         this.emit(message.msg.topic, message.msg);
         break;
-      case 'envData':
-        this._env = message.msg as EnvData;
-        if (this._getEnvCb) {
-          this._getEnvCb(this._env);
+      case 'lifecycle':
+        const lifecycleMsg = message.msg as LifecycleStage;
+        if (Lifecycle.isEnvInitStage(lifecycleMsg)) {
+          const envInitMsg = message.msg as LifecycleEnvironmentInit;
+          this._environmentData = envInitMsg.data;
+          this._getEnvData(this._environmentData);
         }
         return;
     }
@@ -97,12 +105,7 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
 
     this._clientWindow.addEventListener('message', this._onWindowMessage);
     this._clientWindow.addEventListener('click', this._onWindowClick);
-    this._sendToHost({
-      msgType: 'lifecycle',
-      msg: {
-        stage: 'started'
-      }
-    });
+    this._sendToHost(Lifecycle.startedMessage);
   }
 
   /**
@@ -116,12 +119,42 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
     this._isStarted = false;
     this._clientWindow.removeEventListener('message', this._onWindowMessage);
     this._clientWindow.removeEventListener('click', this._onWindowClick);
-    this._sendToHost({
-      msgType: 'lifecycle',
-      msg: {
-        stage: 'stopped'
-      }
-    });
+    this._sendToHost(Lifecycle.stoppedMessage);
+  }
+
+  /**
+   * Subscribes to topics that may be published by the host application.
+   * You can subscribe to multiple topics, however, they will come through
+   * the onPubsub handler.
+   *
+   * @param topic The topic which is of interest to the client content.
+   */
+  public subscribe(topic: string): void {
+    this._subscriptionManager.subscribe(topic);
+  }
+
+  /**
+   * Unsubscribes to topics being published by the host application.
+   *
+   * @param topic The topic which is no longer of interest to the client content.
+   */
+  public unsubscribe(topic: string): void {
+    this._subscriptionManager.unsubscribe(topic);
+  }
+
+  /**
+   * Get the environmental data.  The environmental
+   * data may be returned immediatly or delayed until sent
+   * from the host.
+   *
+   * @param callback Handler for changing environmental data.
+   */
+  public getEnvData(callback: (env: EnvData) => void): void {
+    this._getEnvData = callback;
+
+    if (this._environmentData) {
+      this._getEnvData(this._environmentData);
+    }
   }
 
   /**
