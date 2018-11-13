@@ -1,2 +1,11 @@
-elm-stuff/
-npm-utils/
+node_modules/
+/client.js
+/host.js
+/index.js
+.npmrc
+
+/*.d.ts
+/elements/
+/specs/
+/messages/
+/ports/
