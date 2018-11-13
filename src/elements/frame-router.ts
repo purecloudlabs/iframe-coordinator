@@ -1,5 +1,11 @@
-import { HostRouter, Publication } from '../HostRouter';
-import ClientFrame from './x-ifc-frame';
+import FrameManager from '../FrameManager';
+import { HostRouter, RoutingMap } from '../HostRouter';
+import {
+  ClientToHost,
+  validate as validateIncoming
+} from '../messages/ClientToHost';
+import { Publication } from '../messages/Publication';
+import { SubscriptionManager } from '../SubscriptionManager';
 
 const ROUTE_ATTR = 'route';
 
@@ -10,10 +16,16 @@ const ROUTE_ATTR = 'route';
  * the client content.
  */
 class FrameRouterElement extends HTMLElement {
-  private router: HostRouter;
+  private _frameManager: FrameManager;
+  private _subscriptionManager: SubscriptionManager;
+  private _router: HostRouter;
 
   constructor() {
     super();
+    this._frameManager = new FrameManager({
+      onMessage: this._handleClientMessages.bind(this)
+    });
+    this._subscriptionManager = new SubscriptionManager();
   }
 
   /**
@@ -28,6 +40,15 @@ class FrameRouterElement extends HTMLElement {
    */
   public connectedCallback() {
     this.setAttribute('style', 'position: relative;');
+    this._frameManager.embed(this);
+    this._frameManager.startMessageHandler();
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public disconnectedCallback() {
+    this._frameManager.stopMessageHandler();
   }
 
   /**
@@ -35,20 +56,9 @@ class FrameRouterElement extends HTMLElement {
    *
    * @param clients The map of registrations for the available clients.
    */
-  public registerClients(clients: {}) {
-    const embedTarget = document.createElement('div');
-    this.appendChild(embedTarget);
-    this.router = new HostRouter({
-      routingMap: clients,
-      node: embedTarget
-    });
-
-    // Router requests a message sent to the host.
-    this.router.onSendToHost((labeledMsg: LabeledMsg) => {
-      this.dispatchEvent(
-        new CustomEvent(labeledMsg.msgType, { detail: labeledMsg.msg })
-      );
-    });
+  public registerClients(clients: RoutingMap) {
+    this._router = new HostRouter(clients);
+    this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
   }
 
   /**
@@ -57,7 +67,7 @@ class FrameRouterElement extends HTMLElement {
    * @param topic - The topic name the host is interested in.
    */
   public subscribe(topic: string): void {
-    this.router.subscribeToMessages(topic);
+    this._subscriptionManager.subscribe(topic);
   }
 
   /**
@@ -66,7 +76,7 @@ class FrameRouterElement extends HTMLElement {
    * @param topic - The topic name the host is no longer interested in.
    */
   public unsubscribe(topic: string): void {
-    this.router.unsubscribeToMessages(topic);
+    this._subscriptionManager.unsubscribe(topic);
   }
 
   /**
@@ -76,7 +86,7 @@ class FrameRouterElement extends HTMLElement {
    * The topic may not be of interest, and could be ignored.
    */
   public publish(publication: Publication): void {
-    this.router.publishGenericMessage({
+    this._frameManager.sendToClient({
       msg: publication,
       msgType: 'publish'
     });
@@ -88,7 +98,8 @@ class FrameRouterElement extends HTMLElement {
    * @param newPath a new route which matches those provided originally.
    */
   public changeRoute(newPath: string) {
-    this.router.changeRoute(newPath);
+    const clientUrl = this._router.getClientUrl(newPath);
+    this._frameManager.setFrameLocation(clientUrl);
   }
 
   /**
@@ -102,6 +113,12 @@ class FrameRouterElement extends HTMLElement {
     if (name === ROUTE_ATTR && oldValue !== newValue) {
       this.changeRoute(newValue);
     }
+  }
+
+  private _handleClientMessages(message: ClientToHost) {
+    this.dispatchEvent(
+      new CustomEvent(message.msgType, { detail: message.msg })
+    );
   }
 }
 
