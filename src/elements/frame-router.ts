@@ -122,6 +122,7 @@ class FrameRouterElement extends HTMLElement {
     switch (message.msgType) {
       case 'publish':
         this._subscriptionManager.dispatchMessage(message.msg);
+        break;
       default:
         this._dispatchClientMessage(message);
     }
