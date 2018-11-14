@@ -1,9 +1,6 @@
 import FrameManager from '../FrameManager';
 import { HostRouter, RoutingMap } from '../HostRouter';
-import {
-  ClientToHost,
-  validate as validateIncoming
-} from '../messages/ClientToHost';
+import { ClientToHost } from '../messages/ClientToHost';
 import { Publication } from '../messages/Publication';
 import { SubscriptionManager } from '../SubscriptionManager';
 
@@ -26,6 +23,12 @@ class FrameRouterElement extends HTMLElement {
       onMessage: this._handleClientMessages.bind(this)
     });
     this._subscriptionManager = new SubscriptionManager();
+    this._subscriptionManager.setHandler((publication: Publication) => {
+      this._dispatchClientMessage({
+        msgType: 'publish',
+        msg: publication
+      });
+    });
   }
 
   /**
@@ -116,6 +119,16 @@ class FrameRouterElement extends HTMLElement {
   }
 
   private _handleClientMessages(message: ClientToHost) {
+    switch (message.msgType) {
+      case 'publish':
+        this._subscriptionManager.dispatchMessage(message.msg);
+        break;
+      default:
+        this._dispatchClientMessage(message);
+    }
+  }
+
+  private _dispatchClientMessage(message: ClientToHost) {
     this.dispatchEvent(
       new CustomEvent(message.msgType, { detail: message.msg })
     );
