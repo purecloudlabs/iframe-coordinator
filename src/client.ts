@@ -1,4 +1,6 @@
-import * as EventEmitter from 'eventemitter3';
+import * as EventEmitter from 'events';
+import StrictEventEmitter from 'strict-event-emitter-types';
+
 import {
   ClientToHost,
   validate as validateOutgoing
@@ -21,9 +23,22 @@ interface ClientConfigOptions {
 }
 
 /**
+ * The known events that can be emitted
+ * from the client.
+ */
+interface Events {
+  publish: PublicationHandler;
+}
+
+/**
+ * A strictly typed event emitter for {@link Client}.
+ */
+type ClientEventEmitter = StrictEventEmitter<EventEmitter, Events>;
+
+/**
  * The Client is access point for the embedded UI's in the host application.
  */
-class Client extends EventEmitter {
+class Client extends (EventEmitter as { new (): ClientEventEmitter }) {
   private _subscriptionManager: SubscriptionManager;
   private _isStarted: boolean;
   private _clientWindow: Window;
@@ -168,4 +183,4 @@ class Client extends EventEmitter {
   }
 }
 
-export { Client };
+export { Client, Publication };
