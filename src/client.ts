@@ -1,3 +1,4 @@
+import * as EventEmitter from 'eventemitter3';
 import {
   ClientToHost,
   validate as validateOutgoing
@@ -22,14 +23,22 @@ interface ClientConfigOptions {
 /**
  * The Client is access point for the embedded UI's in the host application.
  */
-class Client {
+class Client extends EventEmitter {
   private _subscriptionManager: SubscriptionManager;
   private _isStarted: boolean;
   private _clientWindow: Window;
 
   public constructor(configOptions: ClientConfigOptions = {}) {
+    super();
     this._clientWindow = configOptions.clientWindow || window;
     this._subscriptionManager = new SubscriptionManager();
+    this._subscriptionManager.setHandler(
+      this._raisePublicationEvent.bind(this)
+    );
+  }
+
+  private _raisePublicationEvent(publication: Publication) {
+    this.emit('publish', publication);
   }
 
   private _onWindowMessage = (event: MessageEvent) => {
@@ -58,6 +67,11 @@ class Client {
     switch (message.msgType) {
       case 'publish':
         this._subscriptionManager.dispatchMessage(message.msg);
+        break;
+      default:
+        // Currently there is only one message type available.
+        // However, once more are added we will have to do emit them.
+        this.emit(message.msgType, message.msg);
     }
   }
 
@@ -125,17 +139,6 @@ class Client {
       msgType: 'publish',
       msg: publication
     });
-  }
-
-  /**
-   * Sets the callback for general publication messages coming from the host application.
-   *
-   * Only one callback may be set.
-   *
-   * @param callback The handler to be called when a message is published.
-   */
-  public onPubsub(callback: PublicationHandler): void {
-    this._subscriptionManager.setHandler(callback);
   }
 
   /**

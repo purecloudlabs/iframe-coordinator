@@ -14,9 +14,10 @@ window.onhashchange = function() {
 let iframeClient = new Client();
 iframeClient.start();
 
-iframeClient.onPubsub(publication => {
+iframeClient.on('publish', publication => {
   console.log("Got Publish event:", publication);
 });
+
 iframeClient.subscribe("host.topic");
 
 document.getElementById("do-publish").addEventListener("click", () => {

@@ -1,4 +1,5 @@
 import * as ClientInjector from 'inject-loader!../client';
+import { Publication } from '../messages/Publication';
 
 describe('client', () => {
   let client: any;
@@ -27,6 +28,9 @@ describe('client', () => {
         .and.callFake((handler: any) => {
           mockSubscriptionManagerObj.handler = handler;
         }),
+      raiseHandler: (data: Publication) => {
+        mockSubscriptionManagerObj.handler(data);
+      },
       dispatchMessage: jasmine.createSpy('dispatchMessage')
     };
 
@@ -160,8 +164,10 @@ describe('client', () => {
   });
 
   describe('when recieving an valid window message from the host application', () => {
+    let publishCalls = 0;
     beforeEach(() => {
       client.start(mockFrameWindow);
+      client.on('publish', () => publishCalls++);
       mockFrameWindow.trigger('message', {
         origin: 'origin',
         data: {
@@ -180,18 +186,29 @@ describe('client', () => {
         payload: 'test data'
       });
     });
+
+    it('should not automatically raise the event', () => {
+      expect(publishCalls).toBe(0);
+    });
   });
 
   describe('when client is listening to published messages', () => {
+    let publishCalls = 0;
     beforeEach(() => {
       client.start(mockFrameWindow);
-      client.onPubsub((data: any) => {
-        // TODO Empty
+
+      client.on('publish', () => {
+        publishCalls++;
+      });
+
+      mockSubscriptionManagerObj.raiseHandler({
+        topic: 'test.topic',
+        payload: 'test.payload'
       });
     });
 
-    it('should set the handlers of the subscription manager', () => {
-      expect(mockSubscriptionManagerObj.setHandler).toHaveBeenCalled();
+    it('should emit the publish event', () => {
+      expect(publishCalls).toBe(1);
     });
   });
 
