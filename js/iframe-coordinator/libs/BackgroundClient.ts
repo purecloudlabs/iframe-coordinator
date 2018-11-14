@@ -12,7 +12,7 @@ export default class BackgroundClient implements ToastingClient {
     message: string,
     { title = null, custom = null }: ToastOptions = {}
   ): void {
-    this._publishMessageToHost(WorkerToHostMessageTypes.ToastRequest, {
+    this._publishMessageToHost(WorkerToHostMessageTypes.toastRequest, {
       title,
       message,
       custom
@@ -21,7 +21,7 @@ export default class BackgroundClient implements ToastingClient {
 
   // TODO Change this to URL based?
   public requestNavigation(route: string): void {
-    this._publishMessageToHost(WorkerToHostMessageTypes.NavRequest, {
+    this._publishMessageToHost(WorkerToHostMessageTypes.navRequest, {
       fragment: route
     });
   }

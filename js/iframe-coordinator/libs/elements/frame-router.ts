@@ -86,9 +86,9 @@ class FrameRouterElement extends HTMLElement {
       (evt: CustomEvent) => {
         if (evt && evt.detail && evt.detail.msgType) {
           switch (evt.detail.msgType) {
-            case WorkerToHostMessageTypes.NavRequest:
+            case WorkerToHostMessageTypes.navRequest:
             // Intentional fall-through. Consistent handling for known types
-            case WorkerToHostMessageTypes.ToastRequest:
+            case WorkerToHostMessageTypes.toastRequest:
               this.dispatchEvent(
                 new CustomEvent(evt.detail.msgType, { detail: evt.detail.msg })
               );

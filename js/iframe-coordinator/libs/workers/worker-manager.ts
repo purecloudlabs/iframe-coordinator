@@ -6,6 +6,10 @@ approach at this point*/
 import { v4 as uuidv4 } from 'uuid';
 import {
   WORKER_MESSAGING_PROTOCOL_NAME,
+  WorkerClientEvent,
+  WorkerClientEventType,
+  WorkerClientHostActionEvent,
+  WorkerClientLifecycleEvent,
   WorkerLifecycleEvents,
   WorkerToHostMessageTypes
 } from './constants';
@@ -20,7 +24,7 @@ const DEFAULT_UNLOAD_TIMEOUT_MILLIS = 10000;
 /*
  * TODO for this feature:
 
- * add config for spawned workers to shutdown
+ * add config option so spawned workers can request shutdown
  * Move config to be per-worker
  *  make a type/class
  *  add cleanup boolean here
@@ -34,8 +38,11 @@ const DEFAULT_UNLOAD_TIMEOUT_MILLIS = 10000;
  *    requestUnloadNotification:boolean;
  *    unloadTimeoutMillis: number;
  *  }
- * Make a type/class for each Message (type and payload)
- * Break out lifecycle and event message processing better
+ * Adapt worker message types to new method in master
+  * Use same naming conventions
+  * Make a class for each Message type (msgLabel and payload)
+  * Break out lifecycle and event message processing accorting to types
+  * Make sure payload is modeled correctly
  * make sure lifecycle phase is valid before advancing/regressing
  * get bi-directional comms working
  *  need to add an interface for the background client
@@ -245,94 +252,120 @@ export default class WorkerManager implements EventListenerObject, EventTarget {
   }
 
   public handleEvent(evt: Event): void {
-    if (evt instanceof MessageEvent) {
-      this._onWorkerMsg(evt);
-    } else if (evt instanceof ErrorEvent) {
-      const managedWorker = this._workers.find(curr => {
-        return curr.worker === evt.target;
-      });
-
-      if (managedWorker) {
-        const currentTimestamp = Date.now();
-
-        if (managedWorker.errorWindowStartTimestamp < 0) {
-          // First Error
-          managedWorker.errorWindowStartTimestamp = currentTimestamp;
-          managedWorker.errorWindowCount = 1;
-          return;
-        }
-
-        const delta = Math.max(
-          currentTimestamp - managedWorker.errorWindowStartTimestamp,
-          0
-        );
-        if (delta > this._errorWindowMillis) {
-          // Window expired; start new window
-          managedWorker.errorWindowStartTimestamp = currentTimestamp;
-          managedWorker.errorWindowCount = 1;
-          return;
-        } else {
-          managedWorker.errorWindowCount++;
-
-          if (
-            managedWorker.errorWindowCount > this._errorWindowCountThreshold
-          ) {
-            // TODO Need to add proper logging support
-            // tslint:disable-next-line
-            console.error('Error rate exceeded.  Stopping the worker', {
-              workerDetails: managedWorker,
-              errorWindowCount: managedWorker.errorWindowCount,
-              errorWindowStartTimestamp:
-                managedWorker.errorWindowStartTimestamp,
-              errorWindowDurationMillis: delta,
-              errorDetails: evt.error
-            });
-
-            this.unload(managedWorker.id);
-          }
-        }
-      }
-    }
-  }
-
-  private _onWorkerMsg(evt: MessageEvent) {
-    if (evt.data.protocol !== WORKER_MESSAGING_PROTOCOL_NAME) {
-      // Not a handled message type
-      return;
-    }
-
-    if (!evt.data.msgType) {
-      // TODO Need to add proper logging support
-      // tslint:disable-next-line
-      console.error('No msgType property provided on worker message');
-      return;
-    }
-
-    const targetIndex = this._workers.findIndex(curr => {
+    const targetManagedWorker = this._workers.find(curr => {
       return curr.worker === evt.target;
     });
 
-    if (targetIndex < 0) {
+    if (!targetManagedWorker) {
       // TODO Need to add proper logging support
       // tslint:disable-next-line
       console.error('Received message from unknown worker');
       return;
     }
 
-    const managedWorker = this._workers[targetIndex];
-    const worker = managedWorker.worker;
+    if (evt instanceof MessageEvent) {
+      this._handleWorkerMessageEvent(evt, targetManagedWorker);
+    } else if (evt instanceof ErrorEvent) {
+      this._handleWorkerErrorEvent(evt, targetManagedWorker);
+    }
+  }
 
-    switch (evt.data.msgType) {
+  private _handleWorkerMessageEvent(
+    msgEvent: MessageEvent,
+    targetManagedWorker: ManagedWorker
+  ) {
+    if (msgEvent.data.protocol !== WORKER_MESSAGING_PROTOCOL_NAME) {
+      // Not a handled message type
+      return;
+    }
+
+    if (!msgEvent.data.msgType) {
+      // TODO Need to add proper logging support
+      // tslint:disable-next-line
+      console.error('No msgType property provided on worker message');
+      return;
+    }
+
+    const workerClientEvent = this._parseMsgEvent(
+      msgEvent,
+      targetManagedWorker
+    );
+
+    if (!workerClientEvent) {
+      // TODO Need to add proper logging support
+      // tslint:disable-next-line
+      console.error(
+        'Worker Message could not be parsed to a known type',
+        msgEvent
+      );
+      return;
+    }
+
+    switch (workerClientEvent.kind) {
+      case WorkerClientEventType.LIFECYCLE:
+        this._handleWorkerLifecycleEvent(
+          workerClientEvent,
+          targetManagedWorker
+        );
+        break;
+      case WorkerClientEventType.HOST_ACTION:
+        this._handleWorkerHostActionEvent(
+          workerClientEvent,
+          targetManagedWorker
+        );
+        break;
+    }
+  }
+
+  /**
+   * Returns a WorkerClientEvent or null if it's an unknown message type.
+   *
+   * @param msgEvent The original inbound event; assumes msgType will be present
+   */
+  private _parseMsgEvent(
+    msgEvent: MessageEvent,
+    targetMangedWorker: ManagedWorker
+  ): WorkerClientEvent {
+    if (msgEvent.data.msgType in WorkerLifecycleEvents) {
+      return {
+        kind: WorkerClientEventType.LIFECYCLE,
+        targetWorker: targetMangedWorker.worker,
+        lifecycleEventType: msgEvent.data.msgType,
+        fromSpawnWorker:
+          msgEvent.data &&
+          msgEvent.data.msg &&
+          msgEvent.data.msg.spawnWorkerToken ===
+            targetMangedWorker.spawnWorkerToken,
+        msg: msgEvent.data.msg
+      };
+    } else if (msgEvent.data.msgType in WorkerToHostMessageTypes) {
+      return {
+        kind: WorkerClientEventType.HOST_ACTION,
+        targetWorker: targetMangedWorker.worker,
+        actionType: msgEvent.data.msgType,
+        msg: msgEvent.data.msg
+      };
+    }
+    // TODO Use a discriminated untion to make sure we handle all the cases.
+
+    return null;
+  }
+
+  private _handleWorkerLifecycleEvent(
+    lifecycleEvent: WorkerClientLifecycleEvent,
+    targetManagedWorker: ManagedWorker
+  ): void {
+    switch (lifecycleEvent.lifecycleEventType) {
       case WorkerLifecycleEvents.loaded:
-        managedWorker.phase = WorkerPhase.LOADED;
-        managedWorker.awaitSpawnWorkerUnload = true;
+        targetManagedWorker.phase = WorkerPhase.LOADED;
+        targetManagedWorker.awaitSpawnWorkerUnload = true;
 
         this._dispatchMessage(
-          managedWorker.worker,
+          targetManagedWorker.worker,
           WorkerLifecycleEvents.bootstrap,
           {
-            workerUrl: managedWorker.url,
-            spawnWorkerToken: managedWorker.spawnWorkerToken
+            workerUrl: targetManagedWorker.url,
+            spawnWorkerToken: targetManagedWorker.spawnWorkerToken
           }
         );
         break;
@@ -340,52 +373,108 @@ export default class WorkerManager implements EventListenerObject, EventTarget {
         // TODO Need to add proper logging support
         // tslint:disable-next-line
         console.error('Failed to bootstrap the worker.  Stopping the worker', {
-          workerId: managedWorker.id,
-          workerUrl: managedWorker.url,
-          error: evt.data.msg.error
+          workerId: targetManagedWorker.id,
+          workerUrl: targetManagedWorker.url,
+          error: lifecycleEvent.msg ? lifecycleEvent.msg.error : null
         });
 
-        this.unload(managedWorker.id);
+        this.unload(targetManagedWorker.id);
         break;
       case WorkerLifecycleEvents.bootstrapped:
-        managedWorker.phase = WorkerPhase.RUNNING;
-        managedWorker.awaitSpawnedWorkerUnload =
-          managedWorker.spawnedWorkerUnloadRequested;
+        targetManagedWorker.phase = WorkerPhase.RUNNING;
+        targetManagedWorker.awaitSpawnedWorkerUnload =
+          targetManagedWorker.spawnedWorkerUnloadRequested;
         break;
       case WorkerLifecycleEvents.unload_ready:
-        if (
-          evt.data.msg &&
-          evt.data.msg.spawnWorkerToken === managedWorker.spawnWorkerToken
-        ) {
-          // Only the spawn worker knows this token
-          managedWorker.spawnWorkerUnloaded = true;
+        if (lifecycleEvent.fromSpawnWorker) {
+          targetManagedWorker.spawnWorkerUnloaded = true;
         } else {
-          managedWorker.spawnedWorkerUnloaded = true;
+          targetManagedWorker.spawnedWorkerUnloaded = true;
         }
 
-        this.unload(managedWorker.id);
+        this.unload(targetManagedWorker.id);
         break;
-      case WorkerToHostMessageTypes.ToastRequest:
-        // TODO need more validation
-        this.dispatchEvent(
-          new CustomEvent(WORKER_MESSAGE_EVENT_TYPE, { detail: evt.data })
-        );
-        break;
-      case WorkerToHostMessageTypes.NavRequest:
-        // TODO need more validation
-        this.dispatchEvent(
-          new CustomEvent(WORKER_MESSAGE_EVENT_TYPE, { detail: evt.data })
-        );
-        break;
-      // TODO Need better way to ensure all cases are handled
       default:
+        // TODO Could split the events into inbound and outboud.
+        break;
+    }
+  }
+
+  private _handleWorkerHostActionEvent(
+    hostActionEvent: WorkerClientHostActionEvent,
+    targetManagedWorker: ManagedWorker
+  ): void {
+    switch (hostActionEvent.actionType) {
+      case WorkerToHostMessageTypes.toastRequest:
+        // TODO need more validation
+        // TODO need to fire specific event types and payloads
+        this.dispatchEvent(
+          // TODO this data is a temp hack
+          new CustomEvent(WORKER_MESSAGE_EVENT_TYPE, {
+            detail: {
+              msgType: WorkerToHostMessageTypes.toastRequest,
+              msg: hostActionEvent.msg
+            }
+          })
+        );
+        break;
+      case WorkerToHostMessageTypes.navRequest:
+        // TODO need more validation
+        // TODO need to fire specific event types and payloads
+        this.dispatchEvent(
+          // TODO this data is a temp hack
+          new CustomEvent(WORKER_MESSAGE_EVENT_TYPE, {
+            detail: {
+              msgType: WorkerToHostMessageTypes.navRequest,
+              msg: hostActionEvent.msg
+            }
+          })
+        );
+        break;
+    }
+  }
+
+  private _handleWorkerErrorEvent(
+    evt: ErrorEvent,
+    targetManagedWorker: ManagedWorker
+  ) {
+    const currentTimestamp = Date.now();
+
+    if (targetManagedWorker.errorWindowStartTimestamp < 0) {
+      // First Error
+      targetManagedWorker.errorWindowStartTimestamp = currentTimestamp;
+      targetManagedWorker.errorWindowCount = 1;
+      return;
+    }
+
+    const delta = Math.max(
+      currentTimestamp - targetManagedWorker.errorWindowStartTimestamp,
+      0
+    );
+    if (delta > this._errorWindowMillis) {
+      // Window expired; start new window
+      targetManagedWorker.errorWindowStartTimestamp = currentTimestamp;
+      targetManagedWorker.errorWindowCount = 1;
+      return;
+    } else {
+      targetManagedWorker.errorWindowCount++;
+
+      if (
+        targetManagedWorker.errorWindowCount > this._errorWindowCountThreshold
+      ) {
         // TODO Need to add proper logging support
         // tslint:disable-next-line
-        console.error('Received unknown msgType from worker', {
-          workerDetails: managedWorker,
-          msgType: evt.data.msgType
+        console.error('Error rate exceeded.  Stopping the worker', {
+          workerDetails: targetManagedWorker,
+          errorWindowCount: targetManagedWorker.errorWindowCount,
+          errorWindowStartTimestamp:
+            targetManagedWorker.errorWindowStartTimestamp,
+          errorWindowDurationMillis: delta,
+          errorDetails: evt.error
         });
-        return;
+
+        this.unload(targetManagedWorker.id);
+      }
     }
   }
 
