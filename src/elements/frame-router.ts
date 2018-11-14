@@ -22,11 +22,11 @@ class FrameRouterElement extends HTMLElement {
   constructor() {
     super();
     this._frameManager = new FrameManager({
-      onMessage: this._handleClientMessage.bind(this)
+      onMessage: this._handleClientMessages.bind(this)
     });
     this._subscriptionManager = new SubscriptionManager();
     this._subscriptionManager.setHandler((publication: Publication) => {
-      this._dispatchClientMessag({
+      this._dispatchClientMessage({
         msgType: 'publish',
         msg: publication
       });
@@ -130,7 +130,7 @@ class FrameRouterElement extends HTMLElement {
     }
   }
 
-  private _handleClientMessage(message: ClientToHost): void {
+  private _handleClientMessages(message: ClientToHost) {
     switch (message.msgType) {
       case 'publish':
         this._subscriptionManager.dispatchMessage(message.msg);
@@ -139,7 +139,7 @@ class FrameRouterElement extends HTMLElement {
         this._handleLifecycleMessage(message.msg as LifecycleStage);
         break;
       default:
-        this._dispatchClientMessag(message);
+        this._dispatchClientMessage(message);
     }
   }
 
@@ -151,7 +151,7 @@ class FrameRouterElement extends HTMLElement {
     }
   }
 
-  private _dispatchClientMessag(message: ClientToHost) {
+  private _dispatchClientMessage(message: ClientToHost) {
     this.dispatchEvent(
       new CustomEvent(message.msgType, { detail: message.msg })
     );
