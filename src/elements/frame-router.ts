@@ -1,7 +1,7 @@
 import FrameManager from '../FrameManager';
 import { HostRouter, RoutingMap } from '../HostRouter';
 import { ClientToHost } from '../messages/ClientToHost';
-import { EnvData, Lifecycle, LifecycleStage } from '../messages/Lifecycle';
+import { EnvData, LabeledStarted, Lifecycle } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 import { SubscriptionManager } from '../SubscriptionManager';
 
@@ -114,7 +114,10 @@ class FrameRouterElement extends HTMLElement {
    */
   public setEnvData(envData: EnvData) {
     this._envData = envData;
-    this._frameManager.sendToClient(Lifecycle.genEnvInitMessage(this._envData));
+    this._frameManager.sendToClient({
+      msgType: 'env_init',
+      msg: envData
+    });
   }
 
   /**
@@ -135,20 +138,19 @@ class FrameRouterElement extends HTMLElement {
       case 'publish':
         this._subscriptionManager.dispatchMessage(message.msg);
         break;
-      case 'lifecycle':
-        this._handleLifecycleMessage(message.msg as LifecycleStage);
+      case 'client_started':
+        this._handleLifecycleMessage(message);
         break;
       default:
         this._dispatchClientMessage(message);
     }
   }
 
-  private _handleLifecycleMessage(message: LifecycleStage) {
-    if (Lifecycle.isStartedStage(message)) {
-      this._frameManager.sendToClient(
-        Lifecycle.genEnvInitMessage(this._envData)
-      );
-    }
+  private _handleLifecycleMessage(message: LabeledStarted) {
+    this._frameManager.sendToClient({
+      msgType: 'env_init',
+      msg: this._envData
+    });
   }
 
   private _dispatchClientMessage(message: ClientToHost) {
