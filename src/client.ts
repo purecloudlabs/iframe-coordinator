@@ -8,13 +8,7 @@ import {
   validate as validateIncoming
 } from './messages/HostToClient';
 
-import { EnvData } from './messages/EnvData';
-import {
-  EnvData,
-  Lifecycle,
-  LifecycleEnvironmentInit,
-  LifecycleStage
-} from './messages/Lifecycle';
+import { EnvData, LabeledEnvInit, Lifecycle } from './messages/Lifecycle';
 import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 
@@ -38,6 +32,8 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
   public constructor(configOptions: ClientConfigOptions = {}) {
     super();
     this._clientWindow = configOptions.clientWindow || window;
+    this._subscriptionManager = new SubscriptionManager();
+    this._getEnvData = () => undefined;
   }
 
   private _onWindowMessage = (event: MessageEvent) => {
@@ -65,15 +61,11 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
   private _handleHostMessage(message: HostToClient): void {
     switch (message.msgType) {
       case 'publish':
-        this.emit(message.msg.topic, message.msg);
-        break;
-      case 'lifecycle':
-        const lifecycleMsg = message.msg as LifecycleStage;
-        if (Lifecycle.isEnvInitStage(lifecycleMsg)) {
-          const envInitMsg = message.msg as LifecycleEnvironmentInit;
-          this._environmentData = envInitMsg.data;
-          this._getEnvData(this._environmentData);
-        }
+        this._subscriptionManager.dispatchMessage(message.msg);
+      case 'env_init':
+        const envInitMsg = message as LabeledEnvInit;
+        this._environmentData = envInitMsg.msg;
+        this._getEnvData(this._environmentData);
         return;
     }
   }
@@ -119,7 +111,6 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
     this._isStarted = false;
     this._clientWindow.removeEventListener('message', this._onWindowMessage);
     this._clientWindow.removeEventListener('click', this._onWindowClick);
-    this._sendToHost(Lifecycle.stoppedMessage);
   }
 
   /**

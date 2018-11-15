@@ -1,6 +1,5 @@
 import * as ClientInjector from 'inject-loader!../client';
-import { EnvData } from '../messages/EnvData';
-import { Publication } from '../messages/Publication';
+import { EnvData } from '../messages/Lifecycle';
 
 describe('client', () => {
   let client: any;
@@ -60,52 +59,39 @@ describe('client', () => {
       client.start(mockFrameWindow);
     });
 
-    it('should send a loaded lifecycle notification', () => {
+    it('should send a client_started notification', () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
         {
-          msgType: 'lifecycle',
-          msg: {
-            stage: 'started',
-            data: undefined
-          }
+          msgType: 'client_started',
+          msg: undefined
         },
         '*'
       );
     });
   });
 
-  describe('when the client is stopped', () => {
+  describe('when an initial data environment is recieved', () => {
+    let recievedEnvData: EnvData;
     beforeEach(() => {
       client.start(mockFrameWindow);
-      mockFrameWindow.parent.postMessage.calls.reset();
-      client.stop();
-    });
+      client.getEnvData((env: EnvData) => {
+        recievedEnvData = env;
+      });
 
-    it('should send a loaded lifecycle notification', () => {
-      expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-        {
-          msgType: 'lifecycle',
-          msg: {
-            stage: 'stopped',
-            data: undefined
-          }
-        },
-        '*'
-      );
-    });
-  });
-
-  describe('when an initial data lifecycle is recieved', () => {
-    beforeEach(() => {
       mockFrameWindow.trigger('message', {
         origin: 'origin',
         data: {
-          msgType: 'lifecycle',
+          msgType: 'env_init',
           msg: {
-            stage: 'init',
-            data: 'test data'
+            locale: 'nl-NL'
           }
         }
+      });
+    });
+
+    it('should delegate', () => {
+      expect(recievedEnvData).toEqual({
+        locale: 'nl-NL'
       });
     });
   });

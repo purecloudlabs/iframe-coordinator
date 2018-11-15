@@ -3,21 +3,21 @@ import { LabeledMsg } from './LabeledMsg';
 import { createMessageValidator } from './validationUtils';
 
 /**
- * Lifecycle stage in which the client
- * notifies the host that they have started
- * and ready to recieve messages.
+ * Client started indication.  The client will
+ * now listen for messages and begin sending
+ * messages from the client application.
  */
-export interface LifecycleStarted {
-  stage: 'started';
+export interface LabeledStarted extends LabeledMsg {
+  msgType: 'client_started';
 }
 
-/**
- * Lifecycle stage in which the client
- * notifies the host that they have stopped.
- */
-export interface LifecycleStopped {
-  stage: 'stopped';
-}
+// We don't care what is in msg for Started messages.
+const startedDecoder = guard(mixed);
+
+const validateStarted = createMessageValidator<LabeledStarted>(
+  'client_started',
+  startedDecoder
+);
 
 /**
  * Environmental data provided to all clients
@@ -28,114 +28,37 @@ export interface EnvData {
 }
 
 /**
- * Lifecycle stage where environmental data
+ * Initial setup message where environmental data
  * is sent to the client.
  */
-export interface LifecycleEnvironmentInit {
-  stage: 'env_init';
-  data: EnvData;
+export interface LabeledEnvInit extends LabeledMsg {
+  msgType: 'env_init';
+  msg: EnvData;
 }
 
-/**
- * A lifecycle message for coordination between host and client.
- *
- * @remarks
- * These are for internal use only.
- */
-export type LifecycleStage =
-  | LifecycleStarted
-  | LifecycleStopped
-  | LifecycleEnvironmentInit;
+const envDataDecoder = guard(
+  object({
+    locale: string
+  })
+);
+
+const validateEnvData = createMessageValidator<LabeledEnvInit>(
+  'env_init',
+  envDataDecoder
+);
+
+export { validateStarted, validateEnvData };
 
 /**
- * Generator for a {@link LabeledLifecycle} message which
- * packages an {@link LifecycleEnvironmentInit} stage.
- */
-type LabeledLifecycleEnvInitGenerator = (envData: EnvData) => LabeledLifecycle;
-
-/**
- * Helpfull properties for working with lifecycle stages and
+ * Helpful properties for working with lifecycle stages and
  * their coresponding labeled messages.
  */
 export class Lifecycle {
   /**
-   * A {@link LifecycleStarted} message to send to the host application.
+   * A {@link LabeledStarted} message to send to the host application.
    */
-  public static startedMessage: LabeledLifecycle = {
-    msgType: 'lifecycle',
-    msg: { stage: 'started' }
+  public static startedMessage: LabeledStarted = {
+    msgType: 'client_started',
+    msg: undefined
   };
-
-  /**
-   * A {@link LifecycleStopped} message to send to the host application.
-   */
-  public static stoppedMessage: LabeledLifecycle = {
-    msgType: 'lifecycle',
-    msg: { stage: 'stopped' }
-  };
-
-  /**
-   * Gnerates a {@link LabeledLifecycle} for sending an
-   * {@link LifecycleEnvironmentInit} stage between host and client.
-   */
-  public static genEnvInitMessage: LabeledLifecycleEnvInitGenerator = (
-    envData: EnvData
-  ) => {
-    return {
-      msgType: 'lifecycle',
-      msg: {
-        stage: 'env_init',
-        data: envData
-      }
-    };
-  };
-
-  /**
-   * Determines whether the stage is an {@link LifecycleStarted}.
-   *
-   * @param stage The lifecycle stage to test.
-   */
-  public static isStartedStage(stage: LifecycleStage): boolean {
-    return stage.stage === 'started';
-  }
-
-  /**
-   * Determines whether the stage is an {@link LifecycleStopped}.
-   *
-   * @param stage The lifecycle stage to test.
-   */
-  public static isStoppedStage(stage: LifecycleStage): boolean {
-    return stage.stage === 'stopped';
-  }
-
-  /**
-   * Determines whether the stage is an {@link LifecycleEnvironmentInit}.
-   *
-   * @param stage The lifecycle stage to test.
-   */
-  public static isEnvInitStage(stage: LifecycleStage): boolean {
-    return stage.stage === 'env_init';
-  }
 }
-
-/**
- * A message used to coordinate the lifecycle
- * of host and client elements.
- */
-export interface LabeledLifecycle extends LabeledMsg {
-  msgType: 'lifecycle';
-  msg: LifecycleStage;
-}
-
-const lifecycleDecoder = guard(
-  object({
-    stage: string,
-    data: mixed
-  })
-);
-
-const validateLifecycle = createMessageValidator<LabeledLifecycle>(
-  'lifecycle',
-  lifecycleDecoder
-);
-export { validateLifecycle };
