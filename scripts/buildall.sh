@@ -6,5 +6,5 @@ ${PROJ_DIR}/scripts/buildlibs.sh
 
 echo "** Building & running demo-app **"
 cd ${PROJ_DIR}/demo-app
-npm install
+npm ci 
 npm start
