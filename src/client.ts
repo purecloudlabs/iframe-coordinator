@@ -1,6 +1,4 @@
 import * as EventEmitter from 'events';
-import StrictEventEmitter from 'strict-event-emitter-types';
-
 import {
   ClientToHost,
   validate as validateOutgoing
@@ -10,9 +8,8 @@ import {
   validate as validateIncoming
 } from './messages/HostToClient';
 
-import { Publication } from './messages/Publication';
+import { Publication, PublicationEventEmitter } from './messages/Publication';
 import { Toast } from './messages/Toast';
-import { PublicationHandler, SubscriptionManager } from './SubscriptionManager';
 
 /**
  * Configuration options given to the client
@@ -23,37 +20,15 @@ interface ClientConfigOptions {
 }
 
 /**
- * The known events that can be emitted
- * from the client.
- */
-interface Events {
-  publish: PublicationHandler;
-}
-
-/**
- * A strictly typed event emitter for {@link Client}.
- */
-type ClientEventEmitter = StrictEventEmitter<EventEmitter, Events>;
-
-/**
  * The Client is access point for the embedded UI's in the host application.
  */
-class Client extends (EventEmitter as { new (): ClientEventEmitter }) {
-  private _subscriptionManager: SubscriptionManager;
+class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
   private _isStarted: boolean;
   private _clientWindow: Window;
 
   public constructor(configOptions: ClientConfigOptions = {}) {
     super();
     this._clientWindow = configOptions.clientWindow || window;
-    this._subscriptionManager = new SubscriptionManager();
-    this._subscriptionManager.setHandler(
-      this._raisePublicationEvent.bind(this)
-    );
-  }
-
-  private _raisePublicationEvent(publication: Publication) {
-    this.emit('publish', publication);
   }
 
   private _onWindowMessage = (event: MessageEvent) => {
@@ -81,12 +56,10 @@ class Client extends (EventEmitter as { new (): ClientEventEmitter }) {
   private _handleHostMessage(message: HostToClient): void {
     switch (message.msgType) {
       case 'publish':
-        this._subscriptionManager.dispatchMessage(message.msg);
+        this.emit(message.msg.topic, message.msg);
         break;
       default:
-        // Currently there is only one message type available.
-        // However, once more are added we will have to do emit them.
-        this.emit(message.msgType, message.msg);
+      // Only emit events which are specifically handled.
     }
   }
 
@@ -122,26 +95,6 @@ class Client extends (EventEmitter as { new (): ClientEventEmitter }) {
     this._isStarted = false;
     this._clientWindow.removeEventListener('message', this._onWindowMessage);
     this._clientWindow.removeEventListener('click', this._onWindowClick);
-  }
-
-  /**
-   * Subscribes to topics that may be published by the host application.
-   * You can subscribe to multiple topics, however, they will come through
-   * the onPubsub handler.
-   *
-   * @param topic The topic which is of interest to the client content.
-   */
-  public subscribe(topic: string): void {
-    this._subscriptionManager.subscribe(topic);
-  }
-
-  /**
-   * Unsubscribes to topics being published by the host application.
-   *
-   * @param topic The topic which is no longer of interest to the client content.
-   */
-  public unsubscribe(topic: string): void {
-    this._subscriptionManager.unsubscribe(topic);
   }
 
   /**

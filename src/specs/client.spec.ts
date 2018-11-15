@@ -45,9 +45,7 @@ describe('client', () => {
     };
 
     /* tslint:disable */
-    let Client = ClientInjector({
-      './SubscriptionManager': mockSubscriptionManagerImport
-    }).Client;
+    let Client = ClientInjector({}).Client;
     /* tslint:enable */
 
     client = new Client({ clientWindow: mockFrameWindow });
@@ -103,32 +101,6 @@ describe('client', () => {
     });
   });
 
-  describe('when subscribing to the client', () => {
-    beforeEach(() => {
-      client.start(mockFrameWindow);
-      client.subscribe('test.topic');
-    });
-
-    it('should notify worker of subscription', () => {
-      expect(mockSubscriptionManagerObj.subscribe).toHaveBeenCalledWith(
-        'test.topic'
-      );
-    });
-  });
-
-  describe('when unsubscribing to the client', () => {
-    beforeEach(() => {
-      client.start(mockFrameWindow);
-      client.unsubscribe('test.topic');
-    });
-
-    it('should notify worker of unsubscription', () => {
-      expect(mockSubscriptionManagerObj.unsubscribe).toHaveBeenCalledWith(
-        'test.topic'
-      );
-    });
-  });
-
   describe('when publishing a new message', () => {
     beforeEach(() => {
       client.start(mockFrameWindow);
@@ -150,8 +122,10 @@ describe('client', () => {
   });
 
   describe('when recieving an invalid window message from the host application', () => {
+    let subscriptionCalled = false;
     beforeEach(() => {
       client.start(mockFrameWindow);
+      client.on('origin', () => (subscriptionCalled = true));
       mockFrameWindow.trigger('message', {
         origin: 'origin',
         data: 'test data'
@@ -159,7 +133,7 @@ describe('client', () => {
     });
 
     it('should not notify subscriptions of incoming message', () => {
-      expect(mockSubscriptionManagerObj.dispatchMessage).not.toHaveBeenCalled();
+      expect(subscriptionCalled).toBeFalsy();
     });
   });
 
@@ -167,7 +141,7 @@ describe('client', () => {
     let publishCalls = 0;
     beforeEach(() => {
       client.start(mockFrameWindow);
-      client.on('publish', () => publishCalls++);
+      client.on('test.topic', () => publishCalls++);
       mockFrameWindow.trigger('message', {
         origin: 'origin',
         data: {
@@ -180,34 +154,7 @@ describe('client', () => {
       });
     });
 
-    it('should notify subscriptions of incoming message', () => {
-      expect(mockSubscriptionManagerObj.dispatchMessage).toHaveBeenCalledWith({
-        topic: 'test.topic',
-        payload: 'test data'
-      });
-    });
-
-    it('should not automatically raise the event', () => {
-      expect(publishCalls).toBe(0);
-    });
-  });
-
-  describe('when client is listening to published messages', () => {
-    let publishCalls = 0;
-    beforeEach(() => {
-      client.start(mockFrameWindow);
-
-      client.on('publish', () => {
-        publishCalls++;
-      });
-
-      mockSubscriptionManagerObj.raiseHandler({
-        topic: 'test.topic',
-        payload: 'test.payload'
-      });
-    });
-
-    it('should emit the publish event', () => {
+    it('should raise a publish event for the topic', () => {
       expect(publishCalls).toBe(1);
     });
   });

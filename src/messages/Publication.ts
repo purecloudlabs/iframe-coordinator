@@ -15,6 +15,24 @@ export interface Publication {
 }
 
 /**
+ * Handles publications
+ */
+export type PublicationHandler = (publication: Publication) => void;
+
+/**
+ * A strictly-typed event handler for publication messages.
+ */
+export declare interface PublicationEventEmitter {
+  emit(topic: string, publication: Publication): boolean;
+  addListener(topic: string, listener: PublicationHandler): this;
+  on(type: string, listener: PublicationHandler): this;
+  once(type: string, listener: PublicationHandler): this;
+  removeListener(type: string, listener: PublicationHandler): this;
+  removeAllListeners(type?: string): this;
+  listenerCount(type: string): number;
+}
+
+/**
  * A message used to publish a generic messages
  * to the host application.
  */
