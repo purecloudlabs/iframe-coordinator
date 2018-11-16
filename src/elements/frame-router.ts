@@ -1,8 +1,8 @@
+import { EventEmitter, ExposedEventEmitter } from '../EventEmitter';
 import FrameManager from '../FrameManager';
 import { HostRouter, RoutingMap } from '../HostRouter';
 import { ClientToHost } from '../messages/ClientToHost';
 import { Publication } from '../messages/Publication';
-import { SubscriptionManager } from '../SubscriptionManager';
 
 const ROUTE_ATTR = 'route';
 
@@ -14,20 +14,19 @@ const ROUTE_ATTR = 'route';
  */
 class FrameRouterElement extends HTMLElement {
   private _frameManager: FrameManager;
-  private _subscriptionManager: SubscriptionManager;
   private _router: HostRouter;
+  private _publishEmitter: EventEmitter<Publication>;
+  private _publishExposedEmitter: ExposedEventEmitter<Publication>;
 
   constructor() {
     super();
+    this._publishEmitter = new EventEmitter<Publication>();
+    this._publishExposedEmitter = new ExposedEventEmitter<Publication>(
+      this._publishEmitter
+    );
+
     this._frameManager = new FrameManager({
       onMessage: this._handleClientMessages.bind(this)
-    });
-    this._subscriptionManager = new SubscriptionManager();
-    this._subscriptionManager.setHandler((publication: Publication) => {
-      this._dispatchClientMessage({
-        msgType: 'publish',
-        msg: publication
-      });
     });
   }
 
@@ -65,21 +64,10 @@ class FrameRouterElement extends HTMLElement {
   }
 
   /**
-   * Subscribes to a topic published by the client fragment.
-   *
-   * @param topic - The topic name the host is interested in.
+   * Eventing for published messages from the host application.
    */
-  public subscribe(topic: string): void {
-    this._subscriptionManager.subscribe(topic);
-  }
-
-  /**
-   * Unsubscribes to a topic published by the client fragment.
-   *
-   * @param topic - The topic name the host is no longer interested in.
-   */
-  public unsubscribe(topic: string): void {
-    this._subscriptionManager.unsubscribe(topic);
+  public get messaging() {
+    return this._publishExposedEmitter;
   }
 
   /**
@@ -121,7 +109,7 @@ class FrameRouterElement extends HTMLElement {
   private _handleClientMessages(message: ClientToHost) {
     switch (message.msgType) {
       case 'publish':
-        this._subscriptionManager.dispatchMessage(message.msg);
+        this._publishEmitter.dispatch(message.msg.topic, message.msg);
         break;
       default:
         this._dispatchClientMessage(message);
