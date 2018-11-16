@@ -11,22 +11,22 @@ const TOAST_LEVELS = ["info", "success", "error"];
 const TOP_ROUTE_EXTRACTOR = /^#?(\/[^\/]+).*/;
 const NAV_CONFIGS = [
   {
-    id: 'client1',
-    title: 'Component 1',
-    url: new URL("/components/example1/", window.location).toString(),
+    id: "client1",
+    title: "Component 1",
+    url: new URL("/components/example1/#/", window.location).toString(),
     assignedRoute: "/one",
-    children: ['first', 'second']
+    children: ["first", "second"]
   },
   {
-    id: 'client2',
-    title: 'Component 2',
-    url: new URL("/components/example2/", window.location).toString(),
+    id: "client2",
+    title: "Component 2",
+    url: new URL("/components/example2/#/", window.location).toString(),
     assignedRoute: "/two",
-    children: ['first', 'second']
+    children: ["first", "second"]
   },
   {
-    id: 'wikipedia',
-    title: 'Wikipedia',
+    id: "wikipedia",
+    title: "Wikipedia",
     url: new URL("https://en.wikipedia.org").toString(),
     assignedRoute: "/wikipedia",
     children: []
@@ -43,11 +43,11 @@ registerElements();
 
 let router = document.getElementById("router");
 router.registerClients(
-  NAV_CONFIGS.reduce((clientMap, {id, url, assignedRoute}) => {
+  NAV_CONFIGS.reduce((clientMap, { id, url, assignedRoute }) => {
     clientMap[id] = {
       url,
       assignedRoute
-    }
+    };
 
     return clientMap;
   }, {})
