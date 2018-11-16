@@ -1,7 +1,7 @@
 import FrameManager from '../FrameManager';
 import { HostRouter, RoutingMap } from '../HostRouter';
 import { ClientToHost } from '../messages/ClientToHost';
-import { EnvData, LabeledStarted, Lifecycle } from '../messages/Lifecycle';
+import { EnvData, LabeledStarted } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 import { SubscriptionManager } from '../SubscriptionManager';
 
@@ -57,12 +57,16 @@ class FrameRouterElement extends HTMLElement {
   }
 
   /**
-   * Registers possible clients this frame will host.
+   * Initializes this host frame with the possible clients and
+   * the environmental data required the clients.
    *
    * @param clients The map of registrations for the available clients.
+   * @param envData Information about the host environment.
    */
-  public registerClients(clients: RoutingMap) {
+  public setupFrames(clients: RoutingMap, envData: EnvData) {
     this._router = new HostRouter(clients);
+    this._envData = envData;
+
     this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
   }
 
@@ -105,19 +109,6 @@ class FrameRouterElement extends HTMLElement {
   public changeRoute(newPath: string) {
     const clientUrl = this._router.getClientUrl(newPath);
     this._frameManager.setFrameLocation(clientUrl);
-  }
-
-  /**
-   * Set the environment data from the host to pass to each client.
-   *
-   * @param envData Information about the host environment.
-   */
-  public setEnvData(envData: EnvData) {
-    this._envData = envData;
-    this._frameManager.sendToClient({
-      msgType: 'env_init',
-      msg: envData
-    });
   }
 
   /**

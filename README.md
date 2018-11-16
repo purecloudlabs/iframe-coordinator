@@ -42,7 +42,7 @@ registerElements();
  * `#/one/my/path` would cause the `frame-router` element
  * to display the iframe at `/component/example1/#/my/path`
  */
-document.getElementById("frame-element").registerClients({
+document.getElementById("frame-element").setupFrames({
   client1: {
     url: new URL("/components/example1/", window.location).toString(),
     assignedRoute: "/one"
@@ -51,6 +51,11 @@ document.getElementById("frame-element").registerClients({
     url: new URL("/components/example2/", window.location).toString(),
     assignedRoute: "/two"
   }
+}, {
+  locale: 'en-US',
+  language: 'en-US',
+  platformId: 'PureCloud',
+  hostRootUrl: window.location.origin
 });
 ```
 

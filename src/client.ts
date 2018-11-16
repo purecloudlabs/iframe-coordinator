@@ -7,8 +7,12 @@ import {
   HostToClient,
   validate as validateIncoming
 } from './messages/HostToClient';
-
-import { EnvData, LabeledEnvInit, Lifecycle } from './messages/Lifecycle';
+import {
+  EnvData,
+  EnvDataEventEmitter,
+  LabeledEnvInit,
+  Lifecycle
+} from './messages/Lifecycle';
 import { Publication, PublicationEventEmitter } from './messages/Publication';
 import { Toast } from './messages/Toast';
 
@@ -21,18 +25,21 @@ interface ClientConfigOptions {
 }
 
 /**
+ * A strictly-typed event handler for publication messages.
+ */
+type ClientEventEmitter = EnvDataEventEmitter & PublicationEventEmitter;
+
+/**
  * The Client is access point for the embedded UI's in the host application.
  */
-class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
+class Client extends (EventEmitter as { new (): ClientEventEmitter }) {
   private _isStarted: boolean;
   private _clientWindow: Window;
   private _environmentData: EnvData;
-  private _getEnvData: (env: EnvData) => void;
 
   public constructor(configOptions: ClientConfigOptions = {}) {
     super();
     this._clientWindow = configOptions.clientWindow || window;
-    this._getEnvData = () => undefined;
   }
 
   private _onWindowMessage = (event: MessageEvent) => {
@@ -63,13 +70,21 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
         this.emit(message.msg.topic, message.msg);
         break;
       case 'env_init':
-        const envInitMsg = message as LabeledEnvInit;
+        const envInitMsg: LabeledEnvInit = message as LabeledEnvInit;
         this._environmentData = envInitMsg.msg;
-        this._getEnvData(this._environmentData);
+        this.emit('environmentalData', this._environmentData);
         return;
       default:
       // Only emit events which are specifically handeled
     }
+  }
+
+  /**
+   * Gets the current environmental data provided
+   * by the host application.
+   */
+  public get environmentData() {
+    return this._environmentData;
   }
 
   private _sendToHost(message: ClientToHost): void {
@@ -105,20 +120,6 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
     this._isStarted = false;
     this._clientWindow.removeEventListener('message', this._onWindowMessage);
     this._clientWindow.removeEventListener('click', this._onWindowClick);
-  }
-
-  /**
-   * Get the environmental data.  The environmental
-   * data may be returned immediatly or delayed until sent
-   * from the host.
-   *
-   * @param callback Handler for changing environmental data.
-   */
-  public getEnvData(callback: (env: EnvData) => void): void {
-    this._getEnvData = callback;
-    if (this._environmentData) {
-      this._getEnvData(this._environmentData);
-    }
   }
 
   /**

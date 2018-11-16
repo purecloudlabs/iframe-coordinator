@@ -42,7 +42,7 @@ registerElements();
 // ----- Client/Nav Setup
 
 let router = document.getElementById("router");
-router.registerClients(
+router.setupFrames(
   NAV_CONFIGS.reduce((clientMap, { id, url, assignedRoute }) => {
     clientMap[id] = {
       url,
@@ -50,11 +50,14 @@ router.registerClients(
     };
 
     return clientMap;
-  }, {})
+  }, {}),
+  {
+    locale: "nl-NL",
+    language: 'nl',
+    platformId: 'PureCloud',
+    hostRootUrl: window.location.origin
+  }
 );
-router.setEnvData({
-  locale: "nl-NL"
-});
 
 buildNavMarkup(NAV_CONFIGS);
 

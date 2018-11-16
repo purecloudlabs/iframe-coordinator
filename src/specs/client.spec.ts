@@ -1,6 +1,5 @@
 import * as ClientInjector from 'inject-loader!../client';
 import { EnvData } from '../messages/Lifecycle';
-import { Publication } from '../messages/Publication';
 
 describe('client', () => {
   let client: any;
@@ -48,27 +47,29 @@ describe('client', () => {
 
   describe('when an initial data environment is recieved', () => {
     let recievedEnvData: EnvData;
+    const testEnvironmentData: EnvData = {
+      language: 'nl',
+      locale: 'nl-NL',
+      platformId: 'PureCloud',
+      hostRootUrl: 'http://example.com/'
+    };
     beforeEach(() => {
-      client.start(mockFrameWindow);
-      client.getEnvData((env: EnvData) => {
+      client.on('environmentalData', (env: EnvData) => {
         recievedEnvData = env;
       });
+      client.start(mockFrameWindow);
 
       mockFrameWindow.trigger('message', {
         origin: 'origin',
         data: {
           msgType: 'env_init',
-          msg: {
-            locale: 'nl-NL'
-          }
+          msg: testEnvironmentData
         }
       });
     });
 
     it('should delegate', () => {
-      expect(recievedEnvData).toEqual({
-        locale: 'nl-NL'
-      });
+      expect(recievedEnvData).toEqual(testEnvironmentData);
     });
   });
 

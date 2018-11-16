@@ -1,4 +1,4 @@
-import { guard, mixed, object, string } from 'decoders';
+import { constant, either3, guard, mixed, object, string } from 'decoders';
 import { LabeledMsg } from './LabeledMsg';
 import { createMessageValidator } from './validationUtils';
 
@@ -25,6 +25,9 @@ const validateStarted = createMessageValidator<LabeledStarted>(
  */
 export interface EnvData {
   locale: string;
+  language: string;
+  platformId: 'PureCloud' | 'PureConnect' | 'PureEngage';
+  hostRootUrl: string;
 }
 
 /**
@@ -38,7 +41,14 @@ export interface LabeledEnvInit extends LabeledMsg {
 
 const envDataDecoder = guard(
   object({
-    locale: string
+    locale: string,
+    language: string,
+    platformId: either3(
+      constant('PureCloud'),
+      constant('PureConnect'),
+      constant('PureEngage')
+    ),
+    hostRootUrl: string
   })
 );
 
@@ -48,6 +58,24 @@ const validateEnvData = createMessageValidator<LabeledEnvInit>(
 );
 
 export { validateStarted, validateEnvData };
+
+/**
+ * Handles new environmental data events.
+ */
+export type EnvDataHandler = (envData: EnvData) => void;
+
+/**
+ * A strictly-typed event handler for EnvData messages.
+ */
+export declare interface EnvDataEventEmitter {
+  emit(type: 'environmentalData', envData: EnvData): boolean;
+  addListener(type: 'environmentalData', listener: EnvDataHandler): this;
+  on(type: 'environmentalData', listener: EnvDataHandler): this;
+  once(type: 'environmentalData', listener: EnvDataHandler): this;
+  removeListener(type: 'environmentalData', listener: EnvDataHandler): this;
+  removeAllListeners(type?: 'environmentalData'): this;
+  listenerCount(type: 'environmentalData'): number;
+}
 
 /**
  * Helpful properties for working with lifecycle stages and
