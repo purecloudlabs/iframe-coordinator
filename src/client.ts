@@ -9,7 +9,7 @@ import {
 } from './messages/HostToClient';
 
 import { EnvData, LabeledEnvInit, Lifecycle } from './messages/Lifecycle';
-import { Publication } from './messages/Publication';
+import { Publication, PublicationEventEmitter } from './messages/Publication';
 import { Toast } from './messages/Toast';
 
 /**
@@ -32,7 +32,6 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
   public constructor(configOptions: ClientConfigOptions = {}) {
     super();
     this._clientWindow = configOptions.clientWindow || window;
-    this._subscriptionManager = new SubscriptionManager();
     this._getEnvData = () => undefined;
   }
 
@@ -41,7 +40,7 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
     if (validated) {
       this._handleHostMessage(validated);
     }
-  }
+  };
 
   private _onWindowClick = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
@@ -56,25 +55,20 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
         }
       });
     }
-  }
+  };
 
   private _handleHostMessage(message: HostToClient): void {
     switch (message.msgType) {
       case 'publish':
-        this._subscriptionManager.dispatchMessage(message.msg);
+        this.emit(message.msg.topic, message.msg);
+        break;
       case 'env_init':
         const envInitMsg = message as LabeledEnvInit;
         this._environmentData = envInitMsg.msg;
         this._getEnvData(this._environmentData);
         return;
-    }
-  }
-
-  public getEnvData(callback: (env: EnvData) => void): void {
-    this._getEnvCb = callback;
-
-    if (this._env) {
-      this._getEnvCb(this._env);
+      default:
+      // Only emit events which are specifically handeled
     }
   }
 
@@ -114,26 +108,6 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
   }
 
   /**
-   * Subscribes to topics that may be published by the host application.
-   * You can subscribe to multiple topics, however, they will come through
-   * the onPubsub handler.
-   *
-   * @param topic The topic which is of interest to the client content.
-   */
-  public subscribe(topic: string): void {
-    this._subscriptionManager.subscribe(topic);
-  }
-
-  /**
-   * Unsubscribes to topics being published by the host application.
-   *
-   * @param topic The topic which is no longer of interest to the client content.
-   */
-  public unsubscribe(topic: string): void {
-    this._subscriptionManager.unsubscribe(topic);
-  }
-
-  /**
    * Get the environmental data.  The environmental
    * data may be returned immediatly or delayed until sent
    * from the host.
@@ -142,7 +116,6 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
    */
   public getEnvData(callback: (env: EnvData) => void): void {
     this._getEnvData = callback;
-
     if (this._environmentData) {
       this._getEnvData(this._environmentData);
     }

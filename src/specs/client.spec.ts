@@ -1,10 +1,10 @@
 import * as ClientInjector from 'inject-loader!../client';
 import { EnvData } from '../messages/Lifecycle';
+import { Publication } from '../messages/Publication';
 
 describe('client', () => {
   let client: any;
   let mockFrameWindow: any;
-  let mockSubscriptionManagerObj: any;
 
   beforeEach(() => {
     mockFrameWindow = {
@@ -21,30 +21,6 @@ describe('client', () => {
       parent: {
         postMessage: jasmine.createSpy('window.parent.postMessage')
       }
-    };
-
-    mockSubscriptionManagerObj = {
-      subscribe: jasmine.createSpy('subscribe'),
-      unsubscribe: jasmine.createSpy('unsubscribe'),
-      setHandler: jasmine
-        .createSpy('setHandler')
-        .and.callFake((handler: any) => {
-          mockSubscriptionManagerObj.handler = handler;
-        }),
-      raiseHandler: (data: Publication) => {
-        mockSubscriptionManagerObj.handler(data);
-      },
-      dispatchMessage: jasmine.createSpy('dispatchMessage')
-    };
-
-    /* tslint:disable */
-    const mockSubscriptionManager = function() {
-      return mockSubscriptionManagerObj;
-    };
-    /* tslint:enable */
-
-    const mockSubscriptionManagerImport = {
-      SubscriptionManager: mockSubscriptionManager
     };
 
     /* tslint:disable */
