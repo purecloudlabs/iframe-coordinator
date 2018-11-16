@@ -1,4 +1,4 @@
-import * as EventEmitter from 'events';
+import { EventEmitter, ExposedEventEmitter } from './EventEmitter';
 import {
   ClientToHost,
   validate as validateOutgoing
@@ -8,7 +8,7 @@ import {
   validate as validateIncoming
 } from './messages/HostToClient';
 
-import { Publication, PublicationEventEmitter } from './messages/Publication';
+import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 
 /**
@@ -22,13 +22,18 @@ interface ClientConfigOptions {
 /**
  * The Client is access point for the embedded UI's in the host application.
  */
-class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
+class Client {
   private _isStarted: boolean;
   private _clientWindow: Window;
+  private _publishEmitter: EventEmitter<Publication>;
+  private _publishExposedEmitter: ExposedEventEmitter<Publication>;
 
   public constructor(configOptions: ClientConfigOptions = {}) {
-    super();
     this._clientWindow = configOptions.clientWindow || window;
+    this._publishEmitter = new EventEmitter<Publication>();
+    this._publishExposedEmitter = new ExposedEventEmitter<Publication>(
+      this._publishEmitter
+    );
   }
 
   private _onWindowMessage = (event: MessageEvent) => {
@@ -56,7 +61,7 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
   private _handleHostMessage(message: HostToClient): void {
     switch (message.msgType) {
       case 'publish':
-        this.emit(message.msg.topic, message.msg);
+        this._publishEmitter.dispatch(message.msg.topic, message.msg);
         break;
       default:
       // Only emit events which are specifically handled.
@@ -82,6 +87,13 @@ class Client extends (EventEmitter as { new (): PublicationEventEmitter }) {
 
     this._clientWindow.addEventListener('message', this._onWindowMessage);
     this._clientWindow.addEventListener('click', this._onWindowClick);
+  }
+
+  /**
+   * Eventing for published messages from the host application.
+   */
+  public get messaging(): ExposedEventEmitter<Publication> {
+    return this._publishExposedEmitter;
   }
 
   /**
