@@ -1,5 +1,6 @@
 import * as ClientInjector from 'inject-loader!../client';
 import { EnvData } from '../messages/Lifecycle';
+import { Publication } from '../messages/Publication';
 
 describe('client', () => {
   let client: any;
@@ -54,7 +55,7 @@ describe('client', () => {
       hostRootUrl: 'http://example.com/'
     };
     beforeEach(() => {
-      client.on('environmentalData', (env: EnvData) => {
+      client.addListener('environmentalData', (env: EnvData) => {
         recievedEnvData = env;
       });
       client.start(mockFrameWindow);
@@ -147,7 +148,7 @@ describe('client', () => {
     let subscriptionCalled = false;
     beforeEach(() => {
       client.start(mockFrameWindow);
-      client.on('origin', () => (subscriptionCalled = true));
+      client.messaging.addListener('origin', () => (subscriptionCalled = true));
       mockFrameWindow.trigger('message', {
         origin: 'origin',
         data: 'test data'
@@ -161,9 +162,13 @@ describe('client', () => {
 
   describe('when recieving an valid window message from the host application', () => {
     let publishCalls = 0;
+    let recievedPayload: string;
     beforeEach(() => {
       client.start(mockFrameWindow);
-      client.on('test.topic', () => publishCalls++);
+      client.messaging.addListener('test.topic', (data: Publication) => {
+        publishCalls++;
+        recievedPayload = data.payload;
+      });
       mockFrameWindow.trigger('message', {
         origin: 'origin',
         data: {
@@ -178,6 +183,7 @@ describe('client', () => {
 
     it('should raise a publish event for the topic', () => {
       expect(publishCalls).toBe(1);
+      expect(recievedPayload).toBe('test data');
     });
   });
 

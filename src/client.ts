@@ -1,4 +1,4 @@
-import * as EventEmitter from 'events';
+import { EventEmitter, ExposedEventEmitter } from './EventEmitter';
 import {
   ClientToHost,
   validate as validateOutgoing
@@ -9,11 +9,11 @@ import {
 } from './messages/HostToClient';
 import {
   EnvData,
-  EnvDataEventEmitter,
+  EnvDataHandler,
   LabeledEnvInit,
   Lifecycle
 } from './messages/Lifecycle';
-import { Publication, PublicationEventEmitter } from './messages/Publication';
+import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 
 /**
@@ -25,21 +25,58 @@ interface ClientConfigOptions {
 }
 
 /**
- * A strictly-typed event handler for publication messages.
- */
-type ClientEventEmitter = EnvDataEventEmitter & PublicationEventEmitter;
-
-/**
  * The Client is access point for the embedded UI's in the host application.
  */
-class Client extends (EventEmitter as { new (): ClientEventEmitter }) {
+class Client {
   private _isStarted: boolean;
   private _clientWindow: Window;
   private _environmentData: EnvData;
+  private _envDataEmitter: EventEmitter<EnvData>;
+  private _publishEmitter: EventEmitter<Publication>;
+  private _publishExposedEmitter: ExposedEventEmitter<Publication>;
 
   public constructor(configOptions: ClientConfigOptions = {}) {
-    super();
     this._clientWindow = configOptions.clientWindow || window;
+    this._publishEmitter = new EventEmitter<Publication>();
+    this._publishExposedEmitter = new ExposedEventEmitter<Publication>(
+      this._publishEmitter
+    );
+    this._envDataEmitter = new EventEmitter<EnvData>();
+  }
+
+  /**
+   * Sets up a function that will be called whenever the specified event type is delivered to the target.
+   * @param type A case-sensitive string representing the event type to listen for.
+   * @param listener The handler which receives a notification when an event of the specified type occurs.
+   */
+  public addListener(
+    type: 'environmentalData',
+    listener: EnvDataHandler
+  ): Client {
+    this._envDataEmitter.addListener(type, listener);
+    return this;
+  }
+
+  /**
+   * Removes from the event listener previously registered with {@link EventEmitter.addEventListener}.
+   * @param type A string which specifies the type of event for which to remove an event listener.
+   * @param listener The event handler to remove from the event target.
+   */
+  public removeListener(
+    type: 'environmentalData',
+    listener: EnvDataHandler
+  ): Client {
+    this._envDataEmitter.removeListener(type, listener);
+    return this;
+  }
+
+  /**
+   * Removes all event listeners previously registered with {@link EventEmitter.addEventListener}.
+   * @param type A string which specifies the type of event for which to remove an event listener.
+   */
+  public removeAllListeners(type: 'environmentalData'): Client {
+    this._envDataEmitter.removeAllListeners(type);
+    return this;
   }
 
   private _onWindowMessage = (event: MessageEvent) => {
@@ -67,12 +104,15 @@ class Client extends (EventEmitter as { new (): ClientEventEmitter }) {
   private _handleHostMessage(message: HostToClient): void {
     switch (message.msgType) {
       case 'publish':
-        this.emit(message.msg.topic, message.msg);
+        this._publishEmitter.dispatch(message.msg.topic, message.msg);
         break;
       case 'env_init':
         const envInitMsg: LabeledEnvInit = message as LabeledEnvInit;
         this._environmentData = envInitMsg.msg;
-        this.emit('environmentalData', this._environmentData);
+        this._envDataEmitter.dispatch(
+          'environmentalData',
+          this._environmentData
+        );
         return;
       default:
       // Only emit events which are specifically handeled
@@ -107,6 +147,13 @@ class Client extends (EventEmitter as { new (): ClientEventEmitter }) {
     this._clientWindow.addEventListener('message', this._onWindowMessage);
     this._clientWindow.addEventListener('click', this._onWindowClick);
     this._sendToHost(Lifecycle.startedMessage);
+  }
+
+  /**
+   * Eventing for published messages from the host application.
+   */
+  public get messaging(): ExposedEventEmitter<Publication> {
+    return this._publishExposedEmitter;
   }
 
   /**
