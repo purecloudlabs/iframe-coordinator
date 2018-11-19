@@ -54,7 +54,6 @@ router.setupFrames(
   {
     locale: "nl-NL",
     language: 'nl',
-    platformId: 'PureCloud',
     hostRootUrl: window.location.origin
   }
 );

@@ -98,8 +98,28 @@ describe('HostToClient', () => {
         msg: {
           language: 'nl',
           locale: 'nl-NL',
-          platformId: 'PureCloud',
           hostRootUrl: 'http://example.com/'
+        }
+      };
+      let testResult: HostToClient | null;
+      beforeEach(() => {
+        testResult = validate(testMessage);
+      });
+      it('should return the validated message', () => {
+        expect(testResult).toEqual(testMessage);
+      });
+    });
+
+    describe('when given a proper environmental data payload including custom data', () => {
+      const testMessage: HostToClient = {
+        msgType: 'env_init',
+        msg: {
+          language: 'nl',
+          locale: 'nl-NL',
+          hostRootUrl: 'http://example.com/',
+          custom: {
+            appContext: 'MyApp'
+          }
         }
       };
       let testResult: HostToClient | null;
@@ -115,25 +135,6 @@ describe('HostToClient', () => {
       const testMessage = {
         msgType: 'env_init',
         msg: {
-          locale: 'nl-NL',
-          platformId: 'PureCloud',
-          hostRootUrl: 'http://example.com/'
-        }
-      };
-      let testResult: HostToClient | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
-      });
-      it('should return a null message', () => {
-        expect(testResult).toBeNull();
-      });
-    });
-
-    describe('when platform id is missing', () => {
-      const testMessage = {
-        msgType: 'env_init',
-        msg: {
-          language: 'nl',
           locale: 'nl-NL',
           hostRootUrl: 'http://example.com/'
         }
@@ -152,8 +153,7 @@ describe('HostToClient', () => {
         msgType: 'env_init',
         msg: {
           language: 'nl',
-          locale: 'nl-NL',
-          platformId: 'PureCloud'
+          locale: 'nl-NL'
         }
       };
       let testResult: HostToClient | null;

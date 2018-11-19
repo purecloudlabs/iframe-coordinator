@@ -51,8 +51,8 @@ describe('client', () => {
     const testEnvironmentData: EnvData = {
       language: 'nl',
       locale: 'nl-NL',
-      platformId: 'PureCloud',
-      hostRootUrl: 'http://example.com/'
+      hostRootUrl: 'http://example.com/',
+      custom: undefined
     };
     beforeEach(() => {
       client.addListener('environmentalData', (env: EnvData) => {

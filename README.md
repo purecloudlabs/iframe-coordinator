@@ -54,7 +54,6 @@ document.getElementById("frame-element").setupFrames({
 }, {
   locale: 'en-US',
   language: 'en-US',
-  platformId: 'PureCloud',
   hostRootUrl: window.location.origin
 });
 ```
