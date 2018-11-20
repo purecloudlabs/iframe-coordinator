@@ -1,4 +1,5 @@
-import "@babel/polyfill";
+import "core-js/fn/symbol/iterator.js";
+import "core-js/features/symbol";
 import "custom-event-polyfill/polyfill.js";
 import "nodelist-foreach-polyfill";
 import "url-polyfill";
@@ -53,7 +54,6 @@ router.setupFrames(
   }, {}),
   {
     locale: "nl-NL",
-    language: 'nl',
     hostRootUrl: window.location.origin
   }
 );

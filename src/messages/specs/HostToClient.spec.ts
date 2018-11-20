@@ -96,7 +96,6 @@ describe('HostToClient', () => {
       const testMessage: HostToClient = {
         msgType: 'env_init',
         msg: {
-          language: 'nl',
           locale: 'nl-NL',
           hostRootUrl: 'http://example.com/'
         }
@@ -114,7 +113,6 @@ describe('HostToClient', () => {
       const testMessage: HostToClient = {
         msgType: 'env_init',
         msg: {
-          language: 'nl',
           locale: 'nl-NL',
           hostRootUrl: 'http://example.com/',
           custom: {
@@ -131,28 +129,10 @@ describe('HostToClient', () => {
       });
     });
 
-    describe('when language is missing', () => {
-      const testMessage = {
-        msgType: 'env_init',
-        msg: {
-          locale: 'nl-NL',
-          hostRootUrl: 'http://example.com/'
-        }
-      };
-      let testResult: HostToClient | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
-      });
-      it('should return a null message', () => {
-        expect(testResult).toBeNull();
-      });
-    });
-
     describe('when host root url is missing', () => {
       const testMessage = {
         msgType: 'env_init',
         msg: {
-          language: 'nl',
           locale: 'nl-NL'
         }
       };

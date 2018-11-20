@@ -53,7 +53,6 @@ document.getElementById("frame-element").setupFrames({
   }
 }, {
   locale: 'en-US',
-  language: 'en-US',
   hostRootUrl: window.location.origin
 });
 ```
