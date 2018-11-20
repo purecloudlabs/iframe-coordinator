@@ -1,9 +1,15 @@
+// Load polyfills required for IE11
 import "@babel/polyfill";
 import "custom-event-polyfill/polyfill.js";
-import "nodelist-foreach-polyfill";
 import "url-polyfill";
+
+// Load polyfills required for custom-elements
 import "@webcomponents/custom-elements/src/native-shim.js";
 import "@webcomponents/custom-elements/src/custom-elements.js";
+
+// nodelist-foreach-polyfill is only required for the demo-app.
+import "nodelist-foreach-polyfill";
+
 import { registerElements } from "iframe-coordinator/host";
 import "toastada";
 

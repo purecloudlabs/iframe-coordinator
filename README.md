@@ -15,6 +15,14 @@ Embedding applications via iframe also means that code from separate teams can b
 **JavaScript**
 
 ```js
+/*
+ * We require a few polyfills in order to support IE11.  These
+ * will be needed to be loaded by both the host and the client.
+ */
+import "@babel/polyfill";
+import "custom-event-polyfill/polyfill.js";
+import "url-polyfill";
+ 
 /* The iframe coordinator library uses custom elements to
  * embed itself in the host app. If you are targeting browsers
  * that don't support custom elements, you'll need a polyfill.
@@ -102,3 +110,5 @@ client.start();
     <!-- ... -->
 </body>
 ```
+### IE11 support
+Our target version of javascript is ES2015.  This means that you will be required to transpile this library if you wish to support IE11.  In addition the necessary polyfills will need to be loaded by both the host application and the client frame.
