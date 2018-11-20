@@ -11,8 +11,6 @@ cd ${PROJ_DIR}
 # Check out the latest npm-utils
 rm -rf ${NPM_UTILS} && git clone --depth=1 git@bitbucket.org:inindca/npm-utils.git ${NPM_UTILS}
 
-cd ${PROJ_DIR}/js/iframe-coordinator
-
 # Set up node with the provided version and generate a .npmrc file for our private npm repo
 source ${NPM_UTILS}/scripts/jenkins-pre-build.sh 8.11.4 -m
 
