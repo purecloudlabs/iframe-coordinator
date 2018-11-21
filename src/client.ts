@@ -1,4 +1,5 @@
 import { EventEmitter, ExposedEventEmitter } from './EventEmitter';
+import { genTempId } from './genTempId';
 import {
   ClientToHost,
   validate as validateOutgoing
@@ -28,6 +29,7 @@ interface ClientConfigOptions {
  * The Client is access point for the embedded UI's in the host application.
  */
 class Client {
+  private _clientId: string;
   private _isStarted: boolean;
   private _clientWindow: Window;
   private _environmentData: EnvData;
@@ -36,6 +38,7 @@ class Client {
   private _publishExposedEmitter: ExposedEventEmitter<Publication>;
 
   public constructor(configOptions: ClientConfigOptions = {}) {
+    this._clientId = genTempId();
     this._clientWindow = configOptions.clientWindow || window;
     this._publishEmitter = new EventEmitter<Publication>();
     this._publishExposedEmitter = new ExposedEventEmitter<Publication>(
@@ -94,6 +97,7 @@ class Client {
       const url = new URL(a.href);
       this._sendToHost({
         msgType: 'navRequest',
+        clientId: this._clientId,
         msg: {
           url: url.toString()
         }
@@ -105,6 +109,14 @@ class Client {
     switch (message.msgType) {
       case 'publish':
         this._publishEmitter.dispatch(message.msg.topic, message.msg);
+        break;
+      case 'client_set_id':
+        if (this._clientId !== message.msg.confirmationId) {
+          // Incorrect env_init message.  Perhaps warn, since this
+          // should never occur?
+          return;
+        }
+        this._clientId = message.msg.clientId;
         break;
       case 'env_init':
         const envInitMsg: LabeledEnvInit = message as LabeledEnvInit;
@@ -146,7 +158,7 @@ class Client {
 
     this._clientWindow.addEventListener('message', this._onWindowMessage);
     this._clientWindow.addEventListener('click', this._onWindowClick);
-    this._sendToHost(Lifecycle.startedMessage);
+    this._sendToHost(Lifecycle.createStartedMessage(this._clientId));
   }
 
   /**
@@ -177,6 +189,7 @@ class Client {
   public publish(publication: Publication): void {
     this._sendToHost({
       msgType: 'publish',
+      clientId: this._clientId,
       msg: publication
     });
   }
@@ -203,6 +216,7 @@ class Client {
   public requestToast(toast: Toast) {
     this._sendToHost({
       msgType: 'toastRequest',
+      clientId: this._clientId,
       msg: toast
     });
   }

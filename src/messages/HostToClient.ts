@@ -1,11 +1,19 @@
-import { LabeledEnvInit, validateEnvData } from './Lifecycle';
-import { LabeledPublication, validatePublication } from './Publication';
+import {
+  LabeledEnvInit,
+  LabeledSetClientId,
+  validateEnvData,
+  validateSetClientId
+} from './Lifecycle';
+import { LabeledPublication, validateHostPublication } from './Publication';
 
 /**
  * All avaiable message types that can be sent
  * from the host application to the client content.
  */
-export type HostToClient = LabeledPublication | LabeledEnvInit;
+export type HostToClient =
+  | LabeledPublication
+  | LabeledEnvInit
+  | LabeledSetClientId;
 
 /**
  * Validates correctness of messages being sent from
@@ -17,5 +25,9 @@ export function validate(msg: any): HostToClient | null {
     return null;
   }
 
-  return validatePublication(msg) || validateEnvData(msg);
+  return (
+    validateHostPublication(msg) ||
+    validateEnvData(msg) ||
+    validateSetClientId(msg)
+  );
 }

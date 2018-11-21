@@ -29,6 +29,23 @@ export class HostRouter {
 
     return clientUrl;
   }
+
+  /**
+   * Gets the client id for a provided route.
+   *
+   * @param route The route to lookup, such as '/foo/bar/baz'
+   */
+  public getClientId(route: string): string | null {
+    let clientId = null;
+    this._clients.forEach(client => {
+      const clientRoute = matchAndStripPrefix(route, client.assignedRoute);
+      if (clientRoute !== null) {
+        clientId = client.id;
+      }
+    });
+
+    return clientId;
+  }
 }
 
 // Utility Types

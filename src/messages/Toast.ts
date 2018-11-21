@@ -17,6 +17,7 @@ export interface Toast {
  */
 export interface LabeledToast extends LabeledMsg {
   msgType: 'toastRequest';
+  clientId: string;
   msg: Toast;
 }
 

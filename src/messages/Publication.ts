@@ -21,11 +21,19 @@ export type PublicationHandler = (publication: Publication) => void;
 
 /**
  * A message used to publish a generic messages
- * to the host application.
+ * from the host application.
  */
 export interface LabeledPublication extends LabeledMsg {
   msgType: 'publish';
   msg: Publication;
+}
+
+/**
+ * A message used to publish a generic messages
+ * to the host application.
+ */
+export interface LabeledClientPublication extends LabeledPublication {
+  clientId: string;
 }
 
 const publicationDecoder = guard(
@@ -35,8 +43,12 @@ const publicationDecoder = guard(
   })
 );
 
-const validatePublication = createMessageValidator<LabeledPublication>(
+const validateHostPublication = createMessageValidator<LabeledPublication>(
   'publish',
   publicationDecoder
 );
-export { validatePublication };
+
+const validateClientPublication = createMessageValidator<
+  LabeledClientPublication
+>('publish', publicationDecoder);
+export { validateHostPublication, validateClientPublication };

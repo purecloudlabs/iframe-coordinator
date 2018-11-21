@@ -1,5 +1,4 @@
-import "core-js/fn/symbol/iterator.js";
-import "core-js/features/symbol";
+import "@babel/polyfill";
 import "custom-event-polyfill/polyfill.js";
 import "nodelist-foreach-polyfill";
 import "url-polyfill";

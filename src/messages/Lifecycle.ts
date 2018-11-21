@@ -9,14 +9,44 @@ import { createMessageValidator } from './validationUtils';
  */
 export interface LabeledStarted extends LabeledMsg {
   msgType: 'client_started';
+  msg: {
+    confirmationId: string;
+  };
 }
 
 // We don't care what is in msg for Started messages.
-const startedDecoder = guard(mixed);
+const startedDecoder = guard(
+  object({
+    confirmationId: string
+  })
+);
 
 const validateStarted = createMessageValidator<LabeledStarted>(
   'client_started',
   startedDecoder
+);
+
+/**
+ * Message used to provide the client id.
+ */
+export interface LabeledSetClientId extends LabeledMsg {
+  msgType: 'client_set_id';
+  msg: {
+    confirmationId: string;
+    clientId: string;
+  };
+}
+
+const decodeSetClientId = guard(
+  object({
+    confirmationId: string,
+    clientId: string
+  })
+);
+
+const validateSetClientId = createMessageValidator<LabeledSetClientId>(
+  'client_set_id',
+  decodeSetClientId
 );
 
 /**
@@ -51,7 +81,7 @@ const validateEnvData = createMessageValidator<LabeledEnvInit>(
   envDataDecoder
 );
 
-export { validateStarted, validateEnvData };
+export { validateStarted, validateEnvData, validateSetClientId };
 
 /**
  * Handles new environmental data events.
@@ -66,8 +96,12 @@ export class Lifecycle {
   /**
    * A {@link LabeledStarted} message to send to the host application.
    */
-  public static startedMessage: LabeledStarted = {
-    msgType: 'client_started',
-    msg: undefined
-  };
+  public static createStartedMessage(tempClientId: string): LabeledStarted {
+    return {
+      msgType: 'client_started',
+      msg: {
+        confirmationId: tempClientId
+      }
+    };
+  }
 }

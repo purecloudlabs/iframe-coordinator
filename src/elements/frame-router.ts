@@ -19,6 +19,7 @@ class FrameRouterElement extends HTMLElement {
   private _envData: EnvData;
   private _publishEmitter: EventEmitter<Publication>;
   private _publishExposedEmitter: ExposedEventEmitter<Publication>;
+  private _currentClientId: string;
 
   constructor() {
     super();
@@ -96,6 +97,7 @@ class FrameRouterElement extends HTMLElement {
    */
   public changeRoute(newPath: string) {
     const clientUrl = this._router.getClientUrl(newPath);
+    this._currentClientId = this._router.getClientId(newPath) || '';
     this._frameManager.setFrameLocation(clientUrl);
   }
 
@@ -126,6 +128,13 @@ class FrameRouterElement extends HTMLElement {
   }
 
   private _handleLifecycleMessage(message: LabeledStarted) {
+    this._frameManager.sendToClient({
+      msgType: 'client_set_id',
+      msg: {
+        confirmationId: message.msg.confirmationId,
+        clientId: this._currentClientId
+      }
+    });
     this._frameManager.sendToClient({
       msgType: 'env_init',
       msg: this._envData

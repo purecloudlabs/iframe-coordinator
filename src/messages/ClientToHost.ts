@@ -1,6 +1,9 @@
 import { LabeledStarted, validateStarted } from './Lifecycle';
 import { LabeledNavRequest, validateNavRequest } from './NavRequest';
-import { LabeledPublication, validatePublication } from './Publication';
+import {
+  LabeledClientPublication,
+  validateClientPublication
+} from './Publication';
 import { LabeledToast, validateToast } from './Toast';
 
 /**
@@ -8,7 +11,7 @@ import { LabeledToast, validateToast } from './Toast';
  * from the client content to the host application.
  */
 export type ClientToHost =
-  | LabeledPublication
+  | LabeledClientPublication
   | LabeledToast
   | LabeledNavRequest
   | LabeledStarted;
@@ -25,7 +28,7 @@ export function validate(msg: any): ClientToHost | null {
 
   return (
     validateNavRequest(msg) ||
-    validatePublication(msg) ||
+    validateClientPublication(msg) ||
     validateToast(msg) ||
     validateStarted(msg)
   );
