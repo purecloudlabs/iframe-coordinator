@@ -1,6 +1,6 @@
 {
   "name": "iframe-coordinator",
-  "version": "1.0.7",
+  "version": "1.0.9",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
     "@types/jasmine": "^2.8.9",
