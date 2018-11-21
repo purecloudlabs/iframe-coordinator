@@ -1,3 +1,4 @@
+import { EventEmitter, ExposedEventEmitter } from './EventEmitter';
 import {
   ClientToHost,
   validate as validateOutgoing
@@ -6,10 +7,14 @@ import {
   HostToClient,
   validate as validateIncoming
 } from './messages/HostToClient';
-
+import {
+  EnvData,
+  EnvDataHandler,
+  LabeledEnvInit,
+  Lifecycle
+} from './messages/Lifecycle';
 import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
-import { PublicationHandler, SubscriptionManager } from './SubscriptionManager';
 
 /**
  * Configuration options given to the client
@@ -23,13 +28,55 @@ interface ClientConfigOptions {
  * The Client is access point for the embedded UI's in the host application.
  */
 class Client {
-  private _subscriptionManager: SubscriptionManager;
   private _isStarted: boolean;
   private _clientWindow: Window;
+  private _environmentData: EnvData;
+  private _envDataEmitter: EventEmitter<EnvData>;
+  private _publishEmitter: EventEmitter<Publication>;
+  private _publishExposedEmitter: ExposedEventEmitter<Publication>;
 
   public constructor(configOptions: ClientConfigOptions = {}) {
     this._clientWindow = configOptions.clientWindow || window;
-    this._subscriptionManager = new SubscriptionManager();
+    this._publishEmitter = new EventEmitter<Publication>();
+    this._publishExposedEmitter = new ExposedEventEmitter<Publication>(
+      this._publishEmitter
+    );
+    this._envDataEmitter = new EventEmitter<EnvData>();
+  }
+
+  /**
+   * Sets up a function that will be called whenever the specified event type is delivered to the target.
+   * @param type A case-sensitive string representing the event type to listen for.
+   * @param listener The handler which receives a notification when an event of the specified type occurs.
+   */
+  public addListener(
+    type: 'environmentalData',
+    listener: EnvDataHandler
+  ): Client {
+    this._envDataEmitter.addListener(type, listener);
+    return this;
+  }
+
+  /**
+   * Removes from the event listener previously registered with {@link EventEmitter.addEventListener}.
+   * @param type A string which specifies the type of event for which to remove an event listener.
+   * @param listener The event handler to remove from the event target.
+   */
+  public removeListener(
+    type: 'environmentalData',
+    listener: EnvDataHandler
+  ): Client {
+    this._envDataEmitter.removeListener(type, listener);
+    return this;
+  }
+
+  /**
+   * Removes all event listeners previously registered with {@link EventEmitter.addEventListener}.
+   * @param type A string which specifies the type of event for which to remove an event listener.
+   */
+  public removeAllListeners(type: 'environmentalData'): Client {
+    this._envDataEmitter.removeAllListeners(type);
+    return this;
   }
 
   private _onWindowMessage = (event: MessageEvent) => {
@@ -57,8 +104,27 @@ class Client {
   private _handleHostMessage(message: HostToClient): void {
     switch (message.msgType) {
       case 'publish':
-        this._subscriptionManager.dispatchMessage(message.msg);
+        this._publishEmitter.dispatch(message.msg.topic, message.msg);
+        break;
+      case 'env_init':
+        const envInitMsg: LabeledEnvInit = message as LabeledEnvInit;
+        this._environmentData = envInitMsg.msg;
+        this._envDataEmitter.dispatch(
+          'environmentalData',
+          this._environmentData
+        );
+        return;
+      default:
+      // Only emit events which are specifically handeled
     }
+  }
+
+  /**
+   * Gets the current environmental data provided
+   * by the host application.
+   */
+  public get environmentData() {
+    return this._environmentData;
   }
 
   private _sendToHost(message: ClientToHost): void {
@@ -80,6 +146,14 @@ class Client {
 
     this._clientWindow.addEventListener('message', this._onWindowMessage);
     this._clientWindow.addEventListener('click', this._onWindowClick);
+    this._sendToHost(Lifecycle.startedMessage);
+  }
+
+  /**
+   * Eventing for published messages from the host application.
+   */
+  public get messaging(): ExposedEventEmitter<Publication> {
+    return this._publishExposedEmitter;
   }
 
   /**
@@ -96,26 +170,6 @@ class Client {
   }
 
   /**
-   * Subscribes to topics that may be published by the host application.
-   * You can subscribe to multiple topics, however, they will come through
-   * the onPubsub handler.
-   *
-   * @param topic The topic which is of interest to the client content.
-   */
-  public subscribe(topic: string): void {
-    this._subscriptionManager.subscribe(topic);
-  }
-
-  /**
-   * Unsubscribes to topics being published by the host application.
-   *
-   * @param topic The topic which is no longer of interest to the client content.
-   */
-  public unsubscribe(topic: string): void {
-    this._subscriptionManager.unsubscribe(topic);
-  }
-
-  /**
    * Publish a general message to the host application.
    *
    * @param publication The data object to be published.
@@ -125,17 +179,6 @@ class Client {
       msgType: 'publish',
       msg: publication
     });
-  }
-
-  /**
-   * Sets the callback for general publication messages coming from the host application.
-   *
-   * Only one callback may be set.
-   *
-   * @param callback The handler to be called when a message is published.
-   */
-  public onPubsub(callback: PublicationHandler): void {
-    this._subscriptionManager.setHandler(callback);
   }
 
   /**
@@ -165,4 +208,4 @@ class Client {
   }
 }
 
-export { Client };
+export { Client, Publication };

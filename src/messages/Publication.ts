@@ -15,6 +15,11 @@ export interface Publication {
 }
 
 /**
+ * Handles publications
+ */
+export type PublicationHandler = (publication: Publication) => void;
+
+/**
  * A message used to publish a generic messages
  * to the host application.
  */
