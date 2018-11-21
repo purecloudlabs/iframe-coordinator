@@ -1,4 +1,5 @@
-import "@babel/polyfill";
+import "core-js/fn/symbol/iterator.js";
+import "core-js/features/symbol";
 import "custom-event-polyfill/polyfill.js";
 import "nodelist-foreach-polyfill";
 import "url-polyfill";
@@ -42,7 +43,7 @@ registerElements();
 // ----- Client/Nav Setup
 
 let router = document.getElementById("router");
-router.registerClients(
+router.setupFrames(
   NAV_CONFIGS.reduce((clientMap, { id, url, assignedRoute }) => {
     clientMap[id] = {
       url,
@@ -50,7 +51,11 @@ router.registerClients(
     };
 
     return clientMap;
-  }, {})
+  }, {}),
+  {
+    locale: "nl-NL",
+    hostRootUrl: window.location.origin
+  }
 );
 
 buildNavMarkup(NAV_CONFIGS);
@@ -58,11 +63,7 @@ buildNavMarkup(NAV_CONFIGS);
 // ----- Pub-Sub Setup
 
 // Subscribe to pub-sub events on the topic `publish.topic`
-router.subscribe("publish.topic");
-
-// Listen to publication events (will only be emitted for subscribed topics)
-router.addEventListener("publish", event => {
-  let publication = event.detail;
+router.messaging.addListener("publish.topic", publication => {
   console.log(
     `Recieved pub-sub data on topic ${publication.topic}:`,
     publication.payload

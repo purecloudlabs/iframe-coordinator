@@ -90,4 +90,59 @@ describe('HostToClient', () => {
       });
     });
   });
+
+  describe('validating env_init type', () => {
+    describe('when given a proper environmental data payload', () => {
+      const testMessage: HostToClient = {
+        msgType: 'env_init',
+        msg: {
+          locale: 'nl-NL',
+          hostRootUrl: 'http://example.com/'
+        }
+      };
+      let testResult: HostToClient | null;
+      beforeEach(() => {
+        testResult = validate(testMessage);
+      });
+      it('should return the validated message', () => {
+        expect(testResult).toEqual(testMessage);
+      });
+    });
+
+    describe('when given a proper environmental data payload including custom data', () => {
+      const testMessage: HostToClient = {
+        msgType: 'env_init',
+        msg: {
+          locale: 'nl-NL',
+          hostRootUrl: 'http://example.com/',
+          custom: {
+            appContext: 'MyApp'
+          }
+        }
+      };
+      let testResult: HostToClient | null;
+      beforeEach(() => {
+        testResult = validate(testMessage);
+      });
+      it('should return the validated message', () => {
+        expect(testResult).toEqual(testMessage);
+      });
+    });
+
+    describe('when host root url is missing', () => {
+      const testMessage = {
+        msgType: 'env_init',
+        msg: {
+          locale: 'nl-NL'
+        }
+      };
+      let testResult: HostToClient | null;
+      beforeEach(() => {
+        testResult = validate(testMessage);
+      });
+      it('should return a null message', () => {
+        expect(testResult).toBeNull();
+      });
+    });
+  });
 });

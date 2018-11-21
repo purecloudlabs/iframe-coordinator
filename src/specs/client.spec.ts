@@ -1,9 +1,10 @@
 import * as ClientInjector from 'inject-loader!../client';
+import { EnvData } from '../messages/Lifecycle';
+import { Publication } from '../messages/Publication';
 
 describe('client', () => {
   let client: any;
   let mockFrameWindow: any;
-  let mockSubscriptionManagerObj: any;
 
   beforeEach(() => {
     mockFrameWindow = {
@@ -14,39 +15,62 @@ describe('client', () => {
       addEventListener: (eventId: string, handler: () => void) => {
         mockFrameWindow.eventHandlers[eventId] = handler;
       },
+      removeEventListener: (eventId: string) => {
+        delete mockFrameWindow.eventHandlers[eventId];
+      },
       parent: {
         postMessage: jasmine.createSpy('window.parent.postMessage')
       }
     };
 
-    mockSubscriptionManagerObj = {
-      subscribe: jasmine.createSpy('subscribe'),
-      unsubscribe: jasmine.createSpy('unsubscribe'),
-      setHandler: jasmine
-        .createSpy('setHandler')
-        .and.callFake((handler: any) => {
-          mockSubscriptionManagerObj.handler = handler;
-        }),
-      dispatchMessage: jasmine.createSpy('dispatchMessage')
-    };
-
     /* tslint:disable */
-    const mockSubscriptionManager = function() {
-      return mockSubscriptionManagerObj;
-    };
-    /* tslint:enable */
-
-    const mockSubscriptionManagerImport = {
-      SubscriptionManager: mockSubscriptionManager
-    };
-
-    /* tslint:disable */
-    let Client = ClientInjector({
-      './SubscriptionManager': mockSubscriptionManagerImport
-    }).Client;
+    let Client = ClientInjector({}).Client;
     /* tslint:enable */
 
     client = new Client({ clientWindow: mockFrameWindow });
+  });
+
+  describe('when the client is started', () => {
+    beforeEach(() => {
+      client.start(mockFrameWindow);
+    });
+
+    it('should send a client_started notification', () => {
+      expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+        {
+          msgType: 'client_started',
+          msg: undefined
+        },
+        '*'
+      );
+    });
+  });
+
+  describe('when an initial data environment is recieved', () => {
+    let recievedEnvData: EnvData;
+    const testEnvironmentData: EnvData = {
+      locale: 'nl-NL',
+      hostRootUrl: 'http://example.com/',
+      custom: undefined
+    };
+    beforeEach(() => {
+      client.addListener('environmentalData', (env: EnvData) => {
+        recievedEnvData = env;
+      });
+      client.start(mockFrameWindow);
+
+      mockFrameWindow.trigger('message', {
+        origin: 'origin',
+        data: {
+          msgType: 'env_init',
+          msg: testEnvironmentData
+        }
+      });
+    });
+
+    it('should delegate', () => {
+      expect(recievedEnvData).toEqual(testEnvironmentData);
+    });
   });
 
   describe('when client requests a toast notification', () => {
@@ -99,32 +123,6 @@ describe('client', () => {
     });
   });
 
-  describe('when subscribing to the client', () => {
-    beforeEach(() => {
-      client.start(mockFrameWindow);
-      client.subscribe('test.topic');
-    });
-
-    it('should notify worker of subscription', () => {
-      expect(mockSubscriptionManagerObj.subscribe).toHaveBeenCalledWith(
-        'test.topic'
-      );
-    });
-  });
-
-  describe('when unsubscribing to the client', () => {
-    beforeEach(() => {
-      client.start(mockFrameWindow);
-      client.unsubscribe('test.topic');
-    });
-
-    it('should notify worker of unsubscription', () => {
-      expect(mockSubscriptionManagerObj.unsubscribe).toHaveBeenCalledWith(
-        'test.topic'
-      );
-    });
-  });
-
   describe('when publishing a new message', () => {
     beforeEach(() => {
       client.start(mockFrameWindow);
@@ -146,8 +144,10 @@ describe('client', () => {
   });
 
   describe('when recieving an invalid window message from the host application', () => {
+    let subscriptionCalled = false;
     beforeEach(() => {
       client.start(mockFrameWindow);
+      client.messaging.addListener('origin', () => (subscriptionCalled = true));
       mockFrameWindow.trigger('message', {
         origin: 'origin',
         data: 'test data'
@@ -155,13 +155,19 @@ describe('client', () => {
     });
 
     it('should not notify subscriptions of incoming message', () => {
-      expect(mockSubscriptionManagerObj.dispatchMessage).not.toHaveBeenCalled();
+      expect(subscriptionCalled).toBeFalsy();
     });
   });
 
   describe('when recieving an valid window message from the host application', () => {
+    let publishCalls = 0;
+    let recievedPayload: string;
     beforeEach(() => {
       client.start(mockFrameWindow);
+      client.messaging.addListener('test.topic', (data: Publication) => {
+        publishCalls++;
+        recievedPayload = data.payload;
+      });
       mockFrameWindow.trigger('message', {
         origin: 'origin',
         data: {
@@ -174,24 +180,9 @@ describe('client', () => {
       });
     });
 
-    it('should notify subscriptions of incoming message', () => {
-      expect(mockSubscriptionManagerObj.dispatchMessage).toHaveBeenCalledWith({
-        topic: 'test.topic',
-        payload: 'test data'
-      });
-    });
-  });
-
-  describe('when client is listening to published messages', () => {
-    beforeEach(() => {
-      client.start(mockFrameWindow);
-      client.onPubsub((data: any) => {
-        // TODO Empty
-      });
-    });
-
-    it('should set the handlers of the subscription manager', () => {
-      expect(mockSubscriptionManagerObj.setHandler).toHaveBeenCalled();
+    it('should raise a publish event for the topic', () => {
+      expect(publishCalls).toBe(1);
+      expect(recievedPayload).toBe('test data');
     });
   });
 
@@ -225,6 +216,7 @@ describe('client', () => {
     describe('when click event target is not an anchor', () => {
       beforeEach(() => {
         client.start(mockFrameWindow);
+        mockFrameWindow.parent.postMessage.calls.reset();
         mockElement = document.createElement('div');
         mockFrameWindow.trigger('click', {
           target: mockElement,

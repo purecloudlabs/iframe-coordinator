@@ -73,8 +73,8 @@ class FrameManager {
    */
   public sendToClient(message: HostToClient) {
     const clientOrigin = this._expectedClientOrigin();
-    if (this._iframe.contentWindow) {
-      const validated = validateIncoming(message);
+    if (this._iframe.contentWindow && clientOrigin) {
+      const validated = validateOutgoing(message);
       if (validated) {
         this._iframe.contentWindow.postMessage(validated, clientOrigin);
       }
@@ -121,7 +121,11 @@ class FrameManager {
     }
   }
 
-  private _expectedClientOrigin(): string {
+  private _expectedClientOrigin(): string | null {
+    if (this._frameLocation === 'about:blank') {
+      return null;
+    }
+
     try {
       const clientUrl = new URL(
         this._frameLocation,
