@@ -2,6 +2,7 @@ import { EventEmitter, ExposedEventEmitter } from '../EventEmitter';
 import FrameManager from '../FrameManager';
 import { HostRouter, RoutingMap } from '../HostRouter';
 import { ClientToHost } from '../messages/ClientToHost';
+import { EnvData, LabeledStarted } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 
 const ROUTE_ATTR = 'route';
@@ -15,6 +16,7 @@ const ROUTE_ATTR = 'route';
 class FrameRouterElement extends HTMLElement {
   private _frameManager: FrameManager;
   private _router: HostRouter;
+  private _envData: EnvData;
   private _publishEmitter: EventEmitter<Publication>;
   private _publishExposedEmitter: ExposedEventEmitter<Publication>;
 
@@ -54,12 +56,16 @@ class FrameRouterElement extends HTMLElement {
   }
 
   /**
-   * Registers possible clients this frame will host.
+   * Initializes this host frame with the possible clients and
+   * the environmental data required the clients.
    *
    * @param clients The map of registrations for the available clients.
+   * @param envData Information about the host environment.
    */
-  public registerClients(clients: RoutingMap) {
+  public setupFrames(clients: RoutingMap, envData: EnvData) {
     this._router = new HostRouter(clients);
+    this._envData = envData;
+
     this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
   }
 
@@ -111,9 +117,19 @@ class FrameRouterElement extends HTMLElement {
       case 'publish':
         this._publishEmitter.dispatch(message.msg.topic, message.msg);
         break;
+      case 'client_started':
+        this._handleLifecycleMessage(message);
+        break;
       default:
         this._dispatchClientMessage(message);
     }
+  }
+
+  private _handleLifecycleMessage(message: LabeledStarted) {
+    this._frameManager.sendToClient({
+      msgType: 'env_init',
+      msg: this._envData
+    });
   }
 
   private _dispatchClientMessage(message: ClientToHost) {

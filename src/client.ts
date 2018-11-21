@@ -7,7 +7,12 @@ import {
   HostToClient,
   validate as validateIncoming
 } from './messages/HostToClient';
-
+import {
+  EnvData,
+  EnvDataHandler,
+  LabeledEnvInit,
+  Lifecycle
+} from './messages/Lifecycle';
 import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 
@@ -25,6 +30,8 @@ interface ClientConfigOptions {
 class Client {
   private _isStarted: boolean;
   private _clientWindow: Window;
+  private _environmentData: EnvData;
+  private _envDataEmitter: EventEmitter<EnvData>;
   private _publishEmitter: EventEmitter<Publication>;
   private _publishExposedEmitter: ExposedEventEmitter<Publication>;
 
@@ -34,6 +41,42 @@ class Client {
     this._publishExposedEmitter = new ExposedEventEmitter<Publication>(
       this._publishEmitter
     );
+    this._envDataEmitter = new EventEmitter<EnvData>();
+  }
+
+  /**
+   * Sets up a function that will be called whenever the specified event type is delivered to the target.
+   * @param type A case-sensitive string representing the event type to listen for.
+   * @param listener The handler which receives a notification when an event of the specified type occurs.
+   */
+  public addListener(
+    type: 'environmentalData',
+    listener: EnvDataHandler
+  ): Client {
+    this._envDataEmitter.addListener(type, listener);
+    return this;
+  }
+
+  /**
+   * Removes from the event listener previously registered with {@link EventEmitter.addEventListener}.
+   * @param type A string which specifies the type of event for which to remove an event listener.
+   * @param listener The event handler to remove from the event target.
+   */
+  public removeListener(
+    type: 'environmentalData',
+    listener: EnvDataHandler
+  ): Client {
+    this._envDataEmitter.removeListener(type, listener);
+    return this;
+  }
+
+  /**
+   * Removes all event listeners previously registered with {@link EventEmitter.addEventListener}.
+   * @param type A string which specifies the type of event for which to remove an event listener.
+   */
+  public removeAllListeners(type: 'environmentalData'): Client {
+    this._envDataEmitter.removeAllListeners(type);
+    return this;
   }
 
   private _onWindowMessage = (event: MessageEvent) => {
@@ -63,9 +106,25 @@ class Client {
       case 'publish':
         this._publishEmitter.dispatch(message.msg.topic, message.msg);
         break;
+      case 'env_init':
+        const envInitMsg: LabeledEnvInit = message as LabeledEnvInit;
+        this._environmentData = envInitMsg.msg;
+        this._envDataEmitter.dispatch(
+          'environmentalData',
+          this._environmentData
+        );
+        return;
       default:
-      // Only emit events which are specifically handled.
+      // Only emit events which are specifically handeled
     }
+  }
+
+  /**
+   * Gets the current environmental data provided
+   * by the host application.
+   */
+  public get environmentData() {
+    return this._environmentData;
   }
 
   private _sendToHost(message: ClientToHost): void {
@@ -87,6 +146,7 @@ class Client {
 
     this._clientWindow.addEventListener('message', this._onWindowMessage);
     this._clientWindow.addEventListener('click', this._onWindowClick);
+    this._sendToHost(Lifecycle.startedMessage);
   }
 
   /**

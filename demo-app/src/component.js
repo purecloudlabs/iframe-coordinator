@@ -12,11 +12,15 @@ window.onhashchange = function() {
 
 // Start intercepting link click events for routing
 let iframeClient = new Client();
-iframeClient.start();
+iframeClient.addListener("environmentalData", envData => {
+  document.getElementById("client-data").value = JSON.stringify(envData);
+});
 
 iframeClient.messaging.addListener("host.topic", publication => {
   console.log("Got Publish event:", publication);
 });
+
+iframeClient.start();
 
 document.getElementById("do-publish").addEventListener("click", () => {
   //Get the topic and the data to publish from the form

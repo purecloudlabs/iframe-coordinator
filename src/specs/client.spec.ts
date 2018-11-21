@@ -1,10 +1,10 @@
 import * as ClientInjector from 'inject-loader!../client';
+import { EnvData } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 
 describe('client', () => {
   let client: any;
   let mockFrameWindow: any;
-  let mockSubscriptionManagerObj: any;
 
   beforeEach(() => {
     mockFrameWindow = {
@@ -15,33 +15,12 @@ describe('client', () => {
       addEventListener: (eventId: string, handler: () => void) => {
         mockFrameWindow.eventHandlers[eventId] = handler;
       },
+      removeEventListener: (eventId: string) => {
+        delete mockFrameWindow.eventHandlers[eventId];
+      },
       parent: {
         postMessage: jasmine.createSpy('window.parent.postMessage')
       }
-    };
-
-    mockSubscriptionManagerObj = {
-      subscribe: jasmine.createSpy('subscribe'),
-      unsubscribe: jasmine.createSpy('unsubscribe'),
-      setHandler: jasmine
-        .createSpy('setHandler')
-        .and.callFake((handler: any) => {
-          mockSubscriptionManagerObj.handler = handler;
-        }),
-      raiseHandler: (data: Publication) => {
-        mockSubscriptionManagerObj.handler(data);
-      },
-      dispatchMessage: jasmine.createSpy('dispatchMessage')
-    };
-
-    /* tslint:disable */
-    const mockSubscriptionManager = function() {
-      return mockSubscriptionManagerObj;
-    };
-    /* tslint:enable */
-
-    const mockSubscriptionManagerImport = {
-      SubscriptionManager: mockSubscriptionManager
     };
 
     /* tslint:disable */
@@ -49,6 +28,49 @@ describe('client', () => {
     /* tslint:enable */
 
     client = new Client({ clientWindow: mockFrameWindow });
+  });
+
+  describe('when the client is started', () => {
+    beforeEach(() => {
+      client.start(mockFrameWindow);
+    });
+
+    it('should send a client_started notification', () => {
+      expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+        {
+          msgType: 'client_started',
+          msg: undefined
+        },
+        '*'
+      );
+    });
+  });
+
+  describe('when an initial data environment is recieved', () => {
+    let recievedEnvData: EnvData;
+    const testEnvironmentData: EnvData = {
+      locale: 'nl-NL',
+      hostRootUrl: 'http://example.com/',
+      custom: undefined
+    };
+    beforeEach(() => {
+      client.addListener('environmentalData', (env: EnvData) => {
+        recievedEnvData = env;
+      });
+      client.start(mockFrameWindow);
+
+      mockFrameWindow.trigger('message', {
+        origin: 'origin',
+        data: {
+          msgType: 'env_init',
+          msg: testEnvironmentData
+        }
+      });
+    });
+
+    it('should delegate', () => {
+      expect(recievedEnvData).toEqual(testEnvironmentData);
+    });
   });
 
   describe('when client requests a toast notification', () => {
@@ -194,6 +216,7 @@ describe('client', () => {
     describe('when click event target is not an anchor', () => {
       beforeEach(() => {
         client.start(mockFrameWindow);
+        mockFrameWindow.parent.postMessage.calls.reset();
         mockElement = document.createElement('div');
         mockFrameWindow.trigger('click', {
           target: mockElement,

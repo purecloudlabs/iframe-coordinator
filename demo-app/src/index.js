@@ -1,4 +1,5 @@
-import "@babel/polyfill";
+import "core-js/fn/symbol/iterator.js";
+import "core-js/features/symbol";
 import "custom-event-polyfill/polyfill.js";
 import "nodelist-foreach-polyfill";
 import "url-polyfill";
@@ -42,7 +43,7 @@ registerElements();
 // ----- Client/Nav Setup
 
 let router = document.getElementById("router");
-router.registerClients(
+router.setupFrames(
   NAV_CONFIGS.reduce((clientMap, { id, url, assignedRoute }) => {
     clientMap[id] = {
       url,
@@ -50,7 +51,11 @@ router.registerClients(
     };
 
     return clientMap;
-  }, {})
+  }, {}),
+  {
+    locale: "nl-NL",
+    hostRootUrl: window.location.origin
+  }
 );
 
 buildNavMarkup(NAV_CONFIGS);
