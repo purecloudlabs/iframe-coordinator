@@ -12,7 +12,9 @@ cd ${PROJ_DIR}
 rm -rf ${NPM_UTILS} && git clone --depth=1 git@bitbucket.org:inindca/npm-utils.git ${NPM_UTILS}
 
 # Set up node with the provided version and generate a .npmrc file for our private npm repo
+set -x
 source ${NPM_UTILS}/scripts/jenkins-pre-build.sh 8.11.4 -m
+set +x
 
 ${SCRIPTS_DIR}/buildlibs.sh
 
