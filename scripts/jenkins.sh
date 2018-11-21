@@ -20,3 +20,6 @@ ${SCRIPTS_DIR}/buildlibs.sh
   rm -f ${PROJ_DIR}.git/hooks/pre-push
 
 ${NPM_UTILS}/scripts/version-and-publish.sh -n
+
+printf "\n== Post-build git status =="
+git status
