@@ -19,7 +19,7 @@ ${SCRIPTS_DIR}/buildlibs.sh
   # This may have been added during npm install and pre-push package.
   rm -f ${PROJ_DIR}.git/hooks/pre-push
 
-${NPM_UTILS}/scripts/version-and-publish.sh -n
+${NPM_UTILS}/scripts/version-and-publish.sh
 
 printf "\n== Post-build git status ==\n\n"
 git status
