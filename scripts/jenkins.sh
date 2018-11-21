@@ -3,9 +3,7 @@ set -e
 
 SCRIPTS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 PROJ_DIR="${SCRIPTS_DIR}/.."
-NPM_UTILS="${PROJ_DIR}/npm-utils"
-
-cd ${PROJ_DIR}
+NPM_UTILS="${WORKSPACE}/npm-utils"
 
 # Check out the latest npm-utils
 rm -rf ${NPM_UTILS} && git clone --depth=1 git@bitbucket.org:inindca/npm-utils.git ${NPM_UTILS}
@@ -13,6 +11,7 @@ rm -rf ${NPM_UTILS} && git clone --depth=1 git@bitbucket.org:inindca/npm-utils.g
 # Set up node with the provided version and generate a .npmrc file for our private npm repo
 source ${NPM_UTILS}/scripts/jenkins-pre-build.sh 10.13.0 -m
 
+cd ${PROJ_DIR}
 
 ${SCRIPTS_DIR}/buildlibs.sh
 
