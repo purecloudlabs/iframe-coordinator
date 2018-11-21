@@ -21,5 +21,13 @@ ${SCRIPTS_DIR}/buildlibs.sh
 
 ${NPM_UTILS}/scripts/version-and-publish.sh -n
 
-printf "\n== Post-build git status =="
+printf "\n== Post-build git status ==\n\n"
 git status
+
+printf "\n== Commits ==\n\n"
+
+git log -n 3
+
+printf "\n== Tags ==\n\n"
+
+git tag -l
