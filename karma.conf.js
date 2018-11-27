@@ -1,5 +1,4 @@
 let webpackConfig = require('./webpack.config');
-
 if (!process.env.CHROME_BIN) {
   process.env.CHROME_BIN = require('puppeteer').executablePath();
 }

@@ -22,7 +22,7 @@ export type PublicationHandler = (publication: Publication) => void;
 
 /**
  * A message used to publish a generic messages
- * from the host application.
+ * between the clients and the host application.
  */
 export interface LabeledPublication extends LabeledMsg {
   msgType: 'publish';
