@@ -25,7 +25,6 @@ const navRequestDecoder = guard(
  */
 export interface LabeledNavRequest extends LabeledMsg {
   msgType: 'navRequest';
-  clientId: string;
   msg: NavRequest;
 }
 

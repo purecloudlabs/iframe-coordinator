@@ -35,9 +35,7 @@ describe('client', () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
         {
           msgType: 'client_started',
-          msg: {
-            confirmationId: '1'
-          }
+          msg: undefined
         },
         '*'
       );
@@ -85,7 +83,6 @@ describe('client', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           {
             msgType: 'toastRequest',
-            clientId: '1',
             msg: {
               title: undefined,
               message: 'Test notification message',
@@ -110,7 +107,6 @@ describe('client', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           {
             msgType: 'toastRequest',
-            clientId: '1',
             msg: {
               title: 'Test title',
               message: 'Test notification message',
@@ -207,7 +203,6 @@ describe('client', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           {
             msgType: 'navRequest',
-            clientId: '1',
             msg: { url: 'http://www.example.com/' }
           },
           '*'

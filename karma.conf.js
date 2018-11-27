@@ -1,9 +1,5 @@
 let webpackConfig = require('./webpack.config');
 
-webpackConfig.resolve.alias = {
-  './genTempId': './specs/genTempId.mock'
-};
-
 if (!process.env.CHROME_BIN) {
   process.env.CHROME_BIN = require('puppeteer').executablePath();
 }

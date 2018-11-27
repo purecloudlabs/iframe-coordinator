@@ -56,7 +56,6 @@ describe('ClientToHost', () => {
     describe('when topic is missing', () => {
       const testMessage = {
         msgType: 'publish',
-        clientId: 'test_client',
         msg: {
           payload: { testData: 'test.data' }
         }
@@ -99,7 +98,6 @@ describe('ClientToHost', () => {
     describe('when only a message is provided', () => {
       const testMessage = {
         msgType: 'toastRequest',
-        clientId: 'test_client',
         msg: {
           message: 'toast.message'
         }
@@ -107,7 +105,6 @@ describe('ClientToHost', () => {
 
       const expectedMessage: ClientToHost = {
         msgType: 'toastRequest',
-        clientId: 'test_client',
         msg: {
           title: undefined,
           message: 'toast.message',
@@ -128,7 +125,6 @@ describe('ClientToHost', () => {
     describe('when title and message are provided', () => {
       const testMessage = {
         msgType: 'toastRequest',
-        clientId: 'test_client',
         msg: {
           title: 'toast.title',
           message: 'toast.message'
@@ -137,7 +133,6 @@ describe('ClientToHost', () => {
 
       const expectedMessage: ClientToHost = {
         msgType: 'toastRequest',
-        clientId: 'test_client',
         msg: {
           title: 'toast.title',
           message: 'toast.message',
@@ -158,7 +153,6 @@ describe('ClientToHost', () => {
     describe('when everything is provided', () => {
       const testMessage = {
         msgType: 'toastRequest',
-        clientId: 'test_client',
         msg: {
           title: 'toast.title',
           message: 'toast.message',
@@ -201,7 +195,6 @@ describe('ClientToHost', () => {
     describe('when valid url is provided', () => {
       const testMessage = {
         msgType: 'navRequest',
-        clientId: 'test_client',
         msg: {
           url: 'navRequest.url'
         }
@@ -209,7 +202,6 @@ describe('ClientToHost', () => {
 
       const expectedMessage: LabeledNavRequest = {
         msgType: 'navRequest',
-        clientId: 'test_client',
         msg: {
           url: 'navRequest.url'
         }
@@ -228,7 +220,6 @@ describe('ClientToHost', () => {
     describe('when invalid url is provided', () => {
       const testMessage = {
         msgType: 'navRequest',
-        clientId: 'test_client',
         msg: {
           iurl: 'navRequest.url'
         }

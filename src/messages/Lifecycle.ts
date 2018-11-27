@@ -9,17 +9,10 @@ import { createMessageValidator } from './validationUtils';
  */
 export interface LabeledStarted extends LabeledMsg {
   msgType: 'client_started';
-  msg: {
-    confirmationId: string;
-  };
 }
 
 // We don't care what is in msg for Started messages.
-const startedDecoder = guard(
-  object({
-    confirmationId: string
-  })
-);
+const startedDecoder = guard(mixed);
 
 const validateStarted = createMessageValidator<LabeledStarted>(
   'client_started',
@@ -73,12 +66,10 @@ export class Lifecycle {
   /**
    * A {@link LabeledStarted} message to send to the host application.
    */
-  public static createStartedMessage(tempClientId: string): LabeledStarted {
+  public static get startedMessage(): LabeledStarted {
     return {
       msgType: 'client_started',
-      msg: {
-        confirmationId: tempClientId
-      }
+      msg: undefined
     };
   }
 }
