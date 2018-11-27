@@ -49,7 +49,6 @@ describe('client', () => {
   describe('when an initial data environment is recieved', () => {
     let recievedEnvData: EnvData;
     const testEnvironmentData: EnvData = {
-      language: 'nl',
       locale: 'nl-NL',
       hostRootUrl: 'http://example.com/',
       custom: undefined

@@ -61,7 +61,6 @@ document.getElementById("frame-element").setupFrames({
   }
 }, {
   locale: 'en-US',
-  language: 'en-US',
   hostRootUrl: window.location.origin
 });
 ```
@@ -81,6 +80,14 @@ document.getElementById("frame-element").setupFrames({
 **JavaScript:**
 
 ```js
+/*
+ * We require a few polyfills in order to support IE11.  These
+ * will be needed to be loaded by both the host and the client.
+ */
+import "@babel/polyfill";
+import "custom-event-polyfill/polyfill.js";
+import "url-polyfill";
+
 /* Import the client library */
 import { Client } from "iframe-coordinator/client.js";
 

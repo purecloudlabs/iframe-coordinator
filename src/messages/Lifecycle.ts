@@ -25,7 +25,6 @@ const validateStarted = createMessageValidator<LabeledStarted>(
  */
 export interface EnvData {
   locale: string;
-  language: string;
   hostRootUrl: string;
   custom?: any;
 }
@@ -42,7 +41,6 @@ export interface LabeledEnvInit extends LabeledMsg {
 const envDataDecoder = guard(
   object({
     locale: string,
-    language: string,
     hostRootUrl: string,
     custom: mixed
   })

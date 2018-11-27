@@ -59,7 +59,6 @@ router.setupFrames(
   }, {}),
   {
     locale: "nl-NL",
-    language: 'nl',
     hostRootUrl: window.location.origin
   }
 );
