@@ -110,14 +110,6 @@ class Client {
       case 'publish':
         this._publishEmitter.dispatch(message.msg.topic, message.msg);
         break;
-      case 'client_set_id':
-        if (this._clientId !== message.msg.confirmationId) {
-          // Incorrect env_init message.  Perhaps warn, since this
-          // should never occur?
-          return;
-        }
-        this._clientId = message.msg.clientId;
-        break;
       case 'env_init':
         const envInitMsg: LabeledEnvInit = message as LabeledEnvInit;
         this._environmentData = envInitMsg.msg;
@@ -189,7 +181,6 @@ class Client {
   public publish(publication: Publication): void {
     this._sendToHost({
       msgType: 'publish',
-      clientId: this._clientId,
       msg: publication
     });
   }

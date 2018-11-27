@@ -22,7 +22,6 @@ describe('ClientToHost', () => {
     describe('when payload is a string', () => {
       const testMessage: ClientToHost = {
         msgType: 'publish',
-        clientId: 'test_client',
         msg: {
           topic: 'test.topic',
           payload: 'test.payload'
@@ -40,7 +39,6 @@ describe('ClientToHost', () => {
     describe('when payload is an object', () => {
       const testMessage: ClientToHost = {
         msgType: 'publish',
-        clientId: 'test_client',
         msg: {
           topic: 'test.topic',
           payload: { testData: 'test.data' }
@@ -75,17 +73,16 @@ describe('ClientToHost', () => {
     describe('when payload is missing', () => {
       const testMessage = {
         msgType: 'publish',
-        clientId: 'test_client',
         msg: {
           topic: 'test.topic'
         }
       };
       const expectedMessage: ClientToHost = {
         msgType: 'publish',
-        clientId: 'test_client',
         msg: {
           topic: 'test.topic',
-          payload: undefined
+          payload: undefined,
+          origin: undefined
         }
       };
       let testResult: ClientToHost | null;

@@ -117,7 +117,9 @@ class FrameRouterElement extends HTMLElement {
   private _handleClientMessages(message: ClientToHost) {
     switch (message.msgType) {
       case 'publish':
-        this._publishEmitter.dispatch(message.msg.topic, message.msg);
+        const publication: Publication = message.msg;
+        publication.origin = this._currentClientId;
+        this._publishEmitter.dispatch(message.msg.topic, publication);
         break;
       case 'client_started':
         this._handleLifecycleMessage(message);
@@ -129,21 +131,17 @@ class FrameRouterElement extends HTMLElement {
 
   private _handleLifecycleMessage(message: LabeledStarted) {
     this._frameManager.sendToClient({
-      msgType: 'client_set_id',
-      msg: {
-        confirmationId: message.msg.confirmationId,
-        clientId: this._currentClientId
-      }
-    });
-    this._frameManager.sendToClient({
       msgType: 'env_init',
       msg: this._envData
     });
   }
 
   private _dispatchClientMessage(message: ClientToHost) {
+    const messageDetail: any = message.msg;
+    messageDetail.origin = this._currentClientId;
+
     this.dispatchEvent(
-      new CustomEvent(message.msgType, { detail: message.msg })
+      new CustomEvent(message.msgType, { detail: messageDetail })
     );
   }
 }

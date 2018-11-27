@@ -133,10 +133,10 @@ describe('client', () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
         {
           msgType: 'publish',
-          clientId: '1',
           msg: {
             topic: 'test.topic',
-            payload: 'custom data'
+            payload: 'custom data',
+            origin: undefined
           }
         },
         '*'

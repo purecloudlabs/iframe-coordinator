@@ -27,29 +27,6 @@ const validateStarted = createMessageValidator<LabeledStarted>(
 );
 
 /**
- * Message used to provide the client id.
- */
-export interface LabeledSetClientId extends LabeledMsg {
-  msgType: 'client_set_id';
-  msg: {
-    confirmationId: string;
-    clientId: string;
-  };
-}
-
-const decodeSetClientId = guard(
-  object({
-    confirmationId: string,
-    clientId: string
-  })
-);
-
-const validateSetClientId = createMessageValidator<LabeledSetClientId>(
-  'client_set_id',
-  decodeSetClientId
-);
-
-/**
  * Environmental data provided to all clients
  * in order to match behavior of the host application.
  */
@@ -81,7 +58,7 @@ const validateEnvData = createMessageValidator<LabeledEnvInit>(
   envDataDecoder
 );
 
-export { validateStarted, validateEnvData, validateSetClientId };
+export { validateStarted, validateEnvData };
 
 /**
  * Handles new environmental data events.
