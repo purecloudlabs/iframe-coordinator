@@ -12,7 +12,7 @@ import { createMessageValidator } from './validationUtils';
 export interface Publication {
   topic: string;
   payload: any;
-  origin?: string;
+  clientId?: string;
 }
 
 /**
@@ -33,7 +33,7 @@ const publicationDecoder = guard(
   object({
     topic: string,
     payload: mixed,
-    origin: optional(string)
+    clientId: optional(string)
   })
 );
 

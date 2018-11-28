@@ -81,7 +81,7 @@ describe('ClientToHost', () => {
         msg: {
           topic: 'test.topic',
           payload: undefined,
-          origin: undefined
+          clientId: undefined
         }
       };
       let testResult: ClientToHost | null;

@@ -96,9 +96,9 @@ class FrameRouterElement extends HTMLElement {
    * @param newPath a new route which matches those provided originally.
    */
   public changeRoute(newPath: string) {
-    const clientUrl = this._router.getClientUrl(newPath);
-    this._currentClientId = this._router.getClientId(newPath) || '';
-    this._frameManager.setFrameLocation(clientUrl);
+    const clientInfo = this._router.getClientInfo(newPath);
+    this._currentClientId = (clientInfo && clientInfo.id) || '';
+    this._frameManager.setFrameLocation(clientInfo && clientInfo.url);
   }
 
   /**
@@ -118,7 +118,7 @@ class FrameRouterElement extends HTMLElement {
     switch (message.msgType) {
       case 'publish':
         const publication: Publication = message.msg;
-        publication.origin = this._currentClientId;
+        publication.clientId = this._currentClientId;
         this._publishEmitter.dispatch(message.msg.topic, publication);
         break;
       case 'client_started':

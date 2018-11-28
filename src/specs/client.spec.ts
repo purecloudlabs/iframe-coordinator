@@ -132,7 +132,7 @@ describe('client', () => {
           msg: {
             topic: 'test.topic',
             payload: 'custom data',
-            origin: undefined
+            clientId: undefined
           }
         },
         '*'
