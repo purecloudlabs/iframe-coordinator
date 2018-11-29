@@ -19,6 +19,7 @@ class FrameRouterElement extends HTMLElement {
   private _envData: EnvData;
   private _publishEmitter: EventEmitter<Publication>;
   private _publishExposedEmitter: ExposedEventEmitter<Publication>;
+  private _currentClientId: string;
 
   constructor() {
     super();
@@ -95,8 +96,9 @@ class FrameRouterElement extends HTMLElement {
    * @param newPath a new route which matches those provided originally.
    */
   public changeRoute(newPath: string) {
-    const clientUrl = this._router.getClientUrl(newPath);
-    this._frameManager.setFrameLocation(clientUrl);
+    const clientInfo = this._router.getClientInfo(newPath);
+    this._currentClientId = (clientInfo && clientInfo.id) || '';
+    this._frameManager.setFrameLocation(clientInfo && clientInfo.url);
   }
 
   /**
@@ -115,7 +117,9 @@ class FrameRouterElement extends HTMLElement {
   private _handleClientMessages(message: ClientToHost) {
     switch (message.msgType) {
       case 'publish':
-        this._publishEmitter.dispatch(message.msg.topic, message.msg);
+        const publication: Publication = message.msg;
+        publication.clientId = this._currentClientId;
+        this._publishEmitter.dispatch(message.msg.topic, publication);
         break;
       case 'client_started':
         this._handleLifecycleMessage(message);
@@ -133,8 +137,11 @@ class FrameRouterElement extends HTMLElement {
   }
 
   private _dispatchClientMessage(message: ClientToHost) {
+    const messageDetail: any = message.msg;
+    messageDetail.clientId = this._currentClientId;
+
     this.dispatchEvent(
-      new CustomEvent(message.msgType, { detail: message.msg })
+      new CustomEvent(message.msgType, { detail: messageDetail })
     );
   }
 }

@@ -66,8 +66,10 @@ export class Lifecycle {
   /**
    * A {@link LabeledStarted} message to send to the host application.
    */
-  public static startedMessage: LabeledStarted = {
-    msgType: 'client_started',
-    msg: undefined
-  };
+  public static get startedMessage(): LabeledStarted {
+    return {
+      msgType: 'client_started',
+      msg: undefined
+    };
+  }
 }

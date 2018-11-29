@@ -14,20 +14,28 @@ export class HostRouter {
   }
 
   /**
-   * Gets the client url for a provided route.
+   * Gets the client id and url for the provided route.
    *
    * @param route The route to lookup, such as '/foo/bar/baz'
    */
-  public getClientUrl(route: string): string | null {
-    let clientUrl = null;
+  public getClientInfo(
+    route: string
+  ): { id: string | null; url: string | null } {
+    let clientInfo: { id: string | null; url: string | null } = {
+      id: null,
+      url: null
+    };
     this._clients.forEach(client => {
       const clientRoute = matchAndStripPrefix(route, client.assignedRoute);
       if (clientRoute !== null) {
-        clientUrl = applyRoute(client.url, clientRoute);
+        clientInfo = {
+          id: client.id,
+          url: applyRoute(client.url, clientRoute)
+        };
       }
     });
 
-    return clientUrl;
+    return clientInfo;
   }
 }
 
