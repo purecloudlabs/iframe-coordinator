@@ -1,4 +1,4 @@
-import * as ClientInjector from 'inject-loader!../client';
+import { Client } from '../client';
 import { EnvData } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 
@@ -23,16 +23,12 @@ describe('client', () => {
       }
     };
 
-    /* tslint:disable */
-    let Client = ClientInjector({}).Client;
-    /* tslint:enable */
-
     client = new Client({ clientWindow: mockFrameWindow });
   });
 
   describe('when the client is started', () => {
     beforeEach(() => {
-      client.start(mockFrameWindow);
+      client.start();
     });
 
     it('should send a client_started notification', () => {
@@ -57,7 +53,7 @@ describe('client', () => {
       client.addListener('environmentalData', (env: EnvData) => {
         recievedEnvData = env;
       });
-      client.start(mockFrameWindow);
+      client.start();
 
       mockFrameWindow.trigger('message', {
         origin: 'origin',
@@ -75,7 +71,7 @@ describe('client', () => {
 
   describe('when client requests a toast notification', () => {
     beforeEach(() => {
-      client.start(mockFrameWindow);
+      client.start();
     });
 
     describe('with only a message', () => {
@@ -125,7 +121,7 @@ describe('client', () => {
 
   describe('when publishing a new message', () => {
     beforeEach(() => {
-      client.start(mockFrameWindow);
+      client.start();
       client.publish({ topic: 'test.topic', payload: 'custom data' });
     });
 
@@ -135,7 +131,8 @@ describe('client', () => {
           msgType: 'publish',
           msg: {
             topic: 'test.topic',
-            payload: 'custom data'
+            payload: 'custom data',
+            clientId: undefined
           }
         },
         '*'
@@ -146,7 +143,7 @@ describe('client', () => {
   describe('when recieving an invalid window message from the host application', () => {
     let subscriptionCalled = false;
     beforeEach(() => {
-      client.start(mockFrameWindow);
+      client.start();
       client.messaging.addListener('origin', () => (subscriptionCalled = true));
       mockFrameWindow.trigger('message', {
         origin: 'origin',
@@ -163,7 +160,7 @@ describe('client', () => {
     let publishCalls = 0;
     let recievedPayload: string;
     beforeEach(() => {
-      client.start(mockFrameWindow);
+      client.start();
       client.messaging.addListener('test.topic', (data: Publication) => {
         publishCalls++;
         recievedPayload = data.payload;
@@ -190,7 +187,7 @@ describe('client', () => {
     let mockElement;
     describe('when click event target is an anchor', () => {
       beforeEach(() => {
-        client.start(mockFrameWindow);
+        client.start();
         mockElement = document.createElement('a');
         mockElement.setAttribute('href', 'http://www.example.com/');
         mockFrameWindow.trigger('click', {
@@ -215,7 +212,7 @@ describe('client', () => {
 
     describe('when click event target is not an anchor', () => {
       beforeEach(() => {
-        client.start(mockFrameWindow);
+        client.start();
         mockFrameWindow.parent.postMessage.calls.reset();
         mockElement = document.createElement('div');
         mockFrameWindow.trigger('click', {

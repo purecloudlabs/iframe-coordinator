@@ -80,7 +80,8 @@ describe('ClientToHost', () => {
         msgType: 'publish',
         msg: {
           topic: 'test.topic',
-          payload: undefined
+          payload: undefined,
+          clientId: undefined
         }
       };
       let testResult: ClientToHost | null;

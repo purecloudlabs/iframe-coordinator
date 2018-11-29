@@ -22,33 +22,57 @@ describe('HostRouter', () => {
 
   describe('when generating client URLs', () => {
     it('should append the path under the primary route to the client URL', () => {
-      expect(hostRouter.getClientUrl('route/one/foo/bar')).toBe(
-        'http://example.com/#/test/one/foo/bar'
-      );
+      const clientInfo = hostRouter.getClientInfo('route/one/foo/bar');
+      if (!clientInfo) {
+        fail();
+        return;
+      }
+      expect(clientInfo.url).toBe('http://example.com/#/test/one/foo/bar');
+      expect(clientInfo.id).toBe('route1');
     });
 
     it("should ignore leading and trailing slashes on the client's assigned route", () => {
-      expect(hostRouter.getClientUrl('leading/and/trailing/foo/bar')).toBe(
-        'http://example.com/#/test/one/foo/bar'
+      const clientInfo = hostRouter.getClientInfo(
+        'leading/and/trailing/foo/bar'
       );
+      if (!clientInfo) {
+        fail();
+        return;
+      }
+      expect(clientInfo.url).toBe('http://example.com/#/test/one/foo/bar');
+      expect(clientInfo.id).toBe('withRouteSlashes');
     });
 
     it('should ignore leading slashes on the provided route', () => {
-      expect(hostRouter.getClientUrl('/route/one/foo/bar')).toBe(
-        'http://example.com/#/test/one/foo/bar'
-      );
+      const clientInfo = hostRouter.getClientInfo('/route/one/foo/bar');
+      if (!clientInfo) {
+        fail();
+        return;
+      }
+      expect(clientInfo.url).toBe('http://example.com/#/test/one/foo/bar');
+      expect(clientInfo.id).toBe('route1');
     });
 
     it('should preserve trailing slashes on the provided route', () => {
-      expect(hostRouter.getClientUrl('/route/one/foo/bar/')).toBe(
-        'http://example.com/#/test/one/foo/bar/'
-      );
+      const clientInfo = hostRouter.getClientInfo('/route/one/foo/bar/');
+      if (!clientInfo) {
+        fail();
+        return;
+      }
+      expect(clientInfo.url).toBe('http://example.com/#/test/one/foo/bar/');
+      expect(clientInfo.id).toBe('route1');
     });
 
     it('should append to the path when the client url has no hash', () => {
-      expect(hostRouter.getClientUrl('noHash/foo/bar')).toBe(
+      const clientInfo = hostRouter.getClientInfo('noHash/foo/bar');
+      if (!clientInfo) {
+        fail();
+        return;
+      }
+      expect(clientInfo.url).toBe(
         'http://example.com/my/pushstate/app/foo/bar?query=works'
       );
+      expect(clientInfo.id).toBe('noClientHash');
     });
   });
 });

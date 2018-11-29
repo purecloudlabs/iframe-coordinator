@@ -70,7 +70,7 @@ buildNavMarkup(NAV_CONFIGS);
 // Subscribe to pub-sub events on the topic `publish.topic`
 router.messaging.addListener("publish.topic", publication => {
   console.log(
-    `Recieved pub-sub data on topic ${publication.topic}:`,
+    `Recieved pub-sub data from ${publication.clientId} on topic ${publication.topic}:`,
     publication.payload
   );
 });
@@ -137,7 +137,11 @@ document.addEventListener("DOMContentLoaded", () => {
       if (msgPayload.title && msgPayload.title.trim().length > 0) {
         toastHtml += `<div class="title">${msgPayload.title}</div>`;
       }
-      toastHtml += `<div class="msg">${msgPayload.message}</div>`;
+      toastHtml +=
+      `<div class="msg">
+        <p>${msgPayload.message}</p>
+        <small>Published from ${msgPayload.clientId}<small>
+      </div>`;
 
       window.toastada[toastLevel](toastHtml);
     });

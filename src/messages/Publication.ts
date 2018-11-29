@@ -1,4 +1,4 @@
-import { guard, mixed, object, string } from 'decoders';
+import { guard, mixed, object, optional, string } from 'decoders';
 import { LabeledMsg } from './LabeledMsg';
 import { createMessageValidator } from './validationUtils';
 
@@ -12,6 +12,7 @@ import { createMessageValidator } from './validationUtils';
 export interface Publication {
   topic: string;
   payload: any;
+  clientId?: string;
 }
 
 /**
@@ -21,7 +22,7 @@ export type PublicationHandler = (publication: Publication) => void;
 
 /**
  * A message used to publish a generic messages
- * to the host application.
+ * between the clients and the host application.
  */
 export interface LabeledPublication extends LabeledMsg {
   msgType: 'publish';
@@ -31,7 +32,8 @@ export interface LabeledPublication extends LabeledMsg {
 const publicationDecoder = guard(
   object({
     topic: string,
-    payload: mixed
+    payload: mixed,
+    clientId: optional(string)
   })
 );
 
@@ -39,4 +41,5 @@ const validatePublication = createMessageValidator<LabeledPublication>(
   'publish',
   publicationDecoder
 );
+
 export { validatePublication };
