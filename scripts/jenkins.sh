@@ -21,15 +21,4 @@ ${SCRIPTS_DIR}/buildlibs.sh
 
 PUBLISHED_VERSION=$(${NPM_UTILS}/scripts/version-and-publish.sh -n)
 
-printf "Published: ${PUBLISHED_VERSION}"
-
-printf "\n== Post-build git status ==\n\n"
-git status
-
-printf "\n== Commits ==\n\n"
-
-git log -n 3
-
-printf "\n== Tags ==\n\n"
-
-git tag -l
+printf "PUBLISHED_TAG=v${PUBLISHED_VERSION}" > ${WORKSPACE}/publish.properties
