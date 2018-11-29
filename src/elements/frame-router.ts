@@ -138,7 +138,7 @@ class FrameRouterElement extends HTMLElement {
 
   private _dispatchClientMessage(message: ClientToHost) {
     const messageDetail: any = message.msg;
-    messageDetail.origin = this._currentClientId;
+    messageDetail.clientId = this._currentClientId;
 
     this.dispatchEvent(
       new CustomEvent(message.msgType, { detail: messageDetail })
