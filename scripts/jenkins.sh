@@ -6,7 +6,7 @@ PROJ_DIR="${SCRIPTS_DIR}/.."
 NPM_UTILS="${WORKSPACE}/npm-utils"
 
 # Check out the latest npm-utils
-rm -rf ${NPM_UTILS} && git clone --depth=1 git@bitbucket.org:inindca/npm-utils.git ${NPM_UTILS}
+rm -rf ${NPM_UTILS} && git clone --single-branch -b improved-version-output --depth=1 git@bitbucket.org:inindca/npm-utils.git ${NPM_UTILS}
 
 cd ${PROJ_DIR}
 
@@ -19,7 +19,9 @@ ${SCRIPTS_DIR}/buildlibs.sh
   # This may have been added during npm install and pre-push package.
   rm -f ${PROJ_DIR}.git/hooks/pre-push
 
-${NPM_UTILS}/scripts/version-and-publish.sh -n
+PUBLISHED_VERSION=$(${NPM_UTILS}/scripts/version-and-publish.sh -n)
+
+printf "Published: ${PUBLISHED_VERSION}"
 
 printf "\n== Post-build git status ==\n\n"
 git status
