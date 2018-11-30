@@ -106,8 +106,10 @@ class FrameManager {
 
   private _handlePostMessage(handler: MessageHandler, event: MessageEvent) {
     const validated = validateIncoming(event.data);
+    const expectedClientOrigin = this._expectedClientOrigin();
     if (
-      event.origin === this._expectedClientOrigin() &&
+      expectedClientOrigin &&
+      event.origin === expectedClientOrigin &&
       event.source === this._iframe.contentWindow &&
       validated
     ) {
@@ -122,18 +124,23 @@ class FrameManager {
   }
 
   private _expectedClientOrigin(): string | null {
-    if (this._frameLocation === 'about:blank') {
-      return null;
-    }
-
     try {
       const clientUrl = new URL(
         this._frameLocation,
         this._window.location.href
       );
-      return clientUrl.origin;
+
+      // Bail early if it's not an http resource.
+      // Ex: file protocol url origin behavior is browser specific
+      if (clientUrl.protocol !== 'http:' && clientUrl.protocol !== 'https:') {
+        return null;
+      }
+
+      // Assert that this origin is actually valid.
+      // Ex: about:blank, chrome:version, extensions, etc will return 'null'
+      return new URL(clientUrl.origin).origin;
     } catch (err) {
-      return 'about:blank';
+      return null;
     }
   }
 }
