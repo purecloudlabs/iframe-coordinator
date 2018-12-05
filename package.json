@@ -1,11 +1,9 @@
 {
   "name": "iframe-coordinator",
-  "version": "1.0.7",
+  "version": "1.0.21",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
-    "@types/jasmine": "^3.3.0",
-    "decoders": "^1.10.6",
-    "request": "^2.88.0"
+    "decoders": "^1.10.6"
   },
   "files": [
     "client.js",
@@ -20,9 +18,13 @@
   "module": "index.js",
   "types": "index.d.ts",
   "devDependencies": {
-    "husky": "^1.2.0",
-    "jasmine-core": "^3.3.0",
-    "karma": "^3.1.1",
+    "@types/jasmine": "^2.8.9",
+    "husky": "^1.1.2",
+    "i": "^0.3.6",
+    "import-inject-loader": "^0.2.4",
+    "inject-loader": "^4.0.1",
+    "jasmine-core": "^3.2.1",
+    "karma": "^3.0.0",
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^2.0.1",
     "karma-webpack": "4.0.0-rc.3",
