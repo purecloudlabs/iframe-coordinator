@@ -6,6 +6,7 @@
  * The msgType will indicate the nature of
  * the message. The msg will contain the
  * information desired to be communicated.
+ * @external
  */
 export interface LabeledMsg {
   msgType: string;

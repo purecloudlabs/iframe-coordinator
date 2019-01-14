@@ -1,10 +1,10 @@
-import { EventEmitter } from '../EventEmitter';
+import { InternalEventEmitter } from '../EventEmitter';
 
-describe('EventEmitter', () => {
+describe('InternalEventEmitter', () => {
   describe('Basic type event emitter', () => {
-    let eventEmitter: EventEmitter<string>;
+    let eventEmitter: InternalEventEmitter<string>;
     beforeEach(() => {
-      eventEmitter = new EventEmitter<string>();
+      eventEmitter = new InternalEventEmitter<string>();
     });
 
     it('should not error when dispatching an event with no listeners', () => {
@@ -77,9 +77,9 @@ describe('EventEmitter', () => {
       payload1: string;
       payload2: number;
     }
-    let eventEmitter: EventEmitter<CustomTestData>;
+    let eventEmitter: InternalEventEmitter<CustomTestData>;
     beforeEach(() => {
-      eventEmitter = new EventEmitter<CustomTestData>();
+      eventEmitter = new InternalEventEmitter<CustomTestData>();
     });
     const testData = {
       payload1: 'test.data',

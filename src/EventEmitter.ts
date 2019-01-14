@@ -1,15 +1,17 @@
 /**
  * A generic handler for incoming event data.
  */
-type THandler<T> = (data: T) => void;
+type EventHandler<T> = (data: T) => void;
 
 /**
  * Simple object for keeping track of event listeners.
+ * @external
  */
 interface Events<T> {
-  [index: string]: Array<THandler<T>>;
+  [index: string]: Array<EventHandler<T>>;
 }
 
+/** @external */
 const findIndex =
   [].findIndex ||
   // IE11 support
@@ -44,20 +46,29 @@ const findIndex =
 
 /**
  * Used to determine equivalancy of two handlers.
+ *
+ * @external
  */
-function isRegistered(value: THandler<any>) {
+function isRegistered(value: EventHandler<any>) {
   return value === this;
 }
 
 /**
- * Exposes a limited subset of event emitter
- * functionality to ensure external modules can
- * not self-emit.
+ * API for registering and unregistering event handlers. Mirrors the browser's EventTarget API.
+ *
+ * @param T The type of event produced by the emitter.
  */
-export class ExposedEventEmitter<T> {
-  private _rootEmitter: EventEmitter<T>;
-  public constructor(rootEmitter: EventEmitter<T>) {
-    this._rootEmitter = rootEmitter;
+export class EventEmitter<T> {
+  private _rootEmitter: InternalEventEmitter<T>;
+
+  /**
+   * Constructing EventEmitters is an internal-only operation. API consumers should not create this
+   * class directly.
+   *
+   * @external
+   */
+  public constructor(internalEmitter: InternalEventEmitter<T>) {
+    this._rootEmitter = internalEmitter;
   }
 
   /**
@@ -65,10 +76,7 @@ export class ExposedEventEmitter<T> {
    * @param type A case-sensitive string representing the event type to listen for.
    * @param listener The handler which receives a notification when an event of the specified type occurs.
    */
-  public addListener(
-    type: string,
-    listener: THandler<T>
-  ): ExposedEventEmitter<T> {
+  public addListener(type: string, listener: EventHandler<T>): EventEmitter<T> {
     this._rootEmitter.addListener(type, listener);
     return this;
   }
@@ -80,8 +88,8 @@ export class ExposedEventEmitter<T> {
    */
   public removeListener(
     type: string,
-    listener: THandler<T>
-  ): ExposedEventEmitter<T> {
+    listener: EventHandler<T>
+  ): EventEmitter<T> {
     this._rootEmitter.removeListener(type, listener);
     return this;
   }
@@ -90,7 +98,7 @@ export class ExposedEventEmitter<T> {
    * Removes all event listeners previously registered with {@link EventEmitter.addEventListener}.
    * @param type A string which specifies the type of event for which to remove an event listener.
    */
-  public removeAllListeners(type: string): ExposedEventEmitter<T> {
+  public removeAllListeners(type: string): EventEmitter<T> {
     this._rootEmitter.removeAllListeners(type);
     return this;
   }
@@ -100,9 +108,10 @@ export class ExposedEventEmitter<T> {
  * An event emitter based on {@link EventTarget} used to signal
  * events between host and client. This provides class safety
  * on both the type and listeners
+ * @external
  */
 // tslint:disable-next-line
-export class EventEmitter<T> {
+export class InternalEventEmitter<T> {
   private _events: Events<T>;
 
   public constructor() {
@@ -114,7 +123,10 @@ export class EventEmitter<T> {
    * @param type A case-sensitive string representing the event type to listen for.
    * @param listener The handler which receives a notification when an event of the specified type occurs.
    */
-  public addListener(type: string, listener: THandler<T>): EventEmitter<T> {
+  public addListener(
+    type: string,
+    listener: EventHandler<T>
+  ): InternalEventEmitter<T> {
     // TODO Improve performance by allowing
     // a single T to be assigned without creating an array
     if (!this._events[type]) {
@@ -133,7 +145,10 @@ export class EventEmitter<T> {
    * Removes all event listeners previously registered with {@link EventEmitter.addEventListener}.
    * @param type A string which specifies the type of event for which to remove an event listener.
    */
-  public removeListener(type: string, listener: THandler<T>): EventEmitter<T> {
+  public removeListener(
+    type: string,
+    listener: EventHandler<T>
+  ): InternalEventEmitter<T> {
     if (!this._events[type]) {
       return this;
     }
@@ -150,7 +165,7 @@ export class EventEmitter<T> {
    * Removes all event listeners previously registered with {@link EventEmitter.addEventListener}.
    * @param type A string which specifies the type of event for which to remove an event listener.
    */
-  public removeAllListeners(type: string): EventEmitter<T> {
+  public removeAllListeners(type: string): InternalEventEmitter<T> {
     delete this._events[type];
     return this;
   }

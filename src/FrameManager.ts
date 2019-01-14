@@ -7,11 +7,13 @@ import {
   validate as validateOutgoing
 } from './messages/HostToClient';
 
+/** @external */
 const IFRAME_STYLE =
   'position: absolute; top: 0; left: 0; width: 100%; height: 100%;';
 
 /**
  * A handler function for messages sent from a client app.
+ * @external
  */
 type MessageHandler = (event: ClientToHost) => void;
 
@@ -20,6 +22,7 @@ type MessageHandler = (event: ClientToHost) => void;
  * It changes locations in the frame when requested, and handles proxying
  * of postMessage events to and from the client, with verification of
  * the expected client origin.
+ * @external
  */
 class FrameManager {
   private _iframe: HTMLIFrameElement;

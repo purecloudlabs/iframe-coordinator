@@ -2,12 +2,14 @@ import { Publication } from './messages/Publication';
 
 /**
  * Callback which can handle a publication message.
+ * @external
  */
 export type PublicationHandler = (publication: Publication) => void;
 
 /**
  * Manages topic subscriptions and
  * publish events for {@link Publication | Publications}.
+ * @external
  */
 export class SubscriptionManager {
   private _handler: PublicationHandler | null;
