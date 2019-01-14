@@ -5,11 +5,13 @@ type THandler<T> = (data: T) => void;
 
 /**
  * Simple object for keeping track of event listeners.
+ * @external
  */
 interface Events<T> {
   [index: string]: Array<THandler<T>>;
 }
 
+/** @external */
 const findIndex =
   [].findIndex ||
   // IE11 support
@@ -44,6 +46,8 @@ const findIndex =
 
 /**
  * Used to determine equivalancy of two handlers.
+ *
+ * @external
  */
 function isRegistered(value: THandler<any>) {
   return value === this;
@@ -100,6 +104,7 @@ export class ExposedEventEmitter<T> {
  * An event emitter based on {@link EventTarget} used to signal
  * events between host and client. This provides class safety
  * on both the type and listeners
+ * @external
  */
 // tslint:disable-next-line
 export class EventEmitter<T> {

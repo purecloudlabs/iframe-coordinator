@@ -51,7 +51,7 @@
     "format.fix": "npm run format -- --write",
     "lint": "tslint --project tsconfig.json",
     "lint.fix": "npm run lint -- --fix",
-    "doc": "typedoc --excludePrivate --mode file --readme README.md --module umd --target ES6 --out doc/ src/"
+    "doc": "typedoc --excludePrivate --excludeExternals --ignoreCompilerErrors --mode file --readme README.md --module umd --target ES6 --out doc/ src/"
   },
   "husky": {
     "hooks": {

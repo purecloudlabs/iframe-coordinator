@@ -16,19 +16,16 @@ export interface Publication {
 }
 
 /**
- * Handles publications
- */
-export type PublicationHandler = (publication: Publication) => void;
-
-/**
  * A message used to publish a generic messages
  * between the clients and the host application.
+ * @external
  */
 export interface LabeledPublication extends LabeledMsg {
   msgType: 'publish';
   msg: Publication;
 }
 
+/** @external */
 const publicationDecoder = guard(
   object({
     topic: string,
@@ -37,6 +34,7 @@ const publicationDecoder = guard(
   })
 );
 
+/** @external */
 const validatePublication = createMessageValidator<LabeledPublication>(
   'publish',
   publicationDecoder

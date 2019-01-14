@@ -19,6 +19,7 @@ import { Toast } from './messages/Toast';
 /**
  * Configuration options given to the client
  * from the host application.
+ * @external
  */
 interface ClientConfigOptions {
   clientWindow?: Window;
@@ -27,7 +28,7 @@ interface ClientConfigOptions {
 /**
  * The Client is access point for the embedded UI's in the host application.
  */
-class Client {
+export class Client {
   private _isStarted: boolean;
   private _clientWindow: Window;
   private _environmentData: EnvData;
@@ -207,5 +208,3 @@ class Client {
     });
   }
 }
-
-export { Client, Publication };

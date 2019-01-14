@@ -5,6 +5,7 @@ import { ClientToHost } from '../messages/ClientToHost';
 import { EnvData, LabeledStarted } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 
+/** @external */
 const ROUTE_ATTR = 'route';
 
 /**
