@@ -1,0 +1,69 @@
+#!/usr/bin/env node
+
+const cheerio = require('cheerio');
+const fs = require('fs');
+const glob = require('glob');
+const path = require('path');
+const url = require('url');
+
+const docPath = path.join(__dirname, '../doc');
+
+main();
+
+function main() {
+    let htmlFiles = glob.sync('**/*.html', { cwd: docPath }).map((file) => {
+        return path.join(docPath, file);
+    });
+
+    htmlFiles.forEach(processFile);
+}
+
+function processFile(path) {
+    const originalText = fs.readFileSync(path, 'utf8');
+    let $ = cheerio.load(originalText);
+
+    hideExternals($);
+    if (process.env.CDN_ROOT) {
+        addCdnPrefix($, process.env.CDN_ROOT)
+    }
+
+    fs.writeFileSync(path, $.html(), 'utf8');
+}
+
+/**
+ * For some reason the --excludeExternals flag does not seem to work correctly,
+ * so we manually add the class to the document which hides them. **sigh**
+ * (This may be related to the internal-external plugin, but we need that to flag apis
+ * we don't want to document)
+ */
+function hideExternals($) {
+    $('html').addClass('toggle-externals');
+}
+
+function addCdnPrefix($, cdn) {
+  $('link[href]').each(prefixStyleSheet.bind(null, $, cdn));
+  $('script[src]').each(prefixScript.bind(null, $, cdn));
+}
+
+function prefixStyleSheet($, cdnUrl, idx, elem) {
+  let $elem = $(elem);
+  let oldHref = $elem.attr('href');
+  let newHref = joinPath(cdnUrl, oldHref)
+  console.log(`mapping ${oldHref} to ${newHref}`)
+  $elem.attr('href', newHref);
+}
+
+function prefixScript($, cdnUrl, idx, elem) {
+  let $elem = $(elem);
+  let oldSrc = $elem.attr('src');
+  let newSrc = joinPath(cdnUrl, oldSrc)
+  console.log(`mapping ${oldSrc} to ${newSrc}`)
+  $elem.attr('src', newSrc);
+}
+
+function joinPath(cdnUrl, localPath) {
+    let trimmedLocal = localPath.replace(/.*?assets/, 'assets');
+    let newUrl = new URL(cdnUrl);
+    newUrl.pathname = path.posix.join(newUrl.pathname, trimmedLocal);
+    return newUrl.toString();
+}

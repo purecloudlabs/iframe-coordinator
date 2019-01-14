@@ -3,6 +3,7 @@
 /**
  * HostRouter is responsible for mapping route paths to
  * corresponding client URls.
+ * @external
  */
 export class HostRouter {
   private _clients: ClientInfo[];
@@ -71,6 +72,8 @@ interface ClientRegistration {
 /**
  * An internal client representation that moves the identifying key from {@link RoutingMap}
  * into the information about the client.
+ *
+ * @external
  */
 interface ClientInfo extends ClientRegistration {
   id: string;
@@ -82,6 +85,8 @@ interface ClientInfo extends ClientRegistration {
  * Checks a requested route against a specific assigned route (excluding leading slashes),
  * and if they match, returns the section of the requested route that should be passed
  * to the client.
+ *
+ * @external
  *
  * @param rawTargetRoute The route to check against the client route
  * @param clientRoute The route prefix being checked.
@@ -106,6 +111,8 @@ function matchAndStripPrefix(
 /**
  * Helper function for converting {@link RoutingMap} data into an the internal
  * {@link ClientInfo} representation.
+ *
+ * @external
  */
 function parseRegistration(key: string, value: ClientRegistration): ClientInfo {
   return {
@@ -119,6 +126,8 @@ function parseRegistration(key: string, value: ClientRegistration): ClientInfo {
  * Helper function that combines a client URL with a client route to generate
  * a full URL. Check the client URL for a hash fragment to see if fragment-based
  * or path-based routing should be used.
+ *
+ * @external
  */
 function applyRoute(urlStr: string, route: string): string {
   const newUrl = new URL(urlStr, window.location.href);
@@ -135,6 +144,8 @@ function applyRoute(urlStr: string, route: string): string {
 /**
  * Removes leading and trailing slashes from a route to simplify comparisons
  * against other paths.
+ *
+ * @external
  */
 function normalizeRoute(route: string): string {
   return stripLeadingSlash(stripTrailingSlash(route));
@@ -142,6 +153,8 @@ function normalizeRoute(route: string): string {
 
 /**
  * Removes any leading '/' characters from a string.
+ *
+ * @external
  */
 function stripLeadingSlash(str: string): string {
   return str.replace(/^\/+/, '');
@@ -149,6 +162,8 @@ function stripLeadingSlash(str: string): string {
 
 /**
  * Removes any trailing '/' characters from a string.
+ *
+ * @external
  */
 function stripTrailingSlash(str: string): string {
   return str.replace(/\/+$/, '');

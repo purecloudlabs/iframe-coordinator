@@ -1,0 +1,90 @@
+#!/usr/bin/env node
+
+const fs = require('fs');
+const glob = require('glob');
+const https = require('https');
+const path = require('path');
+
+const docPath = path.join(__dirname, '../doc');
+const deployVersion = require('../package.json').version;
+const manifestPath = path.join(docPath, 'manifest.json');
+const versionPath = path.join(docPath, 'versions.json');
+const versionsUrl =
+  'https://app.gmscdev.com/common-ui-docs/iframe-coordinator/versions.json';
+
+main();
+
+function main() {
+    let htmlFiles = glob.sync('**/*.html', { cwd: docPath })
+
+  generateManifest(htmlFiles);
+  generateVersions();
+}
+
+// Generate Manifest
+
+function generateManifest(htmlFiles) {
+  const buildDate = new Date();
+
+  let manifest = {
+    name: 'common-ui-docs/iframe-coordinator',
+    version: deployVersion,
+    build: `${process.env.BUILD_NUMBER || 'testBuild'}`,
+    buildDate: buildDate.toISOString(),
+    indexFiles: htmlFiles.map(file => {
+      return { file: file };
+    }).concat([{file: 'versions.json'}])
+  };
+
+  let manifestJson = JSON.stringify(manifest, null, 2);
+
+  console.log('Generated Manifest: ', manifestJson);
+
+  fs.writeFileSync(manifestPath, manifestJson, { encoding: 'utf8' });
+}
+
+// Generate Versions File
+
+function generateVersions() {
+  fetchPreviousVersions(remoteVersions => {
+    if (!remoteVersions.includes(deployVersion)) {
+      remoteVersions.push(deployVersion);
+    }
+
+    let versionJson = JSON.stringify(remoteVersions, null, 2);
+
+    console.log('Generated Versions: ', versionJson);
+
+    fs.writeFileSync(versionPath, versionJson, { encoding: 'utf8' });
+  });
+}
+
+function fetchPreviousVersions(callback) {
+  https
+    .get(versionsUrl, res => {
+      if (res.statusCode != 200) {
+        console.log(
+          `DOCUMENTATION BUILD FAILURE: Could not fetch version list from ${versionsUrl}:
+    Response status was ${res.statusCode}`
+        );
+        process.exit(1);
+      }
+
+      let responseData = '';
+      res.setEncoding('utf8');
+      res.on('data', chunk => {
+        responseData += chunk;
+      });
+      res.on('end', () => {
+        const previousVersions = JSON.parse(responseData);
+        callback(previousVersions);
+      });
+    })
+    .on('error', e => {
+      console.log(
+        `DOCUMENTATION BUILD FAILURE: Unexpeted error generating versions file.`
+      );
+      console.error(error);
+      process.exit(1);
+    });
+}
