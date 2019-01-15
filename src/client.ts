@@ -1,4 +1,4 @@
-import { EventEmitter, ExposedEventEmitter } from './EventEmitter';
+import { EventEmitter, InternalEventEmitter } from './EventEmitter';
 import {
   ClientToHost,
   validate as validateOutgoing
@@ -32,17 +32,17 @@ export class Client {
   private _isStarted: boolean;
   private _clientWindow: Window;
   private _environmentData: EnvData;
-  private _envDataEmitter: EventEmitter<EnvData>;
-  private _publishEmitter: EventEmitter<Publication>;
-  private _publishExposedEmitter: ExposedEventEmitter<Publication>;
+  private _envDataEmitter: InternalEventEmitter<EnvData>;
+  private _publishEmitter: InternalEventEmitter<Publication>;
+  private _publishExposedEmitter: EventEmitter<Publication>;
 
   public constructor(configOptions: ClientConfigOptions = {}) {
     this._clientWindow = configOptions.clientWindow || window;
-    this._publishEmitter = new EventEmitter<Publication>();
-    this._publishExposedEmitter = new ExposedEventEmitter<Publication>(
+    this._publishEmitter = new InternalEventEmitter<Publication>();
+    this._publishExposedEmitter = new EventEmitter<Publication>(
       this._publishEmitter
     );
-    this._envDataEmitter = new EventEmitter<EnvData>();
+    this._envDataEmitter = new InternalEventEmitter<EnvData>();
   }
 
   /**
@@ -59,7 +59,7 @@ export class Client {
   }
 
   /**
-   * Removes from the event listener previously registered with {@link EventEmitter.addEventListener}.
+   * Removes from the event listener previously registered with {@link InternalEventEmitter.addEventListener}.
    * @param type A string which specifies the type of event for which to remove an event listener.
    * @param listener The event handler to remove from the event target.
    */
@@ -72,7 +72,7 @@ export class Client {
   }
 
   /**
-   * Removes all event listeners previously registered with {@link EventEmitter.addEventListener}.
+   * Removes all event listeners previously registered with {@link InternalEventEmitter.addEventListener}.
    * @param type A string which specifies the type of event for which to remove an event listener.
    */
   public removeAllListeners(type: 'environmentalData'): Client {
@@ -153,7 +153,7 @@ export class Client {
   /**
    * Eventing for published messages from the host application.
    */
-  public get messaging(): ExposedEventEmitter<Publication> {
+  public get messaging(): EventEmitter<Publication> {
     return this._publishExposedEmitter;
   }
 
