@@ -54,14 +54,21 @@ function isRegistered(value: EventHandler<any>) {
 }
 
 /**
- * Exposes a limited subset of event emitter
- * functionality to ensure external modules can
- * not self-emit.
+ * API for registering and unregistering event handlers. Mirrors the browser's EventTarget API.
+ *
+ * @param T The type of event produced by the emitter.
  */
 export class EventEmitter<T> {
   private _rootEmitter: InternalEventEmitter<T>;
-  public constructor(rootEmitter: InternalEventEmitter<T>) {
-    this._rootEmitter = rootEmitter;
+
+  /**
+   * Constructing EventEmitters is an internal-only operation. API consumers should not create this
+   * class directly.
+   *
+   * @external
+   */
+  public constructor(internalEmitter: InternalEventEmitter<T>) {
+    this._rootEmitter = internalEmitter;
   }
 
   /**
