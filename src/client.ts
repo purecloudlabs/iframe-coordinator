@@ -17,15 +17,6 @@ import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 
 /**
- * Configuration options given to the client
- * from the host application.
- * @external
- */
-interface ClientConfigOptions {
-  clientWindow?: Window;
-}
-
-/**
  * The Client is access point for the embedded UI's in the host application.
  */
 export class Client {
@@ -36,8 +27,8 @@ export class Client {
   private _publishEmitter: InternalEventEmitter<Publication>;
   private _publishExposedEmitter: EventEmitter<Publication>;
 
-  public constructor(configOptions: ClientConfigOptions = {}) {
-    this._clientWindow = configOptions.clientWindow || window;
+  public constructor() {
+    this._clientWindow = window;
     this._publishEmitter = new InternalEventEmitter<Publication>();
     this._publishExposedEmitter = new EventEmitter<Publication>(
       this._publishEmitter
