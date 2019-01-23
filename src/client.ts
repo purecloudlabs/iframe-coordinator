@@ -17,7 +17,8 @@ import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 
 /**
- * The Client is access point for the embedded UI's in the host application.
+ * This class is the primary interface that an embedded iframe client should use to communicate with
+ * the host application.
  */
 export class Client {
   private _isStarted: boolean;
@@ -27,6 +28,9 @@ export class Client {
   private _publishEmitter: InternalEventEmitter<Publication>;
   private _publishExposedEmitter: EventEmitter<Publication>;
 
+  /**
+   * Creates a new client.
+   */
   public constructor() {
     this._clientWindow = window;
     this._publishEmitter = new InternalEventEmitter<Publication>();
@@ -112,8 +116,8 @@ export class Client {
   }
 
   /**
-   * Gets the current environmental data provided
-   * by the host application.
+   * Gets the environmental data provided by the host application. This includes things
+   * like the current locale, the base URL of the host app, etc.
    */
   public get environmentData() {
     return this._environmentData;
@@ -142,14 +146,18 @@ export class Client {
   }
 
   /**
-   * Eventing for published messages from the host application.
+   * Accessor for the general-purpose pub-sub bus betwen client and host applications.
+   * The content of messages on this bus are not defined by this API beyond a basic
+   * data wrapper. This is for message formats designed outside of this library and
+   * agreed upon as a shared API betwen host and client.
    */
   public get messaging(): EventEmitter<Publication> {
     return this._publishExposedEmitter;
   }
 
   /**
-   * Deactivates responding to events triggered by the host application.
+   * Disconnects this client from the host application. This is mostly provided for
+   * the sake of API completeness. It's unlikely to be used by most applications.
    */
   public stop(): void {
     if (!this._isStarted) {
@@ -174,23 +182,23 @@ export class Client {
   }
 
   /**
-   * Request a toast message be displayed by the host.
+   * Asks the host application to display a toast/notificaiton message.
    *
-   * The page embedding the host is responsible for handling the fired custom event and
+   * The page embedding the client app is responsible for handling the fired custom event and
    * presenting/styling the toast.  Application-specific concerns such as level, TTLs,
-   * ids for action callbacks (toast click, toast action buttons), etc. can be passed via an object
-   * as the custom property of the options param.
+   * ids for action callbacks (toast click, toast action buttons), etc. can be passed via
+   * the `custom` property of the `Toast` type.
    *
    * @param toast the desired toast configuration.
    *
    * @example
-   * worker.requestToast({ title: 'Hello world' });
+   * `worker.requestToast({ title: 'Hello world' });`
    *
    * @example
-   * worker.requestToast({ title: 'Hello', message: 'World' });
+   * `worker.requestToast({ title: 'Hello', message: 'World' });`
    *
    * @example
-   * worker.requestToast({ title: 'Hello', message: 'World', custom: { ttl: 5, level: 'info' } });
+   * `worker.requestToast({ title: 'Hello', message: 'World', custom: { ttl: 5, level: 'info' } });`
    */
   public requestToast(toast: Toast) {
     this._sendToHost({
