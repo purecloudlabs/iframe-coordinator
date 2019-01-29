@@ -1,0 +1,41 @@
+#!/usr/bin/env node
+
+const cheerio = require('cheerio');
+const fs = require('fs');
+const glob = require('glob');
+const path = require('path');
+const join = path.posix.join;
+
+const docPath = path.join(__dirname, '../doc');
+
+main();
+
+function main() {
+    let htmlFiles = glob.sync('**/*.html', { cwd: docPath }).map((file) => {
+        return path.join(docPath, file);
+    });
+
+    htmlFiles.forEach((file) => {
+        addCdnPrefix(file, process.env.CDN_ROOT || '')
+    });
+}
+
+function addCdnPrefix(path, cdn) {
+  const originalText = fs.readFileSync(path, 'utf8');
+  let $ = cheerio.load(originalText);
+
+  $('link[href]').each(prefixStyleSheet.bind(null, $, cdn));
+  $('script[src]').each(prefixScript.bind(null, $, cdn));
+
+  fs.writeFileSync(path, $.html(), 'utf8');
+}
+
+function prefixStyleSheet($, cdnUrl, idx, elem) {
+  let $elem = $(elem);
+  $elem.attr('href', join(cdnUrl, $elem.attr('href')));
+}
+
+function prefixScript($, cdnUrl, idx, elem) {
+  let $elem = $(elem);
+  $elem.attr('src', join(cdnUrl, $elem.attr('src')));
+}
