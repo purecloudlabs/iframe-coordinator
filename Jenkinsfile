@@ -25,60 +25,64 @@ pipeline {
     }
 
     stage('Build') {
-        steps {
-            dir(env.REPO_DIR) {
-            // Check to see if we need to bump the version for release
-            sh "${env.WORKSPACE}/${env.NPM_UTIL_PATH}/scripts/auto-version-bump.sh"
-            }
+      steps {
+        dir(env.repo_dir) {
+          // check to see if we need to bump the version for release
+          sh "${env.workspace}/${env.npm_util_path}/scripts/auto-version-bump.sh"
         }
+      }
     }
 
     stage('Publish Library') {
-        steps {
-            dir(env.REPO_DIR) {
-                sh "npm publish"
-                // Make a local branch so we can push back to the origin branch.
-                sh "git checkout -b ${env.SHORT_BRANCH}"
-                sh "git push --tags -u origin ${env.SHORT_BRANCH}"
-            }
+      steps {
+        dir(env.REPO_DIR) {
+          sh "npm publish"
+          // Make a local branch so we can push back to the origin branch.
+          sh "git checkout -b ${env.SHORT_BRANCH}"
+          sh "git push --tags -u origin ${env.SHORT_BRANCH}"
         }
+      }
     }
 
     stage('Build Docs') {
-        sh './scripts/generate-deploy-files'
-        sh '''
-            npm ci
-            export CDN_URL=$(./node_modules/.bin/cdn --ecosystem gmsc --manifest manifest.json)
-            npm run build
-        '''
-        sh 'npm run doc'
-        sh './scripts/prepare-docs'
+      steps {
+        dir (env.REPO_DIR) {
+          sh './scripts/generate-deploy-files'
+          sh '''
+              npm ci
+              export CDN_URL=$(./node_modules/.bin/cdn --ecosystem gmsc --manifest manifest.json)
+              npm run build
+          '''
+          sh 'npm run doc'
+          sh './scripts/prepare-docs'
+        }
+      }
     }
 
     stage('Upload Docs') {
-        steps {
-            dir (env.REPO_DIR) {
-                sh '''
-                ./node_modules/.bin/upload \
-                    --ecosystem gmsc \
-                    --manifest manifest.json \
-                    --source-dir ./doc
-                '''
-            }
+      steps {
+        dir (env.REPO_DIR) {
+          sh '''
+             ./node_modules/.bin/upload \
+               --ecosystem gmsc \
+               --manifest manifest.json \
+               --source-dir ./doc
+          '''
         }
+      }
     }
 
     stage('Deploy Docs') {
-        steps {
-            dir (env.REPO_DIR) {
-                sh '''
-                ./node_modules/.bin/deploy \
-                    --ecosystem gmsc \
-                    --manifest manifest.json \
-                    --dest-env dev
-                '''
-            }
+      steps {
+        dir (env.REPO_DIR) {
+          sh '''
+             ./node_modules/.bin/deploy \
+               --ecosystem gmsc \
+               --manifest manifest.json \
+               --dest-env dev
+          '''
         }
+      }
     }
+  }
 }
-
