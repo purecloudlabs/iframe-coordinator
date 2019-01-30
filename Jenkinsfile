@@ -4,7 +4,7 @@ pipeline {
   environment {
     NPM_UTIL_PATH = "npm-utils"
     REPO_DIR = "repo"
-    DOCS_DIR = "repo/doc-site"
+    SHORT_BRANCH = env.GIT_BRANCH.replaceFirst(/^origin\//, '');
   }
 
   tools {
@@ -39,8 +39,11 @@ pipeline {
           sh "npm config list"
           sh "npm publish"
           // Make a local branch so we can push back to the origin branch.
-          sh "git checkout -b ${env.SHORT_BRANCH}"
-          sh "git push --tags -u origin ${env.SHORT_BRANCH}"
+          withCredentials([usernamePassword(credentialsId: 'git-pass-credentials-ID', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+            sh "git checkout -b ${env.SHORT_BRANCH}"
+            //sh "git push --tags -u origin ${env.SHORT_BRANCH}"
+            sh "git push --tags https://${GIT_USERNAME}:${GIT_PASSWORD}@<REPO> ${env.SHORT_BRANCH}"
+          }
         }
       }
     }
