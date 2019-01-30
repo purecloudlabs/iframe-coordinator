@@ -29,6 +29,8 @@ pipeline {
         dir(env.repo_dir) {
           // check to see if we need to bump the version for release
           sh "${env.workspace}/${env.npm_util_path}/scripts/auto-version-bump.sh"
+          sh "npm ci"
+          sh "npm run build"
         }
       }
     }
@@ -36,7 +38,6 @@ pipeline {
     stage('Publish Library') {
       steps {
         dir(env.REPO_DIR) {
-          sh "npm config list"
           sh "npm publish"
           // Make a local branch so we can push back to the origin branch.
           sshagent (credentials: ['3aa16916-868b-4290-a9ee-b1a05343667e']) {
@@ -50,14 +51,12 @@ pipeline {
     stage('Build Docs') {
       steps {
         dir (env.REPO_DIR) {
-          sh 'npm ci'
-          sh './scripts/generate-deploy-files'
+          sh "npm run doc"
+          sh "./scripts/generate-deploy-files"
           sh '''
-              export CDN_URL=$(./node_modules/.bin/cdn --ecosystem gmsc --manifest manifest.json)
-              npm run build
+              export CDN_URL=$(./node_modules/.bin/cdn --ecosystem gmsc --manifest doc/manifest.json)
+              ./scripts/prepare-docs
           '''
-          sh 'npm run doc'
-          sh './scripts/prepare-docs'
         }
       }
     }
