@@ -15,12 +15,12 @@ pipeline {
     stage('Prep') {
       steps {
         deleteDir()
+        sh "git clone --single-branch -b master --depth=1 git@bitbucket.org:inindca/npm-utils.git ${env.NPM_UTIL_PATH}"
         dir(env.REPO_DIR) {
           echo "Building Branch: ${env.GIT_BRANCH}"
           checkout scm
+          sh "${env.WORKSPACE}/${env.NPM_UTIL_PATH}/scripts/jenkins-create-npmrc.sh"
         }
-        sh "git clone --single-branch -b master --depth=1 git@bitbucket.org:inindca/npm-utils.git ${env.NPM_UTIL_PATH}"
-        sh "${env.WORKSPACE}/${env.NPM_UTIL_PATH}/scripts/jenkins-create-npmrc.sh"
       }
     }
 
