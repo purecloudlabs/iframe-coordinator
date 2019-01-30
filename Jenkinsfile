@@ -42,7 +42,6 @@ pipeline {
           sshagent (credentials: ['3aa16916-868b-4290-a9ee-b1a05343667e']) {
             sh "git checkout -b ${env.SHORT_BRANCH}"
             sh "git push --tags -u origin ${env.SHORT_BRANCH}"
-            //sh "git push --tags https://${GIT_USERNAME}:${GIT_PASSWORD}@<REPO> ${env.SHORT_BRANCH}"
           }
         }
       }
@@ -51,9 +50,9 @@ pipeline {
     stage('Build Docs') {
       steps {
         dir (env.REPO_DIR) {
+          sh 'npm ci'
           sh './scripts/generate-deploy-files'
           sh '''
-              npm ci
               export CDN_URL=$(./node_modules/.bin/cdn --ecosystem gmsc --manifest manifest.json)
               npm run build
           '''
