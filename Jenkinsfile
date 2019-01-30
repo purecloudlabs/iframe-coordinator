@@ -19,7 +19,7 @@ pipeline {
           echo "Building Branch: ${env.GIT_BRANCH}"
           checkout scm
         }
-        sh "git clone --single-branch -b split-version-bump --depth=1 git@bitbucket.org:inindca/npm-utils.git ${env.NPM_UTIL_PATH}"
+        sh "git clone --single-branch -b master --depth=1 git@bitbucket.org:inindca/npm-utils.git ${env.NPM_UTIL_PATH}"
         sh "${env.WORKSPACE}/${env.NPM_UTIL_PATH}/scripts/jenkins-create-npmrc.sh"
       }
     }
