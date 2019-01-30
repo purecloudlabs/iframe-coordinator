@@ -18,6 +18,7 @@
   "module": "index.js",
   "types": "index.d.ts",
   "devDependencies": {
+    "@purecloud/web-app-deploy": "^5.0.21",
     "@types/jasmine": "^2.8.9",
     "cheerio": "^1.0.0-rc.2",
     "glob": "^7.1.3",
