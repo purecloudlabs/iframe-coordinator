@@ -75,6 +75,6 @@
     "url": "git@github.com:purecloudlabs/iframe-coordinator.git"
   },
   "publishConfig": {
-    "registry": "https://purcloud.jfrog.io/purecloud/api/npm/inin-internal-npm-dev/"
+    "registry": "https://purecloud.jfrog.io/purecloud/api/npm/inin-internal-npm-dev/"
   }
 }
