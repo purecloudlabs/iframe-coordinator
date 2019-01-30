@@ -36,6 +36,7 @@ pipeline {
     stage('Publish Library') {
       steps {
         dir(env.REPO_DIR) {
+          sh "npm config list"
           sh "npm publish"
           // Make a local branch so we can push back to the origin branch.
           sh "git checkout -b ${env.SHORT_BRANCH}"
