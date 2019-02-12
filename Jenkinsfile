@@ -67,7 +67,7 @@ pipeline {
           sh '''
              ./node_modules/.bin/upload \
                --ecosystem gmsc \
-               --manifest manifest.json \
+               --manifest doc/manifest.json \
                --source-dir ./doc
           '''
         }
@@ -80,7 +80,7 @@ pipeline {
           sh '''
              ./node_modules/.bin/deploy \
                --ecosystem gmsc \
-               --manifest manifest.json \
+               --manifest doc/manifest.json \
                --dest-env dev
           '''
         }
