@@ -8,7 +8,7 @@ pipeline {
   }
 
   tools {
-    nodejs 'NodeJS 8.12.0'
+    nodejs 'NodeJS 10.15.1'
   }
 
   stages {
