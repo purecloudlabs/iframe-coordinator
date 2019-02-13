@@ -34,6 +34,7 @@ function prefixStyleSheet($, cdnUrl, idx, elem) {
   let $elem = $(elem);
   let oldHref = $elem.attr('href');
   let newHref = join(cdnUrl, oldHref)
+  console.log(`mapping ${oldHref} to ${newHref}`)
   $elem.attr('href', newHref);
 }
 
@@ -41,5 +42,6 @@ function prefixScript($, cdnUrl, idx, elem) {
   let $elem = $(elem);
   let oldSrc = $elem.attr('src');
   let newSrc = join(cdnUrl, oldSrc)
+  console.log(`mapping ${oldSrc} to ${newSrc}`)
   $elem.attr('src', newSrc);
 }
