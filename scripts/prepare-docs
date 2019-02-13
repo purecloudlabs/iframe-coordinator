@@ -48,7 +48,7 @@ function prefixScript($, cdnUrl, idx, elem) {
 
 function joinPath(cdnUrl, localPath) {
     let trimmedLocal = localPath.replace(/.*?assets/, 'assets');
-    let newUrl = new Url(cdnUrl);
+    let newUrl = new URL(cdnUrl);
     newUrl.pathname = path.posix.join(newUrl.pathname, trimmedLocal);
     return newUrl.toString();
 }
