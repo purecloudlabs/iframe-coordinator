@@ -54,7 +54,7 @@ pipeline {
           sh "npm run doc"
           sh "./scripts/generate-deploy-files"
           sh '''
-              export CDN_URL=$(./node_modules/.bin/cdn --ecosystem gmsc --manifest doc/manifest.json)
+              export CDN_ROOT=$(./node_modules/.bin/cdn --ecosystem gmsc --manifest doc/manifest.json)
               ./scripts/prepare-docs
           '''
         }
