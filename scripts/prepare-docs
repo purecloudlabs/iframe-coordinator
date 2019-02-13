@@ -32,10 +32,14 @@ function addCdnPrefix(path, cdn) {
 
 function prefixStyleSheet($, cdnUrl, idx, elem) {
   let $elem = $(elem);
+  let oldHref = $elem.attr('href');
+  let newHref = join(cdnUrl, oldHref)
   $elem.attr('href', newHref);
 }
 
 function prefixScript($, cdnUrl, idx, elem) {
   let $elem = $(elem);
+  let oldSrc = $elem.attr('src');
+  let newSrc = join(cdnUrl, oldSrc)
   $elem.attr('src', newSrc);
 }
