@@ -4,7 +4,7 @@ const cheerio = require('cheerio');
 const fs = require('fs');
 const glob = require('glob');
 const path = require('path');
-const join = path.posix.join;
+const url = require('url');
 
 const docPath = path.join(__dirname, '../doc');
 
@@ -33,7 +33,7 @@ function addCdnPrefix(path, cdn) {
 function prefixStyleSheet($, cdnUrl, idx, elem) {
   let $elem = $(elem);
   let oldHref = $elem.attr('href');
-  let newHref = join(cdnUrl, oldHref)
+  let newHref = joinPath(cdnUrl, oldHref)
   console.log(`mapping ${oldHref} to ${newHref}`)
   $elem.attr('href', newHref);
 }
@@ -41,7 +41,14 @@ function prefixStyleSheet($, cdnUrl, idx, elem) {
 function prefixScript($, cdnUrl, idx, elem) {
   let $elem = $(elem);
   let oldSrc = $elem.attr('src');
-  let newSrc = join(cdnUrl, oldSrc)
+  let newSrc = joinPath(cdnUrl, oldSrc)
   console.log(`mapping ${oldSrc} to ${newSrc}`)
   $elem.attr('src', newSrc);
+}
+
+function joinPath(cdnUrl, localPath) {
+    let trimmedLocal = localPath.replace(/.*?assets/, 'assets');
+    let url = url.parse(cdnUrl);
+    url.pathname = path.posix.join(url.pathname, trimmedLocal);
+    return url.toString();
 }
