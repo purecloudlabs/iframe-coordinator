@@ -1,6 +1,6 @@
 {
   "name": "iframe-coordinator",
-  "version": "1.0.47",
+  "version": "1.0.46",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
     "decoders": "^1.10.6"
@@ -55,7 +55,7 @@
     "format.fix": "npm run format -- --write",
     "lint": "tslint --project tsconfig.json",
     "lint.fix": "npm run lint -- --fix",
-    "doc": "typedoc --excludePrivate --excludeProtected --excludeNotExported --excludeExternals --mode file --readme README.md --out doc/ src/ && ./scripts/prepare-docs"
+    "doc": "typedoc --excludePrivate --excludeProtected --excludeNotExported --excludeExternals --mode file --readme README.md --out doc/ src/"
   },
   "husky": {
     "hooks": {

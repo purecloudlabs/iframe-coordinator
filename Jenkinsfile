@@ -51,10 +51,11 @@ pipeline {
     stage('Build Docs') {
       steps {
         dir (env.REPO_DIR) {
+          sh "npm run doc"
+          sh "./scripts/generate-deploy-files"
           sh '''
               export CDN_ROOT=$(./node_modules/.bin/cdn --ecosystem gmsc --manifest doc/manifest.json)
-              npm run doc
-              ./scripts/generate-deploy-files
+              ./scripts/prepare-docs
           '''
         }
       }
