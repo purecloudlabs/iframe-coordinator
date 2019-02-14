@@ -38,7 +38,7 @@
     "ts-loader": "^5.3.0",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.16.0",
-    "typedoc": "^0.13.0",
+    "typedoc": "^0.14.0",
     "typedoc-plugin-internal-external": "^2.0.1",
     "typescript": "^3.1.6",
     "webpack": "^4.26.0",
@@ -55,7 +55,7 @@
     "format.fix": "npm run format -- --write",
     "lint": "tslint --project tsconfig.json",
     "lint.fix": "npm run lint -- --fix",
-    "doc": "typedoc --excludePrivate --excludeExternals --ignoreCompilerErrors --mode file --readme README.md --module umd --target ES6 --out doc/ src/"
+    "doc": "typedoc --excludePrivate --excludeProtected --excludeNotExported --excludeExternals --mode file --readme README.md --out doc/ src/"
   },
   "husky": {
     "hooks": {
