@@ -63,15 +63,11 @@ function fetchPreviousVersions(callback) {
   https
     .get(versionsUrl, res => {
       if (res.statusCode != 200) {
-        callback([]);
-        return;
-        /*
         console.log(
           `DOCUMENTATION BUILD FAILURE: Could not fetch version list from ${versionsUrl}:
     Response status was ${res.statusCode}`
         );
         process.exit(1);
-        */
       }
 
       let responseData = '';
