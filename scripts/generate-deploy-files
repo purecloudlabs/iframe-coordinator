@@ -33,7 +33,7 @@ function generateManifest(htmlFiles) {
     buildDate: buildDate.toISOString(),
     indexFiles: htmlFiles.map(file => {
       return { file: file };
-    })
+    }).concat([{file: 'versions.json'}])
   };
 
   let manifestJson = JSON.stringify(manifest, null, 2);
