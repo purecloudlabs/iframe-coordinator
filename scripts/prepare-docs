@@ -11,23 +11,23 @@ const docPath = path.join(__dirname, '../doc');
 main();
 
 function main() {
-    let htmlFiles = glob.sync('**/*.html', { cwd: docPath }).map((file) => {
-        return path.join(docPath, file);
-    });
+  let htmlFiles = glob.sync('**/*.html', { cwd: docPath }).map(file => {
+    return path.join(docPath, file);
+  });
 
-    htmlFiles.forEach(processFile);
+  htmlFiles.forEach(processFile);
 }
 
 function processFile(path) {
-    const originalText = fs.readFileSync(path, 'utf8');
-    let $ = cheerio.load(originalText);
+  const originalText = fs.readFileSync(path, 'utf8');
+  let $ = cheerio.load(originalText);
 
-    hideExternals($);
-    if (process.env.CDN_ROOT) {
-        addCdnPrefix($, process.env.CDN_ROOT)
-    }
+  hideExternals($);
+  if (process.env.CDN_ROOT) {
+    addCdnPrefix($, process.env.CDN_ROOT);
+  }
 
-    fs.writeFileSync(path, $.html(), 'utf8');
+  fs.writeFileSync(path, $.html(), 'utf8');
 }
 
 /**
@@ -37,7 +37,7 @@ function processFile(path) {
  * we don't want to document)
  */
 function hideExternals($) {
-    $('html').addClass('toggle-externals');
+  $('html').addClass('toggle-externals');
 }
 
 function addCdnPrefix($, cdn) {
@@ -48,22 +48,22 @@ function addCdnPrefix($, cdn) {
 function prefixStyleSheet($, cdnUrl, idx, elem) {
   let $elem = $(elem);
   let oldHref = $elem.attr('href');
-  let newHref = joinPath(cdnUrl, oldHref)
-  console.log(`mapping ${oldHref} to ${newHref}`)
+  let newHref = joinPath(cdnUrl, oldHref);
+  console.log(`mapping ${oldHref} to ${newHref}`);
   $elem.attr('href', newHref);
 }
 
 function prefixScript($, cdnUrl, idx, elem) {
   let $elem = $(elem);
   let oldSrc = $elem.attr('src');
-  let newSrc = joinPath(cdnUrl, oldSrc)
-  console.log(`mapping ${oldSrc} to ${newSrc}`)
+  let newSrc = joinPath(cdnUrl, oldSrc);
+  console.log(`mapping ${oldSrc} to ${newSrc}`);
   $elem.attr('src', newSrc);
 }
 
 function joinPath(cdnUrl, localPath) {
-    let trimmedLocal = localPath.replace(/.*?assets/, 'assets');
-    let newUrl = new URL(cdnUrl);
-    newUrl.pathname = path.posix.join(newUrl.pathname, trimmedLocal);
-    return newUrl.toString();
+  let trimmedLocal = localPath.replace(/.*?assets/, 'assets');
+  let newUrl = new URL(cdnUrl);
+  newUrl.pathname = path.posix.join(newUrl.pathname, trimmedLocal);
+  return newUrl.toString();
 }

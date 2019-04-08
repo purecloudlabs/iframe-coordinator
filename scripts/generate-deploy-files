@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
+const fs = require('fs'); 
 const glob = require('glob');
 const https = require('https');
 const path = require('path');
@@ -15,7 +15,7 @@ const versionsUrl =
 main();
 
 function main() {
-    let htmlFiles = glob.sync('**/*.html', { cwd: docPath })
+  let htmlFiles = glob.sync('**/*.html', { cwd: docPath });
 
   generateManifest(htmlFiles);
   generateVersions();
@@ -31,9 +31,11 @@ function generateManifest(htmlFiles) {
     version: deployVersion,
     build: `${process.env.BUILD_NUMBER || 'testBuild'}`,
     buildDate: buildDate.toISOString(),
-    indexFiles: htmlFiles.map(file => {
-      return { file: file };
-    }).concat([{file: 'versions.json'}])
+    indexFiles: htmlFiles
+      .map(file => {
+        return { file: file };
+      })
+      .concat([{ file: 'versions.json' }])
   };
 
   let manifestJson = JSON.stringify(manifest, null, 2);
