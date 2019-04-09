@@ -12,6 +12,7 @@ export interface NavRequest {
 /**
  * A message used to indicate a navigation operation
  * has been requested.
+ * @external
  */
 const navRequestDecoder = guard(
   object({
@@ -22,12 +23,14 @@ const navRequestDecoder = guard(
 /**
  * A message used to request the host navigate to another
  * URI.
+ * @external
  */
 export interface LabeledNavRequest extends LabeledMsg {
   msgType: 'navRequest';
   msg: NavRequest;
 }
 
+/** @external */
 const validateNavRequest = createMessageValidator<LabeledNavRequest>(
   'navRequest',
   navRequestDecoder

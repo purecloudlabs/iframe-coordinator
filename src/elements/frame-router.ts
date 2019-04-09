@@ -1,10 +1,11 @@
-import { EventEmitter, ExposedEventEmitter } from '../EventEmitter';
+import { EventEmitter, InternalEventEmitter } from '../EventEmitter';
 import FrameManager from '../FrameManager';
 import { HostRouter, RoutingMap } from '../HostRouter';
 import { ClientToHost } from '../messages/ClientToHost';
 import { EnvData, LabeledStarted } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 
+/** @external */
 const ROUTE_ATTR = 'route';
 
 /**
@@ -17,14 +18,14 @@ class FrameRouterElement extends HTMLElement {
   private _frameManager: FrameManager;
   private _router: HostRouter;
   private _envData: EnvData;
-  private _publishEmitter: EventEmitter<Publication>;
-  private _publishExposedEmitter: ExposedEventEmitter<Publication>;
+  private _publishEmitter: InternalEventEmitter<Publication>;
+  private _publishExposedEmitter: EventEmitter<Publication>;
   private _currentClientId: string;
 
   constructor() {
     super();
-    this._publishEmitter = new EventEmitter<Publication>();
-    this._publishExposedEmitter = new ExposedEventEmitter<Publication>(
+    this._publishEmitter = new InternalEventEmitter<Publication>();
+    this._publishExposedEmitter = new EventEmitter<Publication>(
       this._publishEmitter
     );
 

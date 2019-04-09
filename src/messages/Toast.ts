@@ -14,12 +14,14 @@ export interface Toast {
 /**
  * A message used to request toasts to display
  * in the host application.
+ * @external
  */
 export interface LabeledToast extends LabeledMsg {
   msgType: 'toastRequest';
   msg: Toast;
 }
 
+/** @external */
 const toastDecoder = guard(
   object({
     title: optional(string),
@@ -28,6 +30,7 @@ const toastDecoder = guard(
   })
 );
 
+/** @external */
 const validateToast = createMessageValidator<LabeledToast>(
   'toastRequest',
   toastDecoder

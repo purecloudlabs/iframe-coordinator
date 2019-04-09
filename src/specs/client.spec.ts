@@ -23,7 +23,8 @@ describe('client', () => {
       }
     };
 
-    client = new Client({ clientWindow: mockFrameWindow });
+    client = new Client();
+    client._clientWindow = mockFrameWindow;
   });
 
   describe('when the client is started', () => {
