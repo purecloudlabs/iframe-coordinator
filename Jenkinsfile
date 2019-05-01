@@ -8,7 +8,7 @@ pipeline {
   }
 
   tools {
-    nodejs 'NodeJS 10.15.1'
+    nodejs 'NodeJS 10.15.3'
   }
 
   stages {
@@ -19,16 +19,16 @@ pipeline {
         dir(env.REPO_DIR) {
           echo "Building Branch: ${env.GIT_BRANCH}"
           checkout scm
-          sh "${env.WORKSPACE}/${env.NPM_UTIL_PATH}/scripts/jenkins-create-npmrc.sh"
         }
       }
     }
 
     stage('Build') {
       steps {
-        dir(env.repo_dir) {
+        dir(env.REPO_DIR) {
           // check to see if we need to bump the version for release
           sh "${env.workspace}/${env.npm_util_path}/scripts/auto-version-bump.sh"
+          sh "${env.WORKSPACE}/${env.NPM_UTIL_PATH}/scripts/jenkins-create-npmrc.sh"  
           sh "npm ci"
           sh "npm run build"
         }
@@ -54,7 +54,7 @@ pipeline {
           sh "npm run doc"
           sh "./scripts/generate-deploy-files"
           sh '''
-              export CDN_ROOT=$(./node_modules/.bin/cdn --ecosystem gmsc --manifest doc/manifest.json)
+              export CDN_ROOT=$(./node_modules/.bin/cdn --ecosystem pc --manifest doc/manifest.json)
               ./scripts/prepare-docs
           '''
         }
@@ -66,7 +66,7 @@ pipeline {
         dir (env.REPO_DIR) {
           sh '''
              ./node_modules/.bin/upload \
-               --ecosystem gmsc \
+               --ecosystem pc \
                --manifest doc/manifest.json \
                --source-dir ./doc
           '''
@@ -79,7 +79,7 @@ pipeline {
         dir (env.REPO_DIR) {
           sh '''
              ./node_modules/.bin/deploy \
-               --ecosystem gmsc \
+               --ecosystem pc \
                --manifest doc/manifest.json \
                --dest-env dev
           '''
