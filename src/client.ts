@@ -17,6 +17,14 @@ import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 
 /**
+ * Client configuration options.
+ */
+interface ClientConfigOptions {
+  /** The expected origin of the host application. Messages will not be sent to other origins. */
+  hostOrigin?: string;
+}
+
+/**
  * This class is the primary interface that an embedded iframe client should use to communicate with
  * the host application.
  */
@@ -25,13 +33,19 @@ export class Client {
   private _clientWindow: Window;
   private _environmentData: EnvData;
   private _envDataEmitter: InternalEventEmitter<EnvData>;
+  private _hostOrigin: string;
   private _publishEmitter: InternalEventEmitter<Publication>;
   private _publishExposedEmitter: EventEmitter<Publication>;
 
   /**
    * Creates a new client.
    */
-  public constructor() {
+  public constructor(configOptions?: ClientConfigOptions) {
+    if (configOptions && configOptions.hostOrigin) {
+      this._hostOrigin = configOptions.hostOrigin;
+    } else {
+      this._hostOrigin = window.origin;
+    }
     this._clientWindow = window;
     this._publishEmitter = new InternalEventEmitter<Publication>();
     this._publishExposedEmitter = new EventEmitter<Publication>(
@@ -126,7 +140,7 @@ export class Client {
   private _sendToHost(message: ClientToHost): void {
     const validated = validateOutgoing(message);
     if (validated) {
-      this._clientWindow.parent.postMessage(validated, '*');
+      this._clientWindow.parent.postMessage(validated, this._hostOrigin);
     }
   }
 

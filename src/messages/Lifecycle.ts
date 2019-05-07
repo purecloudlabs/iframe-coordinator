@@ -9,6 +9,7 @@ import { createMessageValidator } from './validationUtils';
  * @external
  */
 export interface LabeledStarted extends LabeledMsg {
+  /** Message identifier */
   msgType: 'client_started';
 }
 
@@ -27,8 +28,11 @@ const validateStarted = createMessageValidator<LabeledStarted>(
  * in order to match behavior of the host application.
  */
 export interface EnvData {
+  /** Locale in use by the host app */
   locale: string;
+  /** Location of the host app */
   hostRootUrl: string;
+  /** Extra host-specific details */
   custom?: any;
 }
 
@@ -38,7 +42,9 @@ export interface EnvData {
  * @external
  */
 export interface LabeledEnvInit extends LabeledMsg {
+  /** Message identifier */
   msgType: 'env_init';
+  /** Environment data */
   msg: EnvData;
 }
 

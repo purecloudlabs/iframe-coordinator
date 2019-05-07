@@ -74,7 +74,9 @@ describe('InternalEventEmitter', () => {
   describe('Advanced type event emitter', () => {
     // tslint:disable-next-line
     interface CustomTestData {
+      // tslint:disable-next-line
       payload1: string;
+      // tslint:disable-next-line
       payload2: number;
     }
     let eventEmitter: InternalEventEmitter<CustomTestData>;

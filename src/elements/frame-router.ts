@@ -97,7 +97,7 @@ class FrameRouterElement extends HTMLElement {
    * @param newPath a new route which matches those provided originally.
    */
   public changeRoute(newPath: string) {
-    const clientInfo = this._router.getClientInfo(newPath);
+    const clientInfo = this._router.getClientTarget(newPath);
     this._currentClientId = (clientInfo && clientInfo.id) || '';
     this._frameManager.setFrameLocation(clientInfo && clientInfo.url);
   }
