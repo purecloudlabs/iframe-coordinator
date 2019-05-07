@@ -16,6 +16,9 @@ import {
 import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 
+/**
+ * Client configuration options.
+ */
 interface ClientConfigOptions {
   /** The expected origin of the host application. Messages will not be sent to other origins. */
   hostOrigin?: string;
