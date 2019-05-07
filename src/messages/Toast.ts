@@ -6,8 +6,11 @@ import { createMessageValidator } from './validationUtils';
  * A toast configuration.
  */
 export interface Toast {
+  /** The title of the notification */
   title?: string;
+  /** The notification message */
   message: string;
+  /** Additional host-specific options such as severity */
   custom: any;
 }
 
@@ -17,7 +20,9 @@ export interface Toast {
  * @external
  */
 export interface LabeledToast extends LabeledMsg {
+  /** Message identifier */
   msgType: 'toastRequest';
+  /** Toast details */
   msg: Toast;
 }
 

@@ -10,8 +10,11 @@ import { createMessageValidator } from './validationUtils';
  * in order to recieve this message.
  */
 export interface Publication {
+  /** Topic to publish on */
   topic: string;
+  /** Data to publish */
   payload: any;
+  /** Client the message originates from */
   clientId?: string;
 }
 
@@ -21,7 +24,9 @@ export interface Publication {
  * @external
  */
 export interface LabeledPublication extends LabeledMsg {
+  /** Message identifier */
   msgType: 'publish';
+  /** Details of the data to publish */
   msg: Publication;
 }
 

@@ -6,6 +6,7 @@ import { createMessageValidator } from './validationUtils';
  * The navigation request data.
  */
 export interface NavRequest {
+  /** The URL the client wants to navigate to */
   url: string;
 }
 
@@ -26,7 +27,9 @@ const navRequestDecoder = guard(
  * @external
  */
 export interface LabeledNavRequest extends LabeledMsg {
+  /** Message identifier */
   msgType: 'navRequest';
+  /** Navigation request details */
   msg: NavRequest;
 }
 
