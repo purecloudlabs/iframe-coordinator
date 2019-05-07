@@ -22,7 +22,7 @@ describe('HostRouter', () => {
 
   describe('when generating client URLs', () => {
     it('should append the path under the primary route to the client URL', () => {
-      const clientInfo = hostRouter.getClientInfo('route/one/foo/bar');
+      const clientInfo = hostRouter.getClientTarget('route/one/foo/bar');
       if (!clientInfo) {
         fail();
         return;
@@ -32,7 +32,7 @@ describe('HostRouter', () => {
     });
 
     it("should ignore leading and trailing slashes on the client's assigned route", () => {
-      const clientInfo = hostRouter.getClientInfo(
+      const clientInfo = hostRouter.getClientTarget(
         'leading/and/trailing/foo/bar'
       );
       if (!clientInfo) {
@@ -44,7 +44,7 @@ describe('HostRouter', () => {
     });
 
     it('should ignore leading slashes on the provided route', () => {
-      const clientInfo = hostRouter.getClientInfo('/route/one/foo/bar');
+      const clientInfo = hostRouter.getClientTarget('/route/one/foo/bar');
       if (!clientInfo) {
         fail();
         return;
@@ -54,7 +54,7 @@ describe('HostRouter', () => {
     });
 
     it('should preserve trailing slashes on the provided route', () => {
-      const clientInfo = hostRouter.getClientInfo('/route/one/foo/bar/');
+      const clientInfo = hostRouter.getClientTarget('/route/one/foo/bar/');
       if (!clientInfo) {
         fail();
         return;
@@ -64,7 +64,7 @@ describe('HostRouter', () => {
     });
 
     it('should append to the path when the client url has no hash', () => {
-      const clientInfo = hostRouter.getClientInfo('noHash/foo/bar');
+      const clientInfo = hostRouter.getClientTarget('noHash/foo/bar');
       if (!clientInfo) {
         fail();
         return;

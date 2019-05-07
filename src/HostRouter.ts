@@ -19,28 +19,37 @@ export class HostRouter {
    *
    * @param route The route to lookup, such as '/foo/bar/baz'
    */
-  public getClientInfo(
-    route: string
-  ): { id: string | null; url: string | null } {
-    let clientInfo: { id: string | null; url: string | null } = {
+  public getClientTarget(route: string): ClientTarget {
+    let clientTarget: ClientTarget = {
       id: null,
       url: null
     };
     this._clients.forEach(client => {
       const clientRoute = matchAndStripPrefix(route, client.assignedRoute);
       if (clientRoute !== null) {
-        clientInfo = {
+        clientTarget = {
           id: client.id,
           url: applyRoute(client.url, clientRoute)
         };
       }
     });
 
-    return clientInfo;
+    return clientTarget;
   }
 }
 
 // Utility Types
+
+/**
+ * Data representing the id of a client app to display
+ * and a target URL to show in that app.
+ */
+export interface ClientTarget {
+  /** The id of the target client */
+  id: string | null;
+  /** The target URL to show */
+  url: string | null;
+}
 
 /**
  * A map from client identifiers to configuration describing
@@ -65,7 +74,9 @@ export interface RoutingMap {
  * like http://example.com/client/#/baz/qux
  */
 interface ClientRegistration {
+  /** The URL where the client application is hosted */
   url: string;
+  /** The host route that should map to this client app */
   assignedRoute: string;
 }
 
@@ -76,6 +87,7 @@ interface ClientRegistration {
  * @external
  */
 interface ClientInfo extends ClientRegistration {
+  /** An identifier for the client app */
   id: string;
 }
 

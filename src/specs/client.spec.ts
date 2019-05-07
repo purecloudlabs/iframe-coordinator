@@ -23,7 +23,9 @@ describe('client', () => {
       }
     };
 
-    client = new Client();
+    client = new Client({
+      hostOrigin: 'https://example.com'
+    });
     client._clientWindow = mockFrameWindow;
   });
 
@@ -38,7 +40,7 @@ describe('client', () => {
           msgType: 'client_started',
           msg: undefined
         },
-        '*'
+        'https://example.com'
       );
     });
   });
@@ -90,7 +92,7 @@ describe('client', () => {
               custom: undefined
             }
           },
-          '*'
+          'https://example.com'
         );
       });
     });
@@ -114,7 +116,7 @@ describe('client', () => {
               custom: { data: 'test data' }
             }
           },
-          '*'
+          'https://example.com'
         );
       });
     });
@@ -136,7 +138,7 @@ describe('client', () => {
             clientId: undefined
           }
         },
-        '*'
+        'https://example.com'
       );
     });
   });
@@ -206,7 +208,7 @@ describe('client', () => {
             msgType: 'navRequest',
             msg: { url: 'http://www.example.com/' }
           },
-          '*'
+          'https://example.com'
         );
       });
     });
@@ -227,6 +229,21 @@ describe('client', () => {
 
       it('should not notify worker of navigation request', () => {
         expect(mockFrameWindow.parent.postMessage).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when the client is created without a specific host origin', () => {
+      it("sends messages to it's own origin", () => {
+        client = new Client();
+        client._clientWindow = mockFrameWindow;
+        client.start();
+        expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+          {
+            msgType: 'client_started',
+            msg: undefined
+          },
+          window.origin
+        );
       });
     });
   });

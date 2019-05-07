@@ -30,7 +30,12 @@ class FrameManager {
   private _window: Window;
   private _postMessageHandler: (event: MessageEvent) => void;
 
-  constructor(options: { onMessage: MessageHandler; mockWindow?: Window }) {
+  constructor(options: {
+    /** Handler for frame messages */
+    onMessage: MessageHandler;
+    /** Optional mock window for testing */
+    mockWindow?: Window;
+  }) {
     this._window = options.mockWindow ? options.mockWindow : window;
     this._postMessageHandler = event => {
       this._handlePostMessage(options.onMessage, event);

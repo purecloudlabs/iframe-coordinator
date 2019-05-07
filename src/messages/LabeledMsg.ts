@@ -9,6 +9,8 @@
  * @external
  */
 export interface LabeledMsg {
+  /** The type of message */
   msgType: string;
+  /** The message payload */
   msg: any;
 }
