@@ -4,8 +4,8 @@ import FrameRouterElement from './elements/frame-router';
  * Registers custom elements used by the host application
  * when hosting the coordinated client UI fragments.
  */
-function registerElements(): void {
+function registerCustomElements(): void {
   customElements.define('frame-router', FrameRouterElement);
 }
 
-export { registerElements, FrameRouterElement };
+export { registerCustomElements, FrameRouterElement };
