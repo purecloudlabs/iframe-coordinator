@@ -1,40 +1,40 @@
 // Load polyfills required for IE11
-import "@babel/polyfill";
-import "custom-event-polyfill/polyfill.js";
-import "url-polyfill";
+import '@babel/polyfill';
+import 'custom-event-polyfill/polyfill.js';
+import 'url-polyfill';
 
 // Load polyfills required for custom-elements
-import "@webcomponents/custom-elements/src/native-shim.js";
-import "@webcomponents/custom-elements/src/custom-elements.js";
+import '@webcomponents/custom-elements/src/native-shim.js';
+import '@webcomponents/custom-elements/src/custom-elements.js';
 
 // nodelist-foreach-polyfill is only required for the demo-app.
-import "nodelist-foreach-polyfill";
+import 'nodelist-foreach-polyfill';
 
-import { registerElements } from "iframe-coordinator/host";
-import "toastada";
+import { registerCustomElements } from 'iframe-coordinator/host';
+import 'toastada';
 
-const TOAST_LEVELS = ["info", "success", "error"];
+const TOAST_LEVELS = ['info', 'success', 'error'];
 const TOP_ROUTE_EXTRACTOR = /^#?(\/[^\/]+).*/;
 const NAV_CONFIGS = [
   {
-    id: "client1",
-    title: "Component 1",
-    url: new URL("/components/example1/#/", window.location).toString(),
-    assignedRoute: "/one",
-    children: ["first", "second"]
+    id: 'client1',
+    title: 'Component 1',
+    url: new URL('/components/example1/#/', window.location).toString(),
+    assignedRoute: '/one',
+    children: ['first', 'second']
   },
   {
-    id: "client2",
-    title: "Component 2",
-    url: new URL("/components/example2/#/", window.location).toString(),
-    assignedRoute: "/two",
-    children: ["first", "second"]
+    id: 'client2',
+    title: 'Component 2',
+    url: new URL('/components/example2/#/', window.location).toString(),
+    assignedRoute: '/two',
+    children: ['first', 'second']
   },
   {
-    id: "wikipedia",
-    title: "Wikipedia",
-    url: new URL("https://en.wikipedia.org").toString(),
-    assignedRoute: "/wikipedia",
+    id: 'wikipedia',
+    title: 'Wikipedia',
+    url: new URL('https://en.wikipedia.org').toString(),
+    assignedRoute: '/wikipedia',
     children: []
   }
 ];
@@ -43,11 +43,13 @@ let urlRoutingEnabled = false;
 
 // ----- Env Setup
 
-registerElements();
+// Initializes the `frame-router` custom element
+registerCustomElements();
 
 // ----- Client/Nav Setup
 
-let router = document.getElementById("router");
+// Configure the clients on the `frame-router`
+let router = document.getElementById('router');
 router.setupFrames(
   NAV_CONFIGS.reduce((clientMap, { id, url, assignedRoute }) => {
     clientMap[id] = {
@@ -58,7 +60,7 @@ router.setupFrames(
     return clientMap;
   }, {}),
   {
-    locale: "nl-NL",
+    locale: 'nl-NL',
     hostRootUrl: window.location.origin
   }
 );
@@ -68,25 +70,27 @@ buildNavMarkup(NAV_CONFIGS);
 // ----- Pub-Sub Setup
 
 // Subscribe to pub-sub events on the topic `publish.topic`
-router.messaging.addListener("publish.topic", publication => {
+router.messaging.addListener('publish.topic', publication => {
   console.log(
-    `Recieved pub-sub data from ${publication.clientId} on topic ${publication.topic}:`,
+    `Recieved pub-sub data from ${publication.clientId} on topic ${
+      publication.topic
+    }:`,
     publication.payload
   );
 });
 
-document.getElementById("publish").addEventListener("click", event => {
+document.getElementById('publish').addEventListener('click', event => {
   router.publish({
-    topic: "host.topic",
-    payload: { message: "Hello, Client!" }
+    topic: 'host.topic',
+    payload: { message: 'Hello, Client!' }
   });
 });
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   // ----- Routing Setup
   document
-    .querySelector("button.url-routing.toggle-switch")
-    .addEventListener("click", toggleRouting);
+    .querySelector('button.url-routing.toggle-switch')
+    .addEventListener('click', toggleRouting);
 
   window.onhashchange = function() {
     if (urlRoutingEnabled) {
@@ -97,8 +101,8 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   document
-    .getElementById("router")
-    .addEventListener("navRequest", function(data) {
+    .getElementById('router')
+    .addEventListener('navRequest', function(data) {
       let requestedUrl = new URL(data.detail.url);
       let requestedRoute = requestedUrl.hash.substr(1);
       if (urlRoutingEnabled) {
@@ -112,33 +116,32 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // ----- Toast Message Setup
   window.toastada.setOptions({
-    prependTo: document.querySelector("root-container"),
+    prependTo: document.querySelector('root-container'),
     lifeSpan: 5000,
-    position: "top-right",
+    position: 'top-right',
     animate: false,
     animateDuration: 0
   });
 
   document
-    .querySelector("frame-router")
-    .addEventListener("toastRequest", ({ detail: msgPayload }) => {
+    .querySelector('frame-router')
+    .addEventListener('toastRequest', ({ detail: msgPayload }) => {
       let toastLevel = null;
       if (msgPayload && msgPayload.custom) {
         toastLevel = msgPayload.custom.level;
         if (TOAST_LEVELS.indexOf(toastLevel) === -1) {
-          console.error("Received unknown toast level", toastLevel);
+          console.error('Received unknown toast level', toastLevel);
           toastLevel = null;
         }
       }
       toastLevel = toastLevel || TOAST_LEVELS[0];
 
       // Note: In production, we would sanitize this provided content
-      let toastHtml = "";
+      let toastHtml = '';
       if (msgPayload.title && msgPayload.title.trim().length > 0) {
         toastHtml += `<div class="title">${msgPayload.title}</div>`;
       }
-      toastHtml +=
-      `<div class="msg">
+      toastHtml += `<div class="msg">
         <p>${msgPayload.message}</p>
         <small>Published from ${msgPayload.clientId}<small>
       </div>`;
@@ -160,7 +163,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Routing helpers
 
 function setRoute(route) {
-  document.getElementById("router").setAttribute("route", route);
+  document.getElementById('router').setAttribute('route', route);
 }
 
 function toggleRouting() {
@@ -169,36 +172,36 @@ function toggleRouting() {
   if (urlRoutingEnabled) {
     updateActiveNav();
   } else {
-    location.hash = "";
+    location.hash = '';
   }
 
   // Update UI
   document
-    .querySelector("button.url-routing.toggle-switch")
-    .setAttribute("aria-checked", urlRoutingEnabled);
+    .querySelector('button.url-routing.toggle-switch')
+    .setAttribute('aria-checked', urlRoutingEnabled);
   document.querySelector(
-    "header nav ul.nav-menu"
-  ).style.display = urlRoutingEnabled ? "flex" : "none";
+    'header nav ul.nav-menu'
+  ).style.display = urlRoutingEnabled ? 'flex' : 'none';
   document.querySelector(
-    "header nav ul.programmatic-nav"
-  ).style.display = urlRoutingEnabled ? "none" : "flex";
+    'header nav ul.programmatic-nav'
+  ).style.display = urlRoutingEnabled ? 'none' : 'flex';
 }
 
 // UI Helpers
 function buildNavMarkup(navConfigs) {
-  let navMenu = document.querySelector("header nav ul.nav-menu");
+  let navMenu = document.querySelector('header nav ul.nav-menu');
   let programmaticNav = document.querySelector(
-    "header nav ul.programmatic-nav"
+    'header nav ul.programmatic-nav'
   );
 
   navConfigs.forEach(curr => {
     // Build Nav Menu Item
-    let currLi = document.createElement("li");
-    currLi.setAttribute("class", `nav-id-${curr.id}`);
+    let currLi = document.createElement('li');
+    currLi.setAttribute('class', `nav-id-${curr.id}`);
 
-    let currLink = document.createElement("a");
-    currLink.setAttribute("class", `nav-id-${curr.id}`);
-    currLink.setAttribute("href", `#${curr.assignedRoute}`);
+    let currLink = document.createElement('a');
+    currLink.setAttribute('class', `nav-id-${curr.id}`);
+    currLink.setAttribute('href', `#${curr.assignedRoute}`);
     currLink.appendChild(document.createTextNode(curr.title));
 
     currLi.appendChild(currLink);
@@ -207,11 +210,11 @@ function buildNavMarkup(navConfigs) {
     navMenu.appendChild(currLi);
 
     // Build Programmatic Button
-    let currLinkButton = document.createElement("li");
-    currLinkButton.setAttribute("class", `nav-id-${curr.id}`);
-    let currButton = document.createElement("button");
-    currButton.setAttribute("class", `nav-id-${curr.id}`);
-    currButton.addEventListener("click", () => {
+    let currLinkButton = document.createElement('li');
+    currLinkButton.setAttribute('class', `nav-id-${curr.id}`);
+    let currButton = document.createElement('button');
+    currButton.setAttribute('class', `nav-id-${curr.id}`);
+    currButton.addEventListener('click', () => {
       setRoute(curr.assignedRoute);
       updateActiveNav(curr.assignedRoute);
     });
@@ -236,14 +239,14 @@ function updateActiveNav(
     activeNavId = activeNavItem ? activeNavItem.id : null;
   }
 
-  let navMenus = document.querySelectorAll("header nav ul");
+  let navMenus = document.querySelectorAll('header nav ul');
   navMenus.forEach(menu => {
-    let navEntries = menu.querySelectorAll("li").forEach(el => {
+    let navEntries = menu.querySelectorAll('li').forEach(el => {
       let currClassList = el.classList;
       if (currClassList.contains(`nav-id-${activeNavId}`)) {
-        currClassList.add("active");
+        currClassList.add('active');
       } else {
-        currClassList.remove("active");
+        currClassList.remove('active');
       }
     });
   });
