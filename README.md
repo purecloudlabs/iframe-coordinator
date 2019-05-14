@@ -35,7 +35,7 @@ import "@webcomponents/custom-elements/src/custom-elements.js";
 /* Import the host library */
 import { registerCustomElements } from "iframe-coordinator/host.js";
 
-/* This will make the custome element `frame-router` available
+/* This will make the custom element `frame-router` available
  * for use in your browser. This element is the primary
  * host interface for the library.
  */
@@ -50,7 +50,7 @@ registerCustomElements();
  * clients on the same domain. 
  * (e.g. `new URL("/client/app/path/', window.location).toString()`)
  * 
- * If the client uses fragment-based routing, the URL shoudl include a hash fragment:
+ * If the client uses fragment-based routing, the URL should include a hash fragment:
  * http://example.com/client/#/
  *
  * if the client uses pushstate path-based routing, leave the fragment out:
