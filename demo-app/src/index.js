@@ -11,6 +11,7 @@ import '@webcomponents/custom-elements/src/custom-elements.js';
 import 'nodelist-foreach-polyfill';
 
 import { registerCustomElements } from 'iframe-coordinator/host';
+
 import 'toastada';
 
 const TOAST_LEVELS = ['info', 'success', 'error'];
@@ -93,11 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
     .addEventListener('click', toggleRouting);
 
   window.onhashchange = function() {
-    if (urlRoutingEnabled) {
-      // On hash change & routing mode, update route attribute
-      setRoute(window.location.hash.slice(1));
-      updateActiveNav();
-    }
+    applyFragmentRoute();
   };
 
   document
@@ -161,6 +158,13 @@ document.addEventListener('DOMContentLoaded', () => {
 // ----- Helpers
 
 // Routing helpers
+function applyFragmentRoute() {
+  if (urlRoutingEnabled) {
+    // On hash change & routing mode, update route attribute
+    setRoute(window.location.hash.slice(1));
+    updateActiveNav();
+  }
+}
 
 function setRoute(route) {
   document.getElementById('router').setAttribute('route', route);
@@ -171,6 +175,7 @@ function toggleRouting() {
 
   if (urlRoutingEnabled) {
     updateActiveNav();
+    applyFragmentRoute();
   } else {
     location.hash = '';
   }
