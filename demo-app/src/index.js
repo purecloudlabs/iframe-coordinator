@@ -10,7 +10,8 @@ import '@webcomponents/custom-elements/src/custom-elements.js';
 // nodelist-foreach-polyfill is only required for the demo-app.
 import 'nodelist-foreach-polyfill';
 
-import { registerElements } from 'iframe-coordinator/host';
+import { registerCustomElements } from 'iframe-coordinator/host';
+
 import 'toastada';
 
 const TOAST_LEVELS = ['info', 'success', 'error'];
@@ -43,10 +44,12 @@ let urlRoutingEnabled = false;
 
 // ----- Env Setup
 
-registerElements();
+// Initializes the `frame-router` custom element
+registerCustomElements();
 
 // ----- Client/Nav Setup
 
+// Configure the clients on the `frame-router`
 let router = document.getElementById('router');
 router.setupFrames(
   NAV_CONFIGS.reduce((clientMap, { id, url, assignedRoute }) => {
