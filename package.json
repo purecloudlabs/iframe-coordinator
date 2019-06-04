@@ -58,13 +58,16 @@
     "test.watch": "./node_modules/karma/bin/karma start",
     "test.watch.chrome": "./node_modules/karma/bin/karma start --browsers=Chrome",
     "precommit": "lint-staged",
-    "build": "webpack",
+    "build": "npm run build-lib && npm run build-cli",
+    "build-lib": "webpack",
+    "build-cli": "cd ./cli/embedded-app && npm run build",
     "start": "webpack --watch",
     "format": "prettier **/*.ts **/*.tsx",
     "format.fix": "npm run format -- --write",
     "lint": "tslint --project tsconfig.json",
     "lint.fix": "npm run lint -- --fix",
-    "doc": "typedoc --excludePrivate --excludeProtected --excludeNotExported --excludeExternals --mode file --readme README.md --out doc/ src/"
+    "doc": "typedoc --excludePrivate --excludeProtected --excludeNotExported --excludeExternals --mode file --readme README.md --out doc/ src/",
+    "prepare": "cd ./cli/embedded-app && npm install"
   },
   "husky": {
     "hooks": {

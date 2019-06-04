@@ -129,5 +129,53 @@ client.start();
     <!-- ... -->
 </body>
 ```
+
+**Local Development**
+
+When working on a client application locally, or running automated selenium tests,
+it can be burdensome to bootstrap a fully featured host-application just to work 
+on the client app feature. To help with this, the iframe-coordinator library also
+provides a command-line utility `ifc-cli` which can spin up a local bare-bones
+host application. Documentation is always available via `ifc-cli --help`:
+
+```
+Usage: ifc-cli [options]
+
+Options:
+  -f, --config-file <file>  iframe client configuration file (default: "${projectDir}/iframe-coordinator/ifc-cli.config.js")
+  -p, --port <port_num>     port number to host on (default: 3000)
+  -h, --help                output usage information
+
+  This program will start a server for a basic iframe-coordinator host app. In
+  order to configure the frame-router element and any other custom logic needed
+  in the host app, a config file must be provided which should assign a
+  function to `module.exports` that will be passed the frame-router element
+  as an input once it has been mounted. Keep in mind that the config file is
+  not a true commonJS module, and will be evaluated directly inside the browser
+  in an immediately invoked function expression. 
+
+  Here is an example:
+  
+module.exports = function(frameRouter) {
+  frameRouter.setupFrames(
+    {
+      wikip: {
+        url: 'https://en.wikipedia.org',
+        assignedRoute: '/'
+      }
+    },
+    {
+      locale: 'en-US',
+      hostRootUrl: window.location.origin,
+      custom: getCustomClientData()
+    }
+  );
+};
+
+function getCustomClientData() {
+  // Custom setup...
+}
+```
+
 ### IE11 support
 Our target version of javascript is ES2015.  This means that you will be required to transpile this library if you wish to support IE11.  In addition the necessary polyfills will need to be loaded by both the host application and the client frame.
