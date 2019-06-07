@@ -1,34 +1,42 @@
 {
   "extends": ["tslint:recommended", "tslint-config-prettier"],
   "linterOptions": {
-    "exclude": ["node_modules/**/*.ts", "**/*.d.ts"]
+    "exclude": ["node_modules/**/*.ts", "**/*.d.ts", "cli/embedded-app/**/*"]
   },
   "rules": {
     "interface-name": [true, "never-prefix"],
     "member-access": true,
     "member-ordering": false,
-    "completed-docs": [true, {
-      "classes": true,
-      "enums": true,
-      "enum-members": true,
-      "functions": { "visibilties": ["exported"] },
-      "interfaces": true,
-      "methods": { 
-        "locations": ["all"],
-        "privacies": ["public", "protected"],
-        "tags": { "content": { "see": ["#.*"] }, "existence": ["inheritdoc"] } 
-      },
-      "namespaces": true,
-      "properties": { 
-        "locations": ["all"],
-        "privacies": ["public", "protected"],
-        "tags": { "content": { "see": ["#.*"] }, "existence": ["inheritdoc"] } 
-      },
-      "types": true
-    }],
+    "completed-docs": [
+      true,
+      {
+        "classes": true,
+        "enums": true,
+        "enum-members": true,
+        "functions": { "visibilties": ["exported"] },
+        "interfaces": true,
+        "methods": {
+          "locations": ["all"],
+          "privacies": ["public", "protected"],
+          "tags": { "content": { "see": ["#.*"] }, "existence": ["inheritdoc"] }
+        },
+        "namespaces": true,
+        "properties": {
+          "locations": ["all"],
+          "privacies": ["public", "protected"],
+          "tags": { "content": { "see": ["#.*"] }, "existence": ["inheritdoc"] }
+        },
+        "types": true
+      }
+    ],
     "no-trailing-whitespace": [true, "ignore-blank-lines"],
     "object-literal-sort-keys": false,
-    "semicolon": [true, "always"],
-    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"]
+    "semicolon": [true, "always", "ignore-bound-class-methods"],
+    "variable-name": [
+      true,
+      "ban-keywords",
+      "check-format",
+      "allow-leading-underscore"
+    ]
   }
 }
