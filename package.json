@@ -3,7 +3,10 @@
   "version": "2.0.0",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
-    "decoders": "^1.10.6"
+    "commander": "^2.20.0",
+    "decoders": "^1.10.6",
+    "express": "^4.17.1",
+    "find-root": "^1.1.0"
   },
   "files": [
     "client.js",
@@ -12,15 +15,21 @@
     "host.d.ts",
     "index.js",
     "index.d.ts",
-    "types.d.ts"
+    "types.d.ts",
+    "src/**/*.d.ts",
+    "cli/ifc-cli.js",
+    "cli/embedded-app/dist/**/*"
   ],
   "main": "index.js",
   "module": "index.js",
   "types": "index.d.ts",
+  "bin": {
+    "ifc-cli": "cli/ifc-cli.js"
+  },
   "devDependencies": {
     "@purecloud/web-app-deploy": "^5.0.21",
     "@types/jasmine": "^2.8.9",
-    "cheerio": "^1.0.0-rc.2",
+    "cheerio": "^1.0.0-rc.3",
     "glob": "^7.1.3",
     "husky": "^1.1.2",
     "i": "^0.3.6",
@@ -63,10 +72,15 @@
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "npm run lint.fix",
-      "npm run format.fix",
-      "git add"
+    "linters": {
+      "*.ts": [
+        "npm run lint.fix",
+        "npm run format.fix",
+        "git add"
+      ]
+    },
+    "ignore": [
+      "cli/embedded-app/**/*.ts"
     ]
   },
   "author": "",
