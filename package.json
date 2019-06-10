@@ -9,20 +9,16 @@
     "find-root": "^1.1.0"
   },
   "files": [
-    "client.js",
-    "client.d.ts",
-    "host.js",
-    "host.d.ts",
-    "index.js",
-    "index.d.ts",
-    "types.d.ts",
-    "src/**/*.d.ts",
+    "dist/client.js",
+    "dist/host.js",
+    "dist/index.js",
+    "dist/**/*.d.ts",
     "cli/ifc-cli.js",
     "cli/embedded-app/dist/**/*"
   ],
-  "main": "index.js",
-  "module": "index.js",
-  "types": "index.d.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
   "bin": {
     "ifc-cli": "cli/ifc-cli.js"
   },
