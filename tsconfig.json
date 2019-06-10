@@ -1,11 +1,11 @@
 {
   "compilerOptions": {
-    "outDir": "./",
+    "outDir": "./dist",
     "noImplicitAny": true,
     "strictNullChecks": true,
     "module": "commonjs",
     "declaration": true,
-    "declarationDir": "./",
+    "declarationDir": "./dist",
     "target": "es2015"
   },
   "include": ["src"],

@@ -1,11 +1,2 @@
 node_modules/
-/client.js
-/host.js
-/index.js
-
-/*.d.ts
-/elements/
-/specs/
-/messages/
-/ports/
-/doc/
+/dist/
