@@ -29,6 +29,7 @@ pipeline {
           // check to see if we need to bump the version for release
           sh "${env.workspace}/${env.npm_util_path}/scripts/auto-version-bump.sh"
           sh "${env.WORKSPACE}/${env.NPM_UTIL_PATH}/scripts/jenkins-create-npmrc.sh"  
+          sh "cp ./.npmrc ./cli/embedded-app/.npmrc"
           sh "npm ci"
           sh "npm run build"
         }
