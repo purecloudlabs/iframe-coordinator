@@ -1,14 +1,14 @@
 module.exports = {
-  mode: "none",
+  mode: 'none',
   entry: {
-    index: "./src/index.ts",
-    client: "./src/client.ts",
-    host: "./src/host.ts"
+    index: './src/index.ts',
+    client: './src/client.ts',
+    host: './src/host.ts'
   },
   output: {
-    libraryTarget: "umd",
-    filename: "[name].js",
-    path: __dirname + ""
+    libraryTarget: 'umd',
+    filename: '[name].js',
+    path: __dirname + '/dist'
   },
   module: {
     rules: [
@@ -16,12 +16,12 @@ module.exports = {
         test: /\.ts$/,
         exclude: [/node_modules/],
         use: {
-          loader: "ts-loader"
+          loader: 'ts-loader'
         }
       }
     ]
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"]
+    extensions: ['.tsx', '.ts', '.js']
   }
 };
