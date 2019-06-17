@@ -58,7 +58,7 @@ class FrameManager {
    * @param newLocation The new location the iframe should show. If `null`,
    * the frame will be directed to 'about:blank'.
    */
-  public setFrameLocation(newLocation?: string | null | undefined) {
+  public setFrameLocation(newLocation?: string | null | undefined): string {
     this._frameLocation = newLocation || 'about:blank';
     if (this._iframe.contentWindow) {
       this._navigateFrame();
@@ -69,6 +69,8 @@ class FrameManager {
         this._iframe.onload = null;
       };
     }
+    // Let the caller know where the frame ended up
+    return this._frameLocation;
   }
 
   /**
