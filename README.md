@@ -22,7 +22,7 @@ Embedding applications via iframe also means that code from separate teams can b
 import "@babel/polyfill";
 import "custom-event-polyfill/polyfill.js";
 import "url-polyfill";
- 
+
 /* The iframe coordinator library uses custom elements to
  * embed itself in the host app. If you are targeting browsers
  * that don't support custom elements, you'll need a polyfill.
@@ -45,11 +45,11 @@ registerCustomElements();
  * element with an id of `coordinator`. `assignedRoute` is the
  * fragment path in the current page that represents the root
  * path for that client. `url` is the page to load in the
- * iframe on that route. It must be a full Url, but you can 
+ * iframe on that route. It must be a full Url, but you can
  * use the URL construtor to simplify handling
- * clients on the same domain. 
+ * clients on the same domain.
  * (e.g. `new URL("/client/app/path/', window.location).toString()`)
- * 
+ *
  * If the client uses fragment-based routing, the URL should include a hash fragment:
  * http://example.com/client/#/
  *
@@ -81,9 +81,9 @@ https://example.com/components/example1/#/my/path
 
 ```html
 <body>
-    <!-- host-app stuff -->
-    <frame-router id="frame-element" route="/one/my/path" />
-    <!-- more host-app stuff -->
+  <!-- host-app stuff -->
+  <frame-router id="frame-element" route="/one/my/path" />
+  <!-- more host-app stuff -->
 </body>
 ```
 
@@ -96,12 +96,12 @@ https://example.com/components/example1/#/my/path
  * We require a few polyfills in order to support IE11.  These
  * will be needed to be loaded by both the host and the client.
  */
-import "@babel/polyfill";
-import "custom-event-polyfill/polyfill.js";
-import "url-polyfill";
+import '@babel/polyfill';
+import 'custom-event-polyfill/polyfill.js';
+import 'url-polyfill';
 
 /* Import the client library */
-import { Client } from "iframe-coordinator/client.js";
+import { Client } from 'iframe-coordinator/client.js';
 
 /* Create a new instance of the client */
 const client = new Client();
@@ -117,23 +117,23 @@ client.start();
 
 ```html
 <body>
-    <!-- ... -->
-    <!--
+  <!-- ... -->
+  <!--
         Links in the client app should be configured to use
         URLs that match what the host app will show, rather
         than their own internal URLs.
 
         We'll probably add tooling to help with this eventually.
      -->
-    <a href="${hostAppUrl}/${hostAppRoute}">Click Me</a>
-    <!-- ... -->
+  <a href="${hostAppUrl}/${hostAppRoute}">Click Me</a>
+  <!-- ... -->
 </body>
 ```
 
 **Local Development**
 
 When working on a client application locally, or running automated selenium tests,
-it can be burdensome to bootstrap a fully featured host-application just to work 
+it can be burdensome to bootstrap a fully featured host-application just to work
 on the client app feature. To help with this, the iframe-coordinator library also
 provides a command-line utility `ifc-cli` which can spin up a local bare-bones
 host application. Documentation is always available via `ifc-cli --help`:
@@ -142,7 +142,7 @@ host application. Documentation is always available via `ifc-cli --help`:
 Usage: ifc-cli [options]
 
 Options:
-  -f, --config-file <file>  iframe client configuration file (default: "${projectDir}/iframe-coordinator/ifc-cli.config.js")
+  -f, --config-file <file>  iframe client configuration file (default: "/home/mcheely/projects/iframe-coordinator/ifc-cli.config.js")
   -p, --port <port_num>     port number to host on (default: 3000)
   -h, --help                output usage information
 
@@ -150,18 +150,27 @@ Options:
   order to configure the frame-router element and any other custom logic needed
   in the host app, a config file must be provided which should assign a
   function to `module.exports` that will be passed the frame-router element
-  as an input once it has been mounted. Keep in mind that the config file is
-  not a true commonJS module, and will be evaluated directly inside the browser
-  in an immediately invoked function expression. 
+  as an input once it has been mounted. The function should return a config
+  object with the following fields:
 
-  Here is an example:
-  
+  - publishTopics: A list of messaging topics the client publishes on
+
+  Keep in mind that the config file is not a true commonJS module, and
+  will be evaluated directly inside the browser in an immediately invoked
+  function expression.
+
+  Here is an example config file:
+
 module.exports = function(frameRouter) {
   frameRouter.setupFrames(
     {
-      wikip: {
-        url: 'https://en.wikipedia.org',
-        assignedRoute: '/'
+      app1: {
+        url: 'http://localhost:8080/client-app-1/#/',
+        assignedRoute: '/app1'
+      },
+      app2: {
+        url: 'http://localhost:8080/client-app-2/#/',
+        assignedRoute: '/app2'
       }
     },
     {
@@ -170,12 +179,19 @@ module.exports = function(frameRouter) {
       custom: getCustomClientData()
     }
   );
+
+  return {
+    // These are the topics that the host app should display payloads for when
+    // the client publishes on them.
+    publishTopics: ['publish.topic']
+  };
 };
 
 function getCustomClientData() {
-  // Custom setup...
+  return { test: 'This is only a test' };
 }
 ```
 
 ### IE11 support
-Our target version of javascript is ES2015.  This means that you will be required to transpile this library if you wish to support IE11.  In addition the necessary polyfills will need to be loaded by both the host application and the client frame.
+
+Our target version of javascript is ES2015. This means that you will be required to transpile this library if you wish to support IE11. In addition the necessary polyfills will need to be loaded by both the host application and the client frame.

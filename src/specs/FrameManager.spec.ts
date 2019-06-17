@@ -100,6 +100,14 @@ describe('FrameManager', () => {
         'about:blank'
       );
     });
+
+    it('returns the set location', () => {
+      mocks.frame.load();
+      const blank = frameManager.setFrameLocation(null);
+      const example = frameManager.setFrameLocation('http://example.com');
+      expect(blank).toEqual('about:blank');
+      expect(example).toEqual('http://example.com');
+    });
   });
 
   describe('Can send messages to the client frame', () => {

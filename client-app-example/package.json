@@ -11,7 +11,9 @@
     "tag": "alpha"
   },
   "scripts": {
-    "start": "webpack-dev-server --open",
+    "start": "concurrently \"npm:serve-clients\" \"npm:start-host-shim\"",
+    "serve-clients": "webpack-dev-server",
+    "start-host-shim": "ifc-cli",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -36,7 +38,9 @@
     "webpack-dev-server": "^3.1.10"
   },
   "dependencies": {
+    "@babel/polyfill": "^7.4.4",
     "@webcomponents/custom-elements": "^1.0.9",
+    "concurrently": "^4.1.0",
     "copy-webpack-plugin": "^4.5.2",
     "custom-event-polyfill": "^1.0.6",
     "iframe-coordinator": "file:..",
