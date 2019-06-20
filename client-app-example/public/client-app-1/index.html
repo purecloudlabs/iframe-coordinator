@@ -1,0 +1,42 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../../client.css" />
+  </head>
+  <body>
+    <h1>Component #1</h1>
+
+    <h2>Routing</h2>
+    <h3>Current Local Route:</h3>
+    <div id="path"></div>
+
+    <h3>Change Route</h3>
+    <ul>
+      <li><a href="#/app1/route1">This client: /route1</a></li>
+      <li><a href="#/app1/route2">This client: /route2</a></li>
+      <li><a href="#/app2/route1">Other client: /route1</a></li>
+      <li><a href="#/app2/route2">Other client: /route2</a></li>
+    </ul>
+
+    <h2>Toasts</h2>
+    <button class="toast" data-component-name="App #1">Send Toast</button>
+
+    <h2>Pub-Sub</h2>
+    <div id="pub-sub">
+      <h3>Outbound</h3>
+      <label for="pub-topic">Topic Name:</label>
+      <input id="pub-topic" type="text" value="publish.topic" />
+      <label for="pub-data">Payload:</label>
+      <textarea id="pub-data">
+{
+        "data": 1234
+    }</textarea
+      >
+      <button id="do-publish">Publish!</button>
+    </div>
+
+    <h2>Environment Data from Host</h2>
+    <pre id="env-data"></pre>
+
+    <script type="text/javascript" src="/client-app.js"></script>
+  </body>
+</html>
