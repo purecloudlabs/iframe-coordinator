@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const commander = require('commander');
 const program = new commander.Command();
 const fs = require('fs');
@@ -52,11 +54,16 @@ function showHelpText() {
   order to configure the frame-router element and any other custom logic needed
   in the host app, a config file must be provided which should assign a
   function to \`module.exports\` that will be passed the frame-router element
-  as an input once it has been mounted. Keep in mind that the config file is
-  not a true commonJS module, and will be evaluated directly inside the browser
-  in an immediately invoked function expression. 
+  as an input once it has been mounted. The function should return a config
+  object with the following fields:
 
-  Here is an example:
+  - publishTopics: A list of messaging topics the client publishes on
+  
+  Keep in mind that the config file is not a true commonJS module, and
+  will be evaluated directly inside the browser in an immediately invoked
+  function expression. 
+
+  Here is an example config file:
   `);
   console.log(fs.readFileSync(configExample).toString());
 }
