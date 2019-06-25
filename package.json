@@ -3,6 +3,7 @@
   "version": "2.1.0",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
     "commander": "^2.20.0",
     "decoders": "^1.10.6",
     "express": "^4.17.1",
@@ -25,7 +26,6 @@
   "devDependencies": {
     "@purecloud/web-app-deploy": "^5.2.9",
     "@types/jasmine": "^2.8.9",
-    "cheerio": "^1.0.0-rc.3",
     "glob": "^7.1.4",
     "husky": "^1.1.2",
     "i": "^0.3.6",
