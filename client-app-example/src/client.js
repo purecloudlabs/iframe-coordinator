@@ -15,15 +15,18 @@ window.onhashchange = function() {
 
 let iframeClient = new Client({
   // This lets the example client work with the cli host by setting it's domain
-  // as a valid host origin to post messages to
+  // as a valid host origin to post messages to. A production app will probably
+  // need to conditionally set this.
   hostOrigin: 'http://localhost:3000'
 });
 
 // Add a listener that will handled config data passed from the host to the
 // client at startup.
 iframeClient.addListener('environmentalData', envData => {
+  const appLocale = envData.locale;
+
   const now = new Date();
-  const localizedDate = new Intl.DateTimeFormat(envData.locale).format(now);
+  const localizedDate = new Intl.DateTimeFormat(appLocale).format(now);
   console.log(
     `Got locale from host. Current date formatted for ${envData.locale} is: ${localizedDate}`
   );
