@@ -1,4 +1,5 @@
 import { EventEmitter, InternalEventEmitter } from '../EventEmitter';
+import { Filter } from '../filtering/Filter';
 import FrameManager from '../FrameManager';
 import { HostRouter, RoutingMap } from '../HostRouter';
 import { ClientToHost } from '../messages/ClientToHost';
@@ -21,6 +22,7 @@ class FrameRouterElement extends HTMLElement {
   private _publishEmitter: InternalEventEmitter<Publication>;
   private _publishExposedEmitter: EventEmitter<Publication>;
   private _currentClientId: string;
+  private _filteredTopics: Map<string, Filter>;
 
   constructor() {
     super();
@@ -32,6 +34,8 @@ class FrameRouterElement extends HTMLElement {
     this._frameManager = new FrameManager({
       onMessage: this._handleClientMessages.bind(this)
     });
+
+    this._filteredTopics = new Map();
   }
 
   /**
@@ -100,6 +104,11 @@ class FrameRouterElement extends HTMLElement {
     if (this._router) {
       const clientInfo = this._router.getClientTarget(newPath);
       this._currentClientId = (clientInfo && clientInfo.id) || '';
+
+      this._filteredTopics =
+        (clientInfo && clientInfo.filteredTopics) || new Map();
+      this._envData.filteredTopics = this._filteredTopics;
+
       const newLocation = this._frameManager.setFrameLocation(
         clientInfo && clientInfo.url
       );

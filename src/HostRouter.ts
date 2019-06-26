@@ -1,3 +1,5 @@
+import { Filter } from './filtering/Filter';
+
 // Main Class
 
 /**
@@ -29,7 +31,8 @@ export class HostRouter {
       if (clientRoute !== null) {
         clientTarget = {
           id: client.id,
-          url: applyRoute(client.url, clientRoute)
+          url: applyRoute(client.url, clientRoute),
+          filteredTopics: client.filteredTopics
         };
       }
     });
@@ -49,6 +52,8 @@ export interface ClientTarget {
   id: string | null;
   /** The target URL to show */
   url: string | null;
+  /** A filter for keyboard events */
+  filteredTopics?: Map<string, Filter>;
 }
 
 /**
@@ -78,6 +83,8 @@ interface ClientRegistration {
   url: string;
   /** The host route that should map to this client app */
   assignedRoute: string;
+  /** A filter for keyboard events */
+  filteredTopics?: any;
 }
 
 /**
@@ -130,7 +137,8 @@ function parseRegistration(key: string, value: ClientRegistration): ClientInfo {
   return {
     id: key,
     url: value.url,
-    assignedRoute: normalizeRoute(value.assignedRoute)
+    assignedRoute: normalizeRoute(value.assignedRoute),
+    filteredTopics: transformFilteredTopics(value.filteredTopics)
   };
 }
 
@@ -151,6 +159,24 @@ function applyRoute(urlStr: string, route: string): string {
     newUrl.pathname = `${baseClientPath}/${route}`;
   }
   return newUrl.toString();
+}
+
+/**
+ * who cares
+ * @param filteredTopics whatever
+ */
+function transformFilteredTopics(filteredTopics: any): Map<string, Filter> {
+  const retVal = new Map();
+
+  if (!filteredTopics) {
+    return retVal;
+  }
+
+  for (const topic of Object.keys(filteredTopics)) {
+    retVal.set(topic, filteredTopics[topic]);
+  }
+
+  return retVal;
 }
 
 /**
