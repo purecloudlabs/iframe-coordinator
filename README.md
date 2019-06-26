@@ -192,6 +192,40 @@ function getCustomClientData() {
 }
 ```
 
+### Building
+
+#### Installation
+Before you can build this you will need to make sure that you are using a node version that matches our target version of node. To see this version you can check the [Jenkinsfile](Jenkinsfile)
+
+##### On Mac
+It would be recommended to manage node version using something like nvm
+```
+brew install nvm
+nvm use 10.15.3
+npm ci
+```
+
+##### On Windows or Linux
+Make sure the correct version of node is being used and run install
+```
+node --version
+npm ci
+```
+
+#### Running the build
+To run the build you can use the following command `npm run build`
+
+#### Testing
+Testing can be done in a couple different ways
+```
+npm run test # single run of tests
+npm run test.watch # continuous run of tests
+npm run test.watch.chrome # continuous run of tests in a chromium browser.
+```
+
+#### Running the example
+To see an example of this in action you can run the following command `npm run start-client-example` and navigate to http://localhost:3000 on your machine.
+
 ### IE11 support
 
 Our target version of javascript is ES2015. This means that you will be required to transpile this library if you wish to support IE11. In addition the necessary polyfills will need to be loaded by both the host application and the client frame.
