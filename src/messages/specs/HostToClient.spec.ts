@@ -99,7 +99,7 @@ describe('HostToClient', () => {
         msg: {
           locale: 'nl-NL',
           hostRootUrl: 'http://example.com/',
-          filteredTopics: new Map()
+          registeredKeys: []
         }
       };
       let testResult: HostToClient | null;
@@ -117,7 +117,7 @@ describe('HostToClient', () => {
         msg: {
           locale: 'nl-NL',
           hostRootUrl: 'http://example.com/',
-          filteredTopics: new Map(),
+          registeredKeys: [],
           custom: {
             appContext: 'MyApp'
           }

@@ -1,5 +1,5 @@
 import { EventEmitter, InternalEventEmitter } from './EventEmitter';
-import { Filter, inFilter } from './filtering/Filter';
+import { Key } from './Key';
 import {
   ClientToHost,
   validate as validateOutgoing
@@ -16,7 +16,7 @@ import {
 } from './messages/Lifecycle';
 import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
-import { transformKeyEvent } from './transformers/KeyboardEventTransformer';
+
 /**
  * Client configuration options.
  */
@@ -113,14 +113,15 @@ export class Client {
   };
 
   private _onKeyDown = (event: KeyboardEvent) => {
-    if (!this._environmentData.filteredTopics) {
+    if (!this._environmentData.registeredKeys) {
       return;
     }
 
-    const filter = this._environmentData.filteredTopics.get('keydown.topic');
-    const keyData = transformKeyEvent(event);
-
-    if (!filter || !inFilter(filter, keyData)) {
+    const keyData = Key.fromKeyEvent(event);
+    const shouldSend = this._environmentData.registeredKeys.some(
+      (key: string) => key === keyData.serialize()
+    );
+    if (!shouldSend) {
       return;
     }
 

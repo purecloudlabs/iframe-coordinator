@@ -1,5 +1,4 @@
 import { guard, mixed, object, string } from 'decoders';
-import { Filter } from '../filtering/Filter';
 import { LabeledMsg } from './LabeledMsg';
 import { createMessageValidator } from './validationUtils';
 
@@ -33,8 +32,8 @@ export interface EnvData {
   locale: string;
   /** Location of the host app */
   hostRootUrl: string;
-  /** Mapping of filtered */
-  filteredTopics: any;
+  /** Keys to notify changes on */
+  registeredKeys: string[];
   /** Extra host-specific details */
   custom?: any;
 }
@@ -56,7 +55,7 @@ const envDataDecoder = guard(
   object({
     locale: string,
     hostRootUrl: string,
-    filteredTopics: mixed,
+    registeredKeys: mixed,
     custom: mixed
   })
 );
