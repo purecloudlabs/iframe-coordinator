@@ -104,13 +104,34 @@ import 'url-polyfill';
 import { Client } from 'iframe-coordinator/client.js';
 
 /* Create a new instance of the client */
-const client = new Client();
+let iframeClient = new Client({
+  // This lets the example client work with the cli host by setting it's domain
+  // as a valid host origin to post messages to. A production app will probably
+  // need to conditionally set this.
+  hostOrigin: 'http://localhost:3000'
+});
 
-/* Start intercepting links, which will prevent the
- * default link action, and instead send a message to the
- * host application to trigger routing.
- */
-client.start();
+// Add a listener that will handled config data passed from the host to the
+// client at startup.
+iframeClient.addListener('environmentalData', envData => {
+  const appLocale = envData.locale;
+
+  const now = new Date();
+  const localizedDate = new Intl.DateTimeFormat(appLocale).format(now);
+  console.log(
+    `Got locale from host. Current date formatted for ${envData.locale} is: ${localizedDate}`
+  );
+  displayEnvData(envData);
+});
+
+// Listen for published events from the host on the `host.topic` topic
+// and log them.
+iframeClient.messaging.addListener('host.topic', publication => {
+  console.log('Got Publish event:', publication);
+});
+
+// Start intercepting link click events for cross-frame routing
+iframeClient.start();
 ```
 
 **HTML/DOM**
