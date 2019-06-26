@@ -47,9 +47,11 @@ describe('client', () => {
 
   describe('when an initial data environment is recieved', () => {
     let recievedEnvData: EnvData;
+
     const testEnvironmentData: EnvData = {
       locale: 'nl-NL',
       hostRootUrl: 'http://example.com/',
+      filteredTopics: new Map(),
       custom: undefined
     };
     beforeEach(() => {
@@ -183,6 +185,92 @@ describe('client', () => {
     it('should raise a publish event for the topic', () => {
       expect(publishCalls).toBe(1);
       expect(recievedPayload).toBe('test data');
+    });
+  });
+
+  describe('when window has a key event', () => {
+    beforeEach(() => {
+      const dataMap = new Map();
+      dataMap.set('keydown.topic', {
+        filters: [
+          {
+            property: 'altKey',
+            comparison: 0,
+            expected: 'false'
+          }
+        ],
+        junction: 'and'
+      });
+
+      const testEnvironmentData: EnvData = {
+        locale: 'nl-NL',
+        hostRootUrl: 'http://example.com/',
+        filteredTopics: dataMap,
+        custom: undefined
+      };
+
+      client.start();
+
+      mockFrameWindow.trigger('message', {
+        origin: 'origin',
+        data: {
+          msgType: 'env_init',
+          msg: testEnvironmentData
+        }
+      });
+    });
+
+    describe('when invalid key is encountered', () => {
+      beforeEach(() => {
+        mockFrameWindow.parent.postMessage.calls.reset();
+
+        mockFrameWindow.trigger('keydown', {
+          code: 'KeyA',
+          key: 'A',
+          keyCode: 65,
+          altKey: true,
+          ctrlKey: false,
+          metaKey: false
+        });
+      });
+
+      it('should not raise the event', () => {
+        expect(mockFrameWindow.parent.postMessage).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when valid key is encountered', () => {
+      beforeEach(() => {
+        mockFrameWindow.trigger('keydown', {
+          code: 'KeyA',
+          key: 'A',
+          keyCode: 65,
+          altKey: false,
+          ctrlKey: false,
+          metaKey: false
+        });
+      });
+
+      it('should publish a key event', () => {
+        expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+          {
+            msgType: 'publish',
+            msg: {
+              topic: 'keydown.topic',
+              payload: {
+                code: 'KeyA',
+                key: 'A',
+                keyCode: 65,
+                altKey: false,
+                ctrlKey: false,
+                metaKey: false
+              },
+              clientId: undefined
+            }
+          },
+          'https://example.com'
+        );
+      });
     });
   });
 

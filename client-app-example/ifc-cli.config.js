@@ -3,11 +3,35 @@ module.exports = function(frameRouter) {
     {
       app1: {
         url: 'http://localhost:8080/client-app-1/#/',
-        assignedRoute: '/app1'
+        assignedRoute: '/app1',
+        filteredTopics: {
+          'keydown.topic': {
+            filters: [
+              {
+                property: 'altKey',
+                comparison: 0,
+                expected: 'false'
+              }
+            ],
+            junction: 'and'
+          }
+        }
       },
       app2: {
         url: 'http://localhost:8080/client-app-2/#/',
-        assignedRoute: '/app2'
+        assignedRoute: '/app2',
+        filteredTopics: {
+          'keydown.topic': {
+            filters: [
+              {
+                property: 'altKey',
+                comparison: 0,
+                expected: 'false'
+              }
+            ],
+            junction: 'and'
+          }
+        }
       }
     },
     {
@@ -20,7 +44,7 @@ module.exports = function(frameRouter) {
   return {
     // These are the topics that the host app should display payloads for when
     // the client publishes on them.
-    publishTopics: ['publish.topic']
+    publishTopics: ['publish.topic', 'keydown.topic']
   };
 };
 
