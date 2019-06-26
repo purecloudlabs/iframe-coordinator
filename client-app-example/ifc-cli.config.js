@@ -3,40 +3,17 @@ module.exports = function(frameRouter) {
     {
       app1: {
         url: 'http://localhost:8080/client-app-1/#/',
-        assignedRoute: '/app1',
-        filteredTopics: {
-          'keydown.topic': {
-            filters: [
-              {
-                property: 'altKey',
-                comparison: 0,
-                expected: 'false'
-              }
-            ],
-            junction: 'and'
-          }
-        }
+        assignedRoute: '/app1'
       },
       app2: {
         url: 'http://localhost:8080/client-app-2/#/',
-        assignedRoute: '/app2',
-        filteredTopics: {
-          'keydown.topic': {
-            filters: [
-              {
-                property: 'altKey',
-                comparison: 0,
-                expected: 'false'
-              }
-            ],
-            junction: 'and'
-          }
-        }
+        assignedRoute: '/app2'
       }
     },
     {
       locale: 'en-US',
       hostRootUrl: window.location.origin,
+      registeredKeys: ['a', 'b', 'actrl', 'ashift', 'actrlshift'],
       custom: getCustomClientData()
     }
   );

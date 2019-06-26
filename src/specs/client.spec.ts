@@ -1,4 +1,5 @@
 import { Client } from '../client';
+import { Key } from '../Key';
 import { EnvData } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 
@@ -51,7 +52,7 @@ describe('client', () => {
     const testEnvironmentData: EnvData = {
       locale: 'nl-NL',
       hostRootUrl: 'http://example.com/',
-      filteredTopics: new Map(),
+      registeredKeys: [],
       custom: undefined
     };
     beforeEach(() => {
@@ -190,22 +191,10 @@ describe('client', () => {
 
   describe('when window has a key event', () => {
     beforeEach(() => {
-      const dataMap = new Map();
-      dataMap.set('keydown.topic', {
-        filters: [
-          {
-            property: 'altKey',
-            comparison: 0,
-            expected: 'false'
-          }
-        ],
-        junction: 'and'
-      });
-
       const testEnvironmentData: EnvData = {
         locale: 'nl-NL',
         hostRootUrl: 'http://example.com/',
-        filteredTopics: dataMap,
+        registeredKeys: ['a'],
         custom: undefined
       };
 
@@ -257,14 +246,7 @@ describe('client', () => {
             msgType: 'publish',
             msg: {
               topic: 'keydown.topic',
-              payload: {
-                code: 'KeyA',
-                key: 'A',
-                keyCode: 65,
-                altKey: false,
-                ctrlKey: false,
-                metaKey: false
-              },
+              payload: new Key('a'),
               clientId: undefined
             }
           },
