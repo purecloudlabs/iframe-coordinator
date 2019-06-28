@@ -243,12 +243,8 @@ describe('client', () => {
       it('should publish a key event', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           {
-            msgType: 'publish',
-            msg: {
-              topic: 'keydown.topic',
-              payload: new Key('a'),
-              clientId: undefined
-            }
+            msgType: 'keyDown',
+            msg: { key: 'a', alt: false, shift: false, ctrl: false }
           },
           'https://example.com'
         );

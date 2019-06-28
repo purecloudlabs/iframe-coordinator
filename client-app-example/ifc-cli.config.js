@@ -1,3 +1,5 @@
+import { Key } from '../src/Key';
+
 module.exports = function(frameRouter) {
   frameRouter.setupFrames(
     {
@@ -13,7 +15,13 @@ module.exports = function(frameRouter) {
     {
       locale: 'en-US',
       hostRootUrl: window.location.origin,
-      registeredKeys: ['a', 'b', 'actrl', 'ashift', 'actrlshift'],
+      registeredKeys: [
+        new Key('a').serialize(),
+        new Key('b').serialize(),
+        new Key('a', {ctrl: true}).serialize(),
+        new Key('a', {shift: true}).serialize(), 
+        new Key('a', {ctrl: true, shift: true}).serialize()
+      ],
       custom: getCustomClientData()
     }
   );
@@ -21,7 +29,7 @@ module.exports = function(frameRouter) {
   return {
     // These are the topics that the host app should display payloads for when
     // the client publishes on them.
-    publishTopics: ['publish.topic', 'keydown.topic']
+    publishTopics: ['publish.topic']
   };
 };
 

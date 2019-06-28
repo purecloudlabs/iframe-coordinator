@@ -126,11 +126,8 @@ export class Client {
     }
 
     this._sendToHost({
-      msgType: 'publish',
-      msg: {
-        topic: 'keydown.topic',
-        payload: keyData
-      }
+      msgType: 'keyDown',
+      msg: keyData
     });
   };
 
