@@ -1,3 +1,4 @@
+import { LabeledKeyDown, validateKeyDown } from './KeyDown';
 import { LabeledStarted, validateStarted } from './Lifecycle';
 import { LabeledNavRequest, validateNavRequest } from './NavRequest';
 import { LabeledPublication, validatePublication } from './Publication';
@@ -12,7 +13,8 @@ export type ClientToHost =
   | LabeledPublication
   | LabeledToast
   | LabeledNavRequest
-  | LabeledStarted;
+  | LabeledStarted
+  | LabeledKeyDown;
 
 /**
  * Validates correctness of messages being sent from
@@ -29,6 +31,7 @@ export function validate(msg: any): ClientToHost | null {
     validateNavRequest(msg) ||
     validatePublication(msg) ||
     validateToast(msg) ||
-    validateStarted(msg)
+    validateStarted(msg) ||
+    validateKeyDown(msg)
   );
 }

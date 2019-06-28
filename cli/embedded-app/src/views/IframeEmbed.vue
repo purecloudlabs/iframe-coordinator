@@ -10,6 +10,7 @@
       id="frameRouter"
       v-bind:route="frameRoute"
       v-on:toastRequest="displayToast"
+      v-on:keyDown="handleKeyEvent"
       v-on:navRequest="handleNav"
       v-on:frameTransition="updateFrameUrl"
     ></frame-router>
@@ -48,6 +49,15 @@ export default {
       // TODO: detect and handle external URLs properly
       const requestedUrl = new URL(event.detail.url);
       window.location.hash = requestedUrl.hash;
+    },
+    handleKeyEvent(event) {
+      this.$notify({
+        group: 'keydown',
+        title: `keydown event from ${event.detail.clientId}`,
+        text: `<pre>${JSON.stringify(event.detail, null, 2)}</pre>`,
+        duration: 3000,
+        type: 'keydown'
+      });
     },
     notifyPubSub(event) {
       const jsonStr = JSON.stringify(event, null, 2);
