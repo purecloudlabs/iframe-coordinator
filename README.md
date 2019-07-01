@@ -195,22 +195,7 @@ function getCustomClientData() {
 ### Building
 
 #### Installation
-Before you can build this you will need to make sure that you are using a node version that matches our target version of node. To see this version you can check the [Jenkinsfile](Jenkinsfile)
-
-##### On Mac
-It would be recommended to manage node version using something like nvm
-```
-brew install nvm
-nvm use 10.15.3
-npm ci
-```
-
-##### On Windows or Linux
-Make sure the correct version of node is being used and run install
-```
-node --version
-npm ci
-```
+Before you can build this you will need to make sure that you are using the LTS version of nodejs. Then you can run the following command `npm ci`
 
 #### Running the build
 To run the build you can use the following command `npm run build`
