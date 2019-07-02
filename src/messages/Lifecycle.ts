@@ -1,4 +1,4 @@
-import { guard, mixed, object, string } from 'decoders';
+import { array, guard, mixed, object, string } from 'decoders';
 import { LabeledMsg } from './LabeledMsg';
 import { createMessageValidator } from './validationUtils';
 
@@ -55,7 +55,7 @@ const envDataDecoder = guard(
   object({
     locale: string,
     hostRootUrl: string,
-    registeredKeys: mixed,
+    registeredKeys: array(string),
     custom: mixed
   })
 );
