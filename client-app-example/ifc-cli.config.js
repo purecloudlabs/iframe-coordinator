@@ -1,5 +1,3 @@
-import { Key } from '../src/Key';
-
 module.exports = function(frameRouter) {
   frameRouter.setupFrames(
     {
@@ -16,11 +14,11 @@ module.exports = function(frameRouter) {
       locale: 'en-US',
       hostRootUrl: window.location.origin,
       registeredKeys: [
-        new Key('a').serialize(),
-        new Key('b').serialize(),
-        new Key('a', {ctrl: true}).serialize(),
-        new Key('a', {shift: true}).serialize(), 
-        new Key('a', {ctrl: true, shift: true}).serialize()
+        'a',
+        'b',
+        'actrl',
+        'ashift', 
+        'actrlshift'
       ],
       custom: getCustomClientData()
     }
