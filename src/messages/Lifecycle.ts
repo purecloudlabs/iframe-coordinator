@@ -45,13 +45,13 @@ export interface KeyData {
   /** The key character for example: 'a' */
   key: string;
   /** If the alt key should be pressed. */
-  alt?: boolean;
+  altKey?: boolean;
   /** If the ctrl key should be pressed. */
-  ctrl?: boolean;
+  ctrlKey?: boolean;
   /** If the meta key should be pressed. */
-  meta?: boolean;
+  metaKey?: boolean;
   /** If the shift key should be pressed. */
-  shift?: boolean;
+  shiftKey?: boolean;
 }
 
 /**
