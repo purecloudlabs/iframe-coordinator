@@ -1,15 +1,15 @@
-const isMac = navigator.platform === 'MacIntel';
-
 /**
  * a
  */
 interface KeyModifierOptions {
-  /** a */
+  /** If the alt key is pressed. */
   alt?: boolean;
-  /** a */
+  /** If the ctrl key is pressed. */
   ctrl?: boolean;
-  /** a */
+  /** If the shift key is pressed. */
   shift?: boolean;
+  /** If the meta key is pressed. */
+  meta?: boolean;
 }
 
 const codeMap = new Map(
@@ -98,15 +98,16 @@ class Key {
   public ctrl?: boolean;
   /** If the shift key was pressed */
   public shift?: boolean;
+  /** If the meta key was pressed */
+  public meta?: boolean;
 
   /** Converts a browser KeyboardEvent into a Key */
   public static fromKeyEvent(event: KeyboardEvent): Key {
-    const ctrl = isMac ? event.metaKey : event.ctrlKey;
-
     const options = {
       alt: event.altKey,
-      ctrl,
-      shift: event.shiftKey
+      ctrl: event.ctrlKey,
+      shift: event.shiftKey,
+      meta: event.metaKey
     };
 
     return new Key(getKeyValue(event), options);
@@ -117,6 +118,7 @@ class Key {
     this.alt = (options && options.alt) || false;
     this.ctrl = (options && options.ctrl) || false;
     this.shift = (options && options.shift) || false;
+    this.meta = (options && options.meta) || false;
   }
 
   /** Creates a string representation of the key */
@@ -135,6 +137,10 @@ class Key {
       retVal += 'shift';
     }
 
+    if (this.meta) {
+      retVal += 'meta';
+    }
+
     return retVal;
   }
 
@@ -144,4 +150,23 @@ class Key {
   }
 }
 
-export { Key };
+/** Data structure representing a native key event. */
+interface NativeKey {
+  /** If the alt key was pressed */
+  altKey?: boolean;
+  /** The character code for the event. */
+  charCode?: number;
+  /** The code for the event. */
+  code?: string;
+  /** If the ctrl key was pressed */
+  ctrlKey?: boolean;
+  /** The key that was pressed */
+  key: string;
+  /** The key code for the event. */
+  keyCode?: number;
+  /** If the meta key was pressed. */
+  metaKey?: boolean;
+  /** If the shift key was pressed. */
+  shiftKey?: boolean;
+}
+export { Key, NativeKey };

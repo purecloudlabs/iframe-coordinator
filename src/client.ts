@@ -37,6 +37,7 @@ export class Client {
   private _hostOrigin: string;
   private _publishEmitter: InternalEventEmitter<Publication>;
   private _publishExposedEmitter: EventEmitter<Publication>;
+  private _registeredKeys: string[];
 
   /**
    * Creates a new client.
@@ -53,6 +54,7 @@ export class Client {
       this._publishEmitter
     );
     this._envDataEmitter = new InternalEventEmitter<EnvData>();
+    this._registeredKeys = [];
   }
 
   /**
@@ -113,12 +115,12 @@ export class Client {
   };
 
   private _onKeyDown = (event: KeyboardEvent) => {
-    if (!this._environmentData.registeredKeys) {
+    if (!this._registeredKeys) {
       return;
     }
 
     const keyData = Key.fromKeyEvent(event);
-    const shouldSend = this._environmentData.registeredKeys.some(
+    const shouldSend = this._registeredKeys.some(
       (key: string) => key === keyData.serialize()
     );
     if (!shouldSend) {
@@ -127,9 +129,41 @@ export class Client {
 
     this._sendToHost({
       msgType: 'keyDown',
-      msg: keyData
+      msg: {
+        altKey: event.altKey,
+        charCode: event.charCode,
+        code: event.code,
+        ctrlKey: event.ctrlKey,
+        key: event.key,
+        keyCode: event.keyCode,
+        metaKey: event.metaKey,
+        shiftKey: event.shiftKey
+      }
     });
   };
+
+  private _handleEnvironmentData(message: HostToClient): void {
+    const envInitMsg: LabeledEnvInit = message as LabeledEnvInit;
+    this._environmentData = envInitMsg.msg;
+
+    if (this._environmentData.registeredKeys) {
+      this._environmentData.registeredKeys.forEach(keyData => {
+        const options = {
+          alt: keyData.alt,
+          ctrl: keyData.ctrl,
+          shift: keyData.shift,
+          meta: keyData.meta
+        };
+
+        if (options.alt || options.ctrl || options.meta) {
+          const key = new Key(keyData.key, options);
+          this._registeredKeys.push(key.serialize());
+        }
+      });
+    }
+
+    this._envDataEmitter.dispatch('environmentalData', this._environmentData);
+  }
 
   private _handleHostMessage(message: HostToClient): void {
     switch (message.msgType) {
@@ -137,12 +171,7 @@ export class Client {
         this._publishEmitter.dispatch(message.msg.topic, message.msg);
         break;
       case 'env_init':
-        const envInitMsg: LabeledEnvInit = message as LabeledEnvInit;
-        this._environmentData = envInitMsg.msg;
-        this._envDataEmitter.dispatch(
-          'environmentalData',
-          this._environmentData
-        );
+        this._handleEnvironmentData(message);
         return;
       default:
       // Only emit events which are specifically handeled

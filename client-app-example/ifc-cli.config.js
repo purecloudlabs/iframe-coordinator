@@ -14,11 +14,9 @@ module.exports = function(frameRouter) {
       locale: 'en-US',
       hostRootUrl: window.location.origin,
       registeredKeys: [
-        'a',
-        'b',
-        'actrl',
-        'ashift', 
-        'actrlshift'
+        { key: 'a', ctrl: true },
+        { key: 'b', alt: true }, 
+        { key: 'a', ctrl: true, shift: true }
       ],
       custom: getCustomClientData()
     }

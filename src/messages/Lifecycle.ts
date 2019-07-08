@@ -33,9 +33,25 @@ export interface EnvData {
   /** Location of the host app */
   hostRootUrl: string;
   /** Keys to notify changes on */
-  registeredKeys: string[];
+  registeredKeys: KeyData[];
   /** Extra host-specific details */
   custom?: any;
+}
+
+/**
+ * A data structure representing a key.
+ */
+export interface KeyData {
+  /** The key character for example: 'a' */
+  key: string;
+  /** If the alt key should be pressed. */
+  alt?: boolean;
+  /** If the ctrl key should be pressed. */
+  ctrl?: boolean;
+  /** If the meta key should be pressed. */
+  meta?: boolean;
+  /** If the shift key should be pressed. */
+  shift?: boolean;
 }
 
 /**
@@ -55,7 +71,7 @@ const envDataDecoder = guard(
   object({
     locale: string,
     hostRootUrl: string,
-    registeredKeys: array(string),
+    registeredKeys: array(mixed),
     custom: mixed
   })
 );
