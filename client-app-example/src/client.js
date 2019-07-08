@@ -17,7 +17,7 @@ let iframeClient = new Client({
   // This lets the example client work with the cli host by setting it's domain
   // as a valid host origin to post messages to. A production app will probably
   // need to conditionally set this.
-  hostOrigin: 'http://localhost:3000'
+  hostOrigin: `http://${window.location.hostname}:3000`
 });
 
 // Add a listener that will handled config data passed from the host to the

@@ -1,4 +1,13 @@
 module.exports = {
-  presets: ['@vue/app'],
-  exclude: ['../../dist/*.js']
+  presets: [
+    '@vue/app',
+    [
+      '@babel/preset-env',
+      {
+        useBuiltIns: 'entry',
+        targets: { browsers: 'ie 11, defaults' }
+      }
+    ]
+  ],
+  exclude: ['../../dist/**/*.js']
 };
