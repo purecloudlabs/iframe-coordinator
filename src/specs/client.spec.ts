@@ -194,7 +194,7 @@ describe('client', () => {
       const testEnvironmentData: EnvData = {
         locale: 'nl-NL',
         hostRootUrl: 'http://example.com/',
-        registeredKeys: [{ key: 'a', alt: true }],
+        registeredKeys: [{ key: 'a', altKey: true }],
         custom: undefined
       };
 

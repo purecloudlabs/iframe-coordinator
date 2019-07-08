@@ -149,10 +149,10 @@ export class Client {
     if (this._environmentData.registeredKeys) {
       this._environmentData.registeredKeys.forEach(keyData => {
         const options = {
-          alt: keyData.alt,
-          ctrl: keyData.ctrl,
-          shift: keyData.shift,
-          meta: keyData.meta
+          alt: keyData.altKey,
+          ctrl: keyData.ctrlKey,
+          shift: keyData.shiftKey,
+          meta: keyData.metaKey
         };
 
         if (options.alt || options.ctrl || options.meta) {
