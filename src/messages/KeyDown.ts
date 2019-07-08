@@ -1,5 +1,5 @@
-import { boolean, guard, object, optional, string } from 'decoders';
-import { Key } from '../Key';
+import { boolean, guard, number, object, optional, string } from 'decoders';
+import { NativeKey } from '../Key';
 import { LabeledMsg } from './LabeledMsg';
 import { createMessageValidator } from './validationUtils';
 
@@ -12,16 +12,20 @@ export interface LabeledKeyDown extends LabeledMsg {
   /** Message identifier */
   msgType: 'keyDown';
   /** Toast details */
-  msg: Key;
+  msg: NativeKey;
 }
 
 /** @external */
 const keyDownDecoder = guard(
   object({
+    altKey: optional(boolean),
+    charCode: optional(number),
+    code: optional(string),
+    ctrlKey: optional(boolean),
     key: string,
-    alt: optional(boolean),
-    shift: optional(boolean),
-    ctrl: optional(boolean)
+    keyCode: optional(number),
+    metaKey: optional(boolean),
+    shiftKey: optional(boolean)
   })
 );
 

@@ -194,7 +194,7 @@ describe('client', () => {
       const testEnvironmentData: EnvData = {
         locale: 'nl-NL',
         hostRootUrl: 'http://example.com/',
-        registeredKeys: ['a'],
+        registeredKeys: [{ key: 'a', alt: true }],
         custom: undefined
       };
 
@@ -217,7 +217,7 @@ describe('client', () => {
           code: 'KeyA',
           key: 'A',
           keyCode: 65,
-          altKey: true,
+          altKey: false,
           ctrlKey: false,
           metaKey: false
         });
@@ -234,9 +234,10 @@ describe('client', () => {
           code: 'KeyA',
           key: 'A',
           keyCode: 65,
-          altKey: false,
+          altKey: true,
           ctrlKey: false,
-          metaKey: false
+          metaKey: false,
+          shiftKey: false
         });
       });
 
@@ -244,7 +245,16 @@ describe('client', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           {
             msgType: 'keyDown',
-            msg: { key: 'a', alt: false, shift: false, ctrl: false }
+            msg: {
+              altKey: true,
+              charCode: undefined,
+              code: 'KeyA',
+              ctrlKey: false,
+              key: 'A',
+              keyCode: 65,
+              metaKey: false,
+              shiftKey: false
+            }
           },
           'https://example.com'
         );
