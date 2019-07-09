@@ -1,5 +1,5 @@
 /**
- * a
+ * The options to use when creating a key class.
  */
 interface KeyModifierOptions {
   /** If the alt key is pressed. */
