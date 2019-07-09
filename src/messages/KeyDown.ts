@@ -4,14 +4,14 @@ import { LabeledMsg } from './LabeledMsg';
 import { createMessageValidator } from './validationUtils';
 
 /**
- * A message used to request toasts to display
- * in the host application.
+ * A message used to send key information
+ * to the host application.
  * @external
  */
 export interface LabeledKeyDown extends LabeledMsg {
   /** Message identifier */
   msgType: 'keyDown';
-  /** Toast details */
+  /** Key details */
   msg: NativeKey;
 }
 
