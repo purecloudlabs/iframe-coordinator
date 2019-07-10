@@ -37,7 +37,7 @@ export class Client {
   private _hostOrigin: string;
   private _publishEmitter: InternalEventEmitter<Publication>;
   private _publishExposedEmitter: EventEmitter<Publication>;
-  private _registeredKeys: string[];
+  private _registeredKeys: Key[];
 
   /**
    * Creates a new client.
@@ -120,8 +120,8 @@ export class Client {
     }
 
     const keyData = Key.fromKeyEvent(event);
-    const shouldSend = this._registeredKeys.some(
-      (key: string) => key === keyData.serialize()
+    const shouldSend = this._registeredKeys.some((key: Key) =>
+      key.equals(keyData)
     );
     if (!shouldSend) {
       return;
@@ -157,7 +157,7 @@ export class Client {
 
         if (options.alt || options.ctrl || options.meta) {
           const key = new Key(keyData.key, options);
-          this._registeredKeys.push(key.serialize());
+          this._registeredKeys.push(key);
         }
       });
     }
