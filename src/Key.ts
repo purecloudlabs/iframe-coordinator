@@ -121,32 +121,14 @@ class Key {
     this.meta = (options && options.meta) || false;
   }
 
-  /** Creates a string representation of the key */
-  public serialize(): string {
-    let retVal = this.key || '';
-
-    if (this.ctrl) {
-      retVal += 'ctrl';
-    }
-
-    if (this.alt) {
-      retVal += 'alt';
-    }
-
-    if (this.shift) {
-      retVal += 'shift';
-    }
-
-    if (this.meta) {
-      retVal += 'meta';
-    }
-
-    return retVal;
-  }
-
   /** Tests equalality of another key. */
   public equals(key: Key): boolean {
-    return key.serialize() === this.serialize();
+    return (
+      key.key === this.key &&
+      key.alt === this.alt &&
+      key.shift === this.shift &&
+      key.meta === this.meta
+    );
   }
 }
 
