@@ -128,7 +128,7 @@ export class Client {
     }
 
     this._sendToHost({
-      msgType: 'keyDown',
+      msgType: 'registeredKeyFired',
       msg: {
         altKey: event.altKey,
         charCode: event.charCode,
