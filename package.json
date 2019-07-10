@@ -1,6 +1,6 @@
 {
   "name": "iframe-coordinator",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
@@ -13,6 +13,9 @@
     "dist/client.js",
     "dist/host.js",
     "dist/index.js",
+    "dist/es5/client.js",
+    "dist/es5/host.js",
+    "dist/es5/index.js",
     "dist/**/*.d.ts",
     "cli/ifc-cli.js",
     "cli/embedded-app/dist/**/*"
@@ -54,8 +57,9 @@
     "test.watch": "./node_modules/karma/bin/karma start",
     "test.watch.chrome": "./node_modules/karma/bin/karma start --browsers=Chrome",
     "precommit": "lint-staged",
-    "build": "npm run build-lib && npm run build-cli",
+    "build": "npm run build-lib && npm run build-lib-es5 && npm run build-cli",
     "build-lib": "webpack",
+    "build-lib-es5": "webpack --config webpack.es5.config.js",
     "build-cli": "cd ./cli/embedded-app && npm run build",
     "start": "webpack --watch",
     "start-client-example": "cd ./client-app-example && npm start",
