@@ -1,12 +1,14 @@
 module.exports = function(frameRouter) {
+  let hostname = window.location.hostname;
+
   frameRouter.setupFrames(
     {
       app1: {
-        url: 'http://localhost:8080/client-app-1/#/',
+        url: 'http://' + hostname + ':8080/client-app-1/#/',
         assignedRoute: '/app1'
       },
       app2: {
-        url: 'http://localhost:8080/client-app-2/#/',
+        url: 'http://' + hostname + ':8080/client-app-2/#/',
         assignedRoute: '/app2'
       }
     },
