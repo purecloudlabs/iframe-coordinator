@@ -244,7 +244,7 @@ describe('client', () => {
       it('should publish a key event', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           {
-            msgType: 'keyDown',
+            msgType: 'registeredKeyFired',
             msg: {
               altKey: true,
               charCode: undefined,

@@ -10,7 +10,7 @@ import { createMessageValidator } from './validationUtils';
  */
 export interface LabeledKeyDown extends LabeledMsg {
   /** Message identifier */
-  msgType: 'keyDown';
+  msgType: 'registeredKeyFired';
   /** Key details */
   msg: NativeKey;
 }
@@ -31,7 +31,7 @@ const keyDownDecoder = guard(
 
 /** @external */
 const validateKeyDown = createMessageValidator<LabeledKeyDown>(
-  'keyDown',
+  'registeredKeyFired',
   keyDownDecoder
 );
 export { validateKeyDown };
