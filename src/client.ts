@@ -1,5 +1,5 @@
 import { EventEmitter, InternalEventEmitter } from './EventEmitter';
-import { Key } from './Key';
+import { keyEqual } from './Key';
 import {
   ClientToHost,
   validate as validateOutgoing
@@ -8,6 +8,7 @@ import {
   HostToClient,
   validate as validateIncoming
 } from './messages/HostToClient';
+import { KeyData } from './messages/Lifecycle';
 import {
   EnvData,
   EnvDataHandler,
@@ -37,7 +38,7 @@ export class Client {
   private _hostOrigin: string;
   private _publishEmitter: InternalEventEmitter<Publication>;
   private _publishExposedEmitter: EventEmitter<Publication>;
-  private _registeredKeys: Key[];
+  private _registeredKeys: KeyData[];
 
   /**
    * Creates a new client.
@@ -119,9 +120,8 @@ export class Client {
       return;
     }
 
-    const keyData = Key.fromKeyEvent(event);
-    const shouldSend = this._registeredKeys.some((key: Key) =>
-      key.equals(keyData)
+    const shouldSend = this._registeredKeys.some((key: KeyData) =>
+      keyEqual(key, event)
     );
     if (!shouldSend) {
       return;
@@ -156,8 +156,7 @@ export class Client {
         };
 
         if (options.alt || options.ctrl || options.meta) {
-          const key = new Key(keyData.key, options);
-          this._registeredKeys.push(key);
+          this._registeredKeys.push(keyData);
         }
       });
     }

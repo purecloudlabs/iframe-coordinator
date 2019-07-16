@@ -1,16 +1,4 @@
-/**
- * The options to use when creating a key class.
- */
-interface KeyModifierOptions {
-  /** If the alt key is pressed. */
-  alt?: boolean;
-  /** If the ctrl key is pressed. */
-  ctrl?: boolean;
-  /** If the shift key is pressed. */
-  shift?: boolean;
-  /** If the meta key is pressed. */
-  meta?: boolean;
-}
+import { KeyData } from './messages/Lifecycle';
 
 const codeMap = new Map(
   Object.entries({
@@ -87,49 +75,24 @@ function getKeyValue(event: KeyboardEvent): string {
 }
 
 /**
- * Key class for converting and handling key events.
+ * Compares a KeyboardEvent with KeyData to test equality.
+ * @param key The KeyData to compare against.
+ * @param event The incoming event to compare with.
  */
-class Key {
-  /** The key (character) that was pressed */
-  public key: string;
-  /** If the alt key was pressed */
-  public alt?: boolean;
-  /** If the ctrl key was pressed */
-  public ctrl?: boolean;
-  /** If the shift key was pressed */
-  public shift?: boolean;
-  /** If the meta key was pressed */
-  public meta?: boolean;
+function keyEqual(key: KeyData, event: KeyboardEvent): boolean {
+  const keyValue = getKeyValue(event);
+  const alt = key.altKey || false;
+  const ctrl = key.ctrlKey || false;
+  const shift = key.shiftKey || false;
+  const meta = key.metaKey || false;
 
-  /** Converts a browser KeyboardEvent into a Key */
-  public static fromKeyEvent(event: KeyboardEvent): Key {
-    const options = {
-      alt: event.altKey,
-      ctrl: event.ctrlKey,
-      shift: event.shiftKey,
-      meta: event.metaKey
-    };
-
-    return new Key(getKeyValue(event), options);
-  }
-
-  constructor(key: string, options?: KeyModifierOptions) {
-    this.key = key.toLowerCase();
-    this.alt = (options && options.alt) || false;
-    this.ctrl = (options && options.ctrl) || false;
-    this.shift = (options && options.shift) || false;
-    this.meta = (options && options.meta) || false;
-  }
-
-  /** Tests equalality of another key. */
-  public equals(key: Key): boolean {
-    return (
-      key.key === this.key &&
-      key.alt === this.alt &&
-      key.shift === this.shift &&
-      key.meta === this.meta
-    );
-  }
+  return (
+    keyValue === key.key &&
+    event.altKey === alt &&
+    event.ctrlKey === ctrl &&
+    event.shiftKey === shift &&
+    event.metaKey === meta
+  );
 }
 
 /** Data structure representing a native key event. */
@@ -151,4 +114,4 @@ interface NativeKey {
   /** If the shift key was pressed. */
   shiftKey?: boolean;
 }
-export { Key, NativeKey };
+export { keyEqual, NativeKey };

@@ -1,5 +1,4 @@
 import { Client } from '../client';
-import { Key } from '../Key';
 import { EnvData } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 
