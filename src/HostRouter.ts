@@ -22,14 +22,16 @@ export class HostRouter {
   public getClientTarget(route: string): ClientTarget {
     let clientTarget: ClientTarget = {
       id: null,
-      url: null
+      url: null,
+      assignedRoute: null
     };
     this._clients.forEach(client => {
       const clientRoute = matchAndStripPrefix(route, client.assignedRoute);
       if (clientRoute !== null) {
         clientTarget = {
           id: client.id,
-          url: applyRoute(client.url, clientRoute)
+          url: applyRoute(client.url, clientRoute),
+          assignedRoute: client.assignedRoute
         };
       }
     });
@@ -49,6 +51,8 @@ export interface ClientTarget {
   id: string | null;
   /** The target URL to show */
   url: string | null;
+  /** The assigned route of the client */
+  assignedRoute: string | null;
 }
 
 /**

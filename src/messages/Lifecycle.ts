@@ -53,6 +53,7 @@ const envDataDecoder = guard(
   object({
     locale: string,
     hostRootUrl: string,
+    assignedRoute: string,
     custom: mixed
   })
 );

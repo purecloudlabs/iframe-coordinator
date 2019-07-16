@@ -138,9 +138,17 @@ class FrameRouterElement extends HTMLElement {
   }
 
   private _handleLifecycleMessage(message: LabeledStarted) {
+    const currentRoutePath = this.getAttribute(ROUTE_ATTR) || '';
+    const clientInfo = this._router.getClientTarget(currentRoutePath);
+    const assignedRoute = (clientInfo && clientInfo.assignedRoute) || '';
+    const envData = {
+      ...this._envData,
+      assignedRoute
+    };
+    window.console.log('envData', envData);
     this._frameManager.sendToClient({
       msgType: 'env_init',
-      msg: this._envData
+      msg: envData
     });
   }
 
