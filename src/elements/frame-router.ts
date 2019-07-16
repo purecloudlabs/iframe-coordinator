@@ -138,9 +138,7 @@ class FrameRouterElement extends HTMLElement {
   }
 
   private _handleLifecycleMessage(message: LabeledStarted) {
-    const currentRoutePath = this.getAttribute(ROUTE_ATTR) || '';
-    const clientInfo = this._router.getClientTarget(currentRoutePath);
-    const assignedRoute = (clientInfo && clientInfo.assignedRoute) || '';
+    const assignedRoute = this._getCurrentClientAssignedRoute();
     const envData = {
       ...this._envData,
       assignedRoute
@@ -158,6 +156,12 @@ class FrameRouterElement extends HTMLElement {
     this.dispatchEvent(
       new CustomEvent(message.msgType, { detail: messageDetail })
     );
+  }
+
+  private _getCurrentClientAssignedRoute() {
+    const currentRoutePath = this.getAttribute(ROUTE_ATTR) || '';
+    const clientInfo = this._router.getClientTarget(currentRoutePath);
+    return (clientInfo && clientInfo.assignedRoute) || '';
   }
 }
 
