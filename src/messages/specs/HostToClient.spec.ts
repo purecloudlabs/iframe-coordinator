@@ -98,7 +98,8 @@ describe('HostToClient', () => {
         msgType: 'env_init',
         msg: {
           locale: 'nl-NL',
-          hostRootUrl: 'http://example.com/'
+          hostRootUrl: 'http://example.com/',
+          assignedRoute: 'app1'
         }
       };
       let testResult: HostToClient | null;
@@ -116,6 +117,7 @@ describe('HostToClient', () => {
         msg: {
           locale: 'nl-NL',
           hostRootUrl: 'http://example.com/',
+          assignedRoute: 'app1',
           custom: {
             appContext: 'MyApp'
           }

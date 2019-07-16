@@ -50,6 +50,7 @@ describe('client', () => {
     const testEnvironmentData: EnvData = {
       locale: 'nl-NL',
       hostRootUrl: 'http://example.com/',
+      assignedRoute: 'app1',
       custom: undefined
     };
     beforeEach(() => {

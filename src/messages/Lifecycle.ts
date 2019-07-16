@@ -32,6 +32,8 @@ export interface EnvData {
   locale: string;
   /** Location of the host app */
   hostRootUrl: string;
+  /** assigned route of the client */
+  assignedRoute: string;
   /** Extra host-specific details */
   custom?: any;
 }
