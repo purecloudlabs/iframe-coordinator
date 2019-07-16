@@ -145,7 +145,6 @@ class FrameRouterElement extends HTMLElement {
       ...this._envData,
       assignedRoute
     };
-    window.console.log('envData', envData);
     this._frameManager.sendToClient({
       msgType: 'env_init',
       msg: envData
