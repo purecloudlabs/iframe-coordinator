@@ -1,5 +1,5 @@
 pipeline {
-  agent { label 'infra_mesos' }
+  agent { label 'dev_mesos' }
 
   environment {
     NPM_UTIL_PATH = "npm-utils"
@@ -27,12 +27,14 @@ pipeline {
       steps {
         dir(env.REPO_DIR) {
           // check to see if we need to bump the version for release
+          sh "free -m"
           sh "${env.workspace}/${env.npm_util_path}/scripts/auto-version-bump.sh"
           sh "${env.WORKSPACE}/${env.NPM_UTIL_PATH}/scripts/jenkins-create-npmrc.sh"  
           sh "cp ./.npmrc ./cli/embedded-app/.npmrc"
           sh "cp ./.npmrc ./client-app-example/.npmrc"
           sh "npm ci"
           sh "npm run build"
+          sh "free -m"
         }
       }
     }
@@ -40,6 +42,8 @@ pipeline {
     stage('Publish Library') {
       steps {
         dir(env.REPO_DIR) {
+          sh "pwd"
+          sh "free -m"
           sh "npm publish"
           // Make a local branch so we can push back to the origin branch.
           sshagent (credentials: ['3aa16916-868b-4290-a9ee-b1a05343667e']) {
