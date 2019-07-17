@@ -1,4 +1,12 @@
-import { guard, mixed, object, string } from 'decoders';
+import {
+  array,
+  boolean,
+  guard,
+  mixed,
+  object,
+  optional,
+  string
+} from 'decoders';
 import { LabeledMsg } from './LabeledMsg';
 import { createMessageValidator } from './validationUtils';
 
@@ -32,8 +40,26 @@ export interface EnvData {
   locale: string;
   /** Location of the host app */
   hostRootUrl: string;
+  /** Keys to notify changes on */
+  registeredKeys: KeyData[];
   /** Extra host-specific details */
   custom?: any;
+}
+
+/**
+ * A data structure representing a key.
+ */
+export interface KeyData {
+  /** The key character for example: 'a' */
+  key: string;
+  /** If the alt key should be pressed. */
+  altKey?: boolean;
+  /** If the ctrl key should be pressed. */
+  ctrlKey?: boolean;
+  /** If the meta key should be pressed. */
+  metaKey?: boolean;
+  /** If the shift key should be pressed. */
+  shiftKey?: boolean;
 }
 
 /**
@@ -53,6 +79,15 @@ const envDataDecoder = guard(
   object({
     locale: string,
     hostRootUrl: string,
+    registeredKeys: array(
+      object({
+        key: string,
+        altKey: optional(boolean),
+        ctrlKey: optional(boolean),
+        metaKey: optional(boolean),
+        shiftKey: optional(boolean)
+      })
+    ),
     custom: mixed
   })
 );

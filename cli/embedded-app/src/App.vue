@@ -2,6 +2,7 @@
   <div id="app">
     <notifications group="toast" id="toastNotifications" position="top right"></notifications>
     <notifications group="pubsub" id="pubsubEvents" position="top left"></notifications>
+    <notifications group="keydown" id="keydownEvents" position="bottom left"></notifications>
     <router-view/>
   </div>
 </template>
