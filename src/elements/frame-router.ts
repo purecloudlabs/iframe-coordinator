@@ -100,6 +100,7 @@ class FrameRouterElement extends HTMLElement {
     if (this._router) {
       const clientInfo = this._router.getClientTarget(newPath);
       this._currentClientId = (clientInfo && clientInfo.id) || '';
+
       const newLocation = this._frameManager.setFrameLocation(
         clientInfo && clientInfo.url
       );

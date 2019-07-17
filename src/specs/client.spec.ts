@@ -47,9 +47,11 @@ describe('client', () => {
 
   describe('when an initial data environment is recieved', () => {
     let recievedEnvData: EnvData;
+
     const testEnvironmentData: EnvData = {
       locale: 'nl-NL',
       hostRootUrl: 'http://example.com/',
+      registeredKeys: [],
       custom: undefined
     };
     beforeEach(() => {
@@ -183,6 +185,79 @@ describe('client', () => {
     it('should raise a publish event for the topic', () => {
       expect(publishCalls).toBe(1);
       expect(recievedPayload).toBe('test data');
+    });
+  });
+
+  describe('when window has a key event', () => {
+    beforeEach(() => {
+      const testEnvironmentData: EnvData = {
+        locale: 'nl-NL',
+        hostRootUrl: 'http://example.com/',
+        registeredKeys: [{ key: 'a', altKey: true }],
+        custom: undefined
+      };
+
+      client.start();
+
+      mockFrameWindow.trigger('message', {
+        origin: 'origin',
+        data: {
+          msgType: 'env_init',
+          msg: testEnvironmentData
+        }
+      });
+    });
+
+    describe('when invalid key is encountered', () => {
+      beforeEach(() => {
+        mockFrameWindow.parent.postMessage.calls.reset();
+
+        mockFrameWindow.trigger('keydown', {
+          code: 'KeyA',
+          key: 'A',
+          keyCode: 65,
+          altKey: false,
+          ctrlKey: false,
+          metaKey: false
+        });
+      });
+
+      it('should not raise the event', () => {
+        expect(mockFrameWindow.parent.postMessage).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when valid key is encountered', () => {
+      beforeEach(() => {
+        mockFrameWindow.trigger('keydown', {
+          code: 'KeyA',
+          key: 'A',
+          keyCode: 65,
+          altKey: true,
+          ctrlKey: false,
+          metaKey: false,
+          shiftKey: false
+        });
+      });
+
+      it('should publish a key event', () => {
+        expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+          {
+            msgType: 'registeredKeyFired',
+            msg: {
+              altKey: true,
+              charCode: undefined,
+              code: 'KeyA',
+              ctrlKey: false,
+              key: 'A',
+              keyCode: 65,
+              metaKey: false,
+              shiftKey: false
+            }
+          },
+          'https://example.com'
+        );
+      });
     });
   });
 
