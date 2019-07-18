@@ -39,7 +39,7 @@ export class Client {
   private _publishEmitter: InternalEventEmitter<Publication>;
   private _publishExposedEmitter: EventEmitter<Publication>;
   private _registeredKeys: KeyData[];
-  private _assignedRoute: string | undefined;
+  private _assignedRoute: string;
 
   /**
    * Creates a new client.
