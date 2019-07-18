@@ -1,5 +1,5 @@
 pipeline {
-  agent { label 'infra_mesos' }
+  agent { label 'dev_mesos' }
 
   environment {
     NPM_UTIL_PATH = "npm-utils"
