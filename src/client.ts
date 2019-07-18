@@ -1,4 +1,5 @@
 import { EventEmitter, InternalEventEmitter } from './EventEmitter';
+import { keyEqual } from './Key';
 import {
   ClientToHost,
   validate as validateOutgoing
@@ -7,6 +8,7 @@ import {
   HostToClient,
   validate as validateIncoming
 } from './messages/HostToClient';
+import { KeyData } from './messages/Lifecycle';
 import {
   EnvData,
   EnvDataHandler,
@@ -36,6 +38,7 @@ export class Client {
   private _hostOrigin: string;
   private _publishEmitter: InternalEventEmitter<Publication>;
   private _publishExposedEmitter: EventEmitter<Publication>;
+  private _registeredKeys: KeyData[];
 
   /**
    * Creates a new client.
@@ -52,6 +55,7 @@ export class Client {
       this._publishEmitter
     );
     this._envDataEmitter = new InternalEventEmitter<EnvData>();
+    this._registeredKeys = [];
   }
 
   /**
@@ -111,18 +115,62 @@ export class Client {
     }
   };
 
+  private _onKeyDown = (event: KeyboardEvent) => {
+    if (!this._registeredKeys) {
+      return;
+    }
+
+    const shouldSend = this._registeredKeys.some((key: KeyData) =>
+      keyEqual(key, event)
+    );
+    if (!shouldSend) {
+      return;
+    }
+
+    this._sendToHost({
+      msgType: 'registeredKeyFired',
+      msg: {
+        altKey: event.altKey,
+        charCode: event.charCode,
+        code: event.code,
+        ctrlKey: event.ctrlKey,
+        key: event.key,
+        keyCode: event.keyCode,
+        metaKey: event.metaKey,
+        shiftKey: event.shiftKey
+      }
+    });
+  };
+
+  private _handleEnvironmentData(message: HostToClient): void {
+    const envInitMsg: LabeledEnvInit = message as LabeledEnvInit;
+    this._environmentData = envInitMsg.msg;
+
+    if (this._environmentData.registeredKeys) {
+      this._environmentData.registeredKeys.forEach(keyData => {
+        const options = {
+          alt: keyData.altKey,
+          ctrl: keyData.ctrlKey,
+          shift: keyData.shiftKey,
+          meta: keyData.metaKey
+        };
+
+        if (options.alt || options.ctrl || options.meta) {
+          this._registeredKeys.push(keyData);
+        }
+      });
+    }
+
+    this._envDataEmitter.dispatch('environmentalData', this._environmentData);
+  }
+
   private _handleHostMessage(message: HostToClient): void {
     switch (message.msgType) {
       case 'publish':
         this._publishEmitter.dispatch(message.msg.topic, message.msg);
         break;
       case 'env_init':
-        const envInitMsg: LabeledEnvInit = message as LabeledEnvInit;
-        this._environmentData = envInitMsg.msg;
-        this._envDataEmitter.dispatch(
-          'environmentalData',
-          this._environmentData
-        );
+        this._handleEnvironmentData(message);
         return;
       default:
       // Only emit events which are specifically handeled
@@ -156,6 +204,7 @@ export class Client {
 
     this._clientWindow.addEventListener('message', this._onWindowMessage);
     this._clientWindow.addEventListener('click', this._onWindowClick);
+    this._clientWindow.addEventListener('keydown', this._onKeyDown);
     this._sendToHost(Lifecycle.startedMessage);
   }
 
@@ -181,6 +230,7 @@ export class Client {
     this._isStarted = false;
     this._clientWindow.removeEventListener('message', this._onWindowMessage);
     this._clientWindow.removeEventListener('click', this._onWindowClick);
+    this._clientWindow.removeEventListener('keydown', this._onKeyDown);
   }
 
   /**
