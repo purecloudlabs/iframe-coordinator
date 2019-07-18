@@ -68,7 +68,7 @@
     "lint": "tslint --project tsconfig.json",
     "lint.fix": "npm run lint -- --fix",
     "doc": "typedoc --excludePrivate --excludeProtected --excludeNotExported --excludeExternals --mode file --readme README.md --out doc/ src/",
-    "prepare": "cd ./cli/embedded-app && npm install && cd ../../client-app-example && npm install"
+    "prepare": "./scripts/prepare-deps.sh"
   },
   "husky": {
     "hooks": {
