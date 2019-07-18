@@ -47,6 +47,14 @@ export interface EnvData {
 }
 
 /**
+ * Extended Environmental data passed to client with some private data.
+ */
+export interface EnvDataExt extends EnvData {
+  /** assigned route of the client */
+  assignedRoute: string;
+}
+
+/**
  * A data structure representing a key.
  */
 export interface KeyData {
@@ -71,7 +79,7 @@ export interface LabeledEnvInit extends LabeledMsg {
   /** Message identifier */
   msgType: 'env_init';
   /** Environment data */
-  msg: EnvData;
+  msg: EnvDataExt;
 }
 
 /** @external */
@@ -79,6 +87,7 @@ const envDataDecoder = guard(
   object({
     locale: string,
     hostRootUrl: string,
+    assignedRoute: string,
     registeredKeys: array(
       object({
         key: string,

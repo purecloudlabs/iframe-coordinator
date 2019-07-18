@@ -2,7 +2,7 @@ import { EventEmitter, InternalEventEmitter } from '../EventEmitter';
 import FrameManager from '../FrameManager';
 import { HostRouter, RoutingMap } from '../HostRouter';
 import { ClientToHost } from '../messages/ClientToHost';
-import { EnvData, LabeledStarted } from '../messages/Lifecycle';
+import { EnvData, EnvDataExt, LabeledStarted } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 
 /** @external */
@@ -139,9 +139,14 @@ class FrameRouterElement extends HTMLElement {
   }
 
   private _handleLifecycleMessage(message: LabeledStarted) {
+    const assignedRoute = this._getCurrentClientAssignedRoute();
+    const envData: EnvDataExt = {
+      ...this._envData,
+      assignedRoute
+    };
     this._frameManager.sendToClient({
       msgType: 'env_init',
-      msg: this._envData
+      msg: envData
     });
   }
 
@@ -152,6 +157,12 @@ class FrameRouterElement extends HTMLElement {
     this.dispatchEvent(
       new CustomEvent(message.msgType, { detail: messageDetail })
     );
+  }
+
+  private _getCurrentClientAssignedRoute() {
+    const currentRoutePath = this.getAttribute(ROUTE_ATTR) || '';
+    const clientInfo = this._router.getClientTarget(currentRoutePath);
+    return (clientInfo && clientInfo.assignedRoute) || '';
   }
 }
 

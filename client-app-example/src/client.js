@@ -30,6 +30,7 @@ iframeClient.addListener('environmentalData', envData => {
   console.log(
     `Got locale from host. Current date formatted for ${envData.locale} is: ${localizedDate}`
   );
+  console.log(`current host url is ${iframeClient.hostURL}`)
   displayEnvData(envData);
 });
 
