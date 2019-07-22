@@ -8,8 +8,21 @@ import {
 } from './messages/HostToClient';
 
 /** @external */
-const IFRAME_STYLE =
-  'position: absolute; top: 0; left: 0; width: 100%; height: 100%;';
+const IFRAME_STYLE = `
+frame-router {
+  position: relative;
+}
+
+frame-router iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+`;
+
+let style: HTMLElement;
 
 /**
  * A handler function for messages sent from a client app.
@@ -45,7 +58,13 @@ class FrameManager {
 
     this._iframe = this._window.document.createElement('iframe');
     this._iframe.setAttribute('frameborder', '0');
-    this._iframe.setAttribute('style', IFRAME_STYLE);
+
+    if (!style) {
+      style = this._window.document.createElement('style');
+      style.innerText = IFRAME_STYLE;
+      this._window.document.head.appendChild(style);
+    }
+
     this._iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
   }
 

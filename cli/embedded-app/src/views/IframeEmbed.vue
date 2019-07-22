@@ -103,7 +103,6 @@ for more details.
   height: 100%;
 }
 #frameRouter {
-  position: relative;
   flex-grow: 1;
   flex-shrink: 1;
   flex-basis: 100vh;
