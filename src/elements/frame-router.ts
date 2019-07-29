@@ -45,7 +45,6 @@ class FrameRouterElement extends HTMLElement {
    * @inheritdoc
    */
   public connectedCallback() {
-    this.setAttribute('style', 'position: relative;');
     this._frameManager.embed(this);
     this._frameManager.startMessageHandler();
   }
