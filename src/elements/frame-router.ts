@@ -4,6 +4,7 @@ import { HostRouter, RoutingMap } from '../HostRouter';
 import { ClientToHost } from '../messages/ClientToHost';
 import { EnvData, EnvDataExt, LabeledStarted } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
+import { stripTrailingSlash } from '../urlUtils';
 
 /** @external */
 const ROUTE_ATTR = 'route';
@@ -66,7 +67,11 @@ class FrameRouterElement extends HTMLElement {
    */
   public setupFrames(clients: RoutingMap, envData: EnvData) {
     this._router = new HostRouter(clients);
-    this._envData = envData;
+    const processedHostUrl = this._processHostUrl(envData.hostRootUrl);
+    this._envData = {
+      ...envData,
+      hostRootUrl: processedHostUrl
+    };
 
     this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
   }
@@ -163,6 +168,15 @@ class FrameRouterElement extends HTMLElement {
     const currentRoutePath = this.getAttribute(ROUTE_ATTR) || '';
     const clientInfo = this._router.getClientTarget(currentRoutePath);
     return (clientInfo && clientInfo.assignedRoute) || '';
+  }
+
+  private _processHostUrl(hostUrl: string) {
+    const hostUrlObject = new URL(hostUrl);
+    if (hostUrlObject.hash) {
+      return hostUrlObject.href;
+    }
+    const trimedUrl = stripTrailingSlash(hostUrl);
+    return window.location.hash ? `${trimedUrl}/#` : trimedUrl;
   }
 }
 

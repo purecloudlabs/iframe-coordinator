@@ -1,3 +1,4 @@
+import { joinRoutes, stripLeadingSlashAndHashTag } from '../src/urlUtils';
 import { EventEmitter, InternalEventEmitter } from './EventEmitter';
 import { keyEqual } from './Key';
 import {
@@ -192,8 +193,13 @@ export class Client {
   /**
    * Gets the host url prefix for current app
    */
-  public get hostURL() {
-    return `${this.environmentData.hostRootUrl}/#/${this._assignedRoute}`;
+  public asHostUrl(clientRoute: string) {
+    const trimedClientRoute = stripLeadingSlashAndHashTag(clientRoute);
+    return joinRoutes(
+      this.environmentData.hostRootUrl,
+      this._assignedRoute,
+      trimedClientRoute
+    );
   }
 
   private _sendToHost(message: ClientToHost): void {
