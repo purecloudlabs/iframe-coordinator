@@ -40,7 +40,7 @@ export class Client {
   private _publishEmitter: InternalEventEmitter<Publication>;
   private _publishExposedEmitter: EventEmitter<Publication>;
   private _registeredKeys: KeyData[];
-  private _assignedRoute: string;
+  private _assignedRoute: string | null;
 
   /**
    * Creates a new client.
@@ -58,7 +58,7 @@ export class Client {
     );
     this._envDataEmitter = new InternalEventEmitter<EnvData>();
     this._registeredKeys = [];
-    this._assignedRoute = '';
+    this._assignedRoute = null;
   }
 
   /**
@@ -197,7 +197,7 @@ export class Client {
     const trimedClientRoute = stripLeadingSlashAndHashTag(clientRoute);
     return joinRoutes(
       this.environmentData.hostRootUrl,
-      this._assignedRoute,
+      this._assignedRoute || '',
       trimedClientRoute
     );
   }
