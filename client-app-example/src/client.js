@@ -9,6 +9,7 @@ document.getElementById('path').innerHTML = window.location.hash;
 
 window.onhashchange = function() {
   document.getElementById('path').innerHTML = window.location.hash;
+  document.getElementById('hostPath').innerHTML = iframeClient.asHostUrl(window.location.hash);
 };
 
 /****  SET UP THE IFRAME CLIENT LIBRARY ****/
@@ -30,7 +31,7 @@ iframeClient.addListener('environmentalData', envData => {
   console.log(
     `Got locale from host. Current date formatted for ${envData.locale} is: ${localizedDate}`
   );
-  console.log(`current host url is ${iframeClient.hostURL}`)
+  document.getElementById('hostPath').innerHTML = iframeClient.asHostUrl(window.location.hash);
   displayEnvData(envData);
 });
 

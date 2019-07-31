@@ -1,4 +1,9 @@
 // Main Class
+import {
+  normalizeRoute,
+  stripLeadingSlash,
+  stripTrailingSlash
+} from './urlUtils';
 
 /**
  * HostRouter is responsible for mapping route paths to
@@ -155,32 +160,4 @@ function applyRoute(urlStr: string, route: string): string {
     newUrl.pathname = `${baseClientPath}/${route}`;
   }
   return newUrl.toString();
-}
-
-/**
- * Removes leading and trailing slashes from a route to simplify comparisons
- * against other paths.
- *
- * @external
- */
-function normalizeRoute(route: string): string {
-  return stripLeadingSlash(stripTrailingSlash(route));
-}
-
-/**
- * Removes any leading '/' characters from a string.
- *
- * @external
- */
-function stripLeadingSlash(str: string): string {
-  return str.replace(/^\/+/, '');
-}
-
-/**
- * Removes any trailing '/' characters from a string.
- *
- * @external
- */
-function stripTrailingSlash(str: string): string {
-  return str.replace(/\/+$/, '');
 }
