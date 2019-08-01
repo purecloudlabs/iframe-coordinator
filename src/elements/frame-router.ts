@@ -2,7 +2,7 @@ import { EventEmitter, InternalEventEmitter } from '../EventEmitter';
 import FrameManager from '../FrameManager';
 import { HostRouter, RoutingMap } from '../HostRouter';
 import { ClientToHost } from '../messages/ClientToHost';
-import { EnvData, EnvDataExt, LabeledStarted } from '../messages/Lifecycle';
+import { EnvData, LabeledStarted, SetupData } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 import { stripTrailingSlash } from '../urlUtils';
 
@@ -145,7 +145,7 @@ class FrameRouterElement extends HTMLElement {
 
   private _handleLifecycleMessage(message: LabeledStarted) {
     const assignedRoute = this._getCurrentClientAssignedRoute();
-    const envData: EnvDataExt = {
+    const envData: SetupData = {
       ...this._envData,
       assignedRoute
     };
