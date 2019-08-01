@@ -13,10 +13,12 @@
 
     <h3>Change Route</h3>
     <ul>
-      <li><a href="#/app1/route1">This client: /route1</a></li>
-      <li><a href="#/app1/route2">This client: /route2</a></li>
-      <li><a href="#/app2/route1">Other client: /route1</a></li>
-      <li><a href="#/app2/route2">Other client: /route2</a></li>
+      <!-- internal routes URLs get remapped in js by `transformLinks` -->
+      <li><a href="#/route1">This client: /route1</a></li>
+      <li><a href="#/route2">This client: /route2</a></li>
+      <!-- External URLs use full links so they open nicely in new tabs -->
+      <li><a href="localhost:3000/#/app2/route1">Other client: /route1</a></li>
+      <li><a href="localhost:3000/#/app2/route2">Other client: /route2</a></li>
     </ul>
 
     <h2>Toasts</h2>
