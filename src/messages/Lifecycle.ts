@@ -49,7 +49,7 @@ export interface EnvData {
 /**
  * Extended Environmental data passed to client with some private data.
  */
-export interface EnvDataExt extends EnvData {
+export interface SetupData extends EnvData {
   /** assigned route of the client */
   assignedRoute: string;
 }
@@ -79,7 +79,7 @@ export interface LabeledEnvInit extends LabeledMsg {
   /** Message identifier */
   msgType: 'env_init';
   /** Environment data */
-  msg: EnvDataExt;
+  msg: SetupData;
 }
 
 /** @external */

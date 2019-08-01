@@ -193,7 +193,7 @@ export class Client {
   /**
    * Gets the host url prefix for current app
    */
-  public asHostUrl(clientRoute: string) {
+  public asHostUrl(clientRoute: string): string {
     const trimedClientRoute = stripLeadingSlashAndHashTag(clientRoute);
     return joinRoutes(
       this.environmentData.hostRootUrl,
