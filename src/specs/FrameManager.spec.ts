@@ -13,7 +13,10 @@ describe('FrameManager', () => {
         .createSpy('docCreateElement')
         .and.callFake((element: string) => {
           return mocks.frame;
-        })
+        }),
+      head: {
+        appendChild: jasmine.createSpy('headAppend')
+      }
     };
 
     mocks.window = {
