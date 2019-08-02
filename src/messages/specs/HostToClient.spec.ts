@@ -99,7 +99,8 @@ describe('HostToClient', () => {
         msg: {
           locale: 'nl-NL',
           hostRootUrl: 'http://example.com/',
-          registeredKeys: []
+          registeredKeys: [],
+          assignedRoute: 'app1'
         }
       };
       let testResult: HostToClient | null;
@@ -120,7 +121,8 @@ describe('HostToClient', () => {
           registeredKeys: [],
           custom: {
             appContext: 'MyApp'
-          }
+          },
+          assignedRoute: 'app1'
         }
       };
       let testResult: HostToClient | null;

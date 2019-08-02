@@ -9,6 +9,9 @@ document.getElementById('path').innerHTML = window.location.hash;
 
 window.onhashchange = function() {
   document.getElementById('path').innerHTML = window.location.hash;
+  document.getElementById('hostPath').innerHTML = iframeClient.asHostUrl(
+    window.location.hash
+  );
 };
 
 /****  SET UP THE IFRAME CLIENT LIBRARY ****/
@@ -23,12 +26,19 @@ let iframeClient = new Client({
 // Add a listener that will handled config data passed from the host to the
 // client at startup.
 iframeClient.addListener('environmentalData', envData => {
-  const appLocale = envData.locale;
+  // Transform link URLs to match top-level app.
+  transformLinks();
 
+  const appLocale = envData.locale;
   const now = new Date();
   const localizedDate = new Intl.DateTimeFormat(appLocale).format(now);
   console.log(
-    `Got locale from host. Current date formatted for ${envData.locale} is: ${localizedDate}`
+    `Got locale from host. Current date formatted for ${
+      envData.locale
+    } is: ${localizedDate}`
+  );
+  document.getElementById('hostPath').innerHTML = iframeClient.asHostUrl(
+    window.location.hash
   );
   displayEnvData(envData);
 });
@@ -79,6 +89,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // HELPER FUNCTIONS
+function transformLinks() {
+  document.querySelectorAll('a[href^="#"]').forEach(link => {
+    link.href = iframeClient.asHostUrl(link.getAttribute('href'));
+  });
+}
 
 function displayEnvData(envData) {
   document.getElementById('env-data').innerHTML = JSON.stringify(

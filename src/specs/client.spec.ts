@@ -1,5 +1,5 @@
 import { Client } from '../client';
-import { EnvData } from '../messages/Lifecycle';
+import { EnvData, SetupData } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 
 describe('client', () => {
@@ -48,11 +48,12 @@ describe('client', () => {
   describe('when an initial data environment is recieved', () => {
     let recievedEnvData: EnvData;
 
-    const testEnvironmentData: EnvData = {
+    const testEnvironmentData: SetupData = {
       locale: 'nl-NL',
       hostRootUrl: 'http://example.com/',
       registeredKeys: [],
-      custom: undefined
+      custom: undefined,
+      assignedRoute: 'app1'
     };
     beforeEach(() => {
       client.addListener('environmentalData', (env: EnvData) => {
@@ -70,7 +71,28 @@ describe('client', () => {
     });
 
     it('should delegate', () => {
-      expect(recievedEnvData).toEqual(testEnvironmentData);
+      const { assignedRoute, ...restEnvData } = testEnvironmentData;
+      expect(recievedEnvData).toEqual(restEnvData);
+    });
+
+    describe('access host URL', () => {
+      it('should be able to access host url', () => {
+        const hostUrl = client.asHostUrl('client/route');
+        expect(hostUrl).toEqual('http://example.com/app1/client/route');
+      });
+
+      it('should ignore client route leading splash and hash tag', () => {
+        let hostUrl = client.asHostUrl('/client/route');
+        expect(hostUrl).toEqual('http://example.com/app1/client/route');
+        hostUrl = client.asHostUrl('#/client/route');
+        expect(hostUrl).toEqual('http://example.com/app1/client/route');
+        hostUrl = client.asHostUrl('/#/client/route');
+        expect(hostUrl).toEqual('http://example.com/app1/client/route');
+      });
+      it('should keep query strings', () => {
+        const hostUrl = client.asHostUrl('/#/client/route?foo=bar');
+        expect(hostUrl).toEqual('http://example.com/app1/client/route?foo=bar');
+      });
     });
   });
 
@@ -190,11 +212,12 @@ describe('client', () => {
 
   describe('when window has a key event', () => {
     beforeEach(() => {
-      const testEnvironmentData: EnvData = {
+      const testEnvironmentData: SetupData = {
         locale: 'nl-NL',
         hostRootUrl: 'http://example.com/',
         registeredKeys: [{ key: 'a', altKey: true }],
-        custom: undefined
+        custom: undefined,
+        assignedRoute: 'app1'
       };
 
       client.start();

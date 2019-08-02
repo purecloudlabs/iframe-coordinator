@@ -1,3 +1,4 @@
+import { joinRoutes, stripLeadingSlashAndHashTag } from '../src/urlUtils';
 import { EventEmitter, InternalEventEmitter } from './EventEmitter';
 import { keyEqual } from './Key';
 import {
@@ -39,6 +40,7 @@ export class Client {
   private _publishEmitter: InternalEventEmitter<Publication>;
   private _publishExposedEmitter: EventEmitter<Publication>;
   private _registeredKeys: KeyData[];
+  private _assignedRoute: string | null;
 
   /**
    * Creates a new client.
@@ -56,6 +58,7 @@ export class Client {
     );
     this._envDataEmitter = new InternalEventEmitter<EnvData>();
     this._registeredKeys = [];
+    this._assignedRoute = null;
   }
 
   /**
@@ -144,7 +147,9 @@ export class Client {
 
   private _handleEnvironmentData(message: HostToClient): void {
     const envInitMsg: LabeledEnvInit = message as LabeledEnvInit;
-    this._environmentData = envInitMsg.msg;
+    const { assignedRoute, ...envData } = envInitMsg.msg;
+    this._assignedRoute = assignedRoute;
+    this._environmentData = envData;
 
     if (this._environmentData.registeredKeys) {
       this._environmentData.registeredKeys.forEach(keyData => {
@@ -183,6 +188,18 @@ export class Client {
    */
   public get environmentData() {
     return this._environmentData;
+  }
+
+  /**
+   * Gets the host url prefix for current app
+   */
+  public asHostUrl(clientRoute: string): string {
+    const trimedClientRoute = stripLeadingSlashAndHashTag(clientRoute);
+    return joinRoutes(
+      this.environmentData.hostRootUrl,
+      this._assignedRoute || '',
+      trimedClientRoute
+    );
   }
 
   private _sendToHost(message: ClientToHost): void {
