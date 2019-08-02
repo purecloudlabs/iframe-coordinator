@@ -284,6 +284,22 @@ describe('client', () => {
     });
   });
 
+  describe('when client requests to navigate to a new page', () => {
+    beforeEach(() => {
+      client.requestNavigation({ url: 'http://www.example.com/' });
+    });
+
+    it('should notify worker of navigation request', () => {
+      expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+        {
+          msgType: 'navRequest',
+          msg: { url: 'http://www.example.com/' }
+        },
+        'https://example.com'
+      );
+    });
+  });
+
   describe('when window has a click event', () => {
     let mockElement;
     describe('when click event target is an anchor', () => {

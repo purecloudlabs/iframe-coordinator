@@ -16,6 +16,7 @@ import {
   LabeledEnvInit,
   Lifecycle
 } from './messages/Lifecycle';
+import { NavRequest } from './messages/NavRequest';
 import { Publication } from './messages/Publication';
 import { Toast } from './messages/Toast';
 
@@ -281,10 +282,28 @@ export class Client {
    * @example
    * `worker.requestToast({ title: 'Hello', message: 'World', custom: { ttl: 5, level: 'info' } });`
    */
-  public requestToast(toast: Toast) {
+  public requestToast(toast: Toast): void {
     this._sendToHost({
       msgType: 'toastRequest',
       msg: toast
+    });
+  }
+
+  /**
+   * Asks the host application to navigate to a new location.
+   *
+   * By requesting navigation from the host app instead of navigating directly in the client frame,
+   * a host-client pair can maintain a consistent browser history even if the client frame is removed
+   * from the page in some situations. It also helps avoid any corner-case differences in how older
+   * browsers handle iframe history
+   *
+   * @param destination a description of where the client wants to navigate the app to.
+   *
+   */
+  public requestNavigation(destination: NavRequest): void {
+    this._sendToHost({
+      msgType: 'navRequest',
+      msg: destination
     });
   }
 }
