@@ -2,8 +2,9 @@ import { EventEmitter, InternalEventEmitter } from '../EventEmitter';
 import FrameManager from '../FrameManager';
 import { HostRouter, RoutingMap } from '../HostRouter';
 import { ClientToHost } from '../messages/ClientToHost';
-import { EnvData, LabeledStarted } from '../messages/Lifecycle';
+import { EnvData, LabeledStarted, SetupData } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
+import { stripTrailingSlash } from '../urlUtils';
 
 /** @external */
 const ROUTE_ATTR = 'route';
@@ -65,7 +66,11 @@ class FrameRouterElement extends HTMLElement {
    */
   public setupFrames(clients: RoutingMap, envData: EnvData) {
     this._router = new HostRouter(clients);
-    this._envData = envData;
+    const processedHostUrl = this._processHostUrl(envData.hostRootUrl);
+    this._envData = {
+      ...envData,
+      hostRootUrl: processedHostUrl
+    };
 
     this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
   }
@@ -138,9 +143,14 @@ class FrameRouterElement extends HTMLElement {
   }
 
   private _handleLifecycleMessage(message: LabeledStarted) {
+    const assignedRoute = this._getCurrentClientAssignedRoute();
+    const envData: SetupData = {
+      ...this._envData,
+      assignedRoute
+    };
     this._frameManager.sendToClient({
       msgType: 'env_init',
-      msg: this._envData
+      msg: envData
     });
   }
 
@@ -151,6 +161,21 @@ class FrameRouterElement extends HTMLElement {
     this.dispatchEvent(
       new CustomEvent(message.msgType, { detail: messageDetail })
     );
+  }
+
+  private _getCurrentClientAssignedRoute() {
+    const currentRoutePath = this.getAttribute(ROUTE_ATTR) || '';
+    const clientInfo = this._router.getClientTarget(currentRoutePath);
+    return (clientInfo && clientInfo.assignedRoute) || '';
+  }
+
+  private _processHostUrl(hostUrl: string) {
+    const hostUrlObject = new URL(hostUrl);
+    if (hostUrlObject.hash) {
+      return hostUrlObject.href;
+    }
+    const trimedUrl = stripTrailingSlash(hostUrl);
+    return window.location.hash ? `${trimedUrl}/#` : trimedUrl;
   }
 }
 
