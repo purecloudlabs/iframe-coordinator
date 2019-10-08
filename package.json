@@ -26,8 +26,10 @@
   "bin": {
     "ifc-cli": "cli/ifc-cli.js"
   },
+  "optionalDependencies": {
+    "@purecloud/web-app-deploy": "^5.2.9"
+  },
   "devDependencies": {
-    "@purecloud/web-app-deploy": "^5.2.9",
     "@types/jasmine": "^2.8.9",
     "glob": "^7.1.4",
     "husky": "^1.1.2",
