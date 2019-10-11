@@ -1,6 +1,6 @@
 {
   "name": "iframe-coordinator",
-  "version": "2.5.0",
+  "version": "2.5.1",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
@@ -26,8 +26,10 @@
   "bin": {
     "ifc-cli": "cli/ifc-cli.js"
   },
+  "optionalDependencies": {
+    "@purecloud/web-app-deploy": "^5.2.9"
+  },
   "devDependencies": {
-    "@purecloud/web-app-deploy": "^5.2.9",
     "@types/jasmine": "^2.8.9",
     "glob": "^7.1.4",
     "husky": "^1.1.2",
