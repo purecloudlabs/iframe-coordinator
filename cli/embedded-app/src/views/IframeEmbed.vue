@@ -77,11 +77,13 @@ export default {
     // Call the custom config set up on the CLI.
     if (window.routerSetup && typeof window.routerSetup === 'function') {
       const clientConfig = window.routerSetup(frameRouter);
-      clientConfig.publishTopics.forEach(topic => {
-        frameRouter.messaging.addListener(topic, publication => {
-          this.notifyPubSub(publication);
+      if (clientConfig.publishTopics) {
+        clientConfig.publishTopics.forEach(topic => {
+          frameRouter.messaging.addListener(topic, publication => {
+            this.notifyPubSub(publication);
+          });
         });
-      });
+      }
     } else {
       // tslint:disable-next-line
       console.log(`====== ERROR ======
