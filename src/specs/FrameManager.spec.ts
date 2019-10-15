@@ -143,7 +143,13 @@ describe('FrameManager', () => {
       frameManager.sendToClient(message);
 
       expect(mocks.frame.contentWindow.postMessage).toHaveBeenCalledWith(
-        message,
+        {
+          msgType: 'publish',
+          msg: {
+            ...message.msg,
+            clientId: undefined
+          }
+        },
         'http://example.com:4040'
       );
     });
@@ -160,7 +166,13 @@ describe('FrameManager', () => {
       frameManager.sendToClient(message);
 
       expect(mocks.frame.contentWindow.postMessage).toHaveBeenCalledWith(
-        message,
+        {
+          msgType: 'publish',
+          msg: {
+            ...message.msg,
+            clientId: undefined
+          }
+        },
         'http://test.example.com'
       );
     });
@@ -186,7 +198,13 @@ describe('FrameManager', () => {
 
     it('if the messages are sent correctly', () => {
       mocks.window.raise('message', mocks.messageEvent);
-      expect(mocks.handler).toHaveBeenCalledWith(mocks.messageEvent.data);
+      expect(mocks.handler).toHaveBeenCalledWith({
+        msgType: mocks.messageEvent.data.msgType,
+        msg: {
+          ...mocks.messageEvent.data.msg,
+          clientId: undefined
+        }
+      });
     });
 
     it('which are blocked if sent from an unexpected origin', () => {
@@ -203,8 +221,9 @@ describe('FrameManager', () => {
 
     it('which are blocked if sent with invalid data', () => {
       mocks.messageEvent.data = { msgType: 'notValid', msg: {} };
-      mocks.window.raise('message', mocks.messageEvent);
-      expect(mocks.handler).not.toHaveBeenCalled();
+      expect(() => {
+        mocks.window.raise('message', mocks.messageEvent);
+      }).toThrow();
     });
 
     it('and can unsubscribe as well.', () => {
@@ -231,7 +250,13 @@ describe('FrameManager', () => {
 
       frameManager.sendToClient(message);
       expect(mocks.frame.contentWindow.postMessage).toHaveBeenCalledWith(
-        message,
+        {
+          msgType: 'publish',
+          msg: {
+            ...message.msg,
+            clientId: undefined
+          }
+        },
         'http://example.com'
       );
     });

@@ -98,10 +98,22 @@ export class Client {
   }
 
   private _onWindowMessage = (event: MessageEvent) => {
-    const validated = validateIncoming(event.data);
-    if (validated) {
-      this._handleHostMessage(validated);
+    let validated = null;
+
+    try {
+      validated = validateIncoming(event.data);
+    } catch (e) {
+      throw new Error(
+        `
+I recieved an invalid message from the host application. This is probably due
+to a major version mismatch between client and host iframe-coordinator libraries.
+      `.trim() +
+          '\n' +
+          e.message
+      );
     }
+
+    this._handleHostMessage(validated);
   };
 
   private _onWindowClick = (event: MouseEvent) => {
@@ -204,10 +216,22 @@ export class Client {
   }
 
   private _sendToHost(message: ClientToHost): void {
-    const validated = validateOutgoing(message);
-    if (validated) {
-      this._clientWindow.parent.postMessage(validated, this._hostOrigin);
+    let validated = null;
+
+    try {
+      validated = validateOutgoing(message);
+    } catch (e) {
+      throw new Error(
+        `
+I received invalid data to send to the host application. This is probably due to
+bad input into one of the iframe-coordinator client methods.
+      `.trim() +
+          '\n' +
+          e.message
+      );
     }
+
+    this._clientWindow.parent.postMessage(validated, this._hostOrigin);
   }
 
   /**
