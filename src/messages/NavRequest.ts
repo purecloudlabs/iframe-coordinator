@@ -1,6 +1,5 @@
-import { guard, object, string } from 'decoders';
+import { constant, Decoder, object, string } from 'decoders';
 import { LabeledMsg } from './LabeledMsg';
-import { createMessageValidator } from './validationUtils';
 
 /**
  * The navigation request data.
@@ -9,17 +8,6 @@ export interface NavRequest {
   /** The URL the client wants to navigate to */
   url: string;
 }
-
-/**
- * A message used to indicate a navigation operation
- * has been requested.
- * @external
- */
-const navRequestDecoder = guard(
-  object({
-    url: string
-  })
-);
 
 /**
  * A message used to request the host navigate to another
@@ -34,8 +22,11 @@ export interface LabeledNavRequest extends LabeledMsg {
 }
 
 /** @external */
-const validateNavRequest = createMessageValidator<LabeledNavRequest>(
-  'navRequest',
-  navRequestDecoder
-);
-export { validateNavRequest };
+const decoder: Decoder<LabeledNavRequest> = object({
+  msgType: constant<'navRequest'>('navRequest'),
+  msg: object({
+    url: string
+  })
+});
+
+export { decoder };

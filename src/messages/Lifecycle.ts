@@ -1,14 +1,14 @@
 import {
   array,
   boolean,
-  guard,
+  constant,
+  Decoder,
   mixed,
   object,
   optional,
   string
 } from 'decoders';
 import { LabeledMsg } from './LabeledMsg';
-import { createMessageValidator } from './validationUtils';
 
 /**
  * Client started indication.  The client will
@@ -23,13 +23,10 @@ export interface LabeledStarted extends LabeledMsg {
 
 // We don't care what is in msg for Started messages.
 /** @external */
-const startedDecoder = guard(mixed);
-
-/** @external */
-const validateStarted = createMessageValidator<LabeledStarted>(
-  'client_started',
-  startedDecoder
-);
+const startedDecoder: Decoder<LabeledStarted> = object({
+  msgType: constant<'client_started'>('client_started'),
+  msg: mixed
+});
 
 /**
  * Environmental data provided to all clients
@@ -41,7 +38,7 @@ export interface EnvData {
   /** Location of the host app */
   hostRootUrl: string;
   /** Keys to notify changes on */
-  registeredKeys: KeyData[];
+  registeredKeys?: KeyData[];
   /** Extra host-specific details */
   custom?: any;
 }
@@ -82,32 +79,29 @@ export interface LabeledEnvInit extends LabeledMsg {
   msg: SetupData;
 }
 
-/** @external */
-const envDataDecoder = guard(
-  object({
+/* @external */
+const envDecoder: Decoder<LabeledEnvInit> = object({
+  msgType: constant<'env_init'>('env_init'),
+  msg: object({
     locale: string,
     hostRootUrl: string,
     assignedRoute: string,
-    registeredKeys: array(
-      object({
-        key: string,
-        altKey: optional(boolean),
-        ctrlKey: optional(boolean),
-        metaKey: optional(boolean),
-        shiftKey: optional(boolean)
-      })
+    registeredKeys: optional(
+      array(
+        object({
+          key: string,
+          altKey: optional(boolean),
+          ctrlKey: optional(boolean),
+          metaKey: optional(boolean),
+          shiftKey: optional(boolean)
+        })
+      )
     ),
     custom: mixed
   })
-);
+});
 
-/** @external */
-const validateEnvData = createMessageValidator<LabeledEnvInit>(
-  'env_init',
-  envDataDecoder
-);
-
-export { validateStarted, validateEnvData };
+export { startedDecoder, envDecoder };
 
 /**
  * Handles new environmental data events.
