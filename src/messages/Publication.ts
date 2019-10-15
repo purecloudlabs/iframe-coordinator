@@ -13,7 +13,10 @@ export interface Publication {
   topic: string;
   /** Data to publish */
   payload: any;
-  /** Client the message originates from */
+  /** Client the message originates from. This should not be provided when
+   * calling client methods. The value will be ignored and the library
+   * will fill it in.
+   */
   clientId?: string;
 }
 
