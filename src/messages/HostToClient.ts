@@ -1,5 +1,9 @@
-import { LabeledEnvInit, validateEnvData } from './Lifecycle';
-import { LabeledPublication, validatePublication } from './Publication';
+import { dispatch, guard } from 'decoders';
+import { envDecoder, LabeledEnvInit } from './Lifecycle';
+import {
+  decoder as publicationDecoder,
+  LabeledPublication
+} from './Publication';
 
 /**
  * All avaiable message types that can be sent
@@ -14,10 +18,8 @@ export type HostToClient = LabeledPublication | LabeledEnvInit;
  * @param msg The message requiring validation.
  * @external
  */
-export function validate(msg: any): HostToClient | null {
-  if (!msg || !msg.msgType) {
-    return null;
-  }
-
-  return validatePublication(msg) || validateEnvData(msg);
+export function validate(msg: any): HostToClient {
+  return guard(
+    dispatch('msgType', { publish: publicationDecoder, env_init: envDecoder })
+  )(msg);
 }

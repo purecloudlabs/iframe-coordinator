@@ -9,12 +9,10 @@ describe('ClientToHost', () => {
       msg: 'test-data'
     };
 
-    let testResult: ClientToHost | null;
-    beforeEach(() => {
-      testResult = validate(testMessage);
-    });
-    it('should return a null message', () => {
-      expect(testResult).toBeNull();
+    it('should throw an exception', () => {
+      expect(() => {
+        validate(testMessage);
+      }).toThrow();
     });
   });
 
@@ -31,8 +29,12 @@ describe('ClientToHost', () => {
       beforeEach(() => {
         testResult = validate(testMessage);
       });
+
       it('should return the validated message', () => {
-        expect(testResult).toEqual(testMessage);
+        expect(testResult).toEqual({
+          msgType: testMessage.msgType,
+          msg: { ...testMessage.msg, clientId: undefined }
+        });
       });
     });
 
@@ -48,8 +50,12 @@ describe('ClientToHost', () => {
       beforeEach(() => {
         testResult = validate(testMessage);
       });
+
       it('should return the validated message', () => {
-        expect(testResult).toEqual(testMessage);
+        expect(testResult).toEqual({
+          msgType: testMessage.msgType,
+          msg: { ...testMessage.msg, clientId: undefined }
+        });
       });
     });
 
@@ -60,12 +66,11 @@ describe('ClientToHost', () => {
           payload: { testData: 'test.data' }
         }
       };
-      let testResult: ClientToHost | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
-      });
-      it('should return the validated message', () => {
-        expect(testResult).toBeNull();
+
+      it('should throw an exception', () => {
+        expect(() => {
+          validate(testMessage);
+        }).toThrow();
       });
     });
 
@@ -180,13 +185,10 @@ describe('ClientToHost', () => {
         }
       };
 
-      let testResult: ClientToHost | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
-      });
-
-      it('should return a null message', () => {
-        expect(testResult).toBeNull();
+      it('should throw an exception', () => {
+        expect(() => {
+          validate(testMessage);
+        }).toThrow();
       });
     });
   });
@@ -217,7 +219,7 @@ describe('ClientToHost', () => {
       });
     });
 
-    describe('when invalid url is provided', () => {
+    describe('when invalid data is provided', () => {
       const testMessage = {
         msgType: 'navRequest',
         msg: {
@@ -225,13 +227,10 @@ describe('ClientToHost', () => {
         }
       };
 
-      let testResult: ClientToHost | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
-      });
-
-      it('should return the validated message', () => {
-        expect(testResult).toBeNull();
+      it('should return throw an exception', () => {
+        expect(() => {
+          validate(testMessage);
+        }).toThrow();
       });
     });
   });

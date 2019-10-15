@@ -1,6 +1,5 @@
-import { guard, mixed, object, optional, string } from 'decoders';
+import { constant, Decoder, mixed, object, optional, string } from 'decoders';
 import { LabeledMsg } from './LabeledMsg';
-import { createMessageValidator } from './validationUtils';
 
 /**
  * A publication configuration.
@@ -31,18 +30,13 @@ export interface LabeledPublication extends LabeledMsg {
 }
 
 /** @external */
-const publicationDecoder = guard(
-  object({
+const decoder: Decoder<LabeledPublication> = object({
+  msgType: constant<'publish'>('publish'),
+  msg: object({
     topic: string,
     payload: mixed,
     clientId: optional(string)
   })
-);
+});
 
-/** @external */
-const validatePublication = createMessageValidator<LabeledPublication>(
-  'publish',
-  publicationDecoder
-);
-
-export { validatePublication };
+export { decoder };

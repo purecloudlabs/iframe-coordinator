@@ -7,12 +7,10 @@ describe('HostToClient', () => {
       msg: 'test-data'
     };
 
-    let testResult: HostToClient | null;
-    beforeEach(() => {
-      testResult = validate(testMessage);
-    });
     it('should return a null message', () => {
-      expect(testResult).toBeNull();
+      expect(() => {
+        validate(testMessage);
+      }).toThrow();
     });
   });
 
@@ -30,7 +28,10 @@ describe('HostToClient', () => {
         testResult = validate(testMessage);
       });
       it('should return the validated message', () => {
-        expect(testResult).toEqual(testMessage);
+        expect(testResult).toEqual({
+          msgType: 'publish',
+          msg: { ...testMessage.msg, clientId: undefined }
+        });
       });
     });
 
@@ -47,7 +48,10 @@ describe('HostToClient', () => {
         testResult = validate(testMessage);
       });
       it('should return the validated message', () => {
-        expect(testResult).toEqual(testMessage);
+        expect(testResult).toEqual({
+          msgType: 'publish',
+          msg: { ...testMessage.msg, clientId: undefined }
+        });
       });
     });
 
@@ -58,12 +62,11 @@ describe('HostToClient', () => {
           payload: { testData: 'test.data' }
         }
       };
-      let testResult: HostToClient | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
-      });
-      it('should return a null message', () => {
-        expect(testResult).toBeNull();
+
+      it('should throw an exception', () => {
+        expect(() => {
+          validate(testMessage);
+        }).toThrow();
       });
     });
 
@@ -103,12 +106,16 @@ describe('HostToClient', () => {
           assignedRoute: 'app1'
         }
       };
-      let testResult: HostToClient | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
-      });
+
       it('should return the validated message', () => {
-        expect(testResult).toEqual(testMessage);
+        const testResult = validate(testMessage);
+        expect(testResult).toEqual({
+          msgType: 'env_init',
+          msg: {
+            ...testMessage.msg,
+            custom: undefined
+          }
+        });
       });
     });
 
@@ -125,7 +132,7 @@ describe('HostToClient', () => {
           assignedRoute: 'app1'
         }
       };
-      let testResult: HostToClient | null;
+      let testResult: HostToClient;
       beforeEach(() => {
         testResult = validate(testMessage);
       });
@@ -141,12 +148,11 @@ describe('HostToClient', () => {
           locale: 'nl-NL'
         }
       };
-      let testResult: HostToClient | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
-      });
-      it('should return a null message', () => {
-        expect(testResult).toBeNull();
+
+      it('should throw an exception', () => {
+        expect(() => {
+          validate(testMessage);
+        }).toThrow();
       });
     });
   });

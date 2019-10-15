@@ -1,8 +1,12 @@
-import { LabeledKeyDown, validateKeyDown } from './KeyDown';
-import { LabeledStarted, validateStarted } from './Lifecycle';
-import { LabeledNavRequest, validateNavRequest } from './NavRequest';
-import { LabeledPublication, validatePublication } from './Publication';
-import { LabeledToast, validateToast } from './Toast';
+import { dispatch, guard } from 'decoders';
+import { decoder as keyDownDecoder, LabeledKeyDown } from './KeyDown';
+import { LabeledStarted, startedDecoder } from './Lifecycle';
+import { decoder as navRequestDecoder, LabeledNavRequest } from './NavRequest';
+import {
+  decoder as publicationDecoder,
+  LabeledPublication
+} from './Publication';
+import { decoder as toastDecoder, LabeledToast } from './Toast';
 
 /**
  * All avaiable message types that can be sent
@@ -22,16 +26,14 @@ export type ClientToHost =
  * @param msg The message requiring validation.
  * @external
  */
-export function validate(msg: any): ClientToHost | null {
-  if (!msg || !msg.msgType) {
-    return null;
-  }
-
-  return (
-    validateNavRequest(msg) ||
-    validatePublication(msg) ||
-    validateToast(msg) ||
-    validateStarted(msg) ||
-    validateKeyDown(msg)
-  );
+export function validate(msg: any): ClientToHost {
+  return guard(
+    dispatch('msgType', {
+      publish: publicationDecoder,
+      registeredKeyFired: keyDownDecoder,
+      client_started: startedDecoder,
+      navRequest: navRequestDecoder,
+      toastRequest: toastDecoder
+    })
+  )(msg);
 }

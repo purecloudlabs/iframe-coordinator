@@ -15,11 +15,13 @@ module.exports = function(frameRouter) {
     {
       locale: 'en-US',
       hostRootUrl: window.location.origin + '/#/',
+      /*
       registeredKeys: [
         { key: 'a', ctrlKey: true },
         { key: 'b', altKey: true },
         { key: 'a', ctrlKey: true, shiftKey: true }
       ],
+      */
       custom: getCustomClientData()
     }
   );

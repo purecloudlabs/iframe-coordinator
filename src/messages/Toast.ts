@@ -1,6 +1,5 @@
-import { guard, mixed, object, optional, string } from 'decoders';
+import { constant, Decoder, mixed, object, optional, string } from 'decoders';
 import { LabeledMsg } from './LabeledMsg';
-import { createMessageValidator } from './validationUtils';
 
 /**
  * A toast configuration.
@@ -27,17 +26,13 @@ export interface LabeledToast extends LabeledMsg {
 }
 
 /** @external */
-const toastDecoder = guard(
-  object({
+const decoder: Decoder<LabeledToast> = object({
+  msgType: constant<'toastRequest'>('toastRequest'),
+  msg: object({
     title: optional(string),
     message: string,
     custom: mixed
   })
-);
+});
 
-/** @external */
-const validateToast = createMessageValidator<LabeledToast>(
-  'toastRequest',
-  toastDecoder
-);
-export { validateToast };
+export { decoder };
