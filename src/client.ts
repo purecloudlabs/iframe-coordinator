@@ -17,8 +17,8 @@ import {
   Lifecycle
 } from './messages/Lifecycle';
 import { NavRequest } from './messages/NavRequest';
+import { Notification } from './messages/Notification';
 import { Publication } from './messages/Publication';
-import { Toast } from './messages/Toast';
 
 /**
  * Client configuration options.
@@ -288,28 +288,28 @@ bad input into one of the iframe-coordinator client methods.
   }
 
   /**
-   * Asks the host application to display a toast/notificaiton message.
+   * Asks the host application to display a user notification.
    *
    * The page embedding the client app is responsible for handling the fired custom event and
-   * presenting/styling the toast.  Application-specific concerns such as level, TTLs,
-   * ids for action callbacks (toast click, toast action buttons), etc. can be passed via
-   * the `custom` property of the `Toast` type.
+   * presenting/styling the notification.  Application-specific concerns such as level, TTLs,
+   * ids for action callbacks (notification click, notification action buttons), etc. can be passed via
+   * the `custom` property of the `notification` type.
    *
-   * @param toast the desired toast configuration.
-   *
-   * @example
-   * `worker.requestToast({ title: 'Hello world' });`
+   * @param notification the desired notification configuration.
    *
    * @example
-   * `worker.requestToast({ title: 'Hello', message: 'World' });`
+   * `client.requestNotification({ title: 'Hello world' });`
    *
    * @example
-   * `worker.requestToast({ title: 'Hello', message: 'World', custom: { ttl: 5, level: 'info' } });`
+   * `client.requestNotification({ title: 'Hello', message: 'World' });`
+   *
+   * @example
+   * `client.requestNotification({ title: 'Hello', message: 'World', custom: { ttl: 5, level: 'info' } });`
    */
-  public requestToast(toast: Toast): void {
+  public requestNotification(notification: Notification): void {
     this._sendToHost({
-      msgType: 'toastRequest',
-      msg: toast
+      msgType: 'notifyRequest',
+      msg: notification
     });
   }
 

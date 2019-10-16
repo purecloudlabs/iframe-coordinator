@@ -9,7 +9,7 @@
     <frame-router
       id="frameRouter"
       v-bind:route="frameRoute"
-      v-on:toastRequest="displayToast"
+      v-on:notifyRequest="displayToast"
       v-on:registeredKeyFired="handleKeyEvent"
       v-on:navRequest="handleNav"
       v-on:frameTransition="updateFrameUrl"
