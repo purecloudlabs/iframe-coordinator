@@ -33,9 +33,7 @@ iframeClient.addListener('environmentalData', envData => {
   const now = new Date();
   const localizedDate = new Intl.DateTimeFormat(appLocale).format(now);
   console.log(
-    `Got locale from host. Current date formatted for ${
-      envData.locale
-    } is: ${localizedDate}`
+    `Got locale from host. Current date formatted for ${envData.locale} is: ${localizedDate}`
   );
   document.getElementById('hostPath').innerHTML = iframeClient.asHostUrl(
     window.location.hash
@@ -84,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // Ask the host app to show the toast.
-    iframeClient.requestToast(toast);
+    iframeClient.requestNotification(toast);
   });
 });
 

@@ -1,6 +1,6 @@
 import { ClientToHost, validate } from '../ClientToHost';
 import { LabeledNavRequest } from '../NavRequest';
-import { LabeledToast } from '../Toast';
+import { LabeledNotification } from '../Notification';
 
 describe('ClientToHost', () => {
   describe('validating an invalid message type', () => {
@@ -102,14 +102,14 @@ describe('ClientToHost', () => {
   describe('validating toast type', () => {
     describe('when only a message is provided', () => {
       const testMessage = {
-        msgType: 'toastRequest',
+        msgType: 'notifyRequest',
         msg: {
           message: 'toast.message'
         }
       };
 
       const expectedMessage: ClientToHost = {
-        msgType: 'toastRequest',
+        msgType: 'notifyRequest',
         msg: {
           title: undefined,
           message: 'toast.message',
@@ -129,7 +129,7 @@ describe('ClientToHost', () => {
 
     describe('when title and message are provided', () => {
       const testMessage = {
-        msgType: 'toastRequest',
+        msgType: 'notifyRequest',
         msg: {
           title: 'toast.title',
           message: 'toast.message'
@@ -137,7 +137,7 @@ describe('ClientToHost', () => {
       };
 
       const expectedMessage: ClientToHost = {
-        msgType: 'toastRequest',
+        msgType: 'notifyRequest',
         msg: {
           title: 'toast.title',
           message: 'toast.message',
@@ -157,7 +157,7 @@ describe('ClientToHost', () => {
 
     describe('when everything is provided', () => {
       const testMessage = {
-        msgType: 'toastRequest',
+        msgType: 'notifyRequest',
         msg: {
           title: 'toast.title',
           message: 'toast.message',
@@ -165,7 +165,7 @@ describe('ClientToHost', () => {
         }
       };
 
-      const expectedMessage: ClientToHost = testMessage as LabeledToast;
+      const expectedMessage: ClientToHost = testMessage as LabeledNotification;
       let testResult: ClientToHost | null;
       beforeEach(() => {
         testResult = validate(testMessage);
@@ -178,7 +178,7 @@ describe('ClientToHost', () => {
 
     describe('when an invalid toast message is provided', () => {
       const testMessage = {
-        msgType: 'toastRequest',
+        msgType: 'notifyRequest',
         msg: {
           title: 'toast.title'
           // no message provided
@@ -189,6 +189,26 @@ describe('ClientToHost', () => {
         expect(() => {
           validate(testMessage);
         }).toThrow();
+      });
+    });
+
+    it('can handle old requests with toast naming', () => {
+      const toastMessage = {
+        msgType: 'toastRequest',
+        msg: {
+          title: 'toast.title',
+          message: 'toast.message',
+          custom: undefined
+        }
+      };
+
+      expect(validate(toastMessage)).toEqual({
+        msgType: 'notifyRequest',
+        msg: {
+          title: 'toast.title',
+          message: 'toast.message',
+          custom: undefined
+        }
       });
     });
   });

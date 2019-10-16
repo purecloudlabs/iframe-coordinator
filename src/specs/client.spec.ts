@@ -103,13 +103,13 @@ describe('client', () => {
 
     describe('with only a message', () => {
       beforeEach(() => {
-        client.requestToast({ message: 'Test notification message' });
+        client.requestNotification({ message: 'Test notification message' });
       });
 
       it('should send a message to the worker', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           {
-            msgType: 'toastRequest',
+            msgType: 'notifyRequest',
             msg: {
               title: undefined,
               message: 'Test notification message',
@@ -123,7 +123,7 @@ describe('client', () => {
 
     describe('with message and extra data', () => {
       beforeEach(() => {
-        client.requestToast({
+        client.requestNotification({
           title: 'Test title',
           message: 'Test notification message',
           custom: { data: 'test data' }
@@ -133,7 +133,7 @@ describe('client', () => {
       it('should send a message to the worker', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           {
-            msgType: 'toastRequest',
+            msgType: 'notifyRequest',
             msg: {
               title: 'Test title',
               message: 'Test notification message',

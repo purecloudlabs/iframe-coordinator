@@ -2,11 +2,11 @@ import { dispatch, guard } from 'decoders';
 import { decoder as keyDownDecoder, LabeledKeyDown } from './KeyDown';
 import { LabeledStarted, startedDecoder } from './Lifecycle';
 import { decoder as navRequestDecoder, LabeledNavRequest } from './NavRequest';
+import { decoder as notifyDecoder, LabeledNotification } from './Notification';
 import {
   decoder as publicationDecoder,
   LabeledPublication
 } from './Publication';
-import { decoder as toastDecoder, LabeledToast } from './Toast';
 
 /**
  * All avaiable message types that can be sent
@@ -15,7 +15,7 @@ import { decoder as toastDecoder, LabeledToast } from './Toast';
  */
 export type ClientToHost =
   | LabeledPublication
-  | LabeledToast
+  | LabeledNotification
   | LabeledNavRequest
   | LabeledStarted
   | LabeledKeyDown;
@@ -33,7 +33,8 @@ export function validate(msg: any): ClientToHost {
       registeredKeyFired: keyDownDecoder,
       client_started: startedDecoder,
       navRequest: navRequestDecoder,
-      toastRequest: toastDecoder
+      notifyRequest: notifyDecoder,
+      toastRequest: notifyDecoder
     })
   )(msg);
 }
