@@ -1,7 +1,14 @@
-import { boolean, guard, number, object, optional, string } from 'decoders';
+import {
+  boolean,
+  constant,
+  Decoder,
+  number,
+  object,
+  optional,
+  string
+} from 'decoders';
 import { NativeKey } from '../Key';
 import { LabeledMsg } from './LabeledMsg';
-import { createMessageValidator } from './validationUtils';
 
 /**
  * A message used to send key information
@@ -16,8 +23,9 @@ export interface LabeledKeyDown extends LabeledMsg {
 }
 
 /** @external */
-const keyDownDecoder = guard(
-  object({
+const decoder: Decoder<LabeledKeyDown> = object({
+  msgType: constant<'registeredKeyFired'>('registeredKeyFired'),
+  msg: object({
     altKey: optional(boolean),
     charCode: optional(number),
     code: optional(string),
@@ -27,11 +35,6 @@ const keyDownDecoder = guard(
     metaKey: optional(boolean),
     shiftKey: optional(boolean)
   })
-);
+});
 
-/** @external */
-const validateKeyDown = createMessageValidator<LabeledKeyDown>(
-  'registeredKeyFired',
-  keyDownDecoder
-);
-export { validateKeyDown };
+export { decoder };

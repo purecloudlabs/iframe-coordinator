@@ -103,13 +103,13 @@ describe('client', () => {
 
     describe('with only a message', () => {
       beforeEach(() => {
-        client.requestToast({ message: 'Test notification message' });
+        client.requestNotification({ message: 'Test notification message' });
       });
 
       it('should send a message to the worker', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           {
-            msgType: 'toastRequest',
+            msgType: 'notifyRequest',
             msg: {
               title: undefined,
               message: 'Test notification message',
@@ -123,7 +123,7 @@ describe('client', () => {
 
     describe('with message and extra data', () => {
       beforeEach(() => {
-        client.requestToast({
+        client.requestNotification({
           title: 'Test title',
           message: 'Test notification message',
           custom: { data: 'test data' }
@@ -133,7 +133,7 @@ describe('client', () => {
       it('should send a message to the worker', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           {
-            msgType: 'toastRequest',
+            msgType: 'notifyRequest',
             msg: {
               title: 'Test title',
               message: 'Test notification message',
@@ -172,14 +172,19 @@ describe('client', () => {
     beforeEach(() => {
       client.start();
       client.messaging.addListener('origin', () => (subscriptionCalled = true));
-      mockFrameWindow.trigger('message', {
-        origin: 'origin',
-        data: 'test data'
-      });
     });
 
-    it('should not notify subscriptions of incoming message', () => {
-      expect(subscriptionCalled).toBeFalsy();
+    it('should throw an exception', () => {
+      expect(() => {
+        mockFrameWindow.trigger('message', {
+          origin: 'origin',
+          data: 'test data'
+        });
+      }).toThrowMatching(err => {
+        return err.message.startsWith(
+          'I recieved an invalid message from the host application'
+        );
+      });
     });
   });
 
