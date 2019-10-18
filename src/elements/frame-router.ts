@@ -10,12 +10,13 @@ import { stripTrailingSlash } from '../urlUtils';
 const ROUTE_ATTR = 'route';
 
 /**
- * A DOM element responsible for communicating
- * with the internal {@link ClientFrame} in order
- * to recieve and send messages to and from
- * the client content.
+ * A DOM element responsible for communicating with the internal ClientFrame in
+ * order to recieve and send messages to and from the client content. Typically
+ * registered as <frame-router>
+ *
+ * **Protip: Uncheck the "inherited" option in the doc options above.**
  */
-class FrameRouterElement extends HTMLElement {
+export default class FrameRouterElement extends HTMLElement {
   private _frameManager: FrameManager;
   private _router: HostRouter;
   private _envData: EnvData;
@@ -187,5 +188,3 @@ class FrameRouterElement extends HTMLElement {
     return window.location.hash ? `${trimedUrl}/#` : trimedUrl;
   }
 }
-
-export default FrameRouterElement;

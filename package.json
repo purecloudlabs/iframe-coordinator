@@ -1,6 +1,6 @@
 {
   "name": "iframe-coordinator",
-  "version": "2.5.1",
+  "version": "3.0.0",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
@@ -30,7 +30,7 @@
     "@purecloud/web-app-deploy": "^5.2.9"
   },
   "devDependencies": {
-    "@types/jasmine": "^2.8.9",
+    "@types/jasmine": "^3.2.1",
     "glob": "^7.1.4",
     "husky": "^1.1.2",
     "i": "^0.3.6",

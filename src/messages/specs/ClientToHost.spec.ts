@@ -1,6 +1,6 @@
 import { ClientToHost, validate } from '../ClientToHost';
 import { LabeledNavRequest } from '../NavRequest';
-import { LabeledToast } from '../Toast';
+import { LabeledNotification } from '../Notification';
 
 describe('ClientToHost', () => {
   describe('validating an invalid message type', () => {
@@ -9,12 +9,10 @@ describe('ClientToHost', () => {
       msg: 'test-data'
     };
 
-    let testResult: ClientToHost | null;
-    beforeEach(() => {
-      testResult = validate(testMessage);
-    });
-    it('should return a null message', () => {
-      expect(testResult).toBeNull();
+    it('should throw an exception', () => {
+      expect(() => {
+        validate(testMessage);
+      }).toThrow();
     });
   });
 
@@ -31,8 +29,12 @@ describe('ClientToHost', () => {
       beforeEach(() => {
         testResult = validate(testMessage);
       });
+
       it('should return the validated message', () => {
-        expect(testResult).toEqual(testMessage);
+        expect(testResult).toEqual({
+          msgType: testMessage.msgType,
+          msg: { ...testMessage.msg, clientId: undefined }
+        });
       });
     });
 
@@ -48,8 +50,12 @@ describe('ClientToHost', () => {
       beforeEach(() => {
         testResult = validate(testMessage);
       });
+
       it('should return the validated message', () => {
-        expect(testResult).toEqual(testMessage);
+        expect(testResult).toEqual({
+          msgType: testMessage.msgType,
+          msg: { ...testMessage.msg, clientId: undefined }
+        });
       });
     });
 
@@ -60,12 +66,11 @@ describe('ClientToHost', () => {
           payload: { testData: 'test.data' }
         }
       };
-      let testResult: ClientToHost | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
-      });
-      it('should return the validated message', () => {
-        expect(testResult).toBeNull();
+
+      it('should throw an exception', () => {
+        expect(() => {
+          validate(testMessage);
+        }).toThrow();
       });
     });
 
@@ -97,14 +102,14 @@ describe('ClientToHost', () => {
   describe('validating toast type', () => {
     describe('when only a message is provided', () => {
       const testMessage = {
-        msgType: 'toastRequest',
+        msgType: 'notifyRequest',
         msg: {
           message: 'toast.message'
         }
       };
 
       const expectedMessage: ClientToHost = {
-        msgType: 'toastRequest',
+        msgType: 'notifyRequest',
         msg: {
           title: undefined,
           message: 'toast.message',
@@ -124,7 +129,7 @@ describe('ClientToHost', () => {
 
     describe('when title and message are provided', () => {
       const testMessage = {
-        msgType: 'toastRequest',
+        msgType: 'notifyRequest',
         msg: {
           title: 'toast.title',
           message: 'toast.message'
@@ -132,7 +137,7 @@ describe('ClientToHost', () => {
       };
 
       const expectedMessage: ClientToHost = {
-        msgType: 'toastRequest',
+        msgType: 'notifyRequest',
         msg: {
           title: 'toast.title',
           message: 'toast.message',
@@ -152,7 +157,7 @@ describe('ClientToHost', () => {
 
     describe('when everything is provided', () => {
       const testMessage = {
-        msgType: 'toastRequest',
+        msgType: 'notifyRequest',
         msg: {
           title: 'toast.title',
           message: 'toast.message',
@@ -160,7 +165,7 @@ describe('ClientToHost', () => {
         }
       };
 
-      const expectedMessage: ClientToHost = testMessage as LabeledToast;
+      const expectedMessage: ClientToHost = testMessage as LabeledNotification;
       let testResult: ClientToHost | null;
       beforeEach(() => {
         testResult = validate(testMessage);
@@ -173,20 +178,37 @@ describe('ClientToHost', () => {
 
     describe('when an invalid toast message is provided', () => {
       const testMessage = {
-        msgType: 'toastRequest',
+        msgType: 'notifyRequest',
         msg: {
           title: 'toast.title'
           // no message provided
         }
       };
 
-      let testResult: ClientToHost | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
+      it('should throw an exception', () => {
+        expect(() => {
+          validate(testMessage);
+        }).toThrow();
       });
+    });
 
-      it('should return a null message', () => {
-        expect(testResult).toBeNull();
+    it('can handle old requests with toast naming', () => {
+      const toastMessage = {
+        msgType: 'toastRequest',
+        msg: {
+          title: 'toast.title',
+          message: 'toast.message',
+          custom: undefined
+        }
+      };
+
+      expect(validate(toastMessage)).toEqual({
+        msgType: 'notifyRequest',
+        msg: {
+          title: 'toast.title',
+          message: 'toast.message',
+          custom: undefined
+        }
       });
     });
   });
@@ -217,7 +239,7 @@ describe('ClientToHost', () => {
       });
     });
 
-    describe('when invalid url is provided', () => {
+    describe('when invalid data is provided', () => {
       const testMessage = {
         msgType: 'navRequest',
         msg: {
@@ -225,13 +247,10 @@ describe('ClientToHost', () => {
         }
       };
 
-      let testResult: ClientToHost | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
-      });
-
-      it('should return the validated message', () => {
-        expect(testResult).toBeNull();
+      it('should return throw an exception', () => {
+        expect(() => {
+          validate(testMessage);
+        }).toThrow();
       });
     });
   });
