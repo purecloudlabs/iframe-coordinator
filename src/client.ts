@@ -9,13 +9,14 @@ import {
   HostToClient,
   validate as validateIncoming
 } from './messages/HostToClient';
-import { KeyData } from './messages/Lifecycle';
+import { API_PROTOCOL, applyProtocol, PartialMsg } from './messages/LabeledMsg';
 import {
   EnvData,
   EnvDataHandler,
   LabeledEnvInit,
   Lifecycle
 } from './messages/Lifecycle';
+import { KeyData } from './messages/Lifecycle';
 import { NavRequest } from './messages/NavRequest';
 import { Notification } from './messages/Notification';
 import { Publication } from './messages/Publication';
@@ -103,14 +104,20 @@ export class Client {
     try {
       validated = validateIncoming(event.data);
     } catch (e) {
-      throw new Error(
-        `
-I recieved an invalid message from the host application. This is probably due
-to a major version mismatch between client and host iframe-coordinator libraries.
-      `.trim() +
-          '\n' +
-          e.message
-      );
+      // TODO: We only throw if protocol is set for backward compatibility
+      // in 4.0.0 we should drop the event if protocol is not set.
+      if (event.data.protocol === API_PROTOCOL) {
+        throw new Error(
+          `
+  I recieved an invalid message from the host application. This is probably due
+  to a major version mismatch between client and host iframe-coordinator libraries.
+        `.trim() +
+            '\n' +
+            e.message
+        );
+      } else {
+        return;
+      }
     }
 
     this._handleHostMessage(validated);
@@ -215,7 +222,8 @@ to a major version mismatch between client and host iframe-coordinator libraries
     );
   }
 
-  private _sendToHost(message: ClientToHost): void {
+  private _sendToHost<T, V>(partialMsg: PartialMsg<T, V>): void {
+    const message = applyProtocol(partialMsg);
     let validated = null;
 
     try {
