@@ -1,5 +1,5 @@
 import { constant, Decoder, object, string } from 'decoders';
-import { LabeledMsg } from './LabeledMsg';
+import { labeledDecoder, LabeledMsg } from './LabeledMsg';
 
 /**
  * The navigation request data.
@@ -14,7 +14,8 @@ export interface NavRequest {
  * URI.
  * @external
  */
-export interface LabeledNavRequest extends LabeledMsg {
+export interface LabeledNavRequest
+  extends LabeledMsg<'navRequest', NavRequest> {
   /** Message identifier */
   msgType: 'navRequest';
   /** Navigation request details */
@@ -22,11 +23,11 @@ export interface LabeledNavRequest extends LabeledMsg {
 }
 
 /** @external */
-const decoder: Decoder<LabeledNavRequest> = object({
-  msgType: constant<'navRequest'>('navRequest'),
-  msg: object({
+const decoder: Decoder<LabeledNavRequest> = labeledDecoder(
+  constant<'navRequest'>('navRequest'),
+  object({
     url: string
   })
-});
+);
 
 export { decoder };

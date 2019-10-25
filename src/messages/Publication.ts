@@ -1,5 +1,13 @@
-import { constant, Decoder, mixed, object, optional, string } from 'decoders';
-import { LabeledMsg } from './LabeledMsg';
+import {
+  constant,
+  Decoder,
+  map,
+  mixed,
+  object,
+  optional,
+  string
+} from 'decoders';
+import { labeledDecoder, LabeledMsg } from './LabeledMsg';
 
 /**
  * A publication configuration.
@@ -25,7 +33,7 @@ export interface Publication {
  * between the clients and the host application.
  * @external
  */
-export interface LabeledPublication extends LabeledMsg {
+export interface LabeledPublication extends LabeledMsg<'publish', Publication> {
   /** Message identifier */
   msgType: 'publish';
   /** Details of the data to publish */
@@ -33,13 +41,13 @@ export interface LabeledPublication extends LabeledMsg {
 }
 
 /** @external */
-const decoder: Decoder<LabeledPublication> = object({
-  msgType: constant<'publish'>('publish'),
-  msg: object({
+const decoder: Decoder<LabeledPublication> = labeledDecoder(
+  constant<'publish'>('publish'),
+  object({
     topic: string,
     payload: mixed,
     clientId: optional(string)
   })
-});
+);
 
 export { decoder };
