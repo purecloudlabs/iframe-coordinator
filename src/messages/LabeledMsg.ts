@@ -7,7 +7,13 @@ import {
   object,
   string
 } from 'decoders';
-import { version } from '../../package.json';
+
+// using `import` here with TypeScripts' requireJsonModule
+// option breaks TS' ability to generate type files, so we
+// fall back to `require`.
+
+// tslint:disable-next-line:no-var-requires
+const version = require('../../package.json').version;
 
 export const API_PROTOCOL = 'iframe-coordinator';
 
