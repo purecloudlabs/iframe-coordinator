@@ -6,6 +6,7 @@ import {
   HostToClient,
   validate as validateOutgoing
 } from './messages/HostToClient';
+import { API_PROTOCOL, PartialMsg } from './messages/LabeledMsg';
 
 /** @external */
 const IFRAME_STYLE = `
@@ -100,7 +101,7 @@ class FrameManager {
    *
    * @param message The message to send.
    */
-  public sendToClient(message: HostToClient) {
+  public sendToClient<T, V>(message: PartialMsg<T, V>) {
     const clientOrigin = this._expectedClientOrigin();
     if (this._iframe.contentWindow && clientOrigin) {
       let validated = null;
@@ -151,14 +152,18 @@ to bad data passed to a frame-router method.
     try {
       validated = validateIncoming(event.data);
     } catch (e) {
-      throw new Error(
-        `
+      if (event.data.protocol === API_PROTOCOL) {
+        throw new Error(
+          `
 I recieved an invalid message from the client application. This is probably due
 to a major version mismatch between client and host iframe-coordinator libraries.
       `.trim() +
-          '\n' +
-          e.message
-      );
+            '\n' +
+            e.message
+        );
+      } else {
+        return;
+      }
     }
 
     const expectedClientOrigin = this._expectedClientOrigin();

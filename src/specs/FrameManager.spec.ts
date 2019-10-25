@@ -1,5 +1,5 @@
 import FrameManager from '../FrameManager';
-import { HostToClient } from '../messages/HostToClient';
+import { API_PROTOCOL } from '../messages/LabeledMsg';
 
 describe('FrameManager', () => {
   let mocks: any;
@@ -125,7 +125,7 @@ describe('FrameManager', () => {
           topic: 'test.topic',
           payload: {}
         }
-      } as HostToClient;
+      };
       frameManager.sendToClient(message);
 
       expect(mocks.frame.contentWindow.postMessage).not.toHaveBeenCalled();
@@ -138,7 +138,7 @@ describe('FrameManager', () => {
           topic: 'test.topic',
           payload: {}
         }
-      } as HostToClient;
+      };
       frameManager.setFrameLocation('http://example.com:4040/foo/bar/baz/');
       frameManager.sendToClient(message);
 
@@ -148,7 +148,9 @@ describe('FrameManager', () => {
           msg: {
             ...message.msg,
             clientId: undefined
-          }
+          },
+          protocol: 'iframe-coordinator',
+          version: 'unknown'
         },
         'http://example.com:4040'
       );
@@ -161,7 +163,7 @@ describe('FrameManager', () => {
           topic: 'test.topic',
           payload: {}
         }
-      } as HostToClient;
+      };
       frameManager.setFrameLocation('/foo/bar/');
       frameManager.sendToClient(message);
 
@@ -171,7 +173,9 @@ describe('FrameManager', () => {
           msg: {
             ...message.msg,
             clientId: undefined
-          }
+          },
+          protocol: 'iframe-coordinator',
+          version: 'unknown'
         },
         'http://test.example.com'
       );
@@ -203,7 +207,9 @@ describe('FrameManager', () => {
         msg: {
           ...mocks.messageEvent.data.msg,
           clientId: undefined
-        }
+        },
+        protocol: 'iframe-coordinator',
+        version: 'unknown'
       });
     });
 
@@ -219,11 +225,26 @@ describe('FrameManager', () => {
       expect(mocks.handler).not.toHaveBeenCalled();
     });
 
-    it('which are blocked if sent with invalid data', () => {
-      mocks.messageEvent.data = { msgType: 'notValid', msg: {} };
+    it('which throw exceptions if sent with invalid data from iframe-coordinator', () => {
+      mocks.messageEvent.data = {
+        protocol: API_PROTOCOL,
+        msgType: 'notValid',
+        msg: {}
+      };
       expect(() => {
         mocks.window.raise('message', mocks.messageEvent);
       }).toThrow();
+    });
+
+    it('which do not throw exceptions if sent with invalid data from other sources', () => {
+      mocks.messageEvent.data = {
+        protocol: 'whatev',
+        msgType: 'notValid',
+        msg: {}
+      };
+      expect(() => {
+        mocks.window.raise('message', mocks.messageEvent);
+      }).not.toThrow();
     });
 
     it('and can unsubscribe as well.', () => {
@@ -246,7 +267,7 @@ describe('FrameManager', () => {
           topic: 'test.topic',
           payload: {}
         }
-      } as HostToClient;
+      };
 
       frameManager.sendToClient(message);
       expect(mocks.frame.contentWindow.postMessage).toHaveBeenCalledWith(
@@ -255,7 +276,9 @@ describe('FrameManager', () => {
           msg: {
             ...message.msg,
             clientId: undefined
-          }
+          },
+          protocol: 'iframe-coordinator',
+          version: 'unknown'
         },
         'http://example.com'
       );

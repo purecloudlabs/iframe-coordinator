@@ -8,14 +8,15 @@ import {
   string
 } from 'decoders';
 import { NativeKey } from '../Key';
-import { LabeledMsg } from './LabeledMsg';
+import { labeledDecoder, LabeledMsg } from './LabeledMsg';
 
 /**
  * A message used to send key information
  * to the host application.
  * @external
  */
-export interface LabeledKeyDown extends LabeledMsg {
+export interface LabeledKeyDown
+  extends LabeledMsg<'registeredKeyFired', NativeKey> {
   /** Message identifier */
   msgType: 'registeredKeyFired';
   /** Key details */
@@ -23,9 +24,9 @@ export interface LabeledKeyDown extends LabeledMsg {
 }
 
 /** @external */
-const decoder: Decoder<LabeledKeyDown> = object({
-  msgType: constant<'registeredKeyFired'>('registeredKeyFired'),
-  msg: object({
+const decoder: Decoder<LabeledKeyDown> = labeledDecoder(
+  constant<'registeredKeyFired'>('registeredKeyFired'),
+  object({
     altKey: optional(boolean),
     charCode: optional(number),
     code: optional(string),
@@ -35,6 +36,6 @@ const decoder: Decoder<LabeledKeyDown> = object({
     metaKey: optional(boolean),
     shiftKey: optional(boolean)
   })
-});
+);
 
 export { decoder };

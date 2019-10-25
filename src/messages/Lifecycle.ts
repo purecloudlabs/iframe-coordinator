@@ -8,7 +8,7 @@ import {
   optional,
   string
 } from 'decoders';
-import { LabeledMsg } from './LabeledMsg';
+import { applyProtocol, labeledDecoder, LabeledMsg } from './LabeledMsg';
 
 /**
  * Client started indication.  The client will
@@ -16,17 +16,17 @@ import { LabeledMsg } from './LabeledMsg';
  * messages from the client application.
  * @external
  */
-export interface LabeledStarted extends LabeledMsg {
+export interface LabeledStarted extends LabeledMsg<'client_started', any> {
   /** Message identifier */
   msgType: 'client_started';
 }
 
 // We don't care what is in msg for Started messages.
 /** @external */
-const startedDecoder: Decoder<LabeledStarted> = object({
-  msgType: constant<'client_started'>('client_started'),
-  msg: mixed
-});
+const startedDecoder: Decoder<LabeledStarted> = labeledDecoder(
+  constant<'client_started'>('client_started'),
+  mixed
+);
 
 /**
  * Environmental data provided to all clients
@@ -72,7 +72,7 @@ export interface KeyData {
  * is sent to the client.
  * @external
  */
-export interface LabeledEnvInit extends LabeledMsg {
+export interface LabeledEnvInit extends LabeledMsg<'env_init', SetupData> {
   /** Message identifier */
   msgType: 'env_init';
   /** Environment data */
@@ -80,9 +80,9 @@ export interface LabeledEnvInit extends LabeledMsg {
 }
 
 /* @external */
-const envDecoder: Decoder<LabeledEnvInit> = object({
-  msgType: constant<'env_init'>('env_init'),
-  msg: object({
+const envDecoder: Decoder<LabeledEnvInit> = labeledDecoder(
+  constant<'env_init'>('env_init'),
+  object({
     locale: string,
     hostRootUrl: string,
     assignedRoute: string,
@@ -99,7 +99,7 @@ const envDecoder: Decoder<LabeledEnvInit> = object({
     ),
     custom: mixed
   })
-});
+);
 
 export { startedDecoder, envDecoder };
 
@@ -118,9 +118,9 @@ export class Lifecycle {
    * A {@link LabeledStarted} message to send to the host application.
    */
   public static get startedMessage(): LabeledStarted {
-    return {
+    return applyProtocol({
       msgType: 'client_started',
       msg: undefined
-    };
+    });
   }
 }

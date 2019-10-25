@@ -8,7 +8,7 @@ import {
   optional,
   string
 } from 'decoders';
-import { LabeledMsg } from './LabeledMsg';
+import { labeledDecoder, LabeledMsg } from './LabeledMsg';
 
 /**
  * A toast configuration.
@@ -27,7 +27,8 @@ export interface Notification {
  * in the host application.
  * @external
  */
-export interface LabeledNotification extends LabeledMsg {
+export interface LabeledNotification
+  extends LabeledMsg<'notifyRequest', Notification> {
   /** Message identifier */
   msgType: 'notifyRequest';
   /** Toast details */
@@ -49,13 +50,13 @@ const toastTypeDecoder: Decoder<'notifyRequest'> = map(
 );
 
 /** @external */
-const decoder: Decoder<LabeledNotification> = object({
-  msgType: either(constant<'notifyRequest'>('notifyRequest'), toastTypeDecoder),
-  msg: object({
+const decoder: Decoder<LabeledNotification> = labeledDecoder(
+  either(constant<'notifyRequest'>('notifyRequest'), toastTypeDecoder),
+  object({
     title: optional(string),
     message: string,
     custom: mixed
   })
-});
+);
 
 export { decoder };
