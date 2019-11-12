@@ -1,6 +1,6 @@
 {
   "name": "iframe-coordinator",
-  "version": "2.4.0",
+  "version": "3.0.2",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
@@ -26,9 +26,11 @@
   "bin": {
     "ifc-cli": "cli/ifc-cli.js"
   },
+  "optionalDependencies": {
+    "@purecloud/web-app-deploy": "^5.2.9"
+  },
   "devDependencies": {
-    "@purecloud/web-app-deploy": "^5.2.9",
-    "@types/jasmine": "^2.8.9",
+    "@types/jasmine": "^3.2.1",
     "glob": "^7.1.4",
     "husky": "^1.1.2",
     "i": "^0.3.6",
@@ -46,7 +48,7 @@
     "ts-loader": "^5.4.5",
     "tslint": "^5.17.0",
     "tslint-config-prettier": "^1.16.0",
-    "typedoc": "^0.14.0",
+    "typedoc": "^0.15.0",
     "typedoc-plugin-internal-external": "^2.0.2",
     "typescript": "^3.5.2",
     "webpack": "^4.34.0",

@@ -10,12 +10,13 @@ import { stripTrailingSlash } from '../urlUtils';
 const ROUTE_ATTR = 'route';
 
 /**
- * A DOM element responsible for communicating
- * with the internal {@link ClientFrame} in order
- * to recieve and send messages to and from
- * the client content.
+ * A DOM element responsible for communicating with the internal ClientFrame in
+ * order to recieve and send messages to and from the client content. Typically
+ * registered as <frame-router>
+ *
+ * **Protip: Uncheck the "inherited" option in the doc options above.**
  */
-class FrameRouterElement extends HTMLElement {
+export default class FrameRouterElement extends HTMLElement {
   private _frameManager: FrameManager;
   private _router: HostRouter;
   private _envData: EnvData;
@@ -103,11 +104,20 @@ class FrameRouterElement extends HTMLElement {
   public changeRoute(newPath: string) {
     if (this._router) {
       const clientInfo = this._router.getClientTarget(newPath);
-      this._currentClientId = (clientInfo && clientInfo.id) || '';
+      const newClientId = (clientInfo && clientInfo.id) || '';
+
+      if (this._currentClientId !== newClientId) {
+        this.dispatchEvent(
+          new CustomEvent('clientChanged', { detail: newClientId })
+        );
+      }
+
+      this._currentClientId = newClientId;
 
       const newLocation = this._frameManager.setFrameLocation(
         clientInfo && clientInfo.url
       );
+
       this.dispatchEvent(
         new CustomEvent('frameTransition', { detail: newLocation })
       );
@@ -178,5 +188,3 @@ class FrameRouterElement extends HTMLElement {
     return window.location.hash ? `${trimedUrl}/#` : trimedUrl;
   }
 }
-
-export default FrameRouterElement;
