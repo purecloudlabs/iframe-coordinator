@@ -6,6 +6,7 @@ import {
   HostToClient,
   validate as validateOutgoing
 } from './messages/HostToClient';
+import { API_PROTOCOL, PartialMsg } from './messages/LabeledMsg';
 
 /** @external */
 const IFRAME_STYLE = `
@@ -103,13 +104,25 @@ class FrameManager {
    *
    * @param message The message to send.
    */
-  public sendToClient(message: HostToClient) {
+  public sendToClient<T, V>(message: PartialMsg<T, V>) {
     const clientOrigin = this._expectedClientOrigin();
     if (this._iframe.contentWindow && clientOrigin) {
-      const validated = validateOutgoing(message);
-      if (validated) {
-        this._iframe.contentWindow.postMessage(validated, clientOrigin);
+      let validated = null;
+
+      try {
+        validated = validateOutgoing(message);
+      } catch (e) {
+        throw new Error(
+          `
+I received invalid data to send to a client application. This is probably due
+to bad data passed to a frame-router method.
+`.trim() +
+            '\n' +
+            e.message
+        );
       }
+
+      this._iframe.contentWindow.postMessage(validated, clientOrigin);
     }
   }
 
@@ -137,13 +150,30 @@ class FrameManager {
   }
 
   private _handlePostMessage(handler: MessageHandler, event: MessageEvent) {
-    const validated = validateIncoming(event.data);
+    let validated = null;
+
+    try {
+      validated = validateIncoming(event.data);
+    } catch (e) {
+      if (event.data.protocol === API_PROTOCOL) {
+        throw new Error(
+          `
+I recieved an invalid message from the client application. This is probably due
+to a major version mismatch between client and host iframe-coordinator libraries.
+      `.trim() +
+            '\n' +
+            e.message
+        );
+      } else {
+        return;
+      }
+    }
+
     const expectedClientOrigin = this._expectedClientOrigin();
     if (
       expectedClientOrigin &&
       event.origin === expectedClientOrigin &&
-      event.source === this._iframe.contentWindow &&
-      validated
+      event.source === this._iframe.contentWindow
     ) {
       handler(validated);
     }

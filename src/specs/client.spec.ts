@@ -1,4 +1,5 @@
 import { Client } from '../client';
+import { API_PROTOCOL, applyProtocol } from '../messages/LabeledMsg';
 import { EnvData, SetupData } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 
@@ -36,10 +37,10 @@ describe('client', () => {
 
     it('should send a client_started notification', () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-        {
+        applyProtocol({
           msgType: 'client_started',
           msg: undefined
-        },
+        }),
         'https://example.com'
       );
     });
@@ -103,19 +104,19 @@ describe('client', () => {
 
     describe('with only a message', () => {
       beforeEach(() => {
-        client.requestToast({ message: 'Test notification message' });
+        client.requestNotification({ message: 'Test notification message' });
       });
 
       it('should send a message to the worker', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          {
-            msgType: 'toastRequest',
+          applyProtocol({
+            msgType: 'notifyRequest',
             msg: {
               title: undefined,
               message: 'Test notification message',
               custom: undefined
             }
-          },
+          }),
           'https://example.com'
         );
       });
@@ -123,7 +124,7 @@ describe('client', () => {
 
     describe('with message and extra data', () => {
       beforeEach(() => {
-        client.requestToast({
+        client.requestNotification({
           title: 'Test title',
           message: 'Test notification message',
           custom: { data: 'test data' }
@@ -132,14 +133,14 @@ describe('client', () => {
 
       it('should send a message to the worker', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          {
-            msgType: 'toastRequest',
+          applyProtocol({
+            msgType: 'notifyRequest',
             msg: {
               title: 'Test title',
               message: 'Test notification message',
               custom: { data: 'test data' }
             }
-          },
+          }),
           'https://example.com'
         );
       });
@@ -154,14 +155,14 @@ describe('client', () => {
 
     it('should notify worker of new publication', () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-        {
+        applyProtocol({
           msgType: 'publish',
           msg: {
             topic: 'test.topic',
             payload: 'custom data',
             clientId: undefined
           }
-        },
+        }),
         'https://example.com'
       );
     });
@@ -172,14 +173,37 @@ describe('client', () => {
     beforeEach(() => {
       client.start();
       client.messaging.addListener('origin', () => (subscriptionCalled = true));
-      mockFrameWindow.trigger('message', {
-        origin: 'origin',
-        data: 'test data'
+    });
+
+    it('should throw an exception if it is an iframe-coordinator message', () => {
+      expect(() => {
+        mockFrameWindow.trigger('message', {
+          origin: 'origin',
+          data: {
+            protocol: API_PROTOCOL,
+            msgType: 'test data',
+            msg: 'msg'
+          }
+        });
+      }).toThrowMatching(err => {
+        return err.message.startsWith(
+          'I recieved an invalid message from the host application'
+        );
       });
     });
 
-    it('should not notify subscriptions of incoming message', () => {
-      expect(subscriptionCalled).toBeFalsy();
+    it('should not throw an exception if it is not labeled as being from iframe-coordinator', () => {
+      expect(() => {
+        mockFrameWindow.trigger('message', {
+          protocol: 'whatev',
+          origin: 'origin',
+          data: {
+            protocol: 'whatev',
+            msgType: 'test data',
+            msg: 'msg'
+          }
+        });
+      }).not.toThrow();
     });
   });
 
@@ -265,7 +289,7 @@ describe('client', () => {
 
       it('should publish a key event', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          {
+          applyProtocol({
             msgType: 'registeredKeyFired',
             msg: {
               altKey: true,
@@ -277,7 +301,7 @@ describe('client', () => {
               metaKey: false,
               shiftKey: false
             }
-          },
+          }),
           'https://example.com'
         );
       });
@@ -289,12 +313,12 @@ describe('client', () => {
       client.requestNavigation({ url: 'http://www.example.com/' });
     });
 
-    it('should notify worker of navigation request', () => {
+    it('should notify host of navigation request', () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-        {
+        applyProtocol({
           msgType: 'navRequest',
           msg: { url: 'http://www.example.com/' }
-        },
+        }),
         'https://example.com'
       );
     });
@@ -316,12 +340,12 @@ describe('client', () => {
         });
       });
 
-      it('should notify worker of navigation request', () => {
+      it('should notify host of navigation request', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          {
+          applyProtocol({
             msgType: 'navRequest',
             msg: { url: 'http://www.example.com/' }
-          },
+          }),
           'https://example.com'
         );
       });
@@ -341,7 +365,7 @@ describe('client', () => {
         });
       });
 
-      it('should not notify worker of navigation request', () => {
+      it('should not notify host of navigation request', () => {
         expect(mockFrameWindow.parent.postMessage).not.toHaveBeenCalled();
       });
     });
@@ -352,10 +376,10 @@ describe('client', () => {
         client._clientWindow = mockFrameWindow;
         client.start();
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          {
+          applyProtocol({
             msgType: 'client_started',
             msg: undefined
-          },
+          }),
           window.origin
         );
       });

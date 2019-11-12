@@ -1,6 +1,13 @@
-import { guard, mixed, object, optional, string } from 'decoders';
-import { LabeledMsg } from './LabeledMsg';
-import { createMessageValidator } from './validationUtils';
+import {
+  constant,
+  Decoder,
+  map,
+  mixed,
+  object,
+  optional,
+  string
+} from 'decoders';
+import { labeledDecoder, LabeledMsg } from './LabeledMsg';
 
 /**
  * A publication configuration.
@@ -14,7 +21,10 @@ export interface Publication {
   topic: string;
   /** Data to publish */
   payload: any;
-  /** Client the message originates from */
+  /** Client the message originates from. This should not be provided when
+   * calling client methods. The value will be ignored and the library
+   * will fill it in.
+   */
   clientId?: string;
 }
 
@@ -23,7 +33,7 @@ export interface Publication {
  * between the clients and the host application.
  * @external
  */
-export interface LabeledPublication extends LabeledMsg {
+export interface LabeledPublication extends LabeledMsg<'publish', Publication> {
   /** Message identifier */
   msgType: 'publish';
   /** Details of the data to publish */
@@ -31,7 +41,8 @@ export interface LabeledPublication extends LabeledMsg {
 }
 
 /** @external */
-const publicationDecoder = guard(
+const decoder: Decoder<LabeledPublication> = labeledDecoder(
+  constant<'publish'>('publish'),
   object({
     topic: string,
     payload: mixed,
@@ -39,10 +50,4 @@ const publicationDecoder = guard(
   })
 );
 
-/** @external */
-const validatePublication = createMessageValidator<LabeledPublication>(
-  'publish',
-  publicationDecoder
-);
-
-export { validatePublication };
+export { decoder };

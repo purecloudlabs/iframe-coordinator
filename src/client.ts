@@ -9,16 +9,17 @@ import {
   HostToClient,
   validate as validateIncoming
 } from './messages/HostToClient';
-import { KeyData } from './messages/Lifecycle';
+import { API_PROTOCOL, applyProtocol, PartialMsg } from './messages/LabeledMsg';
 import {
   EnvData,
   EnvDataHandler,
   LabeledEnvInit,
   Lifecycle
 } from './messages/Lifecycle';
+import { KeyData } from './messages/Lifecycle';
 import { NavRequest } from './messages/NavRequest';
+import { Notification } from './messages/Notification';
 import { Publication } from './messages/Publication';
-import { Toast } from './messages/Toast';
 
 /**
  * Client configuration options.
@@ -98,10 +99,28 @@ export class Client {
   }
 
   private _onWindowMessage = (event: MessageEvent) => {
-    const validated = validateIncoming(event.data);
-    if (validated) {
-      this._handleHostMessage(validated);
+    let validated = null;
+
+    try {
+      validated = validateIncoming(event.data);
+    } catch (e) {
+      // TODO: We only throw if protocol is set for backward compatibility
+      // in 4.0.0 we should drop the event if protocol is not set.
+      if (event.data.protocol === API_PROTOCOL) {
+        throw new Error(
+          `
+  I recieved an invalid message from the host application. This is probably due
+  to a major version mismatch between client and host iframe-coordinator libraries.
+        `.trim() +
+            '\n' +
+            e.message
+        );
+      } else {
+        return;
+      }
     }
+
+    this._handleHostMessage(validated);
   };
 
   private _onWindowClick = (event: MouseEvent) => {
@@ -203,11 +222,24 @@ export class Client {
     );
   }
 
-  private _sendToHost(message: ClientToHost): void {
-    const validated = validateOutgoing(message);
-    if (validated) {
-      this._clientWindow.parent.postMessage(validated, this._hostOrigin);
+  private _sendToHost<T, V>(partialMsg: PartialMsg<T, V>): void {
+    const message = applyProtocol(partialMsg);
+    let validated = null;
+
+    try {
+      validated = validateOutgoing(message);
+    } catch (e) {
+      throw new Error(
+        `
+I received invalid data to send to the host application. This is probably due to
+bad input into one of the iframe-coordinator client methods.
+      `.trim() +
+          '\n' +
+          e.message
+      );
     }
+
+    this._clientWindow.parent.postMessage(validated, this._hostOrigin);
   }
 
   /**
@@ -264,28 +296,28 @@ export class Client {
   }
 
   /**
-   * Asks the host application to display a toast/notificaiton message.
+   * Asks the host application to display a user notification.
    *
    * The page embedding the client app is responsible for handling the fired custom event and
-   * presenting/styling the toast.  Application-specific concerns such as level, TTLs,
-   * ids for action callbacks (toast click, toast action buttons), etc. can be passed via
-   * the `custom` property of the `Toast` type.
+   * presenting/styling the notification.  Application-specific concerns such as level, TTLs,
+   * ids for action callbacks (notification click, notification action buttons), etc. can be passed via
+   * the `custom` property of the `notification` type.
    *
-   * @param toast the desired toast configuration.
-   *
-   * @example
-   * `worker.requestToast({ title: 'Hello world' });`
+   * @param notification the desired notification configuration.
    *
    * @example
-   * `worker.requestToast({ title: 'Hello', message: 'World' });`
+   * `client.requestNotification({ title: 'Hello world' });`
    *
    * @example
-   * `worker.requestToast({ title: 'Hello', message: 'World', custom: { ttl: 5, level: 'info' } });`
+   * `client.requestNotification({ title: 'Hello', message: 'World' });`
+   *
+   * @example
+   * `client.requestNotification({ title: 'Hello', message: 'World', custom: { ttl: 5, level: 'info' } });`
    */
-  public requestToast(toast: Toast): void {
+  public requestNotification(notification: Notification): void {
     this._sendToHost({
-      msgType: 'toastRequest',
-      msg: toast
+      msgType: 'notifyRequest',
+      msg: notification
     });
   }
 

@@ -1,14 +1,14 @@
 import {
   array,
   boolean,
-  guard,
+  constant,
+  Decoder,
   mixed,
   object,
   optional,
   string
 } from 'decoders';
-import { LabeledMsg } from './LabeledMsg';
-import { createMessageValidator } from './validationUtils';
+import { applyProtocol, labeledDecoder, LabeledMsg } from './LabeledMsg';
 
 /**
  * Client started indication.  The client will
@@ -16,19 +16,16 @@ import { createMessageValidator } from './validationUtils';
  * messages from the client application.
  * @external
  */
-export interface LabeledStarted extends LabeledMsg {
+export interface LabeledStarted extends LabeledMsg<'client_started', any> {
   /** Message identifier */
   msgType: 'client_started';
 }
 
 // We don't care what is in msg for Started messages.
 /** @external */
-const startedDecoder = guard(mixed);
-
-/** @external */
-const validateStarted = createMessageValidator<LabeledStarted>(
-  'client_started',
-  startedDecoder
+const startedDecoder: Decoder<LabeledStarted> = labeledDecoder(
+  constant<'client_started'>('client_started'),
+  mixed
 );
 
 /**
@@ -41,7 +38,7 @@ export interface EnvData {
   /** Location of the host app */
   hostRootUrl: string;
   /** Keys to notify changes on */
-  registeredKeys: KeyData[];
+  registeredKeys?: KeyData[];
   /** Extra host-specific details */
   custom?: any;
 }
@@ -75,39 +72,36 @@ export interface KeyData {
  * is sent to the client.
  * @external
  */
-export interface LabeledEnvInit extends LabeledMsg {
+export interface LabeledEnvInit extends LabeledMsg<'env_init', SetupData> {
   /** Message identifier */
   msgType: 'env_init';
   /** Environment data */
   msg: SetupData;
 }
 
-/** @external */
-const envDataDecoder = guard(
+/* @external */
+const envDecoder: Decoder<LabeledEnvInit> = labeledDecoder(
+  constant<'env_init'>('env_init'),
   object({
     locale: string,
     hostRootUrl: string,
     assignedRoute: string,
-    registeredKeys: array(
-      object({
-        key: string,
-        altKey: optional(boolean),
-        ctrlKey: optional(boolean),
-        metaKey: optional(boolean),
-        shiftKey: optional(boolean)
-      })
+    registeredKeys: optional(
+      array(
+        object({
+          key: string,
+          altKey: optional(boolean),
+          ctrlKey: optional(boolean),
+          metaKey: optional(boolean),
+          shiftKey: optional(boolean)
+        })
+      )
     ),
     custom: mixed
   })
 );
 
-/** @external */
-const validateEnvData = createMessageValidator<LabeledEnvInit>(
-  'env_init',
-  envDataDecoder
-);
-
-export { validateStarted, validateEnvData };
+export { startedDecoder, envDecoder };
 
 /**
  * Handles new environmental data events.
@@ -124,9 +118,9 @@ export class Lifecycle {
    * A {@link LabeledStarted} message to send to the host application.
    */
   public static get startedMessage(): LabeledStarted {
-    return {
+    return applyProtocol({
       msgType: 'client_started',
       msg: undefined
-    };
+    });
   }
 }

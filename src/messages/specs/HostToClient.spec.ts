@@ -1,4 +1,5 @@
 import { HostToClient, validate } from '../HostToClient';
+import { applyProtocol } from '../LabeledMsg';
 
 describe('HostToClient', () => {
   describe('validating an invalid message type', () => {
@@ -7,47 +8,55 @@ describe('HostToClient', () => {
       msg: 'test-data'
     };
 
-    let testResult: HostToClient | null;
-    beforeEach(() => {
-      testResult = validate(testMessage);
-    });
     it('should return a null message', () => {
-      expect(testResult).toBeNull();
+      expect(() => {
+        validate(testMessage);
+      }).toThrow();
     });
   });
 
   describe('validating publish type', () => {
     describe('when payload is a string', () => {
-      const testMessage: HostToClient = {
+      const testMessage: HostToClient = applyProtocol({
         msgType: 'publish',
         msg: {
           topic: 'test.topic',
           payload: 'test.payload'
         }
-      };
+      });
       let testResult: HostToClient | null;
       beforeEach(() => {
         testResult = validate(testMessage);
       });
       it('should return the validated message', () => {
-        expect(testResult).toEqual(testMessage);
+        expect(testResult).toEqual(
+          applyProtocol({
+            msgType: 'publish',
+            msg: { ...testMessage.msg, clientId: undefined }
+          })
+        );
       });
     });
 
     describe('when payload is an object', () => {
-      const testMessage: HostToClient = {
+      const testMessage: HostToClient = applyProtocol({
         msgType: 'publish',
         msg: {
           topic: 'test.topic',
           payload: { testData: 'test.data' }
         }
-      };
+      });
       let testResult: HostToClient | null;
       beforeEach(() => {
         testResult = validate(testMessage);
       });
       it('should return the validated message', () => {
-        expect(testResult).toEqual(testMessage);
+        expect(testResult).toEqual(
+          applyProtocol({
+            msgType: 'publish',
+            msg: { ...testMessage.msg, clientId: undefined }
+          })
+        );
       });
     });
 
@@ -58,12 +67,11 @@ describe('HostToClient', () => {
           payload: { testData: 'test.data' }
         }
       };
-      let testResult: HostToClient | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
-      });
-      it('should return a null message', () => {
-        expect(testResult).toBeNull();
+
+      it('should throw an exception', () => {
+        expect(() => {
+          validate(testMessage);
+        }).toThrow();
       });
     });
 
@@ -80,9 +88,12 @@ describe('HostToClient', () => {
           topic: 'test.topic',
           payload: undefined,
           clientId: undefined
-        }
+        },
+        protocol: 'iframe-coordinator',
+        version: 'unknown'
       };
-      let testResult: HostToClient | null;
+
+      let testResult: HostToClient;
       beforeEach(() => {
         testResult = validate(testMessage);
       });
@@ -94,7 +105,7 @@ describe('HostToClient', () => {
 
   describe('validating env_init type', () => {
     describe('when given a proper environmental data payload', () => {
-      const testMessage: HostToClient = {
+      const testMessage: HostToClient = applyProtocol({
         msgType: 'env_init',
         msg: {
           locale: 'nl-NL',
@@ -102,18 +113,24 @@ describe('HostToClient', () => {
           registeredKeys: [],
           assignedRoute: 'app1'
         }
-      };
-      let testResult: HostToClient | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
       });
+
       it('should return the validated message', () => {
-        expect(testResult).toEqual(testMessage);
+        const testResult = validate(testMessage);
+        expect(testResult).toEqual(
+          applyProtocol({
+            msgType: 'env_init',
+            msg: {
+              ...testMessage.msg,
+              custom: undefined
+            }
+          })
+        );
       });
     });
 
     describe('when given a proper environmental data payload including custom data', () => {
-      const testMessage: HostToClient = {
+      const testMessage: HostToClient = applyProtocol({
         msgType: 'env_init',
         msg: {
           locale: 'nl-NL',
@@ -124,13 +141,13 @@ describe('HostToClient', () => {
           },
           assignedRoute: 'app1'
         }
-      };
-      let testResult: HostToClient | null;
+      });
+      let testResult: HostToClient;
       beforeEach(() => {
         testResult = validate(testMessage);
       });
       it('should return the validated message', () => {
-        expect(testResult).toEqual(testMessage);
+        expect(testResult).toEqual(applyProtocol(testMessage));
       });
     });
 
@@ -141,12 +158,11 @@ describe('HostToClient', () => {
           locale: 'nl-NL'
         }
       };
-      let testResult: HostToClient | null;
-      beforeEach(() => {
-        testResult = validate(testMessage);
-      });
-      it('should return a null message', () => {
-        expect(testResult).toBeNull();
+
+      it('should throw an exception', () => {
+        expect(() => {
+          validate(testMessage);
+        }).toThrow();
       });
     });
   });
