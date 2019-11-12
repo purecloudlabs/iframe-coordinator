@@ -1,7 +1,7 @@
 /**
  * A generic handler for incoming event data.
  */
-type EventHandler<T> = (data: T) => void;
+export type EventHandler<T> = (data: T) => void;
 
 /**
  * Simple object for keeping track of event listeners.

@@ -15,6 +15,9 @@ import {
 // tslint:disable-next-line:no-var-requires
 const version = require('../../package.json').version;
 
+/**
+ * @external
+ */
 export const API_PROTOCOL = 'iframe-coordinator';
 
 /**
