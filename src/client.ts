@@ -211,7 +211,13 @@ export class Client {
   }
 
   /**
-   * Gets the host url prefix for current app
+   * Translates a client route like `/foo/bar` to the full URL used in the host
+   * app for the same page, e.g. `https://hostapp.com/#/client-app/foo/bar`.
+   * You should use this whenver generating an internal link within a client
+   * application so that the user gets a nice experience if they open a link in
+   * a new tab, or copy and paste a link URL into a chat message or email.
+   *
+   * @param clientRoute The /-separated path within the client app to link to.
    */
   public asHostUrl(clientRoute: string): string {
     const trimedClientRoute = stripLeadingSlashAndHashTag(clientRoute);
