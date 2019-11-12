@@ -66,7 +66,10 @@ class FrameManager {
       this._window.document.head.appendChild(style);
     }
 
-    this._iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin');
+    this._iframe.setAttribute(
+      'sandbox',
+      'allow-scripts allow-same-origin allow-modals'
+    );
   }
 
   /**

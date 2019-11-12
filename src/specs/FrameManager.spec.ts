@@ -75,7 +75,7 @@ describe('FrameManager', () => {
     expect(mocks.document.createElement).toHaveBeenCalledWith('iframe');
     expect(mocks.frame.setAttribute).toHaveBeenCalledWith(
       'sandbox',
-      'allow-scripts allow-same-origin'
+      'allow-scripts allow-same-origin allow-modals'
     );
   });
 
