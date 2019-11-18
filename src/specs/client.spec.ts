@@ -328,7 +328,7 @@ describe('client', () => {
     let mockElement;
     describe('when click event target is an anchor', () => {
       beforeEach(() => {
-        client.start();
+        client.startInterceptingLinks();
         mockElement = document.createElement('a');
         mockElement.setAttribute('href', 'http://www.example.com/');
         mockFrameWindow.trigger('click', {
@@ -353,7 +353,7 @@ describe('client', () => {
 
     describe('when click event target is not an anchor', () => {
       beforeEach(() => {
-        client.start();
+        client.startInterceptingLinks();
         mockFrameWindow.parent.postMessage.calls.reset();
         mockElement = document.createElement('div');
         mockFrameWindow.trigger('click', {

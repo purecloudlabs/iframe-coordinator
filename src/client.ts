@@ -35,6 +35,7 @@ export interface ClientConfigOptions {
  */
 export class Client {
   private _isStarted: boolean;
+  private _isInterceptingLinksStarted: boolean;
   private _clientWindow: Window;
   private _environmentData: EnvData;
   private _envDataEmitter: InternalEventEmitter<EnvData>;
@@ -259,9 +260,33 @@ bad input into one of the iframe-coordinator client methods.
     this._isStarted = true;
 
     this._clientWindow.addEventListener('message', this._onWindowMessage);
-    this._clientWindow.addEventListener('click', this._onWindowClick);
     this._clientWindow.addEventListener('keydown', this._onKeyDown);
     this._sendToHost(Lifecycle.startedMessage);
+  }
+
+  /**
+   * Adds a click handler to the client window that intercepts clicks on anchor elements
+   * and makes a nav request to the host based on the element's href.
+   */
+  public startInterceptingLinks(): void {
+    if (this._isInterceptingLinksStarted) {
+      return;
+    }
+
+    this._isInterceptingLinksStarted = true;
+    this._clientWindow.addEventListener('click', this._onWindowClick);
+  }
+
+  /**
+   * Removes the click handler that intercepts clicks on anchor elements.
+   */
+  public stopInterceptingLinks(): void {
+    if (!this._isInterceptingLinksStarted) {
+      return;
+    }
+
+    this._isInterceptingLinksStarted = false;
+    this._clientWindow.removeEventListener('click', this._onWindowClick);
   }
 
   /**
@@ -285,8 +310,8 @@ bad input into one of the iframe-coordinator client methods.
 
     this._isStarted = false;
     this._clientWindow.removeEventListener('message', this._onWindowMessage);
-    this._clientWindow.removeEventListener('click', this._onWindowClick);
     this._clientWindow.removeEventListener('keydown', this._onKeyDown);
+    this.stopInterceptingLinks();
   }
 
   /**
