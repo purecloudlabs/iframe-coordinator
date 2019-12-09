@@ -14,6 +14,10 @@ import store from './store';
 
 registerCustomElements();
 
+window.addEventListener('error', evt => {
+  console.error('Uncaught Error:', evt.error);
+});
+
 Vue.config.productionTip = false;
 
 Vue.use(Notifications);
