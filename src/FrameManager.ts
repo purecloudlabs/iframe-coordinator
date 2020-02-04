@@ -68,7 +68,7 @@ class FrameManager {
 
     this._iframe.setAttribute(
       'sandbox',
-      'allow-scripts allow-same-origin allow-modals'
+      'allow-scripts allow-same-origin allow-modals allow-popups'
     );
   }
 
