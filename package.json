@@ -6,6 +6,7 @@
     "cheerio": "^1.0.0-rc.3",
     "commander": "^2.20.0",
     "decoders": "^1.10.6",
+    "dev-cert-authority": "^1.1.1",
     "express": "^4.17.1",
     "find-root": "^1.1.0"
   },

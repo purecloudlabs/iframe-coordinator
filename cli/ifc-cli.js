@@ -7,6 +7,8 @@ const path = require('path');
 const findRoot = require('find-root');
 const express = require('express');
 const cheerio = require('cheerio');
+const https = require('https');
+const devCertAuthority = require('dev-cert-authority');
 
 const appPath = path.join(__dirname, './embedded-app/dist/');
 
@@ -20,8 +22,17 @@ function main() {
   app = express();
   app.use(/^\/$/, serveIndex(indexContent));
   app.use(express.static(appPath));
+
+  if (opts.ssl) {
+    const options = devCertAuthority('localhost');
+    https.createServer(options, app).listen(opts.port);
+  } else {
+    app.listen(opts.port);
+  }
+
+  const localhostUrl = (opts.ssl ? 'https' : 'http') + '://localhost:' + opts.port + '/';
   console.log(`Listening on port ${opts.port}...`);
-  app.listen(opts.port);
+  console.log(`Visit host app at: ${localhostUrl}`);
 }
 
 // HELPER FUNCTIONS
@@ -36,14 +47,16 @@ function parseProgramOptions() {
       'iframe client configuration file',
       defaultJsConfig
     )
-    .option('-p, --port <port_num>', 'port number to host on', 3000);
+    .option('-p, --port <port_num>', 'port number to host on', 3000)
+    .option('-s, --ssl', 'serve over https');
   program.on('--help', showHelpText);
 
   program.parse(process.argv);
 
   return {
     clientConfigFile: findConfigFile(program.configFile),
-    port: program.port
+    port: program.port,
+    ssl: program.ssl
   };
 }
 
