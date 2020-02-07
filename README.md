@@ -165,7 +165,7 @@ Usage: ifc-cli [options]
 Options:
   -f, --config-file <file>  iframe client configuration file (default: "/home/mcheely/projects/iframe-coordinator/ifc-cli.config.js")
   -p, --port <port_num>     port number to host on (default: 3000)
-	-s, --ssl                 serve over https
+  -s, --ssl                 serve over https
   -h, --help                output usage information
 
   This program will start a server for a basic iframe-coordinator host app. In
