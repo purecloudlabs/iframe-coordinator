@@ -55,7 +55,7 @@ registerCustomElements();
  *
  * if the client uses pushstate path-based routing, leave the fragment out:
  * e.g. http://example.com/client/
-/
+*/
 document.getElementById("frame-element").setupFrames({
   client1: {
     url: "https://example.com/components/example1/#/",
@@ -165,6 +165,7 @@ Usage: ifc-cli [options]
 Options:
   -f, --config-file <file>  iframe client configuration file (default: "/home/mcheely/projects/iframe-coordinator/ifc-cli.config.js")
   -p, --port <port_num>     port number to host on (default: 3000)
+  -s, --ssl                 serve over https
   -h, --help                output usage information
 
   This program will start a server for a basic iframe-coordinator host app. In
