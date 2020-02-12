@@ -7,7 +7,9 @@ module.exports = function(frameRouter) {
       },
       app2: {
         url: 'http://localhost:8080/client-app-2/#/',
-        assignedRoute: '/app2'
+        assignedRoute: '/app2',
+        sandbox: 'allow-presentation', // optional
+        allow: 'microphone http://localhost:8080;' // optional 
       }
     },
     {
