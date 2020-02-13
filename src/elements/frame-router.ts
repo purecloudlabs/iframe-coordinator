@@ -102,6 +102,8 @@ export default class FrameRouterElement extends HTMLElement {
    * @param newPath a new route which matches those provided originally.
    */
   public changeRoute(newPath: string) {
+    newPath = newPath || 'about:blank';
+
     if (this._router) {
       const clientInfo = this._router.getClientTarget(newPath);
       const newClientId = (clientInfo && clientInfo.id) || '';
