@@ -5,6 +5,25 @@
   <body>
     <h1>Component #2</h1>
 
+    <div>
+      <h3>Local Media</h3>
+      <p>We are requesting the user's local video stream from within the iframe app.</p>
+      <p>We are able to request user media because we have allow="camera *;" set on the iframe</p>
+
+      <video id="webrtc" autoplay style="height: auto; width: 150px;"></video>
+
+      <script type="text/javascript">
+        function requestPermissions() {
+          window.navigator.mediaDevices.getUserMedia({ video: true })
+            .then((stream) => {
+              document.querySelector('video#webrtc').srcObject = stream;
+            });
+        }
+
+        setTimeout(requestPermissions, 2000);
+      </script>
+    </div>
+
     <h2>Routing</h2>
     <h3>Current Local Route:</h3>
     <div id="path"></div>

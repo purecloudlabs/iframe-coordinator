@@ -9,7 +9,9 @@ module.exports = function(frameRouter) {
       },
       app2: {
         url: 'http://' + hostname + ':8080/client-app-2/#/',
-        assignedRoute: '/app2'
+        assignedRoute: '/app2',
+        allow: 'camera http://localhost:8080;', // optional
+        sandbox: 'allow-presentation allow-modals' // optional
       }
     },
     {
