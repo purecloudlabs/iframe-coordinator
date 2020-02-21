@@ -2,10 +2,7 @@ import {
   ClientToHost,
   validate as validateIncoming
 } from './messages/ClientToHost';
-import {
-  HostToClient,
-  validate as validateOutgoing
-} from './messages/HostToClient';
+import { validate as validateOutgoing } from './messages/HostToClient';
 import { API_PROTOCOL, PartialMsg } from './messages/LabeledMsg';
 
 /** @external */
@@ -22,6 +19,15 @@ frame-router iframe {
   height: 100%;
 }
 `;
+
+/** @internal default iframe sandbox attributes */
+const DEFAULT_SANDBOX = [
+  'allow-scripts',
+  'allow-same-origin',
+  'allow-modals',
+  'allow-forms',
+  'allow-popups'
+] as const;
 
 let style: HTMLElement;
 
@@ -66,10 +72,39 @@ class FrameManager {
       this._window.document.head.appendChild(style);
     }
 
-    this._iframe.setAttribute(
-      'sandbox',
-      'allow-scripts allow-same-origin allow-modals allow-forms allow-popups'
-    );
+    this._iframe.setAttribute('sandbox', DEFAULT_SANDBOX.join(' '));
+  }
+
+  /**
+   * String of feature-policies to set on the iframe element.
+   *  Ex: "microphone *;"
+   *
+   *  See [feature-policies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Feature-Policy#Directives)
+   *
+   * @param allow string of feature-policies
+   */
+  public setFrameAllow(allow?: string): void {
+    if (typeof allow !== 'string') {
+      allow = '';
+    }
+    this._iframe.setAttribute('allow', allow);
+  }
+
+  /**
+   * String of sandbox rules to be added to the `<iframe>` element.
+   *  Ex: "allow-forms allow-modals"
+   *
+   *  See [<iframe>](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe)
+   *
+   * @param sandbox string of iframe sandbox rules
+   */
+  public setFrameSandbox(sandbox?: string): void {
+    if (typeof sandbox !== 'string') {
+      sandbox = '';
+    }
+    const arrSandbox = sandbox.split(' ').concat(DEFAULT_SANDBOX);
+    const newSandbox = [...new Set(arrSandbox)].join(' ');
+    this._iframe.setAttribute('sandbox', newSandbox);
   }
 
   /**

@@ -48,14 +48,14 @@ registerCustomElements();
  * iframe on that route. It must be a full Url, but you can
  * use the URL construtor to simplify handling
  * clients on the same domain.
- * (e.g. `new URL("/client/app/path/', window.location).toString()`)
+ * (e.g. `new URL('/client/app/path/', window.location).toString()`)
  *
  * If the client uses fragment-based routing, the URL should include a hash fragment:
  * http://example.com/client/#/
  *
  * if the client uses pushstate path-based routing, leave the fragment out:
  * e.g. http://example.com/client/
-*/
+ */
 document.getElementById("frame-element").setupFrames({
   client1: {
     url: "https://example.com/components/example1/#/",
@@ -63,7 +63,9 @@ document.getElementById("frame-element").setupFrames({
   },
   client2: {
     url: "https://example.com/components/example2/#/",
-    assignedRoute: "/two"
+    assignedRoute: "/two",
+    sandbox: 'allow-presentation', // optional
+    allow: 'microphone https://example.com;' // optional 
   }
 }, {
   locale: 'en-US',
@@ -192,7 +194,9 @@ module.exports = function(frameRouter) {
       },
       app2: {
         url: 'http://localhost:8080/client-app-2/#/',
-        assignedRoute: '/app2'
+        assignedRoute: '/app2',
+        sandbox: 'allow-presentation', // optional
+        allow: 'microphone http://localhost:8080;' // optional 
       }
     },
     {
