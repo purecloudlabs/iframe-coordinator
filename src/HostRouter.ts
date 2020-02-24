@@ -25,13 +25,9 @@ export class HostRouter {
    * @param route The route to lookup, such as '/foo/bar/baz'
    */
   public getClientTarget(route: string): ClientTarget | null {
-    const desiredRoute = String(route || '');
+    const desiredRoute = route || '';
 
-    let clientTarget: ClientTarget = {
-      id: null,
-      url: null,
-      assignedRoute: null
-    };
+    let clientTarget: ClientTarget | null = null;
 
     this._clients.forEach(client => {
       const clientRoute = matchAndStripPrefix(
@@ -47,7 +43,7 @@ export class HostRouter {
       }
     });
 
-    return clientTarget.id ? clientTarget : null;
+    return clientTarget;
   }
 }
 
