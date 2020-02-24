@@ -73,7 +73,8 @@ export default class FrameRouterElement extends HTMLElement {
       hostRootUrl: processedHostUrl
     };
 
-    this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
+    const frameRoute = String(this.getAttribute(ROUTE_ATTR) || '');
+    this.changeRoute(frameRoute);
   }
 
   /**
@@ -102,8 +103,6 @@ export default class FrameRouterElement extends HTMLElement {
    * @param newPath a new route which matches those provided originally.
    */
   public changeRoute(newPath: string) {
-    newPath = newPath || 'about:blank';
-
     if (this._router) {
       const clientInfo = this._router.getClientTarget(newPath);
       const newClientId = (clientInfo && clientInfo.id) || '';
@@ -131,10 +130,11 @@ export default class FrameRouterElement extends HTMLElement {
    */
   public attributeChangedCallback(
     name: string,
-    oldValue: string,
-    newValue: string
+    oldValue: unknown,
+    newValue: unknown
   ) {
     if (name === ROUTE_ATTR && oldValue !== newValue) {
+      newValue = String(newValue || '');
       this.changeRoute(newValue);
     }
   }
