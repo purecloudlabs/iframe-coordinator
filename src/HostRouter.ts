@@ -26,7 +26,6 @@ export class HostRouter {
    */
   public getClientTarget(route: string): ClientTarget | null {
     const desiredRoute = route || '';
-
     let clientTarget: ClientTarget | null = null;
 
     this._clients.forEach(client => {
