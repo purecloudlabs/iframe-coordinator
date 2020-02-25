@@ -33,7 +33,9 @@ export class HostRouter {
         clientTarget = {
           id: client.id,
           url: applyRoute(client.url, clientRoute),
-          assignedRoute: client.assignedRoute
+          assignedRoute: client.assignedRoute,
+          allow: client.allow,
+          sandbox: client.sandbox
         };
       }
     });
@@ -55,6 +57,10 @@ export interface ClientTarget {
   url: string | null;
   /** The assigned route of the client */
   assignedRoute: string | null;
+  /** iframe's allow directive */
+  allow?: string;
+  /** iframe's sandbox directive to be merged with defaults */
+  sandbox?: string;
 }
 
 /**
@@ -84,6 +90,10 @@ interface ClientRegistration {
   url: string;
   /** The host route that should map to this client app */
   assignedRoute: string;
+  /** iframe's allow directive */
+  allow?: string;
+  /** iframe's sandbox directive to be merged with defaults */
+  sandbox?: string;
 }
 
 /**
@@ -136,7 +146,9 @@ function parseRegistration(key: string, value: ClientRegistration): ClientInfo {
   return {
     id: key,
     url: value.url,
-    assignedRoute: normalizeRoute(value.assignedRoute)
+    assignedRoute: normalizeRoute(value.assignedRoute),
+    allow: value.allow,
+    sandbox: value.sandbox
   };
 }
 

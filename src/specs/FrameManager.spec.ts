@@ -296,6 +296,57 @@ describe('FrameManager', () => {
     */
   });
 
+  describe("Can be used to set the frame's allow policy", () => {
+    it('set it to a new policy', () => {
+      const allowOpts = 'microphone *; camera *;';
+      frameManager.setFrameAllow(allowOpts);
+      expect(mocks.frame.setAttribute).toHaveBeenCalledWith('allow', allowOpts);
+    });
+
+    it('ensure only a string is set', () => {
+      frameManager.setFrameAllow(false as any);
+      expect(mocks.frame.setAttribute).toHaveBeenCalledWith('allow', '');
+    });
+  });
+
+  describe("Can be used to set the frame's sandbox", () => {
+    const DEFAULT_SANDBOX = [
+      'allow-scripts',
+      'allow-same-origin',
+      'allow-modals',
+      'allow-forms',
+      'allow-popups'
+    ];
+
+    it('add to the sandbox', () => {
+      const sandboxOpts = 'awesome-sandbox allow-playground';
+      frameManager.setFrameSandbox(sandboxOpts);
+      sandboxOpts
+        .split(' ')
+        .forEach(newOpt =>
+          expect(mocks.frame.setAttribute).toHaveBeenCalledWith(
+            'sandbox',
+            jasmine.stringMatching(newOpt)
+          )
+        );
+    });
+
+    it('ensure defaults are always set', () => {
+      frameManager.setFrameSandbox('');
+      DEFAULT_SANDBOX.forEach(defaultOpt =>
+        expect(mocks.frame.setAttribute).toHaveBeenCalledWith(
+          'sandbox',
+          jasmine.stringMatching(defaultOpt)
+        )
+      );
+    });
+
+    it('ensure only a string is set', () => {
+      frameManager.setFrameSandbox({} as any);
+      expect(mocks.frame.setAttribute).not.toHaveBeenCalledWith('sandbox', {});
+    });
+  });
+
   it('Can be embeded the frame in another element', () => {
     frameManager.embed(mocks.node);
     expect(mocks.node.appendChild).toHaveBeenCalledWith(mocks.frame);

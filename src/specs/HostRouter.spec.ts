@@ -16,6 +16,12 @@ describe('HostRouter', () => {
       noClientHash: {
         url: 'http://example.com/my/pushstate/app/?query=works',
         assignedRoute: 'noHash'
+      },
+      withSandboxAndAllow: {
+        url: clientUrl,
+        assignedRoute: 'route/two',
+        sandbox: 'allow-scripts',
+        allow: 'microphone *; camera *;'
       }
     });
   });
@@ -73,6 +79,18 @@ describe('HostRouter', () => {
         'http://example.com/my/pushstate/app/foo/bar?query=works'
       );
       expect(clientInfo.id).toBe('noClientHash');
+    });
+
+    it('should return "allow" and "sandbox" config options if they exist', () => {
+      const clientInfo = hostRouter.getClientTarget('route/two/');
+      if (!clientInfo) {
+        fail();
+        return;
+      }
+      expect(clientInfo.url).toBe('http://example.com/#/test/one/');
+      expect(clientInfo.id).toBe('withSandboxAndAllow');
+      expect(clientInfo.sandbox).toBe('allow-scripts');
+      expect(clientInfo.allow).toBe('microphone *; camera *;');
     });
   });
 });
