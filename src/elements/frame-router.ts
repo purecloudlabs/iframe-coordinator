@@ -118,10 +118,12 @@ export default class FrameRouterElement extends HTMLElement {
         clientInfo && clientInfo.url
       );
 
-      if (clientInfo) {
-        this._frameManager.setFrameSandbox(clientInfo.sandbox);
-        this._frameManager.setFrameAllow(clientInfo.allow);
-      }
+      this._frameManager.setFrameSandbox(
+        (clientInfo && clientInfo.sandbox) || undefined
+      );
+      this._frameManager.setFrameAllow(
+        (clientInfo && clientInfo.allow) || undefined
+      );
 
       this.dispatchEvent(
         new CustomEvent('frameTransition', { detail: newLocation })
