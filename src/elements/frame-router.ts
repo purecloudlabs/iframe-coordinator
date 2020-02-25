@@ -118,8 +118,12 @@ export default class FrameRouterElement extends HTMLElement {
         clientInfo && clientInfo.url
       );
 
-      this._frameManager.setFrameSandbox(clientInfo.sandbox);
-      this._frameManager.setFrameAllow(clientInfo.allow);
+      this._frameManager.setFrameSandbox(
+        (clientInfo && clientInfo.sandbox) || undefined
+      );
+      this._frameManager.setFrameAllow(
+        (clientInfo && clientInfo.allow) || undefined
+      );
 
       this.dispatchEvent(
         new CustomEvent('frameTransition', { detail: newLocation })
@@ -132,11 +136,11 @@ export default class FrameRouterElement extends HTMLElement {
    */
   public attributeChangedCallback(
     name: string,
-    oldValue: string,
-    newValue: string
+    oldValue: string | null,
+    newValue: string | null
   ) {
     if (name === ROUTE_ATTR && oldValue !== newValue) {
-      this.changeRoute(newValue);
+      this.changeRoute(newValue || '');
     }
   }
 
