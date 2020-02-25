@@ -133,7 +133,7 @@ export default class FrameRouterElement extends HTMLElement {
     newValue: string | null
   ) {
     if (name === ROUTE_ATTR && oldValue !== newValue) {
-      this.changeRoute(String(newValue || ''));
+      this.changeRoute(newValue || '');
     }
   }
 
