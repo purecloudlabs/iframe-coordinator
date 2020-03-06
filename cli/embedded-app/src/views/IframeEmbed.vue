@@ -6,6 +6,23 @@
       as
       <span class="frame-url">{{ frameUrl }}</span>
     </div>
+    <div v-if="showMenu" id="appMenu">
+      <h2>No app is registered for {{ frameRoute }}</h2>
+
+      <div v-if="Object.keys(clientConfig).length > 0">
+        <p>To see your embedded apps, use one of the links below.</p>
+        <nav>
+          <ul>
+            <li v-for="(client, id) in clientConfig" v-bind:key="id">
+              <a v-bind:href="'#' + client.assignedRoute">{{id}} @ {{client.assignedRoute}}</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+      <div v-else>
+        <p>I couldn't find any registered client applications. Please check your ifc-cli configuration file.</p>
+      </div>
+    </div>
     <frame-router
       id="frameRouter"
       v-bind:route="frameRoute"
@@ -14,6 +31,7 @@
       v-on:navRequest="handleNav"
       v-on:frameTransition="updateFrameUrl"
     ></frame-router>
+    }}
   </div>
 </template>
 
@@ -23,7 +41,9 @@ export default {
   props: ['pathMatch'],
   data() {
     return {
-      frameUrl: ''
+      frameUrl: '',
+      showMenu: true,
+      clientConfig: {}
     };
   },
   computed: {
@@ -71,10 +91,17 @@ export default {
     },
     updateFrameUrl(event) {
       this.frameUrl = event.detail;
+      this.showMenu = this.frameUrl === 'about:blank';
     }
   },
   mounted() {
     // Call the custom config set up on the CLI.
+    const oldSetupFrames = frameRouter.setupFrames;
+    frameRouter.setupFrames = (...args) => {
+      this.clientConfig = args[0];
+      oldSetupFrames.apply(frameRouter, args);
+    };
+
     if (window.routerSetup && typeof window.routerSetup === 'function') {
       const clientConfig = window.routerSetup(frameRouter);
       if (clientConfig.publishTopics) {
@@ -118,5 +145,20 @@ for more details.
 #routerLayout .app-route,
 #routerLayout .frame-url {
   color: #ff4f1f;
+}
+
+#appMenu {
+  max-width: 80ch;
+  margin: auto;
+}
+#appMenu nav {
+  text-align: left;
+}
+#appMenu ul {
+  margin: 0;
+  padding: 0;
+}
+#appMenu li {
+  list-style: none;
 }
 </style>
