@@ -3,11 +3,11 @@ module.exports = function(frameRouter) {
 
   frameRouter.setupFrames(
     {
-      app1: {
+      application1: {
         url: 'http://' + hostname + ':8080/client-app-1/#/',
         assignedRoute: '/app1'
       },
-      app2: {
+      application2: {
         url: 'http://' + hostname + ':8080/client-app-2/#/',
         assignedRoute: '/app2',
         allow: 'camera http://localhost:8080;', // optional
