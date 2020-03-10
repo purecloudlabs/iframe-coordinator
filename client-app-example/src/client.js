@@ -47,8 +47,10 @@ iframeClient.messaging.addListener('host.topic', publication => {
   console.log('Got Publish event:', publication);
 });
 
-// Start intercepting link click events for cross-frame routing
+// Initialized the client
 iframeClient.start();
+// Intercept links for messaging
+iframeClient.startInterceptingLinks();
 
 /**** SET UP THE CLIENT UI ****/
 
