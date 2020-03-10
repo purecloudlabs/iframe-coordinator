@@ -19,9 +19,9 @@ Embedding applications via iframe also means that code from separate teams can b
  * We require a few polyfills in order to support IE11.  These
  * will be needed to be loaded by both the host and the client.
  */
-import "@babel/polyfill";
-import "custom-event-polyfill/polyfill.js";
-import "url-polyfill";
+import '@babel/polyfill';
+import 'custom-event-polyfill/polyfill.js';
+import 'url-polyfill';
 
 /* The iframe coordinator library uses custom elements to
  * embed itself in the host app. If you are targeting browsers
@@ -29,11 +29,11 @@ import "url-polyfill";
  * see: https://github.com/webcomponents/custom-elements for
  * more details on configuring the polyfill
  */
-import "@webcomponents/custom-elements/src/native-shim.js";
-import "@webcomponents/custom-elements/src/custom-elements.js";
+import '@webcomponents/custom-elements/src/native-shim.js';
+import '@webcomponents/custom-elements/src/custom-elements.js';
 
 /* Import the host library */
-import { registerCustomElements } from "iframe-coordinator/host.js";
+import { registerCustomElements } from 'iframe-coordinator/host.js';
 
 /* This will make the custom element `frame-router` available
  * for use in your browser. This element is the primary
@@ -56,21 +56,24 @@ registerCustomElements();
  * if the client uses pushstate path-based routing, leave the fragment out:
  * e.g. http://example.com/client/
  */
-document.getElementById("frame-element").setupFrames({
-  client1: {
-    url: "https://example.com/components/example1/#/",
-    assignedRoute: "/one"
+document.getElementById('frame-element').setupFrames(
+  {
+    client1: {
+      url: 'https://example.com/components/example1/#/',
+      assignedRoute: '/one'
+    },
+    client2: {
+      url: 'https://example.com/components/example2/#/',
+      assignedRoute: '/two',
+      sandbox: 'allow-presentation', // optional
+      allow: 'microphone https://example.com;' // optional
+    }
   },
-  client2: {
-    url: "https://example.com/components/example2/#/",
-    assignedRoute: "/two",
-    sandbox: 'allow-presentation', // optional
-    allow: 'microphone https://example.com;' // optional 
+  {
+    locale: 'en-US',
+    hostRootUrl: window.location.origin
   }
-}, {
-  locale: 'en-US',
-  hostRootUrl: window.location.origin
-});
+);
 ```
 
 **HTML/DOM**
@@ -183,6 +186,12 @@ Options:
   will be evaluated directly inside the browser in an immediately invoked
   function expression.
 
+  The CLI host app also provides a proxy route under `/proxy/` that can be used
+  if you need the client and host applicaitons on the same domain. To use the proxy,
+  simply make the url registered for the client that of the host app, followed by
+  `/proxy/` and then the url of the client app. (See `app2` in the config below
+  for an example)
+
   Here is an example config file:
 
 module.exports = function(frameRouter) {
@@ -193,10 +202,14 @@ module.exports = function(frameRouter) {
         assignedRoute: '/app1'
       },
       app2: {
-        url: 'http://localhost:8080/client-app-2/#/',
+        // Instead of directly referencing client 2 via "url: `http://${hostname}:8080/client-app-2/#/`"
+        // we use the built-in proxy route so it can share the same domain as the host app.
+        url: `${window.location.origin}/proxy/${encodeURI(
+          `http://${hostname}:8080/client-app-2/#/`
+        )}`,
         assignedRoute: '/app2',
         sandbox: 'allow-presentation', // optional
-        allow: 'microphone http://localhost:8080;' // optional 
+        allow: 'microphone http://localhost:8080;' // optional
       }
     },
     {
@@ -221,13 +234,17 @@ function getCustomClientData() {
 ### Building
 
 #### Installation
+
 Before you can build this you will need to make sure that you are using the LTS version of nodejs. Then you can run the following command `npm ci`
 
 #### Running the build
+
 To run the build you can use the following command `npm run build`
 
 #### Testing
+
 Testing can be done in a couple different ways
+
 ```
 npm run test # single run of tests
 npm run test.watch # continuous run of tests
@@ -235,6 +252,7 @@ npm run test.watch.chrome # continuous run of tests in a chromium browser.
 ```
 
 #### Running the example
+
 To see an example of this in action you can run the following command `npm run start-client-example` and navigate to http://localhost:3000 on your machine.
 
 ### IE11 support
