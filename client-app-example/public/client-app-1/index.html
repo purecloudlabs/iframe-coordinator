@@ -1,6 +1,6 @@
 <html>
   <head>
-    <link rel="stylesheet" href="../../client.css" />
+    <link rel="stylesheet" href="../client.css" />
   </head>
   <body>
     <h1>Application #1</h1>
@@ -17,8 +17,12 @@
       <li><a href="#/route1">This client: /route1</a></li>
       <li><a href="#/route2">This client: /route2</a></li>
       <!-- External URLs use full links so they open nicely in new tabs -->
-      <li><a href="localhost:3000/#/app2/route1">Other client: /route1</a></li>
-      <li><a href="localhost:3000/#/app2/route2">Other client: /route2</a></li>
+      <li>
+        <a href="//localhost:3000/#/app2/route1">Other client: /route1</a>
+      </li>
+      <li>
+        <a href="//localhost:3000/#/app2/route2">Other client: /route2</a>
+      </li>
     </ul>
 
     <h2>Toasts</h2>
@@ -41,6 +45,6 @@
     <h2>Environment Data from Host</h2>
     <pre id="env-data"></pre>
 
-    <script type="text/javascript" src="/client-app.js"></script>
+    <script type="text/javascript" src="../client-app.js"></script>
   </body>
 </html>

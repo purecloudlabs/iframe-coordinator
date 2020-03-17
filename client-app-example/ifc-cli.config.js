@@ -4,11 +4,17 @@ module.exports = function(frameRouter) {
   frameRouter.setupFrames(
     {
       application1: {
-        url: 'http://' + hostname + ':8080/client-app-1/#/',
+        url: `http://${hostname}:8080/client-app-1/#/`,
         assignedRoute: '/app1'
       },
       application2: {
-        url: 'http://' + hostname + ':8080/client-app-2/#/',
+        // Instead of directly referencing client 2 via "url: `http://${hostname}:8080/client-app-2/#/`"
+        // we use the built-in proxy route so it can share the same domain as the host app.
+        // This is useful if you want to test host and client sharing data through localstorage or other
+        // domain-restriceted APIs
+        url: `${window.location.origin}/proxy/${encodeURI(
+          `http://${hostname}:8080/client-app-2/#/`
+        )}`,
         assignedRoute: '/app2',
         allow: 'camera http://localhost:8080;', // optional
         sandbox: 'allow-presentation allow-modals' // optional

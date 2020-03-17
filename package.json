@@ -8,7 +8,8 @@
     "decoders": "^1.10.6",
     "dev-cert-authority": "^1.1.1",
     "express": "^4.17.1",
-    "find-root": "^1.1.0"
+    "find-root": "^1.1.0",
+    "http-proxy-middleware": "^1.0.1"
   },
   "files": [
     "dist/client.js",
