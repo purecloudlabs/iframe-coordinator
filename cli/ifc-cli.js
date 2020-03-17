@@ -9,6 +9,7 @@ const express = require('express');
 const cheerio = require('cheerio');
 const https = require('https');
 const devCertAuthority = require('dev-cert-authority');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const appPath = path.join(__dirname, './embedded-app/dist/');
 
@@ -21,6 +22,19 @@ function main() {
 
   app = express();
   app.use(/^\/$/, serveIndex(indexContent));
+  app.use(
+    '/proxy',
+    createProxyMiddleware({
+      router: extractTargetHost,
+      pathRewrite: rewritePath,
+      onError: (err, req, res) => {
+        console.log('ERROR', err);
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end(err.message);
+      },
+      target: `http://localhost:${opts.port}` //Required by middleware, but should be always overriden by the previous options
+    })
+  );
   app.use(express.static(appPath));
 
   if (opts.ssl) {
@@ -30,7 +44,8 @@ function main() {
     app.listen(opts.port);
   }
 
-  const localhostUrl = (opts.ssl ? 'https' : 'http') + '://localhost:' + opts.port + '/';
+  const localhostUrl =
+    (opts.ssl ? 'https' : 'http') + '://localhost:' + opts.port + '/';
   console.log(`Listening on port ${opts.port}...`);
   console.log(`Visit host app at: ${localhostUrl}`);
 }
@@ -128,4 +143,30 @@ function relativizePath(inPath) {
     outPath = './' + outPath;
   }
   return outPath;
+}
+
+function extractTargetHost(req) {
+  return extractProxyUrl(req.path).origin;
+}
+
+function rewritePath(path) {
+  return extractProxyUrl(path).pathname;
+}
+
+function extractProxyUrl(path) {
+  const proxyPath = path.replace(/^\/proxy\//, '');
+  let newUrl;
+  try {
+    newUrl = new URL(decodeURIComponent(proxyPath));
+  } catch (e) {
+    // It would be nice to faile more gracefully here and return a 500, but that doesn't
+    // seem to be possible with the way the proxy middleware works.
+    // See: https://github.com/chimurai/http-proxy-middleware/issues/411
+    console.error(`
+    **** INVALID URL IN PROXY PATH ****
+        ${e.message}
+        `);
+    throw e;
+  }
+  return newUrl;
 }

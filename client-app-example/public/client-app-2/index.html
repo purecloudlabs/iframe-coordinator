@@ -1,21 +1,28 @@
 <html>
   <head>
-    <link rel="stylesheet" href="../../client.css" />
+    <link rel="stylesheet" href="../client.css" />
   </head>
   <body>
     <h1>Application #2</h1>
 
     <div>
       <h3>Local Media</h3>
-      <p>We are requesting the user's local video stream from within the iframe app.</p>
-      <p>We are able to request user media because we have allow="camera *;" set on the iframe</p>
+      <p>
+        We are requesting the user's local video stream from within the iframe
+        app.
+      </p>
+      <p>
+        We are able to request user media because we have allow="camera *;" set
+        on the iframe
+      </p>
 
       <video id="webrtc" autoplay style="height: auto; width: 150px;"></video>
 
       <script type="text/javascript">
         function requestPermissions() {
-          window.navigator.mediaDevices.getUserMedia({ video: true })
-            .then((stream) => {
+          window.navigator.mediaDevices
+            .getUserMedia({ video: true })
+            .then(stream => {
               document.querySelector('video#webrtc').srcObject = stream;
             });
         }
@@ -34,10 +41,10 @@
     <ul>
       <!-- External URLs use full links so they open nicely in new tabs -->
       <li>
-        <a href="https://localhost:3000/#/app1/route1">Other client: /route1</a>
+        <a href="//localhost:3000/#/app1/route1">Other client: /route1</a>
       </li>
       <li>
-        <a href="https://localhost:3000/#/app1/route2">Other client: /route2</a>
+        <a href="//localhost:3000/#/app1/route1">Other client: /route2</a>
       </li>
       <!-- internal routes URLs get remapped in js by `transformLinks` -->
       <li><a href="#/route1">This client: /route1</a></li>
@@ -64,6 +71,6 @@
     <h2>Environment Data from Host</h2>
     <pre id="env-data"></pre>
 
-    <script type="text/javascript" src="/client-app.js"></script>
+    <script type="text/javascript" src="../client-app.js"></script>
   </body>
 </html>
