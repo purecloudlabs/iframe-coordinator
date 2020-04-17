@@ -31,7 +31,6 @@
       v-on:navRequest="handleNav"
       v-on:frameTransition="updateFrameUrl"
     ></frame-router>
-    }}
   </div>
 </template>
 
