@@ -75,7 +75,7 @@ describe('FrameManager', () => {
     expect(mocks.document.createElement).toHaveBeenCalledWith('iframe');
     expect(mocks.frame.setAttribute).toHaveBeenCalledWith(
       'sandbox',
-      'allow-scripts allow-same-origin allow-modals allow-forms allow-popups'
+      'allow-scripts allow-same-origin allow-modals allow-forms allow-popups allow-downloads'
     );
   });
 
@@ -315,7 +315,8 @@ describe('FrameManager', () => {
       'allow-same-origin',
       'allow-modals',
       'allow-forms',
-      'allow-popups'
+      'allow-popups',
+      'allow-downloads'
     ];
 
     it('add to the sandbox', () => {

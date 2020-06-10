@@ -26,7 +26,8 @@ const DEFAULT_SANDBOX = [
   'allow-same-origin',
   'allow-modals',
   'allow-forms',
-  'allow-popups'
+  'allow-popups',
+  'allow-downloads'
 ] as const;
 
 let style: HTMLElement;
