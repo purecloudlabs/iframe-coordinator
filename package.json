@@ -1,11 +1,11 @@
 {
-  "name": "@purecloud/iframe-coordinator",
+  "name": "iframe-coordinator",
   "version": "4.1.3",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
     "commander": "^2.20.3",
-    "decoders": "^1.22.2",
+    "decoders": "1.15.0",
     "dev-cert-authority": "^1.1.1",
     "express": "^4.17.1",
     "find-root": "^1.1.0",
@@ -32,7 +32,7 @@
     "@purecloud/web-app-deploy": "^5.2.9"
   },
   "devDependencies": {
-    "@commitlint/cli": "^9.0.1",
+    "@commitlint/cli": "^9.1.1",
     "@commitlint/config-conventional": "^9.0.1",
     "@types/jasmine": "^3.5.11",
     "commitizen": "^4.1.2",
@@ -56,7 +56,7 @@
     "tslint-config-prettier": "^1.16.0",
     "typedoc": "^0.15.8",
     "typedoc-plugin-internal-external": "^2.1.1",
-    "typescript": "^3.9.5",
+    "typescript": "3.5.3",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12"
   },
@@ -70,7 +70,7 @@
     "format.fix": "prettier --fix **/*.ts **/*.tsx",
     "lint.fix": "npm run lint.ts -- --fix",
     "lint.format": "prettier --check **/*.ts **/*.tsx",
-    "lint.commit": "commtlint -f 89c4ecb86da2af6c1aef06528202870c2a2b8750",
+    "lint.commit": "commitlint -f ebade96935e63780ace04a999d097236ecabf9e2",
     "lint": "tslint --project tsconfig.json && npm run lint.format && npm run lint.commit",
     "prepare": "./scripts/prepare-deps.sh",
     "release": "standard-version",
