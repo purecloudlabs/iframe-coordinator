@@ -1,6 +1,6 @@
 {
   "name": "iframe-coordinator",
-  "version": "4.1.3",
+  "version": "4.1.4",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",
@@ -87,7 +87,10 @@
     }
   },
   "lint-staged": {
-    "*.ts": ["tslint --fix", "prettier --write"]
+    "*.ts": [
+      "tslint --fix",
+      "prettier --write"
+    ]
   },
   "config": {
     "commitizen": {
@@ -95,9 +98,18 @@
     }
   },
   "commitlint": {
-    "extends": ["@commitlint/config-conventional"],
+    "extends": [
+      "@commitlint/config-conventional"
+    ],
     "rules": {
-      "subject-case": [2, "never", ["pascal-case", "upper-case"]]
+      "subject-case": [
+        2,
+        "never",
+        [
+          "pascal-case",
+          "upper-case"
+        ]
+      ]
     }
   },
   "author": "",
