@@ -1,5 +1,5 @@
 import { HostToClient, validate } from '../HostToClient';
-import { applyProtocol } from '../LabeledMsg';
+import { applyClientProtocol } from '../LabeledMsg';
 
 describe('HostToClient', () => {
   describe('validating an invalid message type', () => {
@@ -17,7 +17,7 @@ describe('HostToClient', () => {
 
   describe('validating publish type', () => {
     describe('when payload is a string', () => {
-      const testMessage: HostToClient = applyProtocol({
+      const testMessage: HostToClient = applyClientProtocol({
         msgType: 'publish',
         msg: {
           topic: 'test.topic',
@@ -30,7 +30,7 @@ describe('HostToClient', () => {
       });
       it('should return the validated message', () => {
         expect(testResult).toEqual(
-          applyProtocol({
+          applyClientProtocol({
             msgType: 'publish',
             msg: { ...testMessage.msg, clientId: undefined }
           })
@@ -39,7 +39,7 @@ describe('HostToClient', () => {
     });
 
     describe('when payload is an object', () => {
-      const testMessage: HostToClient = applyProtocol({
+      const testMessage: HostToClient = applyClientProtocol({
         msgType: 'publish',
         msg: {
           topic: 'test.topic',
@@ -52,7 +52,7 @@ describe('HostToClient', () => {
       });
       it('should return the validated message', () => {
         expect(testResult).toEqual(
-          applyProtocol({
+          applyClientProtocol({
             msgType: 'publish',
             msg: { ...testMessage.msg, clientId: undefined }
           })
@@ -90,7 +90,8 @@ describe('HostToClient', () => {
           clientId: undefined
         },
         protocol: 'iframe-coordinator',
-        version: 'unknown'
+        version: 'unknown',
+        direction: undefined
       };
 
       let testResult: HostToClient;
@@ -105,7 +106,7 @@ describe('HostToClient', () => {
 
   describe('validating env_init type', () => {
     describe('when given a proper environmental data payload', () => {
-      const testMessage: HostToClient = applyProtocol({
+      const testMessage: HostToClient = applyClientProtocol({
         msgType: 'env_init',
         msg: {
           locale: 'nl-NL',
@@ -118,7 +119,7 @@ describe('HostToClient', () => {
       it('should return the validated message', () => {
         const testResult = validate(testMessage);
         expect(testResult).toEqual(
-          applyProtocol({
+          applyClientProtocol({
             msgType: 'env_init',
             msg: {
               ...testMessage.msg,
@@ -130,7 +131,7 @@ describe('HostToClient', () => {
     });
 
     describe('when given a proper environmental data payload including custom data', () => {
-      const testMessage: HostToClient = applyProtocol({
+      const testMessage: HostToClient = applyClientProtocol({
         msgType: 'env_init',
         msg: {
           locale: 'nl-NL',
@@ -147,7 +148,7 @@ describe('HostToClient', () => {
         testResult = validate(testMessage);
       });
       it('should return the validated message', () => {
-        expect(testResult).toEqual(applyProtocol(testMessage));
+        expect(testResult).toEqual(applyClientProtocol(testMessage));
       });
     });
 
