@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.1.12](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.1.11...v4.1.12) (2020-07-27)
+
 ### [4.1.11](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.1.10...v4.1.11) (2020-07-27)
 
 ### [4.1.10](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.1.9...v4.1.10) (2020-07-27)
