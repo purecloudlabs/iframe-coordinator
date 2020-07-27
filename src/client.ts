@@ -102,6 +102,10 @@ export class Client {
   private _onWindowMessage = (event: MessageEvent) => {
     let validated = null;
 
+    if (event.data && event.data.direction === 'ClientToHost') {
+      return;
+    }
+
     try {
       validated = validateIncoming(event.data);
     } catch (e) {
@@ -231,10 +235,14 @@ export class Client {
 
   private _sendToHost<T, V>(partialMsg: PartialMsg<T, V>): void {
     const message = applyProtocol(partialMsg);
-    let validated = null;
+
+    let validated: ClientToHost;
 
     try {
       validated = validateOutgoing(message);
+      if (validated.direction === undefined) {
+        validated.direction = 'ClientToHost';
+      }
     } catch (e) {
       throw new Error(
         `

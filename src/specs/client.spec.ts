@@ -1,7 +1,19 @@
 import { Client } from '../client';
-import { API_PROTOCOL, applyProtocol } from '../messages/LabeledMsg';
+import {
+  API_PROTOCOL,
+  applyProtocol,
+  LabeledMsg,
+  PartialMsg
+} from '../messages/LabeledMsg';
 import { EnvData, SetupData } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
+
+/** Mark the message as ClientToHost */
+function applyClientToHostProtocol<T, V>(
+  partialMsg: PartialMsg<T, V>
+): LabeledMsg<T, V> {
+  return { ...applyProtocol(partialMsg), direction: 'ClientToHost' };
+}
 
 describe('client', () => {
   let client: any;
@@ -37,7 +49,7 @@ describe('client', () => {
 
     it('should send a client_started notification', () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-        applyProtocol({
+        applyClientToHostProtocol({
           msgType: 'client_started',
           msg: undefined
         }),
@@ -109,7 +121,7 @@ describe('client', () => {
 
       it('should send a message to the worker', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          applyProtocol({
+          applyClientToHostProtocol({
             msgType: 'notifyRequest',
             msg: {
               title: undefined,
@@ -133,7 +145,7 @@ describe('client', () => {
 
       it('should send a message to the worker', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          applyProtocol({
+          applyClientToHostProtocol({
             msgType: 'notifyRequest',
             msg: {
               title: 'Test title',
@@ -155,7 +167,7 @@ describe('client', () => {
 
     it('should notify worker of new publication', () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-        applyProtocol({
+        applyClientToHostProtocol({
           msgType: 'publish',
           msg: {
             topic: 'test.topic',
@@ -168,14 +180,34 @@ describe('client', () => {
     });
   });
 
-  describe('when recieving an invalid window message from the host application', () => {
+  describe('when listening for messages from the host application', () => {
     let subscriptionCalled = false;
     beforeEach(() => {
+      subscriptionCalled = false;
       client.start();
       client.messaging.addListener('origin', () => (subscriptionCalled = true));
     });
 
-    it('should throw an exception if it is an iframe-coordinator message', () => {
+    it('should throw an exception on invalid iframe-coordinator message', () => {
+      expect(() => {
+        mockFrameWindow.trigger('message', {
+          origin: 'origin',
+          data: {
+            protocol: API_PROTOCOL,
+            msgType: 'test data',
+            msg: 'msg',
+            direction: 'HostToClient'
+          }
+        });
+      }).toThrowMatching(err => {
+        return err.message.startsWith(
+          'I recieved an invalid message from the host application'
+        );
+      });
+      expect(subscriptionCalled).toBe(false);
+    });
+
+    it('should throw an exception on invalid iframe-coordinator message with no direction', () => {
       expect(() => {
         mockFrameWindow.trigger('message', {
           origin: 'origin',
@@ -190,9 +222,10 @@ describe('client', () => {
           'I recieved an invalid message from the host application'
         );
       });
+      expect(subscriptionCalled).toBe(false);
     });
 
-    it('should not throw an exception if it is not labeled as being from iframe-coordinator', () => {
+    it('should not throw an exception if not from iframe-coordinator', () => {
       expect(() => {
         mockFrameWindow.trigger('message', {
           protocol: 'whatev',
@@ -204,6 +237,50 @@ describe('client', () => {
           }
         });
       }).not.toThrow();
+      expect(subscriptionCalled).toBe(false);
+    });
+
+    it('should ignore messages from client applications', () => {
+      expect(() => {
+        mockFrameWindow.trigger('message', {
+          protocol: API_PROTOCOL,
+          origin: 'origin',
+          data: {
+            protocol: API_PROTOCOL,
+            msgType: 'invalid message type',
+            msg: 'msg',
+            direction: 'ClientToHost'
+          }
+        });
+      }).not.toThrow();
+      expect(subscriptionCalled).toBe(false);
+    });
+  });
+
+  describe('when recieving an valid window message from the host application missing the direction field', () => {
+    let publishCalls = 0;
+    let recievedPayload: string;
+    beforeEach(() => {
+      client.start();
+      client.messaging.addListener('test.topic', (data: Publication) => {
+        publishCalls++;
+        recievedPayload = data.payload;
+      });
+      mockFrameWindow.trigger('message', {
+        origin: 'origin',
+        data: {
+          msgType: 'publish',
+          msg: {
+            topic: 'test.topic',
+            payload: 'test data'
+          }
+        }
+      });
+    });
+
+    it('should raise a publish event for the topic', () => {
+      expect(publishCalls).toBe(1);
+      expect(recievedPayload).toBe('test data');
     });
   });
 
@@ -223,7 +300,8 @@ describe('client', () => {
           msg: {
             topic: 'test.topic',
             payload: 'test data'
-          }
+          },
+          direction: 'HostToClient'
         }
       });
     });
@@ -289,7 +367,7 @@ describe('client', () => {
 
       it('should publish a key event', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          applyProtocol({
+          applyClientToHostProtocol({
             msgType: 'registeredKeyFired',
             msg: {
               altKey: true,
@@ -315,7 +393,7 @@ describe('client', () => {
 
     it('should notify host of navigation request', () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-        applyProtocol({
+        applyClientToHostProtocol({
           msgType: 'navRequest',
           msg: { url: 'http://www.example.com/' }
         }),
@@ -342,7 +420,7 @@ describe('client', () => {
 
       it('should notify host of navigation request', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          applyProtocol({
+          applyClientToHostProtocol({
             msgType: 'navRequest',
             msg: { url: 'http://www.example.com/' }
           }),
@@ -376,7 +454,7 @@ describe('client', () => {
         client._clientWindow = mockFrameWindow;
         client.start();
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          applyProtocol({
+          applyClientToHostProtocol({
             msgType: 'client_started',
             msg: undefined
           }),

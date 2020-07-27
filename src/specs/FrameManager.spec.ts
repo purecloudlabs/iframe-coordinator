@@ -150,7 +150,8 @@ describe('FrameManager', () => {
             clientId: undefined
           },
           protocol: 'iframe-coordinator',
-          version: 'unknown'
+          version: 'unknown',
+          direction: 'HostToClient'
         },
         'http://example.com:4040'
       );
@@ -175,7 +176,8 @@ describe('FrameManager', () => {
             clientId: undefined
           },
           protocol: 'iframe-coordinator',
-          version: 'unknown'
+          version: 'unknown',
+          direction: 'HostToClient'
         },
         'http://test.example.com'
       );
@@ -194,7 +196,8 @@ describe('FrameManager', () => {
           msg: {
             topic: 'test.topic',
             payload: {}
-          }
+          },
+          direction: 'ClientToHost'
         }
       };
       frameManager.startMessageHandler();
@@ -209,12 +212,48 @@ describe('FrameManager', () => {
           clientId: undefined
         },
         protocol: 'iframe-coordinator',
-        version: 'unknown'
+        version: 'unknown',
+        direction: 'ClientToHost'
+      });
+    });
+
+    it('if the messages are sent correctly to a host', () => {
+      mocks.window.raise('message', mocks.messageEvent);
+      expect(mocks.handler).toHaveBeenCalledWith({
+        msgType: mocks.messageEvent.data.msgType,
+        msg: {
+          ...mocks.messageEvent.data.msg,
+          clientId: undefined
+        },
+        protocol: 'iframe-coordinator',
+        version: 'unknown',
+        direction: 'ClientToHost'
+      });
+    });
+
+    it('if the messages are sent correctly to a host and missing direction', () => {
+      mocks.messageEvent.data.direction = undefined;
+      mocks.window.raise('message', mocks.messageEvent);
+      expect(mocks.handler).toHaveBeenCalledWith({
+        msgType: mocks.messageEvent.data.msgType,
+        msg: {
+          ...mocks.messageEvent.data.msg,
+          clientId: undefined
+        },
+        protocol: 'iframe-coordinator',
+        version: 'unknown',
+        direction: undefined
       });
     });
 
     it('which are blocked if sent from an unexpected origin', () => {
       mocks.messageEvent.origin = 'http://evil.com';
+      mocks.window.raise('message', mocks.messageEvent);
+      expect(mocks.handler).not.toHaveBeenCalled();
+    });
+
+    it('which are blocked if intended for a client', () => {
+      mocks.messageEvent.data.direction = 'HostToClient';
       mocks.window.raise('message', mocks.messageEvent);
       expect(mocks.handler).not.toHaveBeenCalled();
     });
@@ -278,7 +317,8 @@ describe('FrameManager', () => {
             clientId: undefined
           },
           protocol: 'iframe-coordinator',
-          version: 'unknown'
+          version: 'unknown',
+          direction: 'HostToClient'
         },
         'http://example.com'
       );

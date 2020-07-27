@@ -2,7 +2,10 @@ import {
   ClientToHost,
   validate as validateIncoming
 } from './messages/ClientToHost';
-import { validate as validateOutgoing } from './messages/HostToClient';
+import {
+  HostToClient,
+  validate as validateOutgoing
+} from './messages/HostToClient';
 import { API_PROTOCOL, PartialMsg } from './messages/LabeledMsg';
 
 /** @external */
@@ -143,10 +146,13 @@ class FrameManager {
   public sendToClient<T, V>(message: PartialMsg<T, V>) {
     const clientOrigin = this._expectedClientOrigin();
     if (this._iframe.contentWindow && clientOrigin) {
-      let validated = null;
+      let validated: HostToClient;
 
       try {
         validated = validateOutgoing(message);
+        if (validated.direction === undefined) {
+          validated.direction = 'HostToClient';
+        }
       } catch (e) {
         throw new Error(
           `
@@ -187,6 +193,10 @@ to bad data passed to a frame-router method.
 
   private _handlePostMessage(handler: MessageHandler, event: MessageEvent) {
     let validated = null;
+
+    if (event.data && event.data.direction === 'HostToClient') {
+      return;
+    }
 
     try {
       validated = validateIncoming(event.data);

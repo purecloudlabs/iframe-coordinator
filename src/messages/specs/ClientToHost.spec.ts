@@ -35,7 +35,8 @@ describe('ClientToHost', () => {
       const expectedMessage = withClientId({
         ...testMessage,
         protocol: 'iframe-coordinator',
-        version: 'unknown'
+        version: 'unknown',
+        direction: undefined
       }) as LabeledPublication;
 
       let testResult: ClientToHost;
@@ -60,7 +61,8 @@ describe('ClientToHost', () => {
       const expectedMessage = withClientId({
         ...testMessage,
         protocol: 'iframe-coordinator',
-        version: 'unknown'
+        version: 'unknown',
+        direction: undefined
       });
 
       let testResult: ClientToHost;
@@ -103,7 +105,8 @@ describe('ClientToHost', () => {
           clientId: undefined
         },
         protocol: 'iframe-coordinator',
-        version: 'unknown'
+        version: 'unknown',
+        direction: undefined
       } as ClientToHost;
 
       let testResult: ClientToHost;
@@ -134,7 +137,8 @@ describe('ClientToHost', () => {
           custom: undefined
         },
         protocol: 'iframe-coordinator',
-        version: 'unknown'
+        version: 'unknown',
+        direction: undefined
       };
 
       let testResult: ClientToHost;
@@ -164,7 +168,8 @@ describe('ClientToHost', () => {
           custom: undefined
         },
         protocol: 'iframe-coordinator',
-        version: 'unknown'
+        version: 'unknown',
+        direction: undefined
       };
 
       let testResult: ClientToHost;
@@ -190,7 +195,8 @@ describe('ClientToHost', () => {
       const expectedMessage: ClientToHost = {
         ...testMessage,
         protocol: 'iframe-coordinator',
-        version: 'unknown'
+        version: 'unknown',
+        direction: undefined
       } as LabeledNotification;
 
       let testResult: ClientToHost;
@@ -233,7 +239,8 @@ describe('ClientToHost', () => {
         ...toastMessage,
         msgType: 'notifyRequest',
         protocol: 'iframe-coordinator',
-        version: 'unknown'
+        version: 'unknown',
+        direction: undefined
       } as LabeledNotification;
 
       expect(validate(toastMessage)).toEqual(expectedMessage);
@@ -252,7 +259,8 @@ describe('ClientToHost', () => {
       const expectedMessage = {
         ...testMessage,
         protocol: 'iframe-coordinator',
-        version: 'unknown'
+        version: 'unknown',
+        direction: undefined
       } as LabeledNavRequest;
 
       let testResult: ClientToHost;

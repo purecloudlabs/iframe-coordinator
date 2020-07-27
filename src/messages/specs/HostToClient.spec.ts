@@ -90,7 +90,8 @@ describe('HostToClient', () => {
           clientId: undefined
         },
         protocol: 'iframe-coordinator',
-        version: 'unknown'
+        version: 'unknown',
+        direction: undefined
       };
 
       let testResult: HostToClient;
