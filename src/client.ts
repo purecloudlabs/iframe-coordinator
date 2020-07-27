@@ -9,7 +9,11 @@ import {
   HostToClient,
   validate as validateIncoming
 } from './messages/HostToClient';
-import { API_PROTOCOL, applyProtocol, PartialMsg } from './messages/LabeledMsg';
+import {
+  API_PROTOCOL,
+  applyClientProtocol,
+  PartialMsg
+} from './messages/LabeledMsg';
 import {
   EnvData,
   EnvDataHandler,
@@ -101,6 +105,10 @@ export class Client {
 
   private _onWindowMessage = (event: MessageEvent) => {
     let validated = null;
+
+    if (event.data && event.data.direction === 'ClientToHost') {
+      return;
+    }
 
     try {
       validated = validateIncoming(event.data);
@@ -230,8 +238,9 @@ export class Client {
   }
 
   private _sendToHost<T, V>(partialMsg: PartialMsg<T, V>): void {
-    const message = applyProtocol(partialMsg);
-    let validated = null;
+    const message = applyClientProtocol(partialMsg);
+
+    let validated: ClientToHost;
 
     try {
       validated = validateOutgoing(message);
