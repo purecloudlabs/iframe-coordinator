@@ -59,15 +59,15 @@ export interface PartialMsg<T, V> {
 
 /**
  * Takes an object with a `msgType` and `msg` and applies the appropriate
- * `protocol` and `version` fields for the current version of the library.
+ * `direction`, `protocol` and `version` fields for the current version of the library.
  * @param partialMsg
  * @external
  */
-export function applyProtocol<T, V>(
+export function applyClientProtocol<T, V>(
   partialMsg: PartialMsg<T, V>
 ): LabeledMsg<T, V> {
   return {
-    direction: undefined,
+    direction: 'ClientToHost',
     ...partialMsg,
     protocol: API_PROTOCOL,
     version
@@ -75,14 +75,20 @@ export function applyProtocol<T, V>(
 }
 
 /**
- * Converts a PartialMsg decoder into a LabeledMsg decoder
- * @param msgDecoder
+ * Takes an object with a `msgType` and `msg` and applies the appropriate
+ * `direction`, `protocol` and `version` fields for the current version of the library.
+ * @param partialMsg
  * @external
  */
-export function labeledDecoder2<T, V>(
-  msgDecoder: Decoder<PartialMsg<T, V>>
-): Decoder<LabeledMsg<T, V>> {
-  return map(msgDecoder, applyProtocol);
+export function applyHostProtocol<T, V>(
+  partialMsg: PartialMsg<T, V>
+): LabeledMsg<T, V> {
+  return {
+    direction: 'HostToClient',
+    ...partialMsg,
+    protocol: API_PROTOCOL,
+    version
+  };
 }
 
 /**

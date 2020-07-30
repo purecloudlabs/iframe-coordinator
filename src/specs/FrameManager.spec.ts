@@ -1,6 +1,9 @@
 import FrameManager from '../FrameManager';
 import { API_PROTOCOL } from '../messages/LabeledMsg';
 
+// tslint:disable-next-line:no-var-requires
+const version = require('../../package.json').version;
+
 describe('FrameManager', () => {
   let mocks: any;
   let frameManager: FrameManager;
@@ -150,7 +153,7 @@ describe('FrameManager', () => {
             clientId: undefined
           },
           protocol: 'iframe-coordinator',
-          version: 'unknown',
+          version,
           direction: 'HostToClient'
         },
         'http://example.com:4040'
@@ -176,7 +179,7 @@ describe('FrameManager', () => {
             clientId: undefined
           },
           protocol: 'iframe-coordinator',
-          version: 'unknown',
+          version,
           direction: 'HostToClient'
         },
         'http://test.example.com'
@@ -197,6 +200,7 @@ describe('FrameManager', () => {
             topic: 'test.topic',
             payload: {}
           },
+          version,
           direction: 'ClientToHost'
         }
       };
@@ -212,7 +216,7 @@ describe('FrameManager', () => {
           clientId: undefined
         },
         protocol: 'iframe-coordinator',
-        version: 'unknown',
+        version,
         direction: 'ClientToHost'
       });
     });
@@ -226,7 +230,7 @@ describe('FrameManager', () => {
           clientId: undefined
         },
         protocol: 'iframe-coordinator',
-        version: 'unknown',
+        version,
         direction: 'ClientToHost'
       });
     });
@@ -241,7 +245,7 @@ describe('FrameManager', () => {
           clientId: undefined
         },
         protocol: 'iframe-coordinator',
-        version: 'unknown',
+        version,
         direction: undefined
       });
     });
@@ -317,7 +321,7 @@ describe('FrameManager', () => {
             clientId: undefined
           },
           protocol: 'iframe-coordinator',
-          version: 'unknown',
+          version,
           direction: 'HostToClient'
         },
         'http://example.com'

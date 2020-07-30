@@ -8,7 +8,7 @@ import {
   optional,
   string
 } from 'decoders';
-import { applyProtocol, labeledDecoder, LabeledMsg } from './LabeledMsg';
+import { applyClientProtocol, labeledDecoder, LabeledMsg } from './LabeledMsg';
 
 /**
  * Client started indication.  The client will
@@ -118,7 +118,7 @@ export class Lifecycle {
    * A {@link LabeledStarted} message to send to the host application.
    */
   public static get startedMessage(): LabeledStarted {
-    return applyProtocol({
+    return applyClientProtocol({
       msgType: 'client_started',
       msg: undefined
     });

@@ -9,7 +9,11 @@ import {
   HostToClient,
   validate as validateIncoming
 } from './messages/HostToClient';
-import { API_PROTOCOL, applyProtocol, PartialMsg } from './messages/LabeledMsg';
+import {
+  API_PROTOCOL,
+  applyClientProtocol,
+  PartialMsg
+} from './messages/LabeledMsg';
 import {
   EnvData,
   EnvDataHandler,
@@ -234,15 +238,12 @@ export class Client {
   }
 
   private _sendToHost<T, V>(partialMsg: PartialMsg<T, V>): void {
-    const message = applyProtocol(partialMsg);
+    const message = applyClientProtocol(partialMsg);
 
     let validated: ClientToHost;
 
     try {
       validated = validateOutgoing(message);
-      if (validated.direction === undefined) {
-        validated.direction = 'ClientToHost';
-      }
     } catch (e) {
       throw new Error(
         `

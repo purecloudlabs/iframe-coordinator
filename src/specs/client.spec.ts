@@ -1,19 +1,12 @@
 import { Client } from '../client';
 import {
   API_PROTOCOL,
-  applyProtocol,
+  applyClientProtocol,
   LabeledMsg,
   PartialMsg
 } from '../messages/LabeledMsg';
 import { EnvData, SetupData } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
-
-/** Mark the message as ClientToHost */
-function applyClientToHostProtocol<T, V>(
-  partialMsg: PartialMsg<T, V>
-): LabeledMsg<T, V> {
-  return { ...applyProtocol(partialMsg), direction: 'ClientToHost' };
-}
 
 describe('client', () => {
   let client: any;
@@ -49,7 +42,7 @@ describe('client', () => {
 
     it('should send a client_started notification', () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-        applyClientToHostProtocol({
+        applyClientProtocol({
           msgType: 'client_started',
           msg: undefined
         }),
@@ -121,7 +114,7 @@ describe('client', () => {
 
       it('should send a message to the worker', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          applyClientToHostProtocol({
+          applyClientProtocol({
             msgType: 'notifyRequest',
             msg: {
               title: undefined,
@@ -145,7 +138,7 @@ describe('client', () => {
 
       it('should send a message to the worker', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          applyClientToHostProtocol({
+          applyClientProtocol({
             msgType: 'notifyRequest',
             msg: {
               title: 'Test title',
@@ -167,7 +160,7 @@ describe('client', () => {
 
     it('should notify worker of new publication', () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-        applyClientToHostProtocol({
+        applyClientProtocol({
           msgType: 'publish',
           msg: {
             topic: 'test.topic',
@@ -367,7 +360,7 @@ describe('client', () => {
 
       it('should publish a key event', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          applyClientToHostProtocol({
+          applyClientProtocol({
             msgType: 'registeredKeyFired',
             msg: {
               altKey: true,
@@ -393,7 +386,7 @@ describe('client', () => {
 
     it('should notify host of navigation request', () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-        applyClientToHostProtocol({
+        applyClientProtocol({
           msgType: 'navRequest',
           msg: { url: 'http://www.example.com/' }
         }),
@@ -420,7 +413,7 @@ describe('client', () => {
 
       it('should notify host of navigation request', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          applyClientToHostProtocol({
+          applyClientProtocol({
             msgType: 'navRequest',
             msg: { url: 'http://www.example.com/' }
           }),
@@ -454,7 +447,7 @@ describe('client', () => {
         client._clientWindow = mockFrameWindow;
         client.start();
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
-          applyClientToHostProtocol({
+          applyClientProtocol({
             msgType: 'client_started',
             msg: undefined
           }),

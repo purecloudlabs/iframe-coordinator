@@ -6,7 +6,11 @@ import {
   HostToClient,
   validate as validateOutgoing
 } from './messages/HostToClient';
-import { API_PROTOCOL, PartialMsg } from './messages/LabeledMsg';
+import {
+  API_PROTOCOL,
+  applyHostProtocol,
+  PartialMsg
+} from './messages/LabeledMsg';
 
 /** @external */
 const IFRAME_STYLE = `
@@ -143,16 +147,14 @@ class FrameManager {
    *
    * @param message The message to send.
    */
-  public sendToClient<T, V>(message: PartialMsg<T, V>) {
+  public sendToClient<T, V>(partialMsg: PartialMsg<T, V>) {
     const clientOrigin = this._expectedClientOrigin();
     if (this._iframe.contentWindow && clientOrigin) {
+      const message = applyHostProtocol(partialMsg);
       let validated: HostToClient;
 
       try {
         validated = validateOutgoing(message);
-        if (validated.direction === undefined) {
-          validated.direction = 'HostToClient';
-        }
       } catch (e) {
         throw new Error(
           `
