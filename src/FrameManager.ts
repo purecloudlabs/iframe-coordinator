@@ -2,8 +2,15 @@ import {
   ClientToHost,
   validate as validateIncoming
 } from './messages/ClientToHost';
-import { validate as validateOutgoing } from './messages/HostToClient';
-import { API_PROTOCOL, PartialMsg } from './messages/LabeledMsg';
+import {
+  HostToClient,
+  validate as validateOutgoing
+} from './messages/HostToClient';
+import {
+  API_PROTOCOL,
+  applyHostProtocol,
+  PartialMsg
+} from './messages/LabeledMsg';
 
 /** @external */
 const IFRAME_STYLE = `
@@ -140,10 +147,11 @@ class FrameManager {
    *
    * @param message The message to send.
    */
-  public sendToClient<T, V>(message: PartialMsg<T, V>) {
+  public sendToClient<T, V>(partialMsg: PartialMsg<T, V>) {
     const clientOrigin = this._expectedClientOrigin();
     if (this._iframe.contentWindow && clientOrigin) {
-      let validated = null;
+      const message = applyHostProtocol(partialMsg);
+      let validated: HostToClient;
 
       try {
         validated = validateOutgoing(message);
@@ -187,6 +195,10 @@ to bad data passed to a frame-router method.
 
   private _handlePostMessage(handler: MessageHandler, event: MessageEvent) {
     let validated = null;
+
+    if (event.data && event.data.direction === 'HostToClient') {
+      return;
+    }
 
     try {
       validated = validateIncoming(event.data);
