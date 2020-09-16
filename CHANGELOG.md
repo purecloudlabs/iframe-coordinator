@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.2.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.1.14...v4.2.0) (2020-09-16)
+
+
+### Features
+
+* **messaging:** support nested iframes by tagging messages with direction ([00d2cbf](https://github.com/purecloudlabs/iframe-coordinator/commit/00d2cbf446722983f51a3bedea41489428ade9b2))
+
 ### [4.1.14](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.1.13...v4.1.14) (2020-09-16)
 
 ### [4.1.13](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.1.12...v4.1.13) (2020-09-16)
