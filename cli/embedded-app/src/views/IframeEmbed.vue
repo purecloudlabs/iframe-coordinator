@@ -37,19 +37,13 @@
 <script>
 export default {
   name: 'iframeEmbed',
-  props: ['pathMatch'],
+  props: ['frameRoute'],
   data() {
     return {
       frameUrl: '',
       showMenu: true,
       clientConfig: {}
     };
-  },
-  computed: {
-    frameRoute() {
-      // Ensure route is valid when the matched path is '';
-      return '/' + this.pathMatch;
-    }
   },
   methods: {
     displayToast(event) {
