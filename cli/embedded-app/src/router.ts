@@ -7,9 +7,11 @@ Vue.use(Router);
 export default new Router({
   routes: [
     {
-      path: '/*',
+      path: '*',
       component: IframeEmbed,
-      props: true
+      props: router => ({
+        frameRoute: router.fullPath
+      })
     }
   ]
 });
