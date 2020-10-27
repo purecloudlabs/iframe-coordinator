@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.0...v4.2.1) (2020-10-27)
+
+
+### Bug Fixes
+
+* **cli:** missing hash and query parameters ([e7fc6a1](https://github.com/purecloudlabs/iframe-coordinator/commit/e7fc6a1c95f4950dec9e5ab344584cca78ec4dc2))
+
 ## [4.2.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.1.14...v4.2.0) (2020-09-16)
 
 
