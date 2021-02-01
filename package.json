@@ -28,9 +28,6 @@
   "bin": {
     "ifc-cli": "cli/ifc-cli.js"
   },
-  "optionalDependencies": {
-    "@purecloud/web-app-deploy": "^5.2.9"
-  },
   "devDependencies": {
     "@commitlint/cli": "^9.1.1",
     "@commitlint/config-conventional": "^9.0.1",
@@ -76,9 +73,9 @@
     "release": "standard-version",
     "start": "webpack --watch",
     "start-client-example": "cd ./client-app-example && npm start",
-    "test": "./node_modules/karma/bin/karma start --single-run",
-    "test.watch": "./node_modules/karma/bin/karma start",
-    "test.watch.chrome": "./node_modules/karma/bin/karma start --browsers=Chrome"
+    "test": "npx karma start --single-run",
+    "test.watch": "npx karma start",
+    "test.watch.chrome": "npx karma start --browsers=Chrome"
   },
   "husky": {
     "hooks": {
