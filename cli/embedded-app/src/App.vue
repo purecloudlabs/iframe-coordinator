@@ -8,9 +8,13 @@
 </template>
 
 <style>
+html {
+  height: 100%;
+}
 body {
   padding: 0;
   margin: 0;
+  height: 100%;
 }
 
 #app {
@@ -19,6 +23,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  height: 100%;
 }
 
 .vue-notification.toast {

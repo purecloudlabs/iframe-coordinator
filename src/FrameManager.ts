@@ -14,14 +14,7 @@ import {
 
 /** @external */
 const IFRAME_STYLE = `
-frame-router {
-  position: relative;
-}
-
 frame-router iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
 }
