@@ -25,6 +25,7 @@ pipeline {
           sh "cp ./.npmrc ./cli/embedded-app/.npmrc"
           sh "cp ./.npmrc ./client-app-example/.npmrc"
           sh "npm ci"
+          sh "npm i --no-save @purecloud/web-app-deploy@latest"
         }
       }
     }
@@ -70,7 +71,7 @@ pipeline {
           sh "npm run doc"
           sh "./scripts/generate-deploy-files"
           sh '''
-              export CDN_ROOT=$(./node_modules/.bin/cdn --ecosystem pc --manifest doc/manifest.json)
+              export CDN_ROOT=$(npx cdn --ecosystem pc --manifest doc/manifest.json)
               ./scripts/prepare-docs
           '''
         }
@@ -81,7 +82,7 @@ pipeline {
       steps {
         dir (env.REPO_DIR) {
           sh '''
-             ./node_modules/.bin/upload \
+             npx upload \
                --ecosystem pc \
                --manifest doc/manifest.json \
                --source-dir ./doc
@@ -94,7 +95,7 @@ pipeline {
       steps {
         dir (env.REPO_DIR) {
           sh '''
-             ./node_modules/.bin/deploy \
+             npx deploy \
                --ecosystem pc \
                --manifest doc/manifest.json \
                --dest-env dev
