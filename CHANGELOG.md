@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.2](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.1...v4.2.2) (2021-03-18)
+
+
+### Bug Fixes
+
+* **cli:** remove embedded app dual scrollbars ([71c9d17](https://github.com/purecloudlabs/iframe-coordinator/commit/71c9d171f5222b4a00f42e9377828516d20b7f0a))
+* **linting:** update lower end commit due to bad commit message ([35e2451](https://github.com/purecloudlabs/iframe-coordinator/commit/35e24515d2fbc018fe8ea3a3c4d93c506199e120))
+
 ### [4.2.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.0...v4.2.1) (2020-10-27)
 
 
