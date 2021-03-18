@@ -67,7 +67,7 @@
     "format.fix": "prettier --fix **/*.ts **/*.tsx",
     "lint.fix": "npm run lint.ts -- --fix",
     "lint.format": "prettier --check **/*.ts **/*.tsx",
-    "lint.commit": "commitlint -f ebade96935e63780ace04a999d097236ecabf9e2",
+    "lint.commit": "commitlint -f e307dddc51545900940861f06baf210cd4a79cec",
     "lint": "tslint --project tsconfig.json && npm run lint.format && npm run lint.commit",
     "prepare": "./scripts/prepare-deps.sh",
     "release": "standard-version",
