@@ -21,7 +21,8 @@ export interface Publication {
   topic: string;
   /** Data to publish */
   payload: any;
-  /** Client the message originates from. This should not be provided when
+  /**
+   * Client the message originates from. This should not be provided when
    * calling client methods. The value will be ignored and the library
    * will fill it in.
    */
@@ -31,7 +32,6 @@ export interface Publication {
 /**
  * A message used to publish a generic messages
  * between the clients and the host application.
- * @external
  */
 export interface LabeledPublication extends LabeledMsg<'publish', Publication> {
   /** Message identifier */
@@ -40,7 +40,6 @@ export interface LabeledPublication extends LabeledMsg<'publish', Publication> {
   msg: Publication;
 }
 
-/** @external */
 const decoder: Decoder<LabeledPublication> = labeledDecoder(
   constant<'publish'>('publish'),
   object({

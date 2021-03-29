@@ -52,7 +52,6 @@
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.16.0",
     "typedoc": "^0.20.34",
-    "typedoc-plugin-internal-external": "^2.2.0",
     "typescript": "^3.9.0",
     "webpack": "^5.28.0",
     "webpack-cli": "^3.3.12"
@@ -63,7 +62,7 @@
     "build-lib-es5": "webpack --config webpack.es5.config.js",
     "build-cli": "cd ./cli/embedded-app && npm run build",
     "commit": "git-cz",
-    "doc": "typedoc --excludePrivate --excludeProtected --excludeNotExported --excludeExternals --mode file --readme README.md --out doc/ src/",
+    "doc": "typedoc",
     "format.fix": "prettier --fix **/*.ts **/*.tsx",
     "lint.fix": "npm run lint.ts -- --fix",
     "lint.format": "prettier --check **/*.ts **/*.tsx",
@@ -84,10 +83,7 @@
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "tslint --fix",
-      "prettier --write"
-    ]
+    "*.ts": ["tslint --fix", "prettier --write"]
   },
   "config": {
     "commitizen": {
@@ -95,18 +91,9 @@
     }
   },
   "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ],
+    "extends": ["@commitlint/config-conventional"],
     "rules": {
-      "subject-case": [
-        2,
-        "never",
-        [
-          "pascal-case",
-          "upper-case"
-        ]
-      ]
+      "subject-case": [2, "never", ["pascal-case", "upper-case"]]
     }
   },
   "author": "",
