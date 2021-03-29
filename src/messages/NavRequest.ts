@@ -12,7 +12,6 @@ export interface NavRequest {
 /**
  * A message used to request the host navigate to another
  * URI.
- * @external
  */
 export interface LabeledNavRequest
   extends LabeledMsg<'navRequest', NavRequest> {
@@ -22,7 +21,6 @@ export interface LabeledNavRequest
   msg: NavRequest;
 }
 
-/** @external */
 const decoder: Decoder<LabeledNavRequest> = labeledDecoder(
   constant<'navRequest'>('navRequest'),
   object({

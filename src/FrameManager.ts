@@ -12,7 +12,6 @@ import {
   PartialMsg
 } from './messages/LabeledMsg';
 
-/** @external */
 const IFRAME_STYLE = `
 frame-router iframe {
   width: 100%;
@@ -34,7 +33,6 @@ let style: HTMLElement;
 
 /**
  * A handler function for messages sent from a client app.
- * @external
  */
 type MessageHandler = (event: ClientToHost) => void;
 
@@ -43,7 +41,6 @@ type MessageHandler = (event: ClientToHost) => void;
  * It changes locations in the frame when requested, and handles proxying
  * of postMessage events to and from the client, with verification of
  * the expected client origin.
- * @external
  */
 class FrameManager {
   private _iframe: HTMLIFrameElement;

@@ -6,15 +6,15 @@ import { EnvData, LabeledStarted, SetupData } from '../messages/Lifecycle';
 import { Publication } from '../messages/Publication';
 import { stripTrailingSlash } from '../urlUtils';
 
-/** @external */
 const ROUTE_ATTR = 'route';
 
 /**
- * A DOM element responsible for communicating with the internal ClientFrame in
- * order to recieve and send messages to and from the client content. Typically
- * registered as <frame-router>
- *
- * **Protip: Uncheck the "inherited" option in the doc options above.**
+ * A custom element responsible for rendering an iframe and communicating with
+ * configured client applications that will render in that frame. It will be
+ * registered as `frame-router` by a call to [[registerCustomElements]] and
+ * should not be created directly. Instead add a `<frame-router>` element to your
+ * markup or use `document.createElement('frame-router')` after calling
+ * [[registerCustomElements]].
  */
 export default class FrameRouterElement extends HTMLElement {
   private _frameManager: FrameManager;
@@ -24,6 +24,7 @@ export default class FrameRouterElement extends HTMLElement {
   private _publishExposedEmitter: EventEmitter<Publication>;
   private _currentClientId: string;
 
+  /** @internal */
   constructor() {
     super();
     this._publishEmitter = new InternalEventEmitter<Publication>();
@@ -37,6 +38,7 @@ export default class FrameRouterElement extends HTMLElement {
   }
 
   /**
+   * @internal
    * @inheritdoc
    */
   static get observedAttributes() {
@@ -44,6 +46,7 @@ export default class FrameRouterElement extends HTMLElement {
   }
 
   /**
+   * @internal
    * @inheritdoc
    */
   public connectedCallback() {
@@ -52,6 +55,7 @@ export default class FrameRouterElement extends HTMLElement {
   }
 
   /**
+   * @internal
    * @inheritdoc
    */
   public disconnectedCallback() {
@@ -132,6 +136,7 @@ export default class FrameRouterElement extends HTMLElement {
   }
 
   /**
+   * @internal
    * @inheritdoc
    */
   public attributeChangedCallback(
