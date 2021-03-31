@@ -1,5 +1,22 @@
+@Library('pipeline-library')
+import com.genesys.jenkins.Service
+
+def notifications = null
+String[] mailingList = [
+  "Matthew.Cheely@genesys.com",
+  "Daragh.King@genesys.com"
+]
+
+def isReleaseBranch() {
+    return env.SHORT_BRANCH.equals('master');
+}
+
 pipeline {
   agent { label 'dev_mesos_v2' }
+  options {
+    quietPeriod(480)
+    disableConcurrentBuilds()
+  }
 
   environment {
     NPM_UTIL_PATH = "npm-utils"
@@ -10,7 +27,7 @@ pipeline {
   }
 
   tools {
-    nodejs 'NodeJS 10.15.3'
+    nodejs 'NodeJS 12.13.0'
   }
 
   stages {
@@ -21,11 +38,14 @@ pipeline {
         dir(env.REPO_DIR) {
           echo "Building Branch: ${env.GIT_BRANCH}"
           checkout scm
+          // Make a local branch so we can work with history and push (there's probably a better way to do this)
+          sh "git checkout -b ${env.SHORT_BRANCH}"
+
+          // Create an npmrc file, just so we can get a copy of web-app-deploy, then remove it
           sh "${env.WORKSPACE}/${env.NPM_UTIL_PATH}/scripts/jenkins-create-npmrc.sh"
-          sh "cp ./.npmrc ./cli/embedded-app/.npmrc"
-          sh "cp ./.npmrc ./client-app-example/.npmrc"
           sh "npm ci"
           sh "npm i --no-save @purecloud/web-app-deploy@latest"
+          sh "rm .npmrc"
         }
       }
     }
@@ -49,17 +69,15 @@ pipeline {
     }
 
     stage('Publish Library') {
+      when {
+        expression { isReleaseBranch()  }
+      }
       steps {
         dir(env.REPO_DIR) {
-          sh '''
-             echo "registry=https://registry.npmjs.org" > ./.npmrc
-             echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ./.npmrc
-          '''
           sh "npm publish"
           // Make a local branch so we can push back to the origin branch.
           sshagent (credentials: ['3aa16916-868b-4290-a9ee-b1a05343667e']) {
-            sh "git checkout -b ${env.SHORT_BRANCH}"
-            sh "git push --tags -u origin ${env.SHORT_BRANCH}"
+            sh "git push --follow-tags -u origin ${env.SHORT_BRANCH}"
           }
         }
       }
@@ -79,6 +97,9 @@ pipeline {
     }
 
     stage('Upload Docs') {
+      when {
+        expression { isReleaseBranch()  }
+      }
       steps {
         dir (env.REPO_DIR) {
           sh '''
@@ -92,6 +113,9 @@ pipeline {
     }
 
     stage('Deploy Docs') {
+      when {
+        expression { isReleaseBranch()  }
+      }
       steps {
         dir (env.REPO_DIR) {
           sh '''
@@ -101,6 +125,20 @@ pipeline {
                --dest-env dev
           '''
         }
+      }
+    }
+  }
+
+  post {
+    fixed {
+      script {
+        notifications.emailResults(mailingList.join(" "))
+      }
+    }
+
+    failure {
+      script {
+        notifications.emailResults(mailingList.join(" "))
       }
     }
   }
