@@ -83,10 +83,7 @@
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "tslint --fix",
-      "prettier --write"
-    ]
+    "*.ts": ["tslint --fix", "prettier --write"]
   },
   "config": {
     "commitizen": {
@@ -94,18 +91,9 @@
     }
   },
   "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ],
+    "extends": ["@commitlint/config-conventional"],
     "rules": {
-      "subject-case": [
-        2,
-        "never",
-        [
-          "pascal-case",
-          "upper-case"
-        ]
-      ]
+      "subject-case": [2, "never", ["pascal-case", "upper-case"]]
     }
   },
   "author": "",
@@ -113,5 +101,8 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:purecloudlabs/iframe-coordinator.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   }
 }
