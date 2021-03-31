@@ -6,7 +6,8 @@ if (!process.env.CHROME_BIN) {
 module.exports = function(config) {
   config.set({
     basePath: 'src',
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine', 'webpack'],
+    plugins: ['karma-jasmine', 'karma-webpack', 'karma-chrome-launcher'],
     files: ['**/*.spec.ts'],
     exclude: ['node_modules/**/*.spec.ts'],
     preprocessors: {
