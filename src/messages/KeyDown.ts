@@ -13,7 +13,6 @@ import { labeledDecoder, LabeledMsg } from './LabeledMsg';
 /**
  * A message used to send key information
  * to the host application.
- * @external
  */
 export interface LabeledKeyDown
   extends LabeledMsg<'registeredKeyFired', NativeKey> {
@@ -23,7 +22,6 @@ export interface LabeledKeyDown
   msg: NativeKey;
 }
 
-/** @external */
 const decoder: Decoder<LabeledKeyDown> = labeledDecoder(
   constant<'registeredKeyFired'>('registeredKeyFired'),
   object({

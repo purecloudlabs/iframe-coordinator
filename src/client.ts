@@ -25,6 +25,16 @@ import { NavRequest } from './messages/NavRequest';
 import { Notification } from './messages/Notification';
 import { Publication } from './messages/Publication';
 
+// Re-exports for doc visibility
+export {
+  EventEmitter,
+  EnvData,
+  Publication,
+  EnvDataHandler,
+  NavRequest,
+  Notification
+};
+
 /**
  * Client configuration options.
  */

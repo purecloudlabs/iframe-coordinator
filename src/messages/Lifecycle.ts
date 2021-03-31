@@ -14,7 +14,6 @@ import { applyClientProtocol, labeledDecoder, LabeledMsg } from './LabeledMsg';
  * Client started indication.  The client will
  * now listen for messages and begin sending
  * messages from the client application.
- * @external
  */
 export interface LabeledStarted extends LabeledMsg<'client_started', any> {
   /** Message identifier */
@@ -22,7 +21,6 @@ export interface LabeledStarted extends LabeledMsg<'client_started', any> {
 }
 
 // We don't care what is in msg for Started messages.
-/** @external */
 const startedDecoder: Decoder<LabeledStarted> = labeledDecoder(
   constant<'client_started'>('client_started'),
   mixed
@@ -70,7 +68,6 @@ export interface KeyData {
 /**
  * Initial setup message where environmental data
  * is sent to the client.
- * @external
  */
 export interface LabeledEnvInit extends LabeledMsg<'env_init', SetupData> {
   /** Message identifier */
@@ -79,7 +76,6 @@ export interface LabeledEnvInit extends LabeledMsg<'env_init', SetupData> {
   msg: SetupData;
 }
 
-/* @external */
 const envDecoder: Decoder<LabeledEnvInit> = labeledDecoder(
   constant<'env_init'>('env_init'),
   object({
@@ -111,7 +107,6 @@ export type EnvDataHandler = (envData: EnvData) => void;
 /**
  * Helpful properties for working with lifecycle stages and
  * their coresponding labeled messages.
- * @external
  */
 export class Lifecycle {
   /**

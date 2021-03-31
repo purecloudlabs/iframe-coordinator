@@ -3,13 +3,13 @@
   "version": "4.2.2",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.3",
+    "cheerio": "^1.0.0-rc.5",
     "commander": "^2.20.3",
     "decoders": "1.15.0",
     "dev-cert-authority": "^1.1.1",
     "express": "^4.17.1",
     "find-root": "^1.1.0",
-    "http-proxy-middleware": "^1.0.4"
+    "http-proxy-middleware": "^1.0.6"
   },
   "files": [
     "dist/client.js",
@@ -29,32 +29,31 @@
     "ifc-cli": "cli/ifc-cli.js"
   },
   "devDependencies": {
-    "@commitlint/cli": "^9.1.1",
-    "@commitlint/config-conventional": "^9.0.1",
-    "@types/jasmine": "^3.5.11",
-    "commitizen": "^4.1.2",
+    "@commitlint/cli": "^9.1.2",
+    "@commitlint/config-conventional": "^12.1.0",
+    "@types/jasmine": "^3.6.7",
+    "commitizen": "^4.2.3",
     "glob": "^7.1.6",
     "husky": "^1.1.2",
     "i": "^0.3.6",
     "import-inject-loader": "^0.2.4",
     "inject-loader": "^4.0.1",
-    "jasmine-core": "^3.5.0",
-    "karma": "^3.0.0",
+    "jasmine-core": "^3.7.1",
+    "karma": "^6.3.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^2.0.1",
     "karma-webpack": "4.0.0-rc.3",
-    "lint-staged": "^10.2.2",
+    "lint-staged": "^10.5.4",
     "prettier": "^1.19.1",
     "puppeteer": "^1.20.0",
     "source-map-loader": "^0.2.4",
-    "standard-version": "^8.0.0",
+    "standard-version": "^9.1.1",
     "ts-loader": "^5.4.5",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.16.0",
-    "typedoc": "^0.15.8",
-    "typedoc-plugin-internal-external": "^2.1.1",
-    "typescript": "3.5.3",
-    "webpack": "^4.43.0",
+    "typedoc": "^0.20.34",
+    "typescript": "^3.9.0",
+    "webpack": "^5.28.0",
     "webpack-cli": "^3.3.12"
   },
   "scripts": {
@@ -63,7 +62,7 @@
     "build-lib-es5": "webpack --config webpack.es5.config.js",
     "build-cli": "cd ./cli/embedded-app && npm run build",
     "commit": "git-cz",
-    "doc": "typedoc --excludePrivate --excludeProtected --excludeNotExported --excludeExternals --mode file --readme README.md --out doc/ src/",
+    "doc": "typedoc",
     "format.fix": "prettier --fix **/*.ts **/*.tsx",
     "lint.fix": "npm run lint.ts -- --fix",
     "lint.format": "prettier --check **/*.ts **/*.tsx",
@@ -84,10 +83,7 @@
     }
   },
   "lint-staged": {
-    "*.ts": [
-      "tslint --fix",
-      "prettier --write"
-    ]
+    "*.ts": ["tslint --fix", "prettier --write"]
   },
   "config": {
     "commitizen": {
@@ -95,18 +91,9 @@
     }
   },
   "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ],
+    "extends": ["@commitlint/config-conventional"],
     "rules": {
-      "subject-case": [
-        2,
-        "never",
-        [
-          "pascal-case",
-          "upper-case"
-        ]
-      ]
+      "subject-case": [2, "never", ["pascal-case", "upper-case"]]
     }
   },
   "author": "",

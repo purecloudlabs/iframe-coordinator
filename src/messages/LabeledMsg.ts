@@ -16,14 +16,10 @@ import {
 // tslint:disable-next-line:no-var-requires
 const version = require('../../package.json').version;
 
-/**
- * @external
- */
 export const API_PROTOCOL = 'iframe-coordinator';
 
 /**
  * Based on MessageDirection, hosts and clients can ignore messages that are not targeted at them.
- * @external
  */
 export type MessageDirection = 'ClientToHost' | 'HostToClient';
 
@@ -35,7 +31,6 @@ export type MessageDirection = 'ClientToHost' | 'HostToClient';
  * The msgType will indicate the nature of
  * the message. The msg will contain the
  * information desired to be communicated.
- * @external
  */
 export interface LabeledMsg<T, V> extends PartialMsg<T, V> {
   /** Distinguisihes iframe-coordinator message from other postmessage events */
@@ -48,7 +43,6 @@ export interface LabeledMsg<T, V> extends PartialMsg<T, V> {
 
 /**
  * Core data structure for most messages. These are the parts that vary by message type.
- * @external
  */
 export interface PartialMsg<T, V> {
   /** The type of message */
@@ -61,7 +55,6 @@ export interface PartialMsg<T, V> {
  * Takes an object with a `msgType` and `msg` and applies the appropriate
  * `direction`, `protocol` and `version` fields for the current version of the library.
  * @param partialMsg
- * @external
  */
 export function applyClientProtocol<T, V>(
   partialMsg: PartialMsg<T, V>
@@ -78,7 +71,6 @@ export function applyClientProtocol<T, V>(
  * Takes an object with a `msgType` and `msg` and applies the appropriate
  * `direction`, `protocol` and `version` fields for the current version of the library.
  * @param partialMsg
- * @external
  */
 export function applyHostProtocol<T, V>(
   partialMsg: PartialMsg<T, V>
@@ -94,7 +86,6 @@ export function applyHostProtocol<T, V>(
 /**
  * Converts a PartialMsg decoder into a LabeledMsg decoder
  * @param msgDecoder
- * @external
  */
 export function labeledDecoder<T, V>(
   typeDecoder: Decoder<T>,
