@@ -5,13 +5,13 @@ export type EventHandler<T> = (data: T) => void;
 
 /**
  * Simple object for keeping track of event listeners.
- * @external
+ *
  */
 interface Events<T> {
   [index: string]: Array<EventHandler<T>>;
 }
 
-/** @external */
+/**  */
 const findIndex =
   [].findIndex ||
   // IE11 support
@@ -46,8 +46,6 @@ const findIndex =
 
 /**
  * Used to determine equivalancy of two handlers.
- *
- * @external
  */
 function isRegistered(value: EventHandler<any>) {
   return value === this;
@@ -62,10 +60,9 @@ export class EventEmitter<T> {
   private _rootEmitter: InternalEventEmitter<T>;
 
   /**
+   * @internal
    * Constructing EventEmitters is an internal-only operation. API consumers should not create this
    * class directly.
-   *
-   * @external
    */
   public constructor(internalEmitter: InternalEventEmitter<T>) {
     this._rootEmitter = internalEmitter;
@@ -105,10 +102,10 @@ export class EventEmitter<T> {
 }
 
 /**
+ * @internal
  * An event emitter based on {@link EventTarget} used to signal
  * events between host and client. This provides class safety
  * on both the type and listeners
- * @external
  */
 // tslint:disable-next-line
 export class InternalEventEmitter<T> {

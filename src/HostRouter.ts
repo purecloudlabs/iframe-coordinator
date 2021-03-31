@@ -8,7 +8,6 @@ import {
 /**
  * HostRouter is responsible for mapping route paths to
  * corresponding client URls.
- * @external
  */
 export class HostRouter {
   private _clients: ClientInfo[];
@@ -73,26 +72,33 @@ export interface RoutingMap {
 }
 
 /**
- * Client routing description. The 'url' parameter is the location where
- * the client application is hosted. If the client uses fragment-based
- * routing, the URL shoudl include a hash fragment, e.g. http://example.com/client/#/
- * if the client uses pushstate path-based routing, leave the fragment out
- * e.g. http://example.com/client
+ * Configuration for a single `frame-router` client.
  *
- * The assigned route is the prefix for all routes that will be mapped to this client.
+ * The 'url' property is the location where the client application is hosted. If the
+ * client uses fragment-based routing, the URL should include a hash fragment, e.g.
+ * `http://example.com/client/#/` if the client uses pushstate routing, leave the
+ * fragment out, e.g. `http://example.com/client`.
+ *
+ * The `assigneRoute` property is the prefix for all routes that will be mapped to this client.
  * This prefix will be stripped when setting the route on the client. As an example,
- * if the assignedRoute is '/foo/bar/', and {@link HostRouter.getClientUrl} is passed
- * the route '/foo/bar/baz/qux', the client generated client Url will look something
- * like http://example.com/client/#/baz/qux
+ * if `assignedRoute` is `/foo/bar/`, `url` is `https://example.com/client/#/` and the
+ * `frame-router` element is passed the route `/foo/bar/baz/qux`, the embedded iframe URL
+ * will be `http://example.com/client/#/baz/qux`
  */
-interface ClientRegistration {
+export interface ClientRegistration {
   /** The URL where the client application is hosted */
   url: string;
-  /** The host route that should map to this client app */
+  /** The `frame-router` route attribute prefix that maps to this client app */
   assignedRoute: string;
-  /** iframe's allow directive */
+  /**
+   * Sets the iframe's [allow attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-allow)
+   * for this client.
+   */
   allow?: string;
-  /** iframe's sandbox directive to be merged with defaults */
+  /**
+   * Sets the iframe's [sandbox attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox)
+   * for this client. Values wll be merged with built-in defaults.
+   */
   sandbox?: string;
 }
 
@@ -100,7 +106,6 @@ interface ClientRegistration {
  * An internal client representation that moves the identifying key from {@link RoutingMap}
  * into the information about the client.
  *
- * @external
  */
 interface ClientInfo extends ClientRegistration {
   /** An identifier for the client app */
@@ -114,7 +119,6 @@ interface ClientInfo extends ClientRegistration {
  * and if they match, returns the section of the requested route that should be passed
  * to the client.
  *
- * @external
  *
  * @param rawTargetRoute The route to check against the client route
  * @param clientRoute The route prefix being checked.
@@ -140,7 +144,6 @@ function matchAndStripPrefix(
  * Helper function for converting {@link RoutingMap} data into an the internal
  * {@link ClientInfo} representation.
  *
- * @external
  */
 function parseRegistration(key: string, value: ClientRegistration): ClientInfo {
   return {
@@ -157,7 +160,6 @@ function parseRegistration(key: string, value: ClientRegistration): ClientInfo {
  * a full URL. Check the client URL for a hash fragment to see if fragment-based
  * or path-based routing should be used.
  *
- * @external
  */
 function applyRoute(urlStr: string, route: string): string {
   const newUrl = new URL(urlStr, window.location.href);

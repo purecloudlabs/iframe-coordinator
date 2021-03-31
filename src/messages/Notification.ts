@@ -25,7 +25,6 @@ export interface Notification {
 /**
  * A message used to request notifications to display
  * in the host application.
- * @external
  */
 export interface LabeledNotification
   extends LabeledMsg<'notifyRequest', Notification> {
@@ -37,19 +36,16 @@ export interface LabeledNotification
 
 /**
  * Helper function to convert old message types to the new type
- * @external
  */
 function alwaysMsgType(msgType: 'string'): 'notifyRequest' {
   return 'notifyRequest';
 }
 
-/** @external */
 const toastTypeDecoder: Decoder<'notifyRequest'> = map(
   constant<'toastRequest'>('toastRequest'),
   alwaysMsgType
 );
 
-/** @external */
 const decoder: Decoder<LabeledNotification> = labeledDecoder(
   either(constant<'notifyRequest'>('notifyRequest'), toastTypeDecoder),
   object({
