@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.2...v5.0.0) (2021-04-01)
+
+
+### ⚠ BREAKING CHANGES
+
+* **ifc-cli.config:** existing ifc-cli configs must be refactored to
+use an esm-style default export before upgrading to the latest
+major version of the iframe-coordinator package.
+
+### Features
+
+* **ifc-cli.config:** sets ifc-cli.config as an esm module ([0560bd3](https://github.com/purecloudlabs/iframe-coordinator/commit/0560bd347200bf2902116064e8dfcd3919fe3ac6))
+
 ### [4.2.2](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.1...v4.2.2) (2021-03-18)
 
 
