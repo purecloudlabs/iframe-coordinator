@@ -175,16 +175,12 @@ Options:
 
   This program will start a server for a basic iframe-coordinator host app. In
   order to configure the frame-router element and any other custom logic needed
-  in the host app, a config file must be provided which should assign a
-  function to `module.exports` that will be passed the frame-router element
-  as an input once it has been mounted. The function should return a config
-  object with the following fields:
+  in the host app, a config file (esm module) must be provided which should 
+  export the primary config function as the default export that will be passed 
+  the frame-router element as an input once it has been mounted. The function 
+  should return a config object with the following fields:
 
   - publishTopics: A list of messaging topics the client publishes on
-
-  Keep in mind that the config file is not a true commonJS module, and
-  will be evaluated directly inside the browser in an immediately invoked
-  function expression.
 
   The CLI host app also provides a proxy route under `/proxy/` that can be used
   if you need the client and host applicaitons on the same domain. To use the proxy,
@@ -194,7 +190,7 @@ Options:
 
   Here is an example config file:
 
-module.exports = function(frameRouter) {
+export default function(frameRouter) {
   frameRouter.setupFrames(
     {
       app1: {

@@ -1,4 +1,4 @@
-module.exports = function(frameRouter) {
+export default function(frameRouter) {
   frameRouter.setupFrames(
     {
       app1: {
