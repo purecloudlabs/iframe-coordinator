@@ -42,7 +42,7 @@
     "karma": "^6.3.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-jasmine": "^2.0.1",
-    "karma-webpack": "4.0.0-rc.3",
+    "karma-webpack": "^5.0.0",
     "lint-staged": "^10.5.4",
     "prettier": "^1.19.1",
     "puppeteer": "^1.20.0",
@@ -101,5 +101,8 @@
   "repository": {
     "type": "git",
     "url": "git@github.com:purecloudlabs/iframe-coordinator.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
   }
 }
