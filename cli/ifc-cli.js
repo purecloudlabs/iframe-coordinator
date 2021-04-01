@@ -113,14 +113,10 @@ function generateIndex(appPath, clientConfigFile) {
 
 function configScript(scriptFile) {
   const scriptContents = fs.readFileSync(scriptFile).toString();
-  // This is a bit of a kludge but it should suffice for now.
   return `
-<script type="text/javascript">
-  (function () {
-   let module = {};
-   ${scriptContents}
-   window.routerSetup = module.exports;
-  })()
+<script type="module">
+  import routerSetup from ${scriptFile}
+  window.routerSetup = routerSetup;
 </script>
 `;
 }
