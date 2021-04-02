@@ -81,7 +81,6 @@ pipeline {
           sh "cp ./.npmrc ./cli/embedded-app/.npmrc"
           sh "cp ./.npmrc ./client-app-example/.npmrc"
           sh "npm ci"
-          sh "./scripts/prepare-deps.sh"
           sh "npm i --no-save @purecloud/web-app-deploy@latest"
         }
       }
@@ -110,7 +109,11 @@ pipeline {
         expression { isReleaseBranch()  }
       }
       steps {
-        dir(env.REPO_DIR) {
+          dir(env.REPO_DIR) {
+          sh '''
+             echo "registry=https://registry.npmjs.org" > ./.npmrc
+             echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ./.npmrc
+          '''
           sh "npm publish"
           sshagent (credentials: ['3aa16916-868b-4290-a9ee-b1a05343667e']) {
             sh "git push --follow-tags -u origin ${env.SHORT_BRANCH}"
