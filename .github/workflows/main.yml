@@ -33,7 +33,6 @@ jobs:
 
       # Install dependencies
       - run: npm ci
-      - run: ${GITHUB_WORKSPACE}/scripts/prepare-deps.sh
 
       # Run linting
       - name: Lint
