@@ -68,7 +68,7 @@
     "lint.format": "prettier --check **/*.ts **/*.tsx",
     "lint.commit": "commitlint -f e307dddc51545900940861f06baf210cd4a79cec",
     "lint": "tslint --project tsconfig.json && npm run lint.format && npm run lint.commit",
-    "prepare": "./scripts/prepare-deps.sh",
+    "preinstall": "./scripts/prepare-deps.sh",
     "release": "standard-version",
     "start": "webpack --watch",
     "start-client-example": "cd ./client-app-example && npm start",
