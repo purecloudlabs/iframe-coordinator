@@ -46,21 +46,42 @@ pipeline {
       }
     }
 
-    stage('Prep') {
+    stage('Checkout') {
       steps {
         deleteDir()
-        sh "git clone --single-branch -b master --depth=1 git@bitbucket.org:inindca/npm-utils.git ${env.NPM_UTIL_PATH}"
         dir(env.REPO_DIR) {
-          echo "Building Branch: ${env.GIT_BRANCH}"
           checkout scm
           // Make a local branch so we can work with history and push (there's probably a better way to do this)
           sh "git checkout -b ${env.SHORT_BRANCH}"
+        }
+      }
+    }
 
-          // Create an npmrc file, just so we can get a copy of web-app-deploy, then remove it
+    stage('Avoid Build Loop') {
+      steps {
+        script {
+          dir(env.REPO_DIR) {
+            def lastCommit = sh(script: 'git log -n 1 --format=%s', returnStdout: true).trim()
+            if (lastCommit.startsWith('chore(release)')) {
+              currentBuild.description = 'Skipped'
+              currentBuild.result = 'ABORTED'
+              error('Last commit was a release, exiting build process.')
+            }
+          }
+        }
+      }
+    }
+
+    stage('Prep') {
+      steps {
+        sh "git clone --single-branch -b master --depth=1 git@bitbucket.org:inindca/npm-utils.git ${env.NPM_UTIL_PATH}"
+        dir(env.REPO_DIR) {
+          // Create an npmrc file, just so we can install deps cleanly from artifactory
           sh "${env.WORKSPACE}/${env.NPM_UTIL_PATH}/scripts/jenkins-create-npmrc.sh"
           sh "cp ./.npmrc ./cli/embedded-app/.npmrc"
           sh "cp ./.npmrc ./client-app-example/.npmrc"
           sh "npm ci"
+          sh "./scripts/prepare-deps.sh"
           sh "npm i --no-save @purecloud/web-app-deploy@latest"
         }
       }
