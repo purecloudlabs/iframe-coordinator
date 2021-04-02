@@ -30,8 +30,10 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: '12'
-      # Can't use npm ci, because it fails on missing optional dependencies
-      - run: npm install
+
+      # Install dependencies
+      - run: npm ci
+      - run: ${GITHUB_WORKSPACE}/scripts/prepare-deps.sh
 
       # Run linting
       - name: Lint
