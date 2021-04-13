@@ -21,6 +21,7 @@ frame-router iframe {
 
 /** @internal default iframe sandbox attributes */
 const DEFAULT_SANDBOX = [
+  'allow-popups-to-escape-sandbox',
   'allow-scripts',
   'allow-same-origin',
   'allow-modals',
