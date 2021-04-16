@@ -1,6 +1,5 @@
 node_modules/
 /dist/
 /cli/embedded-app/dist/**/*
-doc/
 .vscode
 .npmrc
