@@ -128,7 +128,7 @@ pipeline {
           sh "npm run doc"
           sh "./scripts/generate-deploy-files"
           sh '''
-              export CDN_ROOT=$(npx cdn --ecosystem pc --manifest doc/manifest.json)
+              export CDN_ROOT=$(npx cdn --ecosystem pc --manifest dist/docs/manifest.json)
               ./scripts/prepare-docs
           '''
         }
@@ -144,8 +144,8 @@ pipeline {
           sh '''
              npx upload \
                --ecosystem pc \
-               --manifest doc/manifest.json \
-               --source-dir ./doc
+               --manifest dist/docs/manifest.json \
+               --source-dir ./dist/docs
           '''
         }
       }
@@ -160,7 +160,7 @@ pipeline {
           sh '''
              npx deploy \
                --ecosystem pc \
-               --manifest doc/manifest.json \
+               --manifest dist/docs/manifest.json \
                --dest-env dev
           '''
         }

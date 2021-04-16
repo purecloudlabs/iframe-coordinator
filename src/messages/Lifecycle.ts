@@ -31,13 +31,13 @@ const startedDecoder: Decoder<LabeledStarted> = labeledDecoder(
  * in order to match behavior of the host application.
  */
 export interface EnvData {
-  /** Locale in use by the host app */
+  /** The locale in use by the host app, which the client application should also use. */
   locale: string;
-  /** Location of the host app */
+  /** The location of the host app. Useful for building URLs that reference host pages */
   hostRootUrl: string;
-  /** Keys to notify changes on */
+  /** Keys to notify keypress events to the host on. This can be used to create global keyboard shortcuts. */
   registeredKeys?: KeyData[];
-  /** Extra host-specific details */
+  /** Extra application-specific details for your use case */
   custom?: any;
 }
 
@@ -100,7 +100,10 @@ const envDecoder: Decoder<LabeledEnvInit> = labeledDecoder(
 export { startedDecoder, envDecoder };
 
 /**
- * Handles new environmental data events.
+ * Handles new environmental data events. These should be configured
+ * before {@link Client.start} is called, as the host application
+ * will send the environment data immediately after the `Client.start`
+ * message is recieved.
  */
 export type EnvDataHandler = (envData: EnvData) => void;
 
