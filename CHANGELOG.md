@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.4](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.3...v4.2.4) (2021-04-23)
+
+
+### Bug Fixes
+
+* **framemanager:** COMUI-460 - Added new default to sandbox attributes ([de42224](https://github.com/purecloudlabs/iframe-coordinator/commit/de42224be10621dab52db08684e2658a08f49ea2))
+
 ### [4.2.3](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.2...v4.2.3) (2021-04-02)
 
 ### [4.2.2](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.1...v4.2.2) (2021-03-18)
