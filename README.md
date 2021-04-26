@@ -10,7 +10,7 @@ Embedding applications via iframe also means that code from separate teams can b
 
 ## How do I use it?
 
-### In the host application
+### Host Application Example
 
 **JavaScript**
 
@@ -92,71 +92,11 @@ https://example.com/components/example1/#/my/path
 </body>
 ```
 
-### In the client application
+### Client Application Setup
 
-**JavaScript:**
+See the [client module docs](modules/client.html) for detailed setup instructions.
 
-```js
-/*
- * We require a few polyfills in order to support IE11.  These
- * will be needed to be loaded by both the host and the client.
- */
-import '@babel/polyfill';
-import 'custom-event-polyfill/polyfill.js';
-import 'url-polyfill';
-
-/* Import the client library */
-import { Client } from 'iframe-coordinator/client.js';
-
-/* Create a new instance of the client */
-let iframeClient = new Client({
-  // This lets the example client work with the cli host by setting it's domain
-  // as a valid host origin to post messages to. A production app will probably
-  // need to conditionally set this.
-  hostOrigin: 'http://localhost:3000'
-});
-
-// Add a listener that will handled config data passed from the host to the
-// client at startup.
-iframeClient.addListener('environmentalData', envData => {
-  const appLocale = envData.locale;
-
-  const now = new Date();
-  const localizedDate = new Intl.DateTimeFormat(appLocale).format(now);
-  console.log(
-    `Got locale from host. Current date formatted for ${envData.locale} is: ${localizedDate}`
-  );
-  displayEnvData(envData);
-});
-
-// Listen for published events from the host on the `host.topic` topic
-// and log them.
-iframeClient.messaging.addListener('host.topic', publication => {
-  console.log('Got Publish event:', publication);
-});
-
-// Start intercepting link click events for cross-frame routing
-iframeClient.start();
-```
-
-**HTML/DOM**
-
-```html
-<body>
-  <!-- ... -->
-  <!--
-        Links in the client app should be configured to use
-        URLs that match what the host app will show, rather
-        than their own internal URLs.
-
-        We'll probably add tooling to help with this eventually.
-     -->
-  <a href="${hostAppUrl}/${hostAppRoute}">Click Me</a>
-  <!-- ... -->
-</body>
-```
-
-**Local Development**
+### Local Client Application Development
 
 When working on a client application locally, or running automated selenium tests,
 it can be burdensome to bootstrap a fully featured host-application just to work
@@ -231,19 +171,17 @@ function getCustomClientData() {
 }
 ```
 
-### Building
+### Development
 
 #### Installation
 
 Before you can build this you will need to make sure that you are using the LTS version of nodejs. Then you can run the following command `npm ci`
 
-#### Running the build
+#### Building the Library
 
 To run the build you can use the following command `npm run build`
 
 #### Testing
-
-Testing can be done in a couple different ways
 
 ```
 npm run test # single run of tests
@@ -251,7 +189,7 @@ npm run test.watch # continuous run of tests
 npm run test.watch.chrome # continuous run of tests in a chromium browser.
 ```
 
-#### Running the example
+#### Running the Example App
 
 To see an example of this in action you can run the following command `npm run start-client-example` and navigate to http://localhost:3000 on your machine.
 

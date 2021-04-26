@@ -10,21 +10,20 @@ import {
 import { labeledDecoder, LabeledMsg } from './LabeledMsg';
 
 /**
- * A publication configuration.
- *
- * @remarks
- * The host must subscribe to the topic
- * in order to recieve this message.
+ * A pub-sub message for general-puropse messaging between hosts and clients.
  */
 export interface Publication {
-  /** Topic to publish on */
+  /**
+   * The topic to publish on. The host application must be subscribed to the topic
+   * in order to recieve the message.
+   */
   topic: string;
   /** Data to publish */
   payload: any;
   /**
    * Client the message originates from. This should not be provided when
    * calling client methods. The value will be ignored and the library
-   * will fill it in.
+   * will replace it when delivering the message to the host.
    */
   clientId?: string;
 }
