@@ -1,6 +1,7 @@
 module.exports = {
   entryPoints: ['src/client.ts', 'src/host.ts'],
-  out: 'doc',
+  includes: 'doc',
+  out: 'dist/docs',
   excludeExternals: true,
   excludeInternal: true,
   excludePrivate: true,

@@ -1,3 +1,8 @@
+/**
+ * [[include:client-setup.md]]
+ * @module
+ */
+
 import { joinRoutes, stripLeadingSlashAndHashTag } from '../src/urlUtils';
 import { EventEmitter, InternalEventEmitter } from './EventEmitter';
 import { keyEqual } from './Key';
@@ -80,7 +85,11 @@ export class Client {
 
   /**
    * Sets up a function that will be called whenever the specified event type is delivered to the target.
-   * @param type A case-sensitive string representing the event type to listen for.
+   * This should not be confused with the general-purpose pub-sub listeners that can be set via the
+   * {@link Client.messaging | messaging} interface.
+   *
+   * @param type A case-sensitive string representing the event type to listen for. Currently, hosts only
+   * send `environmentalData` events.
    * @param listener The handler which receives a notification when an event of the specified type occurs.
    */
   public addListener(
@@ -92,7 +101,7 @@ export class Client {
   }
 
   /**
-   * Removes from the event listener previously registered with {@link InternalEventEmitter.addEventListener}.
+   * Removes an event listener previously registered with {@link Client.addListener | addListener}.
    * @param type A string which specifies the type of event for which to remove an event listener.
    * @param listener The event handler to remove from the event target.
    */
@@ -105,7 +114,7 @@ export class Client {
   }
 
   /**
-   * Removes all event listeners previously registered with {@link InternalEventEmitter.addEventListener}.
+   * Removes all event listeners previously registered with {@link Client.addListener | addListener}.
    * @param type A string which specifies the type of event for which to remove an event listener.
    */
   public removeAllListeners(type: 'environmentalData'): Client {
@@ -222,8 +231,9 @@ export class Client {
   }
 
   /**
-   * Gets the environmental data provided by the host application. This includes things
-   * like the current locale, the base URL of the host app, etc.
+   * Gets the environmental data provided by the host application. This includes
+   * the locale the client should use, the base URL of the host app, and any
+   * custom data sent by the host.
    */
   public get environmentData() {
     return this._environmentData;
@@ -284,8 +294,10 @@ bad input into one of the iframe-coordinator client methods.
   }
 
   /**
-   * Adds a click handler to the client window that intercepts clicks on anchor elements
-   * and makes a nav request to the host based on the element's href.
+   * Adds a global click handler to the client window that intercepts clicks on anchor elements
+   * and makes a nav request to the host based on the element's href. This should be
+   * avoided for complex applications as it can interfere with things like download
+   * links that you may not want to intercept.
    */
   public startInterceptingLinks(): void {
     if (this._isInterceptingLinksStarted) {
@@ -297,7 +309,7 @@ bad input into one of the iframe-coordinator client methods.
   }
 
   /**
-   * Removes the click handler that intercepts clicks on anchor elements.
+   * Removes the global click handler that intercepts clicks on anchor elements.
    */
   public stopInterceptingLinks(): void {
     if (!this._isInterceptingLinksStarted) {
@@ -311,7 +323,7 @@ bad input into one of the iframe-coordinator client methods.
   /**
    * Accessor for the general-purpose pub-sub bus betwen client and host applications.
    * The content of messages on this bus are not defined by this API beyond a basic
-   * data wrapper. This is for message formats designed outside of this library and
+   * data wrapper of topic and payload. This is for application-specific messages
    * agreed upon as a shared API betwen host and client.
    */
   public get messaging(): EventEmitter<Publication> {
@@ -356,13 +368,29 @@ bad input into one of the iframe-coordinator client methods.
    * @param notification the desired notification configuration.
    *
    * @example
-   * `client.requestNotification({ title: 'Hello world' });`
+   * ```typescript
+   * client.requestNotification({ title: 'Hello world' });
+   * ```
    *
    * @example
-   * `client.requestNotification({ title: 'Hello', message: 'World' });`
+   * ```typescript
+   * client.requestNotification({
+   *   title: 'Hello',
+   *   message: 'World'
+   * });
+   * ```
    *
    * @example
-   * `client.requestNotification({ title: 'Hello', message: 'World', custom: { ttl: 5, level: 'info' } });`
+   * ```typescript
+   * client.requestNotification({
+   *   title: 'Hello',
+   *   message: 'World',
+   *   custom: {
+   *     displaySeconds: 5,
+   *     level: 'info'
+   *   }
+   * });
+   * ```
    */
   public requestNotification(notification: Notification): void {
     this._sendToHost({

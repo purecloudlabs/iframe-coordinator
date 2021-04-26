@@ -5,7 +5,7 @@ import { labeledDecoder, LabeledMsg } from './LabeledMsg';
  * The navigation request data.
  */
 export interface NavRequest {
-  /** The URL the client wants to navigate to */
+  /** The URL the client wants the host application to navigate to */
   url: string;
 }
 

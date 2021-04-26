@@ -11,7 +11,8 @@ import {
 import { labeledDecoder, LabeledMsg } from './LabeledMsg';
 
 /**
- * A toast configuration.
+ * A notification configuration for an interface such as a toast-style
+ * message displayed by the host application.
  */
 export interface Notification {
   /** The title of the notification */
