@@ -6,7 +6,7 @@ const glob = require('glob');
 const path = require('path');
 const url = require('url');
 
-const docPath = path.join(__dirname, '../doc');
+const docPath = path.join(__dirname, '../dist/docs');
 
 main();
 
