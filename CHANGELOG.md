@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.2.6](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.5...v4.2.6) (2021-04-30)
+
+
+### Bug Fixes
+
+* **docs:** fix static asset URLs in deployed docs ([3bc9fae](https://github.com/purecloudlabs/iframe-coordinator/commit/3bc9faea2e136dd2ef51fd88fbd19c0218e3799c))
+
 ### [4.2.5](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.4...v4.2.5) (2021-04-28)
 
 ### [4.2.4](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.3...v4.2.4) (2021-04-23)
