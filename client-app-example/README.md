@@ -11,7 +11,7 @@ commands from the iframe-coordinator project root (the parent directory of this 
 
 `npm install`
 
-`npm build`
+`npm run build`
 
 `npm run start-client-example`
 

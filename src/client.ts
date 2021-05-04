@@ -4,6 +4,8 @@
  */
 
 import { joinRoutes, stripLeadingSlashAndHashTag } from '../src/urlUtils';
+import IfcClientLinkElement from './elements/ifc-client-link';
+import IfcHostLinkElement from './elements/ifc-host-link';
 import { EventEmitter, InternalEventEmitter } from './EventEmitter';
 import { keyEqual } from './Key';
 import {
@@ -19,13 +21,13 @@ import {
   applyClientProtocol,
   PartialMsg
 } from './messages/LabeledMsg';
+import { KeyData } from './messages/Lifecycle';
 import {
   EnvData,
   EnvDataHandler,
   LabeledEnvInit,
   Lifecycle
 } from './messages/Lifecycle';
-import { KeyData } from './messages/Lifecycle';
 import { NavRequest } from './messages/NavRequest';
 import { Notification } from './messages/Notification';
 import { Publication } from './messages/Publication';
@@ -81,6 +83,37 @@ export class Client {
     this._envDataEmitter = new InternalEventEmitter<EnvData>();
     this._registeredKeys = [];
     this._assignedRoute = null;
+  }
+
+  /**
+   * Registers custom elements used by the client application
+   */
+  public registerCustomElements(): void {
+    const clientInstance = this;
+    /**
+     * This class extends IfcClientLinkElement to provide
+     * the ifc-client-link custom element access to the client instance
+     */
+    // tslint:disable-next-line:max-classes-per-file
+    class IfcClientLinkElementComplete extends IfcClientLinkElement {
+      constructor() {
+        super(clientInstance);
+      }
+    }
+    /**
+     * This class extends IfcHostLinkElement to provide
+     * the ifc-host-link custom element access to the client instance
+     */
+    // tslint:disable-next-line:max-classes-per-file
+    class IfcHostLinkElementComplete extends IfcHostLinkElement {
+      constructor() {
+        super(clientInstance);
+      }
+    }
+    clientInstance.addListener('environmentalData', envData => {
+      customElements.define('ifc-client-link', IfcClientLinkElementComplete);
+      customElements.define('ifc-host-link', IfcHostLinkElementComplete);
+    });
   }
 
   /**
@@ -242,14 +275,44 @@ export class Client {
   /**
    * Translates a client route like `/foo/bar` to the full URL used in the host
    * app for the same page, e.g. `https://hostapp.com/#/client-app/foo/bar`.
-   * You should use this whenver generating an internal link within a client
+   * You should use this whenever generating an internal link within a client
    * application so that the user gets a nice experience if they open a link in
    * a new tab, or copy and paste a link URL into a chat message or email.
    *
    * @param clientRoute The /-separated path within the client app to link to.
    */
-  public asHostUrl(clientRoute: string): string {
-    const trimedClientRoute = stripLeadingSlashAndHashTag(clientRoute);
+  public urlFromClientPath(clientRoute: string): string {
+    const hostRootUrl = this.environmentData.hostRootUrl;
+    const assignedRoute = this._assignedRoute || '';
+    const trimmedClientRoute = stripLeadingSlashAndHashTag(clientRoute);
+    return joinRoutes(hostRootUrl, assignedRoute, trimmedClientRoute);
+  }
+
+  /**
+   * Translates a host route like `/app2` to the full URL used in the host
+   * app, e.g. `https://hostapp.com/#/app2`.
+   * You should use this whenever generating a host link within a client
+   * application so that the user gets a nice experience if they open a link in
+   * a new tab, or copy and paste a link URL into a chat message or email.
+   *
+   * @param hostRoute The /-separated path within the host app to link to.
+   */
+  public urlFromHostPath(hostRoute: string): string {
+    const hostRootUrl = this.environmentData.hostRootUrl;
+    const trimmedHostRoute = stripLeadingSlashAndHashTag(hostRoute);
+    return joinRoutes(hostRootUrl, trimmedHostRoute);
+  }
+
+  /**
+   * Translates a client route like `/foo/bar` to the full URL used in the host
+   * app for the same page, e.g. `https://hostapp.com/#/client-app/foo/bar`.
+   *
+   * @param clientRouteLegacy The /-separated path within the client app to link to.
+   *
+   * @deprecated Use the new {@urlFromClientPath} method instead
+   */
+  public asHostUrl(clientRouteLegacy: string): string {
+    const trimedClientRoute = stripLeadingSlashAndHashTag(clientRouteLegacy);
     return joinRoutes(
       this.environmentData.hostRootUrl,
       this._assignedRoute || '',
