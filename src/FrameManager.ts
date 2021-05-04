@@ -27,7 +27,8 @@ const DEFAULT_SANDBOX = [
   'allow-modals',
   'allow-forms',
   'allow-popups',
-  'allow-downloads'
+  'allow-downloads',
+  'allow-top-navigation-by-user-activation'
 ] as const;
 
 let style: HTMLElement;

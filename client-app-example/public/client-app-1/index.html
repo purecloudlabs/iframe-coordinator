@@ -8,20 +8,36 @@
     <h2>Routing</h2>
     <h3>Current Local Route:</h3>
     <div id="path"></div>
-    <h3>Current Host Route:</h3>
-    <div id="hostPath"></div>
+    <h3>Current Host Route Calculated From Client:</h3>
+    <div id="urlFromClientPath"></div>
 
     <h3>Change Route</h3>
     <ul>
-      <!-- internal routes URLs get remapped in js by `transformLinks` -->
-      <li><a href="#/route1">This client: /route1</a></li>
-      <li><a href="#/route2">This client: /route2</a></li>
       <!-- External URLs use full links so they open nicely in new tabs -->
       <li>
         <a href="//localhost:3000/#/app2/route1">Other client: /route1</a>
       </li>
       <li>
         <a href="//localhost:3000/#/app2/route2">Other client: /route2</a>
+      </li>
+      <!-- internal routes URLs get remapped in js by `transformLinks` -->
+      <li>
+        <a class="client-transform-link" href="#/route1">This client: /route1</a>
+      </li>
+      <li>
+        <a class="client-transform-link" href="#/route2">This client: /route2</a>
+      </li>
+    </ul>
+
+    <h3>
+      Using custom elements ifc-client-link and ifc-host-link to build full urls
+    </h3>
+    <ul>
+      <li>
+        <ifc-client-link path="/route2">Creating a full link from the client path using ifc-client-link: /route2</ifc-client-link>
+      </li>
+      <li>
+        <ifc-host-link path="/app2">Creating a full link from the host path using ifc-host-link: /app2</ifc-host-link>
       </li>
     </ul>
 
