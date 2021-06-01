@@ -34,8 +34,9 @@
     <h2>Routing</h2>
     <h3>Current Local Route:</h3>
     <div id="path"></div>
+    <div id="path2"></div>
     <h3>Current Host Route:</h3>
-    <div id="hostPath"></div>
+    <div id="urlFromClientPath"></div>
 
     <h3>Change Route</h3>
     <ul>
@@ -44,11 +45,27 @@
         <a href="//localhost:3000/#/app1/route1">Other client: /route1</a>
       </li>
       <li>
-        <a href="//localhost:3000/#/app1/route1">Other client: /route2</a>
+        <a href="//localhost:3000/#/app1/route2">Other client: /route2</a>
       </li>
       <!-- internal routes URLs get remapped in js by `transformLinks` -->
-      <li><a href="#/route1">This client: /route1</a></li>
-      <li><a href="#/route2">This client: /route2</a></li>
+      <li>
+        <a class="client-transform-link" href="#/route1">This client: /route1</a>
+      </li>
+      <li>
+        <a class="client-transform-link" href="#/route2">This client: /route2</a>
+      </li>
+    </ul>
+
+    <h3>
+      Using custom elements ifc-client-link and ifc-host-link to build full urls
+    </h3>
+    <ul>
+      <li>
+        <ifc-client-link path="/route2">Creating a full link from the client path: /route2</ifc-client-link>
+      </li>
+      <li>
+        <ifc-host-link path="/app1">Creating a full link from the host path: /app1</ifc-host-link>
+      </li>
     </ul>
 
     <h2>Toasts</h2>

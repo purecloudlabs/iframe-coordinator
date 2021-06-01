@@ -78,7 +78,7 @@ describe('FrameManager', () => {
     expect(mocks.document.createElement).toHaveBeenCalledWith('iframe');
     expect(mocks.frame.setAttribute).toHaveBeenCalledWith(
       'sandbox',
-      'allow-popups-to-escape-sandbox allow-scripts allow-same-origin allow-modals allow-forms allow-popups allow-downloads'
+      'allow-popups-to-escape-sandbox allow-scripts allow-same-origin allow-modals allow-forms allow-popups allow-downloads allow-top-navigation-by-user-activation'
     );
   });
 

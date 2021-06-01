@@ -54,8 +54,13 @@ with `target="_top"` set.
 
 Links rendered by the client application should have the `href` attribute set to the full host
 application URL rather than a relative path within the client. To make this easier, the client
-provides the [`asHostUrl`](../classes/client.client-1.html#ashosturl) method that can translate
-client application routes to the corresponding host application URL.
+provides the `urlFromClientPath` method that can translate
+client application routes to the corresponding host application URL. The client application also provides the `urlFromHostPath` method that can translate a host application relative path to the full URL used in the host application.
+
+
+### Using Custom Elements to Create Links
+
+To further simplify the generation of these links, there are custom elements that can be used to create links. These elements are `ifc-client-link` and `ifc-host-link`. These custom elements are registered and provided by the client. These custom elements require a `path` attribute with the relative path (either client or host) that will be used to create the full URL. The `ifc-client-link` custom element uses the `urlFromClientPath` method to translate a client application route provided in the `path` attribute to a full URL. The `ifc-host-link` custom element uses the `urlFromHostPath` method to translate a host application route provided in the `path` attribute to a full URL. 
 
 ### Examples
 
@@ -67,10 +72,10 @@ wrap, extend, or avoid built-in navigation and link generation utilities.
 
 ```typescript
 // Navigate to a new route in the client app: /foo/bar
-ifcClient.requestNavigation({ url: ifcClient.asHostUrl('/foo/bar') });
+ifcClient.requestNavigation({ url: ifcClient.urlFromClientPath('/foo/bar') });
 
 // Navigate to a host application route
-ifcClient.requestNavigation({ url: 'https://host-app.com/host/path' });
+ifcClient.requestNavigation({ url: ifcClient.urlFromHostPath('/path') });
 
 // Navigate to a 3rd party url
 ifcClient.requestNavigation({ url: 'https://external-site.com/external/path' });
@@ -79,14 +84,24 @@ ifcClient.requestNavigation({ url: 'https://external-site.com/external/path' });
 **Generating Links**
 
 ```typescript
-let internalLink = `<a href="${ifcClient.asHostUrl(
+let internalLink = `<a href="${ifcClient.urlFromClientPath(
   'foo/bar'
 )}" target="_top">Internal Link</a>`;
 
-let hostLink = `<a href="https://host-app.com/host/path" target="_top">Internal Link</a>`;
+let hostLink = `<a href="${ifcClient.urlFromHostPath(
+  '/path'
+)}" target="_top">Internal Link</a>`;
 
 let externalLink = `<a href="https://external-site.com/external/path" target="_top">Internal Link</a>`;
 ```
+
+**Generating Links Using Custom Elements**
+
+<!-- Creates a link to a new route in the client app: /foo/bar -->
+<ifc-client-link path='/foo/bar'>Internal Link</ifc-client-link>
+
+<!-- Creates a link to a host application route: /path -->
+<ifc-host-link path='/path'>Internal Link</ifc-host-link>
 
 ## Requesting Host Actions
 

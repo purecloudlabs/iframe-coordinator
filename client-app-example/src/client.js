@@ -2,14 +2,17 @@
 import '@babel/polyfill';
 import 'custom-event-polyfill/polyfill.js';
 import 'url-polyfill';
+import { registerCustomElements } from 'iframe-coordinator/dist/index';
 
 import { Client } from 'iframe-coordinator/dist/client';
+
+registerCustomElements();
 
 document.getElementById('path').innerHTML = window.location.hash;
 
 window.onhashchange = function() {
   document.getElementById('path').innerHTML = window.location.hash;
-  document.getElementById('hostPath').innerHTML = iframeClient.asHostUrl(
+  document.getElementById('urlFromClientPath').innerHTML = iframeClient.urlFromClientPath(
     window.location.hash
   );
 };
@@ -23,6 +26,8 @@ let iframeClient = new Client({
   hostOrigin: `http://${window.location.hostname}:3000`
 });
 
+  iframeClient.registerCustomElements();
+
 // Add a listener that will handled config data passed from the host to the
 // client at startup.
 iframeClient.addListener('environmentalData', envData => {
@@ -35,7 +40,7 @@ iframeClient.addListener('environmentalData', envData => {
   console.log(
     `Got locale from host. Current date formatted for ${envData.locale} is: ${localizedDate}`
   );
-  document.getElementById('hostPath').innerHTML = iframeClient.asHostUrl(
+  document.getElementById('urlFromClientPath').innerHTML = iframeClient.urlFromClientPath(
     window.location.hash
   );
   displayEnvData(envData);
@@ -90,9 +95,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // HELPER FUNCTIONS
 function transformLinks() {
-  document.querySelectorAll('a[href^="#"]').forEach(link => {
-    link.href = iframeClient.asHostUrl(link.getAttribute('href'));
+  document.querySelectorAll('a.client-transform-link').forEach(link => {
+    link.href = iframeClient.urlFromClientPath(link.getAttribute('href'));
   });
+  document.querySelectorAll('a.host-transform-link').forEach(link => {
+    link.href = iframeClient.urlFromHostPath(link.getAttribute('href'));
+  })
 }
 
 function displayEnvData(envData) {

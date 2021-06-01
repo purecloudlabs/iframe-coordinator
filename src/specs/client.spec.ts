@@ -26,6 +26,9 @@ describe('client', () => {
       },
       parent: {
         postMessage: jasmine.createSpy('window.parent.postMessage')
+      },
+      location: {
+        hash: 'client/route'
       }
     };
 
@@ -81,23 +84,47 @@ describe('client', () => {
       expect(recievedEnvData).toEqual(restEnvData);
     });
 
-    describe('access host URL', () => {
-      it('should be able to access host url', () => {
-        const hostUrl = client.asHostUrl('client/route');
-        expect(hostUrl).toEqual('http://example.com/app1/client/route');
+    describe('generate full URL from client path', () => {
+      it('should be able to generate full url from client path', () => {
+        const urlFromClient = client.urlFromClientPath('client/route');
+        expect(urlFromClient).toEqual('http://example.com/app1/client/route');
       });
 
-      it('should ignore client route leading splash and hash tag', () => {
-        let hostUrl = client.asHostUrl('/client/route');
-        expect(hostUrl).toEqual('http://example.com/app1/client/route');
-        hostUrl = client.asHostUrl('#/client/route');
-        expect(hostUrl).toEqual('http://example.com/app1/client/route');
-        hostUrl = client.asHostUrl('/#/client/route');
-        expect(hostUrl).toEqual('http://example.com/app1/client/route');
+      it('should ignore client route leading slash and hash tag', () => {
+        let urlFromClient = client.urlFromClientPath('/client/route');
+        expect(urlFromClient).toEqual('http://example.com/app1/client/route');
+        urlFromClient = client.urlFromClientPath('#/client/route');
+        expect(urlFromClient).toEqual('http://example.com/app1/client/route');
+        urlFromClient = client.urlFromClientPath('/#/client/route');
+        expect(urlFromClient).toEqual('http://example.com/app1/client/route');
       });
       it('should keep query strings', () => {
-        const hostUrl = client.asHostUrl('/#/client/route?foo=bar');
-        expect(hostUrl).toEqual('http://example.com/app1/client/route?foo=bar');
+        const urlFromClient = client.urlFromClientPath(
+          '/#/client/route?foo=bar'
+        );
+        expect(urlFromClient).toEqual(
+          'http://example.com/app1/client/route?foo=bar'
+        );
+      });
+    });
+
+    describe('generate full URL from host path', () => {
+      it('should be able to access full url from host path', () => {
+        const urlFromHost = client.urlFromHostPath('app1');
+        expect(urlFromHost).toEqual('http://example.com/app1');
+      });
+
+      it('should ignore host route leading slash and hash tag', () => {
+        let urlFromHost = client.urlFromHostPath('/app1');
+        expect(urlFromHost).toEqual('http://example.com/app1');
+        urlFromHost = client.urlFromHostPath('#/app1');
+        expect(urlFromHost).toEqual('http://example.com/app1');
+        urlFromHost = client.urlFromHostPath('/#/app1');
+        expect(urlFromHost).toEqual('http://example.com/app1');
+      });
+      it('should keep query strings', () => {
+        const urlFromHost = client.urlFromHostPath('/#/app1?foo=bar');
+        expect(urlFromHost).toEqual('http://example.com/app1?foo=bar');
       });
     });
   });
