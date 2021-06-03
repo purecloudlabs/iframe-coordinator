@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.3.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.6...v4.3.0) (2021-06-03)
+
+
+### Features
+
+* **ifc-api-improvements:** Improve URL and link generation APIs ([6f77f9d](https://github.com/purecloudlabs/iframe-coordinator/commit/6f77f9dc29d23175d2e07b0814fab57b9a190b7f))
+
 ### [4.2.6](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.5...v4.2.6) (2021-04-30)
 
 
