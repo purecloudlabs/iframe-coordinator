@@ -50,10 +50,6 @@ export interface ClientConfigOptions {
   hostOrigin?: string;
 }
 
-export const modalTypes = {
-  WEM_COACHING_UI: 'wemCoachingUi'
-};
-
 /**
  * This class is the primary interface that an embedded iframe client should use to communicate with
  * the host application.
@@ -69,6 +65,13 @@ export class Client {
   private _publishExposedEmitter: EventEmitter<Publication>;
   private _registeredKeys: KeyData[];
   private _assignedRoute: string | null;
+
+  /**
+   * Supported modal types, will be used in web-dir to know which modal to launch
+   */
+  public modalTypes = {
+    WEM_COACHING_UI: 'wemCoachingUi'
+  };
 
   /**
    * Creates a new client.
