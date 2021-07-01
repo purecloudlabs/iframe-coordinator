@@ -50,6 +50,10 @@ export interface ClientConfigOptions {
   hostOrigin?: string;
 }
 
+export const modalTypes = {
+  WEM_COACHING_UI: 'wemCoachingUi'
+};
+
 /**
  * This class is the primary interface that an embedded iframe client should use to communicate with
  * the host application.
@@ -417,6 +421,22 @@ bad input into one of the iframe-coordinator client methods.
     this._sendToHost({
       msgType: 'publish',
       msg: publication
+    });
+  }
+
+  /**
+   * Asks the host application to launch an instance of a global modal
+   *
+   * Currently the only available one is WEM Coaching UI
+   *
+   * @param modalType the type of modal to be used.
+   * @param modalData any data you wish to be sent to the modal, Conversation IDs etc.
+   *
+   */
+  public requestModal(modalType: any, modalData: any) {
+    this._sendToHost({
+      msgType: 'modalRequest',
+      msg: { modalType, modalData }
     });
   }
 
