@@ -1,7 +1,7 @@
 import { dispatch, guard } from 'decoders';
 import { decoder as keyDownDecoder, LabeledKeyDown } from './KeyDown';
 import { LabeledStarted, startedDecoder } from './Lifecycle';
-import { decoder as modalDecoder, LabeledModal } from './Modal';
+import { decoder as modalDecoder, LabeledModalRequest } from './ModalRequest';
 import { decoder as navRequestDecoder, LabeledNavRequest } from './NavRequest';
 import { decoder as notifyDecoder, LabeledNotification } from './Notification';
 import {
@@ -19,7 +19,7 @@ export type ClientToHost =
   | LabeledNavRequest
   | LabeledStarted
   | LabeledKeyDown
-  | LabeledModal;
+  | LabeledModalRequest;
 
 /**
  * Validates correctness of messages being sent from

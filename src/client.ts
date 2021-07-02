@@ -28,6 +28,7 @@ import {
   LabeledEnvInit,
   Lifecycle
 } from './messages/Lifecycle';
+import { ModalRequest } from './messages/ModalRequest';
 import { NavRequest } from './messages/NavRequest';
 import { Notification } from './messages/Notification';
 import { Publication } from './messages/Publication';
@@ -38,6 +39,7 @@ export {
   EnvData,
   Publication,
   EnvDataHandler,
+  ModalRequest,
   NavRequest,
   Notification
 };
@@ -65,13 +67,6 @@ export class Client {
   private _publishExposedEmitter: EventEmitter<Publication>;
   private _registeredKeys: KeyData[];
   private _assignedRoute: string | null;
-
-  /**
-   * Supported modal types, will be used in web-dir to know which modal to launch
-   */
-  public modalTypes = {
-    WEM_COACHING_UI: 'wemCoachingUi'
-  };
 
   /**
    * Creates a new client.
@@ -428,18 +423,18 @@ bad input into one of the iframe-coordinator client methods.
   }
 
   /**
-   * Asks the host application to launch an instance of a global modal
+   * Asks the host application to open a modal dialog.
    *
-   * Currently the only available one is WEM Coaching UI
+   * This is identified by the ModalRequest's `modalId` property.
+   * Data passed via the `modalData` property can be used by the host application to set up initial state specific to that modal.
    *
-   * @param modalType the type of modal to be used.
-   * @param modalData any data you wish to be sent to the modal, Conversation IDs etc.
+   * @param modalRequest the ID and any data specific to the modal instance required
    *
    */
-  public requestModal(modalType: any, modalData: any) {
+  public requestModal(modalRequest: ModalRequest) {
     this._sendToHost({
       msgType: 'modalRequest',
-      msg: { modalType, modalData }
+      msg: modalRequest
     });
   }
 
