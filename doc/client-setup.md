@@ -106,9 +106,15 @@ let externalLink = `<a href="https://external-site.com/external/path" target="_t
 ## Requesting Host Actions
 
 There are common requests a client application will want to make of a host application and we strive
-to provide nice default APIs for these. Currently there is only a single api implemented:
+to provide nice default APIs for these. 
+
+Currently there are two implemented:
+
 [`requestNotification`](../classes/client.client-1.html#requestnotification), which asks the host
-app to send a notification message to the user. More will be added in future releases.
+app to send a notification message to the user.
+
+[`requestModal`](../classes/client.client-1.html#requestModal), which asks the host
+app to launch a modal identified by a given ID, also accepts initial setup data specific to that modal.
 
 ## Custom Client/Host Messaging
 
