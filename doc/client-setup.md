@@ -116,6 +116,24 @@ app to send a notification message to the user.
 [`requestModal`](../classes/client.client-1.html#requestModal), which asks the host
 app to launch a modal identified by a given ID, also accepts initial setup data specific to that modal.
 
+A client application may request a modal on the host like so, this fires a 'modalRequest' event for the host to listen for:
+```typescript
+ifcClient.requestModal({
+  modalType: 'idOfTheModalToDisplay',
+  modalData: {
+    id: '1234567890',
+    userList : [{id: '2345678901', name: 'User1'}]
+});
+```
+The 'modalRequest' event is received by the host application.
+Below is an example (Ember).
+```javascript
+modalRequest(event) {
+  // Do something with the event here
+},
+this.element.addEventListener('modalRequest', this.modalRequest.bind(this));
+```
+
 ## Custom Client/Host Messaging
 
 Client and Host applications may also need to communicate about topics specific to their use case.
