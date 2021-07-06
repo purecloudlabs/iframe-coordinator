@@ -20,6 +20,7 @@
     "dist/es5/index.js",
     "dist/**/*.d.ts",
     "cli/ifc-cli.js",
+    "cli/example-ifc.config.js",
     "cli/embedded-app/dist/**/*"
   ],
   "main": "dist/index.js",
