@@ -425,8 +425,8 @@ bad input into one of the iframe-coordinator client methods.
   /**
    * Asks the host application to open a modal dialog.
    *
-   * This is identified by the ModalRequest's `modalId` property.
-   * Data passed via the `modalData` property can be used by the host application to set up initial state specific to that modal.
+   * The modalId property names the modal that should be displayed
+   * Data passed via the modalData property can be used by the host application to set up initial state specific to that modal
    *
    * @param modalRequest the ID and any data specific to the modal instance required
    *
