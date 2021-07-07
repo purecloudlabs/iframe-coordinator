@@ -28,6 +28,7 @@ import {
   LabeledEnvInit,
   Lifecycle
 } from './messages/Lifecycle';
+import { ModalRequest } from './messages/ModalRequest';
 import { NavRequest } from './messages/NavRequest';
 import { Notification } from './messages/Notification';
 import { Publication } from './messages/Publication';
@@ -38,6 +39,7 @@ export {
   EnvData,
   Publication,
   EnvDataHandler,
+  ModalRequest,
   NavRequest,
   Notification
 };
@@ -417,6 +419,22 @@ bad input into one of the iframe-coordinator client methods.
     this._sendToHost({
       msgType: 'publish',
       msg: publication
+    });
+  }
+
+  /**
+   * Asks the host application to open a modal dialog.
+   *
+   * The modalId property names the modal that should be displayed
+   * Data passed via the modalData property can be used by the host application to set up initial state specific to that modal
+   *
+   * @param modalRequest the ID and any data specific to the modal instance required
+   *
+   */
+  public requestModal(modalRequest: ModalRequest) {
+    this._sendToHost({
+      msgType: 'modalRequest',
+      msg: modalRequest
     });
   }
 
