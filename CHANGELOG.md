@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.4.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.3.0...v4.4.0) (2021-07-07)
+
+
+### Features
+
+* **modal:** added  global modal to render in web-dir from client apps includes api and message code ([9eb63a7](https://github.com/purecloudlabs/iframe-coordinator/commit/9eb63a74382848c4a5bbf4301789ec0601fc7528))
+* **modal:** made modal types public ([194df85](https://github.com/purecloudlabs/iframe-coordinator/commit/194df859bfd176717a3775ca8bb206e3a426e9fa))
+* **modal:** removed the modal type enum, updated the modal request function and the message class ([48aa888](https://github.com/purecloudlabs/iframe-coordinator/commit/48aa88857bcb91c9bcf24a7fd9477518e4a1ae93))
+* **modal:** updated client-setup.md to add requestModal documentation ([2dd7a85](https://github.com/purecloudlabs/iframe-coordinator/commit/2dd7a85da0c68e3a0da0d03b150048a45c8a2e92))
+* **modal:** updated documentation for requestModal function ([423e96d](https://github.com/purecloudlabs/iframe-coordinator/commit/423e96d4735ed4f2d8b1e20563072301f1839768))
+
+
+### Bug Fixes
+
+* **cli:** add missing example file to package, improve behavior when proxied ([da3af1b](https://github.com/purecloudlabs/iframe-coordinator/commit/da3af1b04691b5403dcb741834087e923cbaec50))
+
 ## [4.3.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.6...v4.3.0) (2021-06-03)
 
 
