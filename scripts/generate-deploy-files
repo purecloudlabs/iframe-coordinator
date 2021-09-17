@@ -10,7 +10,7 @@ const deployVersion = require('../package.json').version;
 const manifestPath = path.join(docPath, 'manifest.json');
 const versionPath = path.join(docPath, 'versions.json');
 const versionsUrl =
-  'https://app.gmscdev.com/common-ui-docs/iframe-coordinator/versions.json';
+  'https://apps.inindca.com/common-ui-docs/iframe-coordinator/versions.json';
 
 main();
 
