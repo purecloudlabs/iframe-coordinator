@@ -57,10 +57,9 @@ application URL rather than a relative path within the client. To make this easi
 provides the `urlFromClientPath` method that can translate
 client application routes to the corresponding host application URL. The client application also provides the `urlFromHostPath` method that can translate a host application relative path to the full URL used in the host application.
 
-
 ### Using Custom Elements to Create Links
 
-To further simplify the generation of these links, there are custom elements that can be used to create links. These elements are `ifc-client-link` and `ifc-host-link`. These custom elements are registered and provided by the client. These custom elements require a `path` attribute with the relative path (either client or host) that will be used to create the full URL. The `ifc-client-link` custom element uses the `urlFromClientPath` method to translate a client application route provided in the `path` attribute to a full URL. The `ifc-host-link` custom element uses the `urlFromHostPath` method to translate a host application route provided in the `path` attribute to a full URL. 
+To further simplify the generation of these links, there are custom elements that can be used to create links. These elements are `ifc-client-link` and `ifc-host-link`. These custom elements are registered and provided by the client. These custom elements require a `path` attribute with the relative path (either client or host) that will be used to create the full URL. The `ifc-client-link` custom element uses the `urlFromClientPath` method to translate a client application route provided in the `path` attribute to a full URL. The `ifc-host-link` custom element uses the `urlFromHostPath` method to translate a host application route provided in the `path` attribute to a full URL.
 
 ### Examples
 
@@ -97,16 +96,18 @@ let externalLink = `<a href="https://external-site.com/external/path" target="_t
 
 **Generating Links Using Custom Elements**
 
+```html
 <!-- Creates a link to a new route in the client app: /foo/bar -->
-<ifc-client-link path='/foo/bar'>Internal Link</ifc-client-link>
+<ifc-client-link path="/foo/bar">Internal Link</ifc-client-link>
 
 <!-- Creates a link to a host application route: /path -->
-<ifc-host-link path='/path'>Internal Link</ifc-host-link>
+<ifc-host-link path="/path">Internal Link</ifc-host-link>
+```
 
 ## Requesting Host Actions
 
 There are common requests a client application will want to make of a host application and we strive
-to provide nice default APIs for these. 
+to provide nice default APIs for these.
 
 Currently there are two implemented:
 
@@ -117,6 +118,7 @@ app to send a notification message to the user.
 app to launch a modal identified by a given ID, also accepts initial setup data specific to that modal.
 
 A client application may request a modal on the host like so:
+
 ```typescript
 ifcClient.requestModal({
   modalType: 'idOfTheModalToDisplay',
@@ -125,6 +127,7 @@ ifcClient.requestModal({
     userList : [{id: '2345678901', name: 'User1'}]
 });
 ```
+
 The frame-router element will emit a custom event of 'modalRequest' with the ModalRequest object in the detail property.
 
 ## Custom Client/Host Messaging
