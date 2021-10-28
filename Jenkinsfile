@@ -81,7 +81,7 @@ pipeline {
           sh "cp ./.npmrc ./cli/embedded-app/.npmrc"
           sh "cp ./.npmrc ./client-app-example/.npmrc"
           sh "npm ci"
-          sh "npm i --no-save @purecloud/web-app-deploy@latest"
+          sh "npm i --no-save @purecloud/web-app-deploy@6.0"
         }
       }
     }
