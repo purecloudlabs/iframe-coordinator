@@ -34,7 +34,8 @@ export class HostRouter {
           url: applyRoute(client.url, clientRoute),
           assignedRoute: client.assignedRoute,
           allow: client.allow,
-          sandbox: client.sandbox
+          sandbox: client.sandbox,
+          title: client.title
         };
       }
     });
@@ -60,6 +61,8 @@ export interface ClientTarget {
   allow?: string;
   /** iframe's sandbox directive to be merged with defaults */
   sandbox?: string;
+  /** iframe's title attribute */
+  title?: string;
 }
 
 /**
@@ -100,6 +103,11 @@ export interface ClientRegistration {
    * for this client. Values wll be merged with built-in defaults.
    */
   sandbox?: string;
+  /**
+   * Sets the iframe's [title](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#accessibility_concerns) attribute.
+   * This is required for accessibility.
+   */
+  title?: string;
 }
 
 /**
@@ -151,7 +159,8 @@ function parseRegistration(key: string, value: ClientRegistration): ClientInfo {
     url: value.url,
     assignedRoute: normalizeRoute(value.assignedRoute),
     allow: value.allow,
-    sandbox: value.sandbox
+    sandbox: value.sandbox,
+    title: value.title
   };
 }
 

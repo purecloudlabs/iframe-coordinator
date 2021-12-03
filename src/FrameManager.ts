@@ -108,6 +108,21 @@ class FrameManager {
   }
 
   /**
+   * String for the `title` attribute to be added to the <iframe> element
+   * Ex: "Manage Preferences"
+   *
+   * See [<iframe> Accessibility Concerns](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#accessibility_concerns)
+   *
+   * @param title String for the `title` attribute added to the `<iframe>` element.
+   */
+  public setFrameTitle(title?: string): void {
+    if (typeof title !== 'string') {
+      title = '';
+    }
+    this._iframe.setAttribute('title', title);
+  }
+
+  /**
    * Navigates the wrapped iframe to the provided location in a
    * way that does not affect the host application's history.
    * This prevents strange behavior in the forward and back buttons
