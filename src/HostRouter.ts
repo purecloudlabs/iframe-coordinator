@@ -35,7 +35,7 @@ export class HostRouter {
           assignedRoute: client.assignedRoute,
           allow: client.allow,
           sandbox: client.sandbox,
-          title: client.title
+          defaultTitle: client.defaultTitle
         };
       }
     });
@@ -61,8 +61,8 @@ export interface ClientTarget {
   allow?: string;
   /** iframe's sandbox directive to be merged with defaults */
   sandbox?: string;
-  /** iframe's title attribute */
-  title?: string;
+  /** iframe's default title attribute */
+  defaultTitle?: string;
 }
 
 /**
@@ -104,10 +104,10 @@ export interface ClientRegistration {
    */
   sandbox?: string;
   /**
-   * Sets the iframe's [title](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#accessibility_concerns) attribute.
+   * Sets the iframe's default [title](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#accessibility_concerns) attribute.
    * This is required for accessibility.
    */
-  title?: string;
+  defaultTitle?: string;
 }
 
 /**
@@ -160,7 +160,7 @@ function parseRegistration(key: string, value: ClientRegistration): ClientInfo {
     assignedRoute: normalizeRoute(value.assignedRoute),
     allow: value.allow,
     sandbox: value.sandbox,
-    title: value.title
+    defaultTitle: value.defaultTitle
   };
 }
 
