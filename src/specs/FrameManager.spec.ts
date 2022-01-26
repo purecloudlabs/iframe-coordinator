@@ -392,6 +392,22 @@ describe('FrameManager', () => {
     });
   });
 
+  describe("Can be used to set the frame's default title", () => {
+    it('add default title attribute', () => {
+      const testTitle = 'iframe test title';
+      frameManager.setFrameDefaultTitle(testTitle);
+      expect(mocks.frame.setAttribute).toHaveBeenCalledWith(
+        'title',
+        jasmine.stringMatching(testTitle)
+      );
+    });
+
+    it('ensure only a string is set', () => {
+      frameManager.setFrameDefaultTitle({} as any);
+      expect(mocks.frame.setAttribute).not.toHaveBeenCalledWith('title', {});
+    });
+  });
+
   it('Can be embeded the frame in another element', () => {
     frameManager.embed(mocks.node);
     expect(mocks.node.appendChild).toHaveBeenCalledWith(mocks.frame);
