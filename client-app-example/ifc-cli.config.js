@@ -17,7 +17,8 @@ module.exports = function(frameRouter) {
         )}`,
         assignedRoute: '/app2',
         allow: 'camera http://localhost:8080;', // optional
-        sandbox: 'allow-presentation allow-modals' // optional
+        sandbox: 'allow-presentation allow-modals', // optional
+        defaultTitle: 'iframe Application 2 Example' // optional, but needed for accessibility
       }
     },
     {
