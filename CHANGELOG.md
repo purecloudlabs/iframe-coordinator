@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.5.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.4.4...v4.5.0) (2022-01-28)
+
+
+### Features
+
+* **a11y:** support adding a title attribute to the iframe ([fb267ec](https://github.com/purecloudlabs/iframe-coordinator/commit/fb267ec3ad5952d687ca5aabe3ba5bb479414b34))
+
 ### [4.4.4](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.4.3...v4.4.4) (2021-10-29)
 
 ### [4.4.3](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.4.2...v4.4.3) (2021-09-22)
