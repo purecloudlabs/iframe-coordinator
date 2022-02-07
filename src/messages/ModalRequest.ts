@@ -1,4 +1,4 @@
-import { constant, Decoder, mixed, object, string } from 'decoders';
+import { constant, Decoder, mixed, object, optional, string } from 'decoders';
 import { labeledDecoder, LabeledMsg } from './LabeledMsg';
 
 /**
@@ -10,6 +10,12 @@ export interface ModalRequest {
 
   /** Any data that the client wishes to send to the modal */
   modalData: any;
+
+  /** How the modal should be styled in terms of width and height
+   * Is an optional parameter where default height is set to
+   * 700px and default width is set to 850px
+   */
+  modalStyle?: any;
 }
 
 /**
@@ -28,7 +34,8 @@ const decoder: Decoder<LabeledModalRequest> = labeledDecoder(
   constant<'modalRequest'>('modalRequest'),
   object({
     modalId: string,
-    modalData: mixed
+    modalData: mixed,
+    modalStyle: optional(mixed)
   })
 );
 

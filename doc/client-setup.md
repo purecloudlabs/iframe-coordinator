@@ -115,7 +115,8 @@ Currently there are two implemented:
 app to send a notification message to the user.
 
 [`requestModal`](../classes/client.client-1.html#requestModal), which asks the host
-app to launch a modal identified by a given ID, also accepts initial setup data specific to that modal.
+app to launch a modal identified by a given ID, also accepts initial setup data specific to that modal. Can optionally take in styling in terms of the width (default: 850px) and height (default: 700px)
+for the modal.
 
 A client application may request a modal on the host like so:
 
@@ -124,8 +125,10 @@ ifcClient.requestModal({
   modalType: 'idOfTheModalToDisplay',
   modalData: {
     id: '1234567890',
-    userList : [{id: '2345678901', name: 'User1'}]
-});
+    userList : [{id: '2345678901', name: 'User1'}]  
+  }
+  modalStyle: { width: '800px', height: '600px' }
+);
 ```
 
 The frame-router element will emit a custom event of 'modalRequest' with the ModalRequest object in the detail property.

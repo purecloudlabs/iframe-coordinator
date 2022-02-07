@@ -1,4 +1,5 @@
 import { ClientToHost, validate } from '../ClientToHost';
+import { LabeledModalRequest } from '../ModalRequest';
 import { LabeledNavRequest } from '../NavRequest';
 import { LabeledNotification } from '../Notification';
 import { LabeledPublication } from '../Publication';
@@ -285,6 +286,39 @@ describe('ClientToHost', () => {
         expect(() => {
           validate(testMessage);
         }).toThrow();
+      });
+    });
+  });
+
+  describe('validating modalrequest type', () => {
+    describe('when styling is missing', () => {
+      const testModal = {
+        msgType: 'modalRequest',
+        msg: {
+          modalId: 'wemCoachingUiAddExisting',
+          modalData: {}
+        }
+      };
+
+      const expectedModal = {
+        msgType: 'modalRequest',
+        msg: {
+          modalId: 'wemCoachingUiAddExisting',
+          modalData: {},
+          modalStyle: undefined
+        },
+        protocol: 'iframe-coordinator',
+        version: 'unknown',
+        direction: undefined
+      } as LabeledModalRequest;
+
+      let testResult: ClientToHost;
+      beforeEach(() => {
+        testResult = validate(testModal);
+      });
+
+      it('should return valid modal', () => {
+        expect(testResult).toEqual(expectedModal);
       });
     });
   });
