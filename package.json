@@ -3,7 +3,7 @@
   "version": "4.5.0",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
-    "cheerio": "^1.0.0-rc.5",
+    "cheerio": "^1.0.0-rc.10",
     "commander": "^2.20.3",
     "decoders": "1.15.0",
     "dev-cert-authority": "^1.1.1",
