@@ -38,7 +38,7 @@ function main() {
   app.use(express.static(appPath));
 
   if (opts.ssl) {
-    const options = devCertAuthority('localhost');
+    const options = getSslOpts(opts.sslCert, opts.sslKey);
     https.createServer(options, app).listen(opts.port);
   } else {
     app.listen(opts.port);
@@ -63,7 +63,9 @@ function parseProgramOptions() {
       defaultJsConfig
     )
     .option('-p, --port <port_num>', 'port number to host on', 3000)
-    .option('-s, --ssl', 'serve over https');
+    .option('-s, --ssl', 'serve over https')
+    .option('--ssl-cert <cert_path>', 'certificate file to use for https')
+    .option('--ssl-key <key_path>', 'key file to use for https');
   program.on('--help', showHelpText);
 
   program.parse(process.argv);
@@ -71,7 +73,9 @@ function parseProgramOptions() {
   return {
     clientConfigFile: findConfigFile(program.configFile),
     port: program.port,
-    ssl: program.ssl
+    ssl: program.ssl,
+    sslCert: program.sslCert,
+    sslKey: program.sslKey
   };
 }
 
@@ -132,6 +136,21 @@ function findConfigFile(cliPath) {
     return configPath;
   } else {
     console.log(`No client configuration file found @ ${cliPath}.`);
+    process.exit(1);
+  }
+}
+
+function getSslOpts(certPath, keyPath) {
+  if (!certPath || !keyPath) {
+    return devCertAuthority('localhost');
+  }
+  if (fs.existsSync(certPath) && fs.existsSync(keyPath)) {
+    return {
+      cert: fs.readFileSync(certPath),
+      key: fs.readFileSync(keyPath)
+    };
+  } else {
+    console.log(`Certificate files not found @ ${certPath}, and ${keyPath}`);
     process.exit(1);
   }
 }
