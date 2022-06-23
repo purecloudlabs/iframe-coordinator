@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [4.6.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.5.2...v4.6.0) (2022-06-23)
+
+
+### Features
+
+* **ifc-cli:** allow consumer to specify their own ssl cert and key ([700e963](https://github.com/purecloudlabs/iframe-coordinator/commit/700e9631ed121a67ef7ef65430118ca4be382835))
+
 ### [4.5.2](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.5.1...v4.5.2) (2022-04-15)
 
 ### [4.5.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.5.0...v4.5.1) (2022-02-25)
