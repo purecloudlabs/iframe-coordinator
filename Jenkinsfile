@@ -27,7 +27,7 @@ pipeline {
   }
 
   tools {
-    nodejs 'NodeJS 12.13.0'
+    nodejs 'NodeJS 16.x'
   }
 
   stages {
@@ -78,8 +78,6 @@ pipeline {
         dir(env.REPO_DIR) {
           // Create an npmrc file, just so we can install deps cleanly from artifactory
           sh "${env.WORKSPACE}/${env.NPM_UTIL_PATH}/scripts/jenkins-create-npmrc.sh"
-          sh "cp ./.npmrc ./cli/embedded-app/.npmrc"
-          sh "cp ./.npmrc ./client-app-example/.npmrc"
           sh "npm ci"
           sh "npm i --no-save @purecloud/web-app-deploy@6.0"
         }
@@ -114,7 +112,7 @@ pipeline {
              echo "registry=https://registry.npmjs.org" > ./.npmrc
              echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ./.npmrc
           '''
-          sh "npm publish"
+          sh "npm run publish-libs"
           sshagent (credentials: ['3aa16916-868b-4290-a9ee-b1a05343667e']) {
             sh "git push --follow-tags -u origin ${env.SHORT_BRANCH}"
           }

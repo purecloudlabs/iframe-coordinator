@@ -1,0 +1,66 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="../style.css" />
+  </head>
+  <body>
+    <h1>Application #1</h1>
+
+    <h2>Routing</h2>
+    <h3>Current Local Route:</h3>
+    <div id="path"></div>
+    <h3>Current Host Route Calculated From Client:</h3>
+    <div id="urlFromClientPath"></div>
+
+    <h3>Change Route</h3>
+    <ul>
+      <!-- External URLs use full links so they open nicely in new tabs -->
+      <li>
+        <a href="//localhost:3000/#/app2/route1">Other client: /route1</a>
+      </li>
+      <li>
+        <a href="//localhost:3000/#/app2/route2">Other client: /route2</a>
+      </li>
+      <!-- internal routes URLs get remapped in js by `transformLinks` -->
+      <li>
+        <a class="client-transform-link" href="#/route1">This client: /route1</a>
+      </li>
+      <li>
+        <a class="client-transform-link" href="#/route2">This client: /route2</a>
+      </li>
+    </ul>
+
+    <h3>
+      Using custom elements ifc-client-link and ifc-host-link to build full urls
+    </h3>
+    <ul>
+      <li>
+        <ifc-client-link path="/route2">Creating a full link from the client path using ifc-client-link: /route2</ifc-client-link>
+      </li>
+      <li>
+        <ifc-host-link path="/app2">Creating a full link from the host path using ifc-host-link: /app2</ifc-host-link>
+      </li>
+    </ul>
+
+    <h2>Toasts</h2>
+    <button class="toast" data-component-name="App #1">Send Toast</button>
+
+    <h2>Pub-Sub</h2>
+    <div id="pub-sub">
+      <h3>Outbound</h3>
+      <label for="pub-topic">Topic Name:</label>
+      <input id="pub-topic" type="text" value="publish.topic" />
+      <label for="pub-data">Payload:</label>
+      <textarea id="pub-data">
+{
+        "data": 1234
+    }</textarea
+      >
+      <button id="do-publish">Publish!</button>
+    </div>
+
+    <h2>Environment Data from Host</h2>
+    <pre id="env-data"></pre>
+
+    <script type="module" src="../dist/client-app.js"></script>
+  </body>
+</html>
