@@ -1,0 +1,72 @@
+{
+  "name": "iframe-coordinator",
+  "version": "4.5.2",
+  "description": "Tools for coordinating embedded apps via iframes.",
+  "dependencies": {
+    "decoders": "1.15.0"
+  },
+  "type": "module",
+  "files": [
+    "dist/client.js",
+    "dist/host.js",
+    "dist/index.js",
+    "dist/es5/client.js",
+    "dist/es5/host.js",
+    "dist/es5/index.js",
+    "dist/**/*.d.ts"
+  ],
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "devDependencies": {
+    "@types/jasmine": "^3.10.6",
+    "glob": "^7.2.0",
+    "husky": "^1.1.2",
+    "i": "^0.3.7",
+    "jasmine-core": "^3.99.1",
+    "karma": "^6.4.0",
+    "karma-chrome-launcher": "^3.1.1",
+    "karma-jasmine": "^5.1.0",
+    "karma-typescript": "^5.5.3",
+    "lint-staged": "^10.5.4",
+    "prettier": "^1.19.1",
+    "puppeteer": "^1.20.0",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^9.3.1",
+    "tslint": "^5.20.1",
+    "tslint-config-prettier": "^1.16.0",
+    "typedoc": "^0.22.15",
+    "typescript": "^4.7.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  },
+  "scripts": {
+    "build": "npm run build-lib",
+    "build-lib": "webpack",
+    "doc": "typedoc",
+    "format.fix": "prettier --fix **/*.ts **/*.tsx",
+    "lint.fix": "npm run lint.ts -- --fix",
+    "lint.format": "prettier --check **/*.ts **/*.tsx",
+    "lint": "tslint --project tsconfig.json && npm run lint.format",
+    "start": "webpack --watch",
+    "start-client-example": "cd ./client-app-example && npm start",
+    "test": "karma start --single-run",
+    "test.watch": "karma start",
+    "test.watch.chrome": "karma start --browsers=Chrome"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "tslint --fix",
+      "prettier --write"
+    ]
+  },
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:purecloudlabs/iframe-coordinator.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
+}
