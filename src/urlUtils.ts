@@ -36,5 +36,15 @@ export function stripLeadingSlashAndHashTag(str: string): string {
  *
  */
 export function joinRoutes(...routes: string[]): string {
-  return routes.map(route => normalizeRoute(route)).join('/');
+  return routes
+    .reduce((acc, route) => {
+      const normalizedRoute = normalizeRoute(route);
+
+      if (normalizedRoute) {
+        return acc.concat([normalizedRoute]);
+      }
+
+      return acc;
+    }, [] as string[])
+    .join('/');
 }
