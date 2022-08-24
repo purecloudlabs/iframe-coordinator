@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [4.6.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.6.0...v4.6.1) (2022-08-24)
+
+
+### Bug Fixes
+
+* **url-utils:** joinRoutes now accounts for routes that normalize to an empty string ([3df97a5](https://github.com/purecloudlabs/iframe-coordinator/commit/3df97a57372891d1e77226c4fbbad22aaccde22a))
+
 ## [4.6.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.5.2...v4.6.0) (2022-06-23)
 
 

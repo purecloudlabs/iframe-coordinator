@@ -1,6 +1,6 @@
 {
   "name": "iframe-coordinator",
-  "version": "4.6.0",
+  "version": "4.6.1",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
