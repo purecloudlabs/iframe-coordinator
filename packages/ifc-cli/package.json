@@ -1,6 +1,6 @@
 {
   "name": "ifc-cli",
-  "version": "4.5.2",
+  "version": "4.6.1",
   "description": "CLI for local iframe-coordinator development",
   "dependencies": {
     "@webcomponents/custom-elements": "^1.2.4",
