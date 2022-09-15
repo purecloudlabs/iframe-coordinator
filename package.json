@@ -14,6 +14,7 @@
     "lint": "commitlint -f de759fc509cf39895450dc31742cfb36b08e01b8",
     "sync-versions": "./scripts/sync-versions.mjs",
     "release": "standard-version --prerelease beta && npm run sync-versions",
+    "release.dry": "standard-version --prerelease beta --dry-run",
     "publish-libs": "npm publish --tag=beta --workspace=iframe-coordinator --workspace=ifc-cli",
     "doc": "npm run doc --workspace=iframe-coordinator"
   },
@@ -34,6 +35,12 @@
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "standard-version": {
+    "skip": {
+      "commit": true,
+      "tag": true
     }
   },
   "commitlint": {
