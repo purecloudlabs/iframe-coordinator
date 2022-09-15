@@ -1,97 +1,46 @@
 {
-  "name": "iframe-coordinator",
+  "name": "iframe-coordinator-monorepo",
   "version": "4.6.1",
-  "description": "Tools for coordinating embedded apps via iframes.",
-  "dependencies": {
-    "cheerio": "^1.0.0-rc.10",
-    "commander": "^2.20.3",
-    "decoders": "1.15.0",
-    "dev-cert-authority": "^1.1.1",
-    "express": "^4.17.3",
-    "find-root": "^1.1.0",
-    "http-proxy-middleware": "^1.3.1"
-  },
-  "files": [
-    "dist/client.js",
-    "dist/host.js",
-    "dist/index.js",
-    "dist/es5/client.js",
-    "dist/es5/host.js",
-    "dist/es5/index.js",
-    "dist/**/*.d.ts",
-    "cli/ifc-cli.js",
-    "cli/example-ifc.config.js",
-    "cli/embedded-app/dist/**/*"
+  "workspaces": [
+    "./packages/iframe-coordinator",
+    "./packages/ifc-cli",
+    "./apps/*"
   ],
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "bin": {
-    "ifc-cli": "cli/ifc-cli.js"
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "start-client-example": "npm run start --workspace=ifc-example-client",
+    "test": "npm test --workspaces --if-present",
+    "commit": "git-cz",
+    "lint": "commitlint -f de759fc509cf39895450dc31742cfb36b08e01b8",
+    "sync-versions": "./scripts/sync-versions.mjs",
+    "release": "standard-version --prerelease beta && npm run sync-versions",
+    "release.dry": "standard-version --prerelease beta --dry-run",
+    "publish-libs": "npm publish --tag=beta --workspace=iframe-coordinator --workspace=ifc-cli",
+    "doc": "npm run doc --workspace=iframe-coordinator"
   },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
   "devDependencies": {
     "@commitlint/cli": "^9.1.2",
     "@commitlint/config-conventional": "^12.1.4",
-    "@types/jasmine": "^3.10.6",
+    "cheerio": "^1.0.0-rc.12",
     "commitizen": "^4.2.4",
-    "glob": "^7.2.0",
-    "husky": "^1.1.2",
-    "i": "^0.3.7",
-    "import-inject-loader": "^0.2.4",
-    "inject-loader": "^4.0.1",
-    "jasmine-core": "^3.99.1",
-    "karma": "^6.3.18",
-    "karma-chrome-launcher": "^2.2.0",
-    "karma-jasmine": "^2.0.1",
-    "karma-webpack": "^5.0.0",
-    "lint-staged": "^10.5.4",
-    "prettier": "^1.19.1",
-    "puppeteer": "^1.20.0",
-    "source-map-loader": "^0.2.4",
-    "standard-version": "^9.3.2",
-    "ts-loader": "^5.4.5",
-    "tslint": "^5.20.1",
-    "tslint-config-prettier": "^1.16.0",
-    "typedoc": "^0.22.15",
-    "typescript": "^3.9.10",
-    "webpack": "^5.72.0",
-    "webpack-cli": "^3.3.12"
-  },
-  "scripts": {
-    "build": "npm run build-lib && npm run build-lib-es5 && npm run build-cli",
-    "build-lib": "webpack",
-    "build-lib-es5": "webpack --config webpack.es5.config.js",
-    "build-cli": "cd ./cli/embedded-app && npm run build",
-    "commit": "git-cz",
-    "doc": "typedoc",
-    "format.fix": "prettier --fix **/*.ts **/*.tsx",
-    "lint.fix": "npm run lint.ts -- --fix",
-    "lint.format": "prettier --check **/*.ts **/*.tsx",
-    "lint.commit": "commitlint -f de759fc509cf39895450dc31742cfb36b08e01b8",
-    "lint": "tslint --project tsconfig.json && npm run lint.format && npm run lint.commit",
-    "prepare": "./scripts/prepare-deps.sh",
-    "release": "standard-version",
-    "start": "webpack --watch",
-    "start-client-example": "cd ./client-app-example && npm start",
-    "test": "npx karma start --single-run",
-    "test.watch": "npx karma start",
-    "test.watch.chrome": "npx karma start --browsers=Chrome"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },
-  "lint-staged": {
-    "*.ts": [
-      "tslint --fix",
-      "prettier --write"
-    ]
+    "git-cz": "^4.9.0",
+    "husky": "^8.0.1",
+    "lint-staged": "^13.0.3",
+    "nx": "14.3.6",
+    "standard-version": "^9.5.0"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
+    }
+  },
+  "standard-version": {
+    "skip": {
+      "commit": true,
+      "tag": true
     }
   },
   "commitlint": {
@@ -109,16 +58,14 @@
       ]
     }
   },
-  "author": "",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:purecloudlabs/iframe-coordinator.git"
-  },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   },
   "volta": {
-    "node": "16.14.2"
+    "node": "16.14.2",
+    "npm": "8.18.0"
   }
 }

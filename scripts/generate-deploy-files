@@ -84,7 +84,7 @@ function fetchPreviousVersions(callback) {
     })
     .on('error', e => {
       console.log(
-        `DOCUMENTATION BUILD FAILURE: Unexpeted error generating versions file.`
+        `DOCUMENTATION BUILD FAILURE: Unexpected error generating versions file.`
       );
       console.error(error);
       process.exit(1);

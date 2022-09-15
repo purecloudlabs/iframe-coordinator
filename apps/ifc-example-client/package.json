@@ -1,0 +1,31 @@
+{
+  "name": "ifc-example-client",
+  "version": "4.6.1",
+  "description": "Demo app for iframe-coordinator project",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/purecloudlabs/iframe-coordinator.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "tag": "alpha"
+  },
+  "type": "module",
+  "scripts": {
+    "start": "concurrently \"npm:dev\" \"npm:start-host-shim\"",
+    "dev": "vite --port 8080",
+    "build": "vite build",
+    "start-host-shim": "ifc-cli"
+  },
+  "devDependencies": {
+    "vite": "^3.0.0",
+    "ifc-cli": "file:../../packages/ifc-cli",
+    "concurrently": "^4.1.2"
+  },
+  "dependencies": {
+    "iframe-coordinator": "file:../../packages/iframe-coordinator",
+    "@babel/polyfill": "^7.12.1",
+    "custom-event-polyfill": "^1.0.7",
+    "url-polyfill": "^1.1.12"
+  }
+}
