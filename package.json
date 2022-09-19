@@ -3,7 +3,7 @@
   "version": "4.6.1",
   "workspaces": [
     "./packages/iframe-coordinator",
-    "./packages/ifc-cli",
+    "./packages/iframe-coordinator-cli",
     "./apps/*"
   ],
   "scripts": {
@@ -15,7 +15,7 @@
     "sync-versions": "./scripts/sync-versions.mjs",
     "release": "standard-version --prerelease beta && npm run sync-versions",
     "release.dry": "standard-version --prerelease beta --dry-run",
-    "publish-libs": "npm publish --tag=beta --workspace=iframe-coordinator --workspace=ifc-cli",
+    "publish-libs": "npm publish --tag=beta --workspace=iframe-coordinator --workspace=iframe-coordinator-cli",
     "doc": "npm run doc --workspace=iframe-coordinator"
   },
   "keywords": [],
