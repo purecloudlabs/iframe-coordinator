@@ -1,5 +1,5 @@
 {
-  "name": "ifc-cli",
+  "name": "iframe-coordinator-cli",
   "version": "4.6.1",
   "description": "CLI for local iframe-coordinator development",
   "dependencies": {
