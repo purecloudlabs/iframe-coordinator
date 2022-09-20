@@ -1,6 +1,6 @@
 {
   "name": "iframe-coordinator-monorepo",
-  "version": "4.6.1",
+  "version": "5.0.0-beta.0",
   "workspaces": [
     "./packages/iframe-coordinator",
     "./packages/iframe-coordinator-cli",
