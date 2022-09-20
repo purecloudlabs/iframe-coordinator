@@ -21,12 +21,3 @@ commands from the iframe-coordinator-monorepo project root (the parent directory
 `npm run start-client-example`
 
 You can then see the apps embedded in a host at http://localhost:3000/#/app1 and http://localhost:3000/#/app2
-
-## Update versions
-
-As a best practice, the versions of `iframe-coordinator-monorepo` project, `ifc-cli`, `iframe-coordinator`, and the example app should be kept in sync and version bumps . To update the version:
-
-- Bump the version in the `package.json` of the `iframe-coordinator-monorepo` project
-
-- `npm run sync-versions` in the `iframe-coordinator-monorepo` project root
-  - This command will update the version in `ifc-cli`, `iframe-coordinator`, and the example client app.
