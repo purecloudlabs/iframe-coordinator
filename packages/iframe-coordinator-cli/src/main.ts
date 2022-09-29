@@ -1,9 +1,3 @@
-// Required polyfills for iframe-coordinator IE11 support
-import 'core-js';
-import 'custom-event-polyfill/polyfill';
-import '@webcomponents/custom-elements/src/native-shim';
-import '@webcomponents/custom-elements';
-// IE11 compatible iframe-coordinator import
 import { registerCustomElements } from 'iframe-coordinator/dist';
 
 import Vue from 'vue';
