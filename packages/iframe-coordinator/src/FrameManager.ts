@@ -12,12 +12,7 @@ import {
   PartialMsg
 } from './messages/LabeledMsg';
 
-const IFRAME_STYLE = `
-frame-router iframe {
-  width: 100%;
-  height: 100%;
-}
-`;
+const IFRAME_STYLE = 'frame-router iframe { width: 100%; height: 100%; }';
 
 /** @internal default iframe sandbox attributes */
 const DEFAULT_SANDBOX = [
