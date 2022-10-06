@@ -75,11 +75,41 @@ document.getElementById('frame-element').setupFrames(
   }
 );
 ```
+Alternatively, the frame router configuration can be setup by setting the `frameSetup` property on the frame router element
+
+``` js
+  frameRouter.frameSetup = {
+    clients: {
+      application1: {
+        url: `http://${hostname}:8080/client-app-1/#/`,
+        assignedRoute: '/app1'
+      },
+      application2: {
+        url: `http://${hostname}:8080/client-app-2/#/`,
+        assignedRoute: '/app2',
+        allow: 'camera http://localhost:8080;', // optional
+        sandbox: 'allow-presentation allow-modals', // optional
+        defaultTitle: 'iframe Application 2 Example' // optional, but needed for accessibility
+      }
+
+    },
+    envData: {
+      locale: 'en-US',
+      hostRootUrl: window.location.origin + '/#/',
+      registeredKeys: [
+        { key: 'a', ctrlKey: true },
+        { key: 'b', altKey: true },
+        { key: 'a', ctrlKey: true, shiftKey: true }
+      ],
+      custom: getCustomClientData()
+    }
+  }
+```
 
 **HTML/DOM**
 
 Once the `frame-router` element is rendered and the client apps configured via
-`setupFrames`, navigation between and within client apps is done by changing the
+`setupFrames` or via setting the `frameSetup` property, navigation between and within client apps is done by changing the
 element's `route` attribute. In the example below, based on the previously shown
 configuration, the frame router will show show the URL at:  
 https://example.com/components/example1/#/my/path

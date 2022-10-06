@@ -152,6 +152,26 @@ export default class FrameRouterElement extends HTMLElement {
     }
   }
 
+  /**
+   * @property {object} frameSetup A property that can be set to initialize the host frame with the
+   * possible clients and the environmental data required by the clients
+   * @property {RoutingMap} frameSetup.clients The map of registrations for the available clients.
+   * @property {EnvData} frameSetup.envData Information about the host environment.
+   */
+  private _frameSetup: { clients: RoutingMap; envData: EnvData };
+  get frameSetup(): any {
+    return this._frameSetup;
+  }
+
+  set frameSetup(frameSetup: { clients: RoutingMap; envData: EnvData }) {
+    this._frameSetup = frameSetup;
+    this._setSetupFrames(frameSetup.clients, frameSetup.envData);
+  }
+
+  private _setSetupFrames(clients: RoutingMap, envData: EnvData) {
+    this.setupFrames(clients, envData);
+  }
+
   private _handleClientMessages(message: ClientToHost) {
     switch (message.msgType) {
       case 'publish':
