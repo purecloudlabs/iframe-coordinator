@@ -8,6 +8,16 @@ import { stripTrailingSlash } from '../urlUtils';
 
 const ROUTE_ATTR = 'route';
 
+/** A property that can be set to initialize the host frame with the
+ * possible clients and the environmental data required by the clients
+ */
+interface FrameSetup {
+  /** The map of registrations for the available clients. */
+  clients: RoutingMap;
+  /** Information about the host environment. */
+  envData: EnvData;
+}
+
 /**
  * A custom element responsible for rendering an iframe and communicating with
  * configured client applications that will render in that frame. It will be
@@ -152,18 +162,16 @@ export default class FrameRouterElement extends HTMLElement {
     }
   }
 
+  private _frameSetup: FrameSetup;
+
   /**
-   * @property {object} frameSetup A property that can be set to initialize the host frame with the
-   * possible clients and the environmental data required by the clients
-   * @property {RoutingMap} frameSetup.clients The map of registrations for the available clients.
-   * @property {EnvData} frameSetup.envData Information about the host environment.
+   * A property that can be set to initialize the host frame
    */
-  private _frameSetup: { clients: RoutingMap; envData: EnvData };
   get frameSetup(): any {
     return this._frameSetup;
   }
 
-  set frameSetup(frameSetup: { clients: RoutingMap; envData: EnvData }) {
+  set frameSetup(frameSetup: FrameSetup) {
     this._frameSetup = frameSetup;
     this._setSetupFrames(frameSetup.clients, frameSetup.envData);
   }
