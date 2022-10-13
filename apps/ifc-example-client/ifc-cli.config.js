@@ -1,7 +1,7 @@
 module.exports = function(frameRouter) {
   let hostname = window.location.hostname;
 
-  frameRouter.setupFrames(
+  frameRouter.configureClients(
     {
       application1: {
         url: `http://${hostname}:8080/client-app-1/#/`,

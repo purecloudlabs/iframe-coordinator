@@ -1,5 +1,5 @@
 module.exports = function(frameRouter) {
-  frameRouter.setupFrames(
+  frameRouter.configureClients(
     {
       app1: {
         url: 'http://localhost:8080/client-app-1/#/',
