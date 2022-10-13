@@ -11,7 +11,7 @@ const ROUTE_ATTR = 'route';
 /** A property that can be set to initialize the host frame with the
  * possible clients and the environmental data required by the clients
  */
-interface FrameSetup {
+interface ClientConfig {
   /** The map of registrations for the available clients. */
   clients: RoutingMap;
   /** Information about the host environment. */
@@ -78,8 +78,29 @@ export default class FrameRouterElement extends HTMLElement {
    *
    * @param clients The map of registrations for the available clients.
    * @param envData Information about the host environment.
+   *
+   * @deprecated Use the new {@configureClients} method instead
+   *
    */
   public setupFrames(clients: RoutingMap, envData: EnvData) {
+    this._router = new HostRouter(clients);
+    const processedHostUrl = this._processHostUrl(envData.hostRootUrl);
+    this._envData = {
+      ...envData,
+      hostRootUrl: processedHostUrl
+    };
+
+    this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
+  }
+
+  /**
+   * Initializes this host frame with the possible clients and
+   * the environmental data required the clients.
+   *
+   * @param clients The map of registrations for the available clients.
+   * @param envData Information about the host environment.
+   */
+  public configureClients(clients: RoutingMap, envData: EnvData) {
     this._router = new HostRouter(clients);
     const processedHostUrl = this._processHostUrl(envData.hostRootUrl);
     this._envData = {
@@ -162,22 +183,18 @@ export default class FrameRouterElement extends HTMLElement {
     }
   }
 
-  private _frameSetup: FrameSetup;
+  private _clientConfig: ClientConfig;
 
   /**
    * A property that can be set to initialize the host frame
    */
-  get frameSetup(): any {
-    return this._frameSetup;
+  get clientConfig(): any {
+    return this._clientConfig;
   }
 
-  set frameSetup(frameSetup: FrameSetup) {
-    this._frameSetup = frameSetup;
-    this._setSetupFrames(frameSetup.clients, frameSetup.envData);
-  }
-
-  private _setSetupFrames(clients: RoutingMap, envData: EnvData) {
-    this.setupFrames(clients, envData);
+  set clientConfig(clientConfig: ClientConfig) {
+    this._clientConfig = clientConfig;
+    this.configureClients(clientConfig.clients, clientConfig.envData);
   }
 
   private _handleClientMessages(message: ClientToHost) {
@@ -227,7 +244,7 @@ export default class FrameRouterElement extends HTMLElement {
     if (hostUrlObject.hash) {
       return hostUrlObject.href;
     }
-    const trimedUrl = stripTrailingSlash(hostUrl);
-    return window.location.hash ? `${trimedUrl}/#` : trimedUrl;
+    const trimmedUrl = stripTrailingSlash(hostUrl);
+    return window.location.hash ? `${trimmedUrl}/#` : trimmedUrl;
   }
 }

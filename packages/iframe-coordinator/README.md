@@ -46,7 +46,7 @@ registerCustomElements();
  * fragment path in the current page that represents the root
  * path for that client. `url` is the page to load in the
  * iframe on that route. It must be a full Url, but you can
- * use the URL construtor to simplify handling
+ * use the URL constructor to simplify handling
  * clients on the same domain.
  * (e.g. `new URL('/client/app/path/', window.location).toString()`)
  *
@@ -56,7 +56,7 @@ registerCustomElements();
  * if the client uses pushstate path-based routing, leave the fragment out:
  * e.g. http://example.com/client/
  */
-document.getElementById('frame-element').setupFrames(
+document.getElementById('frame-element').configureClients(
   {
     client1: {
       url: 'https://example.com/components/example1/#/',
@@ -78,7 +78,7 @@ document.getElementById('frame-element').setupFrames(
 Alternatively, the frame router configuration can be setup by setting the `frameSetup` property on the frame router element
 
 ``` js
-  frameRouter.frameSetup = {
+  frameRouter.clientConfig = {
     clients: {
       application1: {
         url: `http://${hostname}:8080/client-app-1/#/`,
@@ -109,7 +109,7 @@ Alternatively, the frame router configuration can be setup by setting the `frame
 **HTML/DOM**
 
 Once the `frame-router` element is rendered and the client apps configured via
-`setupFrames` or via setting the `frameSetup` property, navigation between and within client apps is done by changing the
+`configureClients` or via setting the `clientConfig` property, navigation between and within client apps is done by changing the
 element's `route` attribute. In the example below, based on the previously shown
 configuration, the frame router will show show the URL at:  
 https://example.com/components/example1/#/my/path
@@ -159,7 +159,7 @@ Options:
   function expression.
 
   The CLI host app also provides a proxy route under `/proxy/` that can be used
-  if you need the client and host applicaitons on the same domain. To use the proxy,
+  if you need the client and host applications on the same domain. To use the proxy,
   simply make the url registered for the client that of the host app, followed by
   `/proxy/` and then the url of the client app. (See `app2` in the config below
   for an example)
@@ -167,7 +167,7 @@ Options:
   Here is an example config file:
 
 module.exports = function(frameRouter) {
-  frameRouter.setupFrames(
+  frameRouter.configureClients(
     {
       app1: {
         url: 'http://localhost:8080/client-app-1/#/',
