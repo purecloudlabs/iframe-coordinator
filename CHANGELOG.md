@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.0.0-beta.2](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.6.1...v5.0.0-beta.2) (2022-10-15)
+
+
+### ⚠ BREAKING CHANGES
+
+* ifc-cli is no longer in iframe-coordinator
+
+COMUI-1121
+
+### Features
+
+* migrated to monorepo with separate packages ([b042338](https://github.com/purecloudlabs/iframe-coordinator/commit/b0423388c4fe5416e92405d7d695c270e2d87824))
+
+
+### Bug Fixes
+
+* **cli:** fix iframe-coordinator-cli build by migrating to vite ([d1b8a5f](https://github.com/purecloudlabs/iframe-coordinator/commit/d1b8a5fb669ef4d1f7f108e8774159a0949cd6ab))
+* **cli:** rename ifc-cli ([93ba85f](https://github.com/purecloudlabs/iframe-coordinator/commit/93ba85fe8d121560a3ae60b4a644d8884c97425b))
+* **frame-manager:** fixed template string error ([a77931b](https://github.com/purecloudlabs/iframe-coordinator/commit/a77931b22903e30e161661f9d13fad17a0e348f8))
+
 ## [5.0.0-beta.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.6.1...v5.0.0-beta.1) (2022-10-05)
 
 
