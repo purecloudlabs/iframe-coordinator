@@ -1,6 +1,6 @@
 {
   "name": "iframe-coordinator-cli",
-  "version": "5.0.0-beta.1",
+  "version": "5.0.0-beta.2",
   "description": "CLI for local iframe-coordinator development",
   "dependencies": {
     "cheerio": "^1.0.0-rc.10",
