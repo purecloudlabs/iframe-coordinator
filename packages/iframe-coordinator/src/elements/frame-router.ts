@@ -79,7 +79,7 @@ export default class FrameRouterElement extends HTMLElement {
    * @param clients The map of registrations for the available clients.
    * @param envData Information about the host environment.
    *
-   * @deprecated Use the new {@configureClients} method instead
+   * @deprecated Use the new {@clientConfig} property instead
    *
    */
   public setupFrames(clients: RoutingMap, envData: EnvData) {
@@ -89,25 +89,7 @@ export default class FrameRouterElement extends HTMLElement {
       ...envData,
       hostRootUrl: processedHostUrl
     };
-
-    this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
-  }
-
-  /**
-   * Initializes this host frame with the possible clients and
-   * the environmental data required the clients.
-   *
-   * @param clients The map of registrations for the available clients.
-   * @param envData Information about the host environment.
-   */
-  public configureClients(clients: RoutingMap, envData: EnvData) {
-    this._router = new HostRouter(clients);
-    const processedHostUrl = this._processHostUrl(envData.hostRootUrl);
-    this._envData = {
-      ...envData,
-      hostRootUrl: processedHostUrl
-    };
-
+    this._clientConfig = { clients, envData };
     this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
   }
 
@@ -194,7 +176,18 @@ export default class FrameRouterElement extends HTMLElement {
 
   set clientConfig(clientConfig: ClientConfig) {
     this._clientConfig = clientConfig;
-    this.configureClients(clientConfig.clients, clientConfig.envData);
+    this._configureClients(clientConfig.clients, clientConfig.envData);
+  }
+
+  private _configureClients(clients: RoutingMap, envData: EnvData) {
+    this._router = new HostRouter(clients);
+    const processedHostUrl = this._processHostUrl(envData.hostRootUrl);
+    this._envData = {
+      ...envData,
+      hostRootUrl: processedHostUrl
+    };
+
+    this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
   }
 
   private _handleClientMessages(message: ClientToHost) {

@@ -41,9 +41,10 @@ import { registerCustomElements } from 'iframe-coordinator/host.js';
  */
 registerCustomElements();
 
-/* This registers three client apps with the `frame-router`
- * element with an id of `coordinator`. `assignedRoute` is the
- * fragment path in the current page that represents the root
+/* The frame router configuration can be set up by setting the 
+ * `clientConfig` property on the frame-router element.
+ * This registers two client apps with the `frame-router`.
+ * `assignedRoute` is the fragment path in the current page that represents the root
  * path for that client. `url` is the page to load in the
  * iframe on that route. It must be a full Url, but you can
  * use the URL constructor to simplify handling
@@ -56,28 +57,7 @@ registerCustomElements();
  * if the client uses pushstate path-based routing, leave the fragment out:
  * e.g. http://example.com/client/
  */
-document.getElementById('frame-element').configureClients(
-  {
-    client1: {
-      url: 'https://example.com/components/example1/#/',
-      assignedRoute: '/one'
-    },
-    client2: {
-      url: 'https://example.com/components/example2/#/',
-      assignedRoute: '/two',
-      sandbox: 'allow-presentation', // optional
-      allow: 'microphone https://example.com;' // optional
-    }
-  },
-  {
-    locale: 'en-US',
-    hostRootUrl: window.location.origin
-  }
-);
-```
-Alternatively, the frame router configuration can be setup by setting the `frameSetup` property on the frame router element
 
-``` js
   frameRouter.clientConfig = {
     clients: {
       application1: {
@@ -108,8 +88,7 @@ Alternatively, the frame router configuration can be setup by setting the `frame
 
 **HTML/DOM**
 
-Once the `frame-router` element is rendered and the client apps configured via
-`configureClients` or via setting the `clientConfig` property, navigation between and within client apps is done by changing the
+Once the `frame-router` element is rendered and the client apps configured via setting the `clientConfig` property, navigation between and within client apps is done by changing the
 element's `route` attribute. In the example below, based on the previously shown
 configuration, the frame router will show show the URL at:  
 https://example.com/components/example1/#/my/path
@@ -167,8 +146,8 @@ Options:
   Here is an example config file:
 
 module.exports = function(frameRouter) {
-  frameRouter.configureClients(
-    {
+  frameRouter.clientConfig = {
+    clients: {
       app1: {
         url: 'http://localhost:8080/client-app-1/#/',
         assignedRoute: '/app1'
@@ -184,12 +163,12 @@ module.exports = function(frameRouter) {
         allow: 'microphone http://localhost:8080;' // optional
       }
     },
-    {
+    envData: {
       locale: 'en-US',
       hostRootUrl: window.location.origin,
       custom: getCustomClientData()
     }
-  );
+  };
 
   return {
     // These are the topics that the host app should display payloads for when
