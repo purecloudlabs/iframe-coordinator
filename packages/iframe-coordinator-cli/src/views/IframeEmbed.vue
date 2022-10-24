@@ -14,13 +14,18 @@
         <nav>
           <ul>
             <li v-for="(client, id) in clientConfig" v-bind:key="id">
-              <a v-bind:href="'#' + client.assignedRoute">{{id}} @ {{client.assignedRoute}}</a>
+              <a v-bind:href="'#' + client.assignedRoute"
+                >{{ id }} @ {{ client.assignedRoute }}</a
+              >
             </li>
           </ul>
         </nav>
       </div>
       <div v-else>
-        <p>I couldn't find any registered client applications. Please check your ifc-cli configuration file.</p>
+        <p>
+          I couldn't find any registered client applications. Please check your
+          ifc-cli configuration file.
+        </p>
       </div>
     </div>
     <frame-router
@@ -91,12 +96,12 @@ export default {
     // Call the custom config set up on the CLI.
     const oldSetupFrames = frameRouter.setupFrames;
     frameRouter.setupFrames = (...args) => {
-      this.clientConfig = args[0];
       oldSetupFrames.apply(frameRouter, args);
     };
 
     if (window.routerSetup && typeof window.routerSetup === 'function') {
       const clientConfig = window.routerSetup(frameRouter);
+      this.clientConfig = frameRouter.clientConfig.clients;
       if (clientConfig.publishTopics) {
         clientConfig.publishTopics.forEach(topic => {
           frameRouter.messaging.addListener(topic, publication => {
