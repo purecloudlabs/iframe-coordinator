@@ -8,6 +8,16 @@ import { stripTrailingSlash } from '../urlUtils';
 
 const ROUTE_ATTR = 'route';
 
+/** A property that can be set to initialize the host frame with the
+ * possible clients and the environmental data required by the clients
+ */
+interface ClientConfig {
+  /** The map of registrations for the available clients. */
+  clients: RoutingMap;
+  /** Information about the host environment. */
+  envData: EnvData;
+}
+
 /**
  * A custom element responsible for rendering an iframe and communicating with
  * configured client applications that will render in that frame. It will be
@@ -68,6 +78,9 @@ export default class FrameRouterElement extends HTMLElement {
    *
    * @param clients The map of registrations for the available clients.
    * @param envData Information about the host environment.
+   *
+   * @deprecated Use the new {@clientConfig} property instead
+   *
    */
   public setupFrames(clients: RoutingMap, envData: EnvData) {
     this._router = new HostRouter(clients);
@@ -76,7 +89,7 @@ export default class FrameRouterElement extends HTMLElement {
       ...envData,
       hostRootUrl: processedHostUrl
     };
-
+    this._clientConfig = { clients, envData };
     this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
   }
 
@@ -152,6 +165,31 @@ export default class FrameRouterElement extends HTMLElement {
     }
   }
 
+  private _clientConfig: ClientConfig;
+
+  /**
+   * A property that can be set to initialize the host frame
+   */
+  get clientConfig(): any {
+    return this._clientConfig;
+  }
+
+  set clientConfig(clientConfig: ClientConfig) {
+    this._clientConfig = clientConfig;
+    this._configureClients(clientConfig.clients, clientConfig.envData);
+  }
+
+  private _configureClients(clients: RoutingMap, envData: EnvData) {
+    this._router = new HostRouter(clients);
+    const processedHostUrl = this._processHostUrl(envData.hostRootUrl);
+    this._envData = {
+      ...envData,
+      hostRootUrl: processedHostUrl
+    };
+
+    this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
+  }
+
   private _handleClientMessages(message: ClientToHost) {
     switch (message.msgType) {
       case 'publish':
@@ -199,7 +237,7 @@ export default class FrameRouterElement extends HTMLElement {
     if (hostUrlObject.hash) {
       return hostUrlObject.href;
     }
-    const trimedUrl = stripTrailingSlash(hostUrl);
-    return window.location.hash ? `${trimedUrl}/#` : trimedUrl;
+    const trimmedUrl = stripTrailingSlash(hostUrl);
+    return window.location.hash ? `${trimmedUrl}/#` : trimmedUrl;
   }
 }
