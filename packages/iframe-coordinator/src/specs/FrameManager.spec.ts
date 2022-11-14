@@ -63,6 +63,7 @@ describe('FrameManager', () => {
     };
 
     mocks.node = {
+      getAttribute: jasmine.createSpy('nodeGetAttribute'),
       appendChild: jasmine.createSpy('nodeAppendChild')
     };
 
