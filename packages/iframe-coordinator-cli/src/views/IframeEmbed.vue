@@ -31,6 +31,7 @@
     <frame-router
       id="frameRouter"
       v-bind:route="frameRoute"
+      frame-id="ifc-cli-frame"
       v-on:notifyRequest="displayToast"
       v-on:registeredKeyFired="handleKeyEvent"
       v-on:navRequest="handleNav"
