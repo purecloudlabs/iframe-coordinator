@@ -96,7 +96,7 @@ https://example.com/components/example1/#/my/path
 ```html
 <body>
   <!-- host-app stuff -->
-  <frame-router id="frame-element" route="/one/my/path" />
+  <frame-router id="frame-element" route="/one/my/path" frame-id="id-for-child-iframe" />
   <!-- more host-app stuff -->
 </body>
 ```
