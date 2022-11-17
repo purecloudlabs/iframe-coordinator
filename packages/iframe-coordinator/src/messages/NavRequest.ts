@@ -1,4 +1,4 @@
-import { constant, Decoder, object, string } from 'decoders';
+import { constant, Decoder, either, object, optional, string } from 'decoders';
 import { labeledDecoder, LabeledMsg } from './LabeledMsg';
 
 /**
@@ -7,6 +7,12 @@ import { labeledDecoder, LabeledMsg } from './LabeledMsg';
 export interface NavRequest {
   /** The URL the client wants the host application to navigate to */
   url: string;
+  /** How the client wants the host to update the browser's session history.
+   * Push is the default behavior (adds a new session history entry).
+   * Replace alters the current entry so that using the back button
+   * after navigation will skip the location you are navigating from.
+   */
+  history?: 'push' | 'replace';
 }
 
 /**
@@ -24,7 +30,10 @@ export interface LabeledNavRequest
 const decoder: Decoder<LabeledNavRequest> = labeledDecoder(
   constant<'navRequest'>('navRequest'),
   object({
-    url: string
+    url: string,
+    history: optional(
+      either(constant<'push'>('push'), constant<'replace'>('replace'))
+    )
   })
 );
 

@@ -54,8 +54,8 @@ describe('client', () => {
     });
   });
 
-  describe('when an initial data environment is recieved', () => {
-    let recievedEnvData: EnvData;
+  describe('when an initial data environment is received', () => {
+    let receivedEnvData: EnvData;
 
     const testEnvironmentData: SetupData = {
       locale: 'nl-NL',
@@ -66,7 +66,7 @@ describe('client', () => {
     };
     beforeEach(() => {
       client.addListener('environmentalData', (env: EnvData) => {
-        recievedEnvData = env;
+        receivedEnvData = env;
       });
       client.start();
 
@@ -81,7 +81,7 @@ describe('client', () => {
 
     it('should delegate', () => {
       const { assignedRoute, ...restEnvData } = testEnvironmentData;
-      expect(recievedEnvData).toEqual(restEnvData);
+      expect(receivedEnvData).toEqual(restEnvData);
     });
 
     describe('generate full URL from client path', () => {
@@ -221,7 +221,7 @@ describe('client', () => {
         });
       }).toThrowMatching(err => {
         return err.message.startsWith(
-          'I recieved an invalid message from the host application'
+          'I received an invalid message from the host application'
         );
       });
       expect(subscriptionCalled).toBe(false);
@@ -239,7 +239,7 @@ describe('client', () => {
         });
       }).toThrowMatching(err => {
         return err.message.startsWith(
-          'I recieved an invalid message from the host application'
+          'I received an invalid message from the host application'
         );
       });
       expect(subscriptionCalled).toBe(false);
@@ -277,14 +277,14 @@ describe('client', () => {
     });
   });
 
-  describe('when recieving an valid window message from the host application missing the direction field', () => {
+  describe('when receiving an valid window message from the host application missing the direction field', () => {
     let publishCalls = 0;
-    let recievedPayload: string;
+    let receivedPayload: string;
     beforeEach(() => {
       client.start();
       client.messaging.addListener('test.topic', (data: Publication) => {
         publishCalls++;
-        recievedPayload = data.payload;
+        receivedPayload = data.payload;
       });
       mockFrameWindow.trigger('message', {
         origin: 'origin',
@@ -300,18 +300,18 @@ describe('client', () => {
 
     it('should raise a publish event for the topic', () => {
       expect(publishCalls).toBe(1);
-      expect(recievedPayload).toBe('test data');
+      expect(receivedPayload).toBe('test data');
     });
   });
 
-  describe('when recieving an valid window message from the host application', () => {
+  describe('when receiving an valid window message from the host application', () => {
     let publishCalls = 0;
-    let recievedPayload: string;
+    let receivedPayload: string;
     beforeEach(() => {
       client.start();
       client.messaging.addListener('test.topic', (data: Publication) => {
         publishCalls++;
-        recievedPayload = data.payload;
+        receivedPayload = data.payload;
       });
       mockFrameWindow.trigger('message', {
         origin: 'origin',
@@ -328,7 +328,7 @@ describe('client', () => {
 
     it('should raise a publish event for the topic', () => {
       expect(publishCalls).toBe(1);
-      expect(recievedPayload).toBe('test data');
+      expect(receivedPayload).toBe('test data');
     });
   });
 
@@ -415,7 +415,7 @@ describe('client', () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
         applyClientProtocol({
           msgType: 'navRequest',
-          msg: { url: 'http://www.example.com/' }
+          msg: { url: 'http://www.example.com/', history: undefined }
         }),
         'https://example.com'
       );
@@ -442,7 +442,7 @@ describe('client', () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           applyClientProtocol({
             msgType: 'navRequest',
-            msg: { url: 'http://www.example.com/' }
+            msg: { url: 'http://www.example.com/', history: undefined }
           }),
           'https://example.com'
         );
