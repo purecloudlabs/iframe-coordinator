@@ -10,7 +10,7 @@ import {
 } from './Publication';
 
 /**
- * All avaiable message types that can be sent
+ * All available message types that can be sent
  * from the client content to the host application.
  */
 export type ClientToHost =
