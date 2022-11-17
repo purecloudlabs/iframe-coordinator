@@ -3,10 +3,10 @@
     "outDir": "./dist",
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "module": "CommonJS",
+    "module": "ESNext",
     "declaration": true,
     "declarationDir": "./dist",
-    "target": "es2015"
+    "target": "ES2015"
   },
   "include": ["src"],
   "exclude": []

@@ -9,12 +9,8 @@ import {
   string
 } from 'decoders';
 
-// using `import` here with TypeScripts' requireJsonModule
-// option breaks TS' ability to generate type files, so we
-// fall back to `require`.
-
-// tslint:disable-next-line:no-var-requires
-const version = require('../../package.json').version;
+// This is replaced by rollup-plugin-replace with the actual version from package.json
+const version = '__PACKAGE_VERSION__';
 
 export const API_PROTOCOL = 'iframe-coordinator';
 
