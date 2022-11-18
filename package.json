@@ -16,7 +16,9 @@
     "release": "standard-version --prerelease beta && npm run sync-versions",
     "release.dry": "standard-version --prerelease beta --dry-run",
     "publish-libs": "npm publish --tag=beta --workspace=iframe-coordinator --workspace=iframe-coordinator-cli",
-    "doc": "npm run doc --workspace=iframe-coordinator"
+    "doc": "npm run doc --workspace=iframe-coordinator",
+    "prepare": "husky install",
+    "pre-commit": "lint-staged"
   },
   "keywords": [],
   "author": "",
@@ -56,12 +58,6 @@
           "upper-case"
         ]
       ]
-    }
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "volta": {
