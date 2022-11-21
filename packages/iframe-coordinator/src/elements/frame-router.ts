@@ -22,7 +22,7 @@ interface ClientConfig {
  * A custom element responsible for rendering an iframe and communicating with
  * configured client applications that will render in that frame. It will be
  * registered as `frame-router` by a call to [[registerCustomElements]] and
- * should not be created directly. Instead add a `<frame-router>` element to your
+ * should not be created directly. Instead, add a `<frame-router>` element to your
  * markup or use `document.createElement('frame-router')` after calling
  * [[registerCustomElements]].
  */

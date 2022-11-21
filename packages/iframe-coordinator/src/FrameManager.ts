@@ -192,6 +192,10 @@ to bad data passed to a frame-router method.
    * @param parent The element to place the iframe inside.
    */
   public embed(parent: HTMLElement) {
+    const frameId = parent.getAttribute('frame-id');
+    if (frameId) {
+      this._iframe.setAttribute('id', frameId);
+    }
     parent.appendChild(this._iframe);
   }
 
