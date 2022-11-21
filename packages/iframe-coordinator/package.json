@@ -20,14 +20,13 @@
     "@rollup/plugin-typescript": "^9.0.2",
     "@types/jasmine": "^3.10.6",
     "glob": "^7.2.0",
-    "husky": "^1.1.2",
     "i": "^0.3.7",
     "jasmine-core": "^3.99.1",
     "karma": "^6.4.0",
     "karma-chrome-launcher": "^3.1.1",
     "karma-jasmine": "^5.1.0",
     "karma-typescript": "^5.5.3",
-    "lint-staged": "^10.5.4",
+    "lint-staged": "^13.0.3",
     "prettier": "^1.19.1",
     "puppeteer": "^1.20.0",
     "rollup": "^3.3.0",
@@ -49,7 +48,8 @@
     "start": "rollup -c --watch",
     "test": "karma start --single-run",
     "test.watch": "karma start",
-    "test.watch.chrome": "karma start --browsers=Chrome"
+    "test.watch.chrome": "karma start --browsers=Chrome",
+    "pre-commit": "lint-staged"
   },
   "lint-staged": {
     "*.ts": [

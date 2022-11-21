@@ -18,7 +18,7 @@
     "publish-libs": "npm publish --tag=beta --workspace=iframe-coordinator --workspace=iframe-coordinator-cli",
     "doc": "npm run doc --workspace=iframe-coordinator",
     "prepare": "husky install",
-    "pre-commit": "lint-staged"
+    "pre-commit": "npm run pre-commit --workspaces --if-present"
   },
   "keywords": [],
   "author": "",
@@ -26,12 +26,9 @@
   "devDependencies": {
     "@commitlint/cli": "^9.1.2",
     "@commitlint/config-conventional": "^12.1.4",
-    "cheerio": "^1.0.0-rc.12",
     "commitizen": "^4.2.4",
     "git-cz": "^4.9.0",
-    "husky": "^8.0.1",
-    "lint-staged": "^13.0.3",
-    "nx": "14.3.6",
+    "husky": "^8.0.2",
     "standard-version": "^9.5.0"
   },
   "config": {
