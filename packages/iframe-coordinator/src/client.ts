@@ -172,7 +172,7 @@ export class Client {
       if (event.data.protocol === API_PROTOCOL) {
         throw new Error(
           `
-  I recieved an invalid message from the host application. This is probably due
+  I received an invalid message from the host application. This is probably due
   to a major version mismatch between client and host iframe-coordinator libraries.
         `.trim() +
             '\n' +
@@ -261,7 +261,7 @@ export class Client {
         this._handleEnvironmentData(message);
         return;
       default:
-      // Only emit events which are specifically handeled
+      // Only emit events which are specifically handled
     }
   }
 
@@ -314,11 +314,11 @@ export class Client {
    * @deprecated Use the new {@urlFromClientPath} method instead
    */
   public asHostUrl(clientRouteLegacy: string): string {
-    const trimedClientRoute = stripLeadingSlashAndHashTag(clientRouteLegacy);
+    const trimmedClientRoute = stripLeadingSlashAndHashTag(clientRouteLegacy);
     return joinRoutes(
       this.environmentData.hostRootUrl,
       this._assignedRoute || '',
-      trimedClientRoute
+      trimmedClientRoute
     );
   }
 
@@ -386,10 +386,10 @@ bad input into one of the iframe-coordinator client methods.
   }
 
   /**
-   * Accessor for the general-purpose pub-sub bus betwen client and host applications.
+   * Accessor for the general-purpose pub-sub bus between client and host applications.
    * The content of messages on this bus are not defined by this API beyond a basic
    * data wrapper of topic and payload. This is for application-specific messages
-   * agreed upon as a shared API betwen host and client.
+   * agreed upon as a shared API between host and client.
    */
   public get messaging(): EventEmitter<Publication> {
     return this._publishExposedEmitter;

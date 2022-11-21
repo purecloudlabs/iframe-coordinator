@@ -247,12 +247,73 @@ describe('ClientToHost', () => {
     });
   });
 
-  describe('validating navrequest type', () => {
+  describe('validating navRequest type', () => {
     describe('when valid url is provided', () => {
       const testMessage = {
         msgType: 'navRequest',
         msg: {
           url: 'navRequest.url'
+        }
+      };
+
+      const expectedMessage = {
+        ...testMessage,
+        msg: {
+          ...testMessage.msg,
+          history: undefined
+        },
+        protocol: 'iframe-coordinator',
+        version: 'unknown',
+        direction: undefined
+      } as LabeledNavRequest;
+
+      let testResult: ClientToHost;
+      beforeEach(() => {
+        testResult = validate(testMessage);
+      });
+
+      it('should return the validated message', () => {
+        expect(testResult).toEqual(expectedMessage);
+      });
+    });
+
+    describe('when invalid property is provided', () => {
+      const testMessage = {
+        msgType: 'navRequest',
+        msg: {
+          iurl: 'navRequest.url'
+        }
+      };
+
+      it('should return throw an exception', () => {
+        expect(() => {
+          validate(testMessage);
+        }).toThrow();
+      });
+    });
+
+    describe('when invalid history option is provided', () => {
+      const testMessage = {
+        msgType: 'navRequest',
+        msg: {
+          url: 'navRequest.url',
+          history: 'fail'
+        }
+      };
+
+      it('should return throw an exception', () => {
+        expect(() => {
+          validate(testMessage);
+        }).toThrow();
+      });
+    });
+
+    describe('when valid history option is provided', () => {
+      const testMessage = {
+        msgType: 'navRequest',
+        msg: {
+          url: 'navRequest.url',
+          history: 'push'
         }
       };
 
@@ -270,21 +331,6 @@ describe('ClientToHost', () => {
 
       it('should return the validated message', () => {
         expect(testResult).toEqual(expectedMessage);
-      });
-    });
-
-    describe('when invalid data is provided', () => {
-      const testMessage = {
-        msgType: 'navRequest',
-        msg: {
-          iurl: 'navRequest.url'
-        }
-      };
-
-      it('should return throw an exception', () => {
-        expect(() => {
-          validate(testMessage);
-        }).toThrow();
       });
     });
   });

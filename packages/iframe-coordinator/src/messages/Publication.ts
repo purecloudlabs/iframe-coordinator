@@ -10,12 +10,12 @@ import {
 import { labeledDecoder, LabeledMsg } from './LabeledMsg';
 
 /**
- * A pub-sub message for general-puropse messaging between hosts and clients.
+ * A pub-sub message for general-purpose messaging between hosts and clients.
  */
 export interface Publication {
   /**
    * The topic to publish on. The host application must be subscribed to the topic
-   * in order to recieve the message.
+   * in order to receive the message.
    */
   topic: string;
   /** Data to publish */
