@@ -66,7 +66,14 @@ export default {
     handleNav(event) {
       // TODO: detect and handle external URLs properly
       const requestedUrl = new URL(event.detail.url);
-      window.location.hash = requestedUrl.hash;
+
+      if (location.hash === requestedUrl.hash) {
+        // The requested navigation is for the current location, do nothing
+      } else if (event.detail.history === 'replace') {
+        window.location.replace(requestedUrl.hash);
+      } else {
+        window.location.hash = requestedUrl.hash;
+      }
     },
     handleKeyEvent(event) {
       this.$notify({

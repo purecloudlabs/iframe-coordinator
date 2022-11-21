@@ -10,9 +10,9 @@ document.getElementById('path').innerHTML = window.location.hash;
 
 window.onhashchange = function() {
   document.getElementById('path').innerHTML = window.location.hash;
-  document.getElementById('urlFromClientPath').innerHTML = iframeClient.urlFromClientPath(
-    window.location.hash
-  );
+  document.getElementById(
+    'urlFromClientPath'
+  ).innerHTML = iframeClient.urlFromClientPath(window.location.hash);
 };
 
 /****  SET UP THE IFRAME CLIENT LIBRARY ****/
@@ -24,7 +24,7 @@ let iframeClient = new Client({
   hostOrigin: `http://${window.location.hostname}:3000`
 });
 
-  iframeClient.registerCustomElements();
+iframeClient.registerCustomElements();
 
 // Add a listener that will handled config data passed from the host to the
 // client at startup.
@@ -38,9 +38,9 @@ iframeClient.addListener('environmentalData', envData => {
   console.log(
     `Got locale from host. Current date formatted for ${envData.locale} is: ${localizedDate}`
   );
-  document.getElementById('urlFromClientPath').innerHTML = iframeClient.urlFromClientPath(
-    window.location.hash
-  );
+  document.getElementById(
+    'urlFromClientPath'
+  ).innerHTML = iframeClient.urlFromClientPath(window.location.hash);
   displayEnvData(envData);
 });
 
@@ -98,7 +98,7 @@ function transformLinks() {
   });
   document.querySelectorAll('a.host-transform-link').forEach(link => {
     link.href = iframeClient.urlFromHostPath(link.getAttribute('href'));
-  })
+  });
 }
 
 function displayEnvData(envData) {
