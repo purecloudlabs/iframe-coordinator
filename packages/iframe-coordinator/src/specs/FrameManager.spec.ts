@@ -1,8 +1,7 @@
 import FrameManager from '../FrameManager';
 import { API_PROTOCOL } from '../messages/LabeledMsg';
 
-// tslint:disable-next-line:no-var-requires
-const version = require('../../package.json').version;
+const version = '__PACKAGE_VERSION__';
 
 describe('FrameManager', () => {
   let mocks: any;
