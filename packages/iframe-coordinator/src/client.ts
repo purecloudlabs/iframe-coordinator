@@ -58,7 +58,6 @@ export interface ClientConfigOptions {
  */
 export class Client {
   private _isStarted: boolean;
-  private _isInterceptingLinksStarted: boolean;
   private _clientWindow: Window;
   private _environmentData: EnvData;
   private _envDataEmitter: InternalEventEmitter<EnvData>;
@@ -67,6 +66,7 @@ export class Client {
   private _publishExposedEmitter: EventEmitter<Publication>;
   private _registeredKeys: KeyData[];
   private _assignedRoute: string | null;
+  private _shouldInterceptLinks: boolean;
 
   /**
    * Creates a new client.
@@ -187,6 +187,14 @@ export class Client {
   };
 
   private _onWindowClick = (event: MouseEvent) => {
+    this._sendToHost({ msgType: 'clickFired', msg: {} });
+
+    if (this._shouldInterceptLinks) {
+      this._interceptLink(event);
+    }
+  };
+
+  private _interceptLink = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
     if (target.tagName.toLowerCase() === 'a' && event.button === 0) {
       event.preventDefault();
@@ -355,34 +363,25 @@ bad input into one of the iframe-coordinator client methods.
 
     this._clientWindow.addEventListener('message', this._onWindowMessage);
     this._clientWindow.addEventListener('keydown', this._onKeyDown);
+    this._clientWindow.addEventListener('click', this._onWindowClick);
     this._sendToHost(Lifecycle.startedMessage);
   }
 
   /**
-   * Adds a global click handler to the client window that intercepts clicks on anchor elements
+   * Allows the click handler on the client window to intercept clicks on anchor elements
    * and makes a nav request to the host based on the element's href. This should be
    * avoided for complex applications as it can interfere with things like download
    * links that you may not want to intercept.
    */
   public startInterceptingLinks(): void {
-    if (this._isInterceptingLinksStarted) {
-      return;
-    }
-
-    this._isInterceptingLinksStarted = true;
-    this._clientWindow.addEventListener('click', this._onWindowClick);
+    this._shouldInterceptLinks = true;
   }
 
   /**
-   * Removes the global click handler that intercepts clicks on anchor elements.
+   * Turns off the behavior of intercepting link clicks in the client window click handler.
    */
   public stopInterceptingLinks(): void {
-    if (!this._isInterceptingLinksStarted) {
-      return;
-    }
-
-    this._isInterceptingLinksStarted = false;
-    this._clientWindow.removeEventListener('click', this._onWindowClick);
+    this._shouldInterceptLinks = true;
   }
 
   /**
@@ -407,6 +406,7 @@ bad input into one of the iframe-coordinator client methods.
     this._isStarted = false;
     this._clientWindow.removeEventListener('message', this._onWindowMessage);
     this._clientWindow.removeEventListener('keydown', this._onKeyDown);
+    this._clientWindow.removeEventListener('click', this._onWindowClick);
     this.stopInterceptingLinks();
   }
 
