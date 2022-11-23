@@ -49,7 +49,7 @@
     "lint.format": "prettier --check **/*.ts **/*.tsx",
     "lint": "tslint --project tsconfig.json && npm run lint.format",
     "start": "webpack --watch",
-    "start-client-example": "cd ./client-app-example && npm start",
+    "start-client-example": "cd ../../apps/ifc-example-client && npm start",
     "test": "karma start --single-run",
     "test.watch": "karma start",
     "test.watch.chrome": "karma start --browsers=Chrome"

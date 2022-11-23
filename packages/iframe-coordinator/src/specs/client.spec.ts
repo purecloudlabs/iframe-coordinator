@@ -426,6 +426,7 @@ describe('client', () => {
     let mockElement;
     describe('when click event target is an anchor', () => {
       beforeEach(() => {
+        client.start();
         client.startInterceptingLinks();
         mockElement = document.createElement('a');
         mockElement.setAttribute('href', 'http://www.example.com/');
@@ -447,10 +448,21 @@ describe('client', () => {
           'https://example.com'
         );
       });
+
+      it('should notify host of a click event', () => {
+        expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+          applyClientProtocol({
+            msgType: 'clickFired',
+            msg: {}
+          }),
+          'https://example.com'
+        );
+      });
     });
 
     describe('when click event target is not an anchor', () => {
       beforeEach(() => {
+        client.start();
         client.startInterceptingLinks();
         mockFrameWindow.parent.postMessage.calls.reset();
         mockElement = document.createElement('div');
@@ -464,7 +476,20 @@ describe('client', () => {
       });
 
       it('should not notify host of navigation request', () => {
-        expect(mockFrameWindow.parent.postMessage).not.toHaveBeenCalled();
+        expect(mockFrameWindow.parent.postMessage).not.toHaveBeenCalledWith(
+          jasmine.objectContaining({ msgType: 'navRequest' }),
+          jasmine.anything()
+        );
+      });
+
+      it('should notify host of a click event', () => {
+        expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
+          applyClientProtocol({
+            msgType: 'clickFired',
+            msg: {}
+          }),
+          'https://example.com'
+        );
       });
     });
 
