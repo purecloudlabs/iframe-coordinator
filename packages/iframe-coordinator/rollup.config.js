@@ -1,6 +1,9 @@
 import typescript from '@rollup/plugin-typescript';
 import replace from '@rollup/plugin-replace';
-import pkg from './package.json' assert { type: 'json' };
+import fs from 'fs';
+
+const packageVersion = JSON.parse(fs.readFileSync('package.json').toString())
+  .version;
 
 export default [
   {
@@ -9,9 +12,12 @@ export default [
       file: 'dist/index.js',
       format: 'es'
     },
-    plugins: [typescript(), replace({
-      __PACKAGE_VERSION__: pkg.version
-    })]
+    plugins: [
+      typescript(),
+      replace({
+        __PACKAGE_VERSION__: packageVersion
+      })
+    ]
   },
   {
     input: 'src/client.ts',
@@ -19,9 +25,12 @@ export default [
       file: 'dist/client.js',
       format: 'es'
     },
-    plugins: [typescript(), replace({
-      __PACKAGE_VERSION__: pkg.version
-    })]
+    plugins: [
+      typescript(),
+      replace({
+        __PACKAGE_VERSION__: packageVersion
+      })
+    ]
   },
   {
     input: 'src/host.ts',
@@ -29,8 +38,11 @@ export default [
       file: 'dist/host.js',
       format: 'es'
     },
-    plugins: [typescript(), replace({
-      __PACKAGE_VERSION__: pkg.version
-    })]
+    plugins: [
+      typescript(),
+      replace({
+        __PACKAGE_VERSION__: packageVersion
+      })
+    ]
   }
 ];

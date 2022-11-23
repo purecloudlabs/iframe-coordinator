@@ -4,6 +4,7 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "module": "ESNext",
+    "moduleResolution": "node",
     "declaration": true,
     "declarationDir": "./dist",
     "target": "ES2015"
