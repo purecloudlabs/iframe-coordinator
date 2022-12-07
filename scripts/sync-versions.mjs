@@ -37,7 +37,8 @@ function getProjectVersion() {
 }
 
 function createReleaseCommit(version) {
+  const message = `chore(release): ${version}`;
   execSync(`git add .`);
-  execSync(`git commit -m 'chore(release): ${version}'`);
-  execSync(`git tag v${version}`);
+  execSync(`git commit -m '${message}'`);
+  execSync(`git tag -a -m '${message}' v${version}`);
 }
