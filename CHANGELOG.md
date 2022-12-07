@@ -2,125 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-## [5.0.0-beta.5](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.6.1...v5.0.0-beta.5) (2022-11-23)
-
-
-### ⚠ BREAKING CHANGES
-
-* ifc-cli is no longer in iframe-coordinator
-
-COMUI-1121
-
-### Features
-
-* **frame-manager:** add attribute that sets the id of the iframe ([226f550](https://github.com/purecloudlabs/iframe-coordinator/commit/226f55008a328d5a140a7d92ad95394dd5b8828d))
-* **frame-router:** accept prop to setup frames ([03d0c40](https://github.com/purecloudlabs/iframe-coordinator/commit/03d0c4006f87a638bf79441598b524746ae7c7dd))
-* migrated to monorepo with separate packages ([b042338](https://github.com/purecloudlabs/iframe-coordinator/commit/b0423388c4fe5416e92405d7d695c270e2d87824))
-* **navrequest:** add support for nav request that replaces session history ([6836462](https://github.com/purecloudlabs/iframe-coordinator/commit/6836462d71b03fee6c3b8cde25760dc6935dbaf4))
-
-
-### Bug Fixes
-
-* **cli:** fix iframe-coordinator-cli build by migrating to vite ([d1b8a5f](https://github.com/purecloudlabs/iframe-coordinator/commit/d1b8a5fb669ef4d1f7f108e8774159a0949cd6ab))
-* **cli:** rename ifc-cli ([93ba85f](https://github.com/purecloudlabs/iframe-coordinator/commit/93ba85fe8d121560a3ae60b4a644d8884c97425b))
-* **frame-manager:** fixed template string error ([a77931b](https://github.com/purecloudlabs/iframe-coordinator/commit/a77931b22903e30e161661f9d13fad17a0e348f8))
-
-## [5.0.0-beta.4](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.6.1...v5.0.0-beta.4) (2022-11-22)
-
-
-### ⚠ BREAKING CHANGES
-
-* ifc-cli is no longer in iframe-coordinator
-
-COMUI-1121
-
-### Features
-
-* **frame-manager:** add attribute that sets the id of the iframe ([226f550](https://github.com/purecloudlabs/iframe-coordinator/commit/226f55008a328d5a140a7d92ad95394dd5b8828d))
-* **frame-router:** accept prop to setup frames ([03d0c40](https://github.com/purecloudlabs/iframe-coordinator/commit/03d0c4006f87a638bf79441598b524746ae7c7dd))
-* migrated to monorepo with separate packages ([b042338](https://github.com/purecloudlabs/iframe-coordinator/commit/b0423388c4fe5416e92405d7d695c270e2d87824))
-* **navrequest:** add support for nav request that replaces session history ([6836462](https://github.com/purecloudlabs/iframe-coordinator/commit/6836462d71b03fee6c3b8cde25760dc6935dbaf4))
-
-
-### Bug Fixes
-
-* **cli:** fix iframe-coordinator-cli build by migrating to vite ([d1b8a5f](https://github.com/purecloudlabs/iframe-coordinator/commit/d1b8a5fb669ef4d1f7f108e8774159a0949cd6ab))
-* **cli:** rename ifc-cli ([93ba85f](https://github.com/purecloudlabs/iframe-coordinator/commit/93ba85fe8d121560a3ae60b4a644d8884c97425b))
-* **frame-manager:** fixed template string error ([a77931b](https://github.com/purecloudlabs/iframe-coordinator/commit/a77931b22903e30e161661f9d13fad17a0e348f8))
-
-## [5.0.0-beta.3](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.6.1...v5.0.0-beta.3) (2022-10-24)
-
-
-### ⚠ BREAKING CHANGES
-
-* ifc-cli is no longer in iframe-coordinator
-
-COMUI-1121
-
-### Features
-
-* **frame-router:** accept prop to setup frames ([03d0c40](https://github.com/purecloudlabs/iframe-coordinator/commit/03d0c4006f87a638bf79441598b524746ae7c7dd))
-* migrated to monorepo with separate packages ([b042338](https://github.com/purecloudlabs/iframe-coordinator/commit/b0423388c4fe5416e92405d7d695c270e2d87824))
-
-
-### Bug Fixes
-
-* **cli:** fix iframe-coordinator-cli build by migrating to vite ([d1b8a5f](https://github.com/purecloudlabs/iframe-coordinator/commit/d1b8a5fb669ef4d1f7f108e8774159a0949cd6ab))
-* **cli:** rename ifc-cli ([93ba85f](https://github.com/purecloudlabs/iframe-coordinator/commit/93ba85fe8d121560a3ae60b4a644d8884c97425b))
-* **frame-manager:** fixed template string error ([a77931b](https://github.com/purecloudlabs/iframe-coordinator/commit/a77931b22903e30e161661f9d13fad17a0e348f8))
-
-## [5.0.0-beta.2](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.6.1...v5.0.0-beta.2) (2022-10-15)
-
-
-### ⚠ BREAKING CHANGES
-
-* ifc-cli is no longer in iframe-coordinator
-
-COMUI-1121
-
-### Features
-
-* migrated to monorepo with separate packages ([b042338](https://github.com/purecloudlabs/iframe-coordinator/commit/b0423388c4fe5416e92405d7d695c270e2d87824))
-
-
-### Bug Fixes
-
-* **cli:** fix iframe-coordinator-cli build by migrating to vite ([d1b8a5f](https://github.com/purecloudlabs/iframe-coordinator/commit/d1b8a5fb669ef4d1f7f108e8774159a0949cd6ab))
-* **cli:** rename ifc-cli ([93ba85f](https://github.com/purecloudlabs/iframe-coordinator/commit/93ba85fe8d121560a3ae60b4a644d8884c97425b))
-* **frame-manager:** fixed template string error ([a77931b](https://github.com/purecloudlabs/iframe-coordinator/commit/a77931b22903e30e161661f9d13fad17a0e348f8))
-
-## [5.0.0-beta.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.6.1...v5.0.0-beta.1) (2022-10-05)
-
-
-### ⚠ BREAKING CHANGES
-
-* ifc-cli is no longer in iframe-coordinator
-
-COMUI-1121
-
-### Features
-
-* migrated to monorepo with separate packages ([b042338](https://github.com/purecloudlabs/iframe-coordinator/commit/b0423388c4fe5416e92405d7d695c270e2d87824))
-
-
-### Bug Fixes
-
-* **cli:** fix iframe-coordinator-cli build by migrating to vite ([d1b8a5f](https://github.com/purecloudlabs/iframe-coordinator/commit/d1b8a5fb669ef4d1f7f108e8774159a0949cd6ab))
-* **cli:** rename ifc-cli ([93ba85f](https://github.com/purecloudlabs/iframe-coordinator/commit/93ba85fe8d121560a3ae60b4a644d8884c97425b))
-
 ### [4.6.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.6.0...v4.6.1) (2022-08-24)
 
-
 ### Bug Fixes
 
-* **url-utils:** joinRoutes now accounts for routes that normalize to an empty string ([3df97a5](https://github.com/purecloudlabs/iframe-coordinator/commit/3df97a57372891d1e77226c4fbbad22aaccde22a))
+- **url-utils:** joinRoutes now accounts for routes that normalize to an empty string ([3df97a5](https://github.com/purecloudlabs/iframe-coordinator/commit/3df97a57372891d1e77226c4fbbad22aaccde22a))
 
 ## [4.6.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.5.2...v4.6.0) (2022-06-23)
 
-
 ### Features
 
-* **ifc-cli:** allow consumer to specify their own ssl cert and key ([700e963](https://github.com/purecloudlabs/iframe-coordinator/commit/700e9631ed121a67ef7ef65430118ca4be382835))
+- **ifc-cli:** allow consumer to specify their own ssl cert and key ([700e963](https://github.com/purecloudlabs/iframe-coordinator/commit/700e9631ed121a67ef7ef65430118ca4be382835))
 
 ### [4.5.2](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.5.1...v4.5.2) (2022-04-15)
 
@@ -128,10 +20,9 @@ COMUI-1121
 
 ## [4.5.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.4.4...v4.5.0) (2022-01-28)
 
-
 ### Features
 
-* **a11y:** support adding a title attribute to the iframe ([fb267ec](https://github.com/purecloudlabs/iframe-coordinator/commit/fb267ec3ad5952d687ca5aabe3ba5bb479414b34))
+- **a11y:** support adding a title attribute to the iframe ([fb267ec](https://github.com/purecloudlabs/iframe-coordinator/commit/fb267ec3ad5952d687ca5aabe3ba5bb479414b34))
 
 ### [4.4.4](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.4.3...v4.4.4) (2021-10-29)
 
@@ -143,66 +34,58 @@ COMUI-1121
 
 ## [4.4.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.3.0...v4.4.0) (2021-07-07)
 
-
 ### Features
 
-* **modal:** added  global modal to render in web-dir from client apps includes api and message code ([9eb63a7](https://github.com/purecloudlabs/iframe-coordinator/commit/9eb63a74382848c4a5bbf4301789ec0601fc7528))
-* **modal:** made modal types public ([194df85](https://github.com/purecloudlabs/iframe-coordinator/commit/194df859bfd176717a3775ca8bb206e3a426e9fa))
-* **modal:** removed the modal type enum, updated the modal request function and the message class ([48aa888](https://github.com/purecloudlabs/iframe-coordinator/commit/48aa88857bcb91c9bcf24a7fd9477518e4a1ae93))
-* **modal:** updated client-setup.md to add requestModal documentation ([2dd7a85](https://github.com/purecloudlabs/iframe-coordinator/commit/2dd7a85da0c68e3a0da0d03b150048a45c8a2e92))
-* **modal:** updated documentation for requestModal function ([423e96d](https://github.com/purecloudlabs/iframe-coordinator/commit/423e96d4735ed4f2d8b1e20563072301f1839768))
-
+- **modal:** added global modal to render in web-dir from client apps includes api and message code ([9eb63a7](https://github.com/purecloudlabs/iframe-coordinator/commit/9eb63a74382848c4a5bbf4301789ec0601fc7528))
+- **modal:** made modal types public ([194df85](https://github.com/purecloudlabs/iframe-coordinator/commit/194df859bfd176717a3775ca8bb206e3a426e9fa))
+- **modal:** removed the modal type enum, updated the modal request function and the message class ([48aa888](https://github.com/purecloudlabs/iframe-coordinator/commit/48aa88857bcb91c9bcf24a7fd9477518e4a1ae93))
+- **modal:** updated client-setup.md to add requestModal documentation ([2dd7a85](https://github.com/purecloudlabs/iframe-coordinator/commit/2dd7a85da0c68e3a0da0d03b150048a45c8a2e92))
+- **modal:** updated documentation for requestModal function ([423e96d](https://github.com/purecloudlabs/iframe-coordinator/commit/423e96d4735ed4f2d8b1e20563072301f1839768))
 
 ### Bug Fixes
 
-* **cli:** add missing example file to package, improve behavior when proxied ([da3af1b](https://github.com/purecloudlabs/iframe-coordinator/commit/da3af1b04691b5403dcb741834087e923cbaec50))
+- **cli:** add missing example file to package, improve behavior when proxied ([da3af1b](https://github.com/purecloudlabs/iframe-coordinator/commit/da3af1b04691b5403dcb741834087e923cbaec50))
 
 ## [4.3.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.6...v4.3.0) (2021-06-03)
 
-
 ### Features
 
-* **ifc-api-improvements:** Improve URL and link generation APIs ([6f77f9d](https://github.com/purecloudlabs/iframe-coordinator/commit/6f77f9dc29d23175d2e07b0814fab57b9a190b7f))
+- **ifc-api-improvements:** Improve URL and link generation APIs ([6f77f9d](https://github.com/purecloudlabs/iframe-coordinator/commit/6f77f9dc29d23175d2e07b0814fab57b9a190b7f))
 
 ### [4.2.6](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.5...v4.2.6) (2021-04-30)
 
-
 ### Bug Fixes
 
-* **docs:** fix static asset URLs in deployed docs ([3bc9fae](https://github.com/purecloudlabs/iframe-coordinator/commit/3bc9faea2e136dd2ef51fd88fbd19c0218e3799c))
+- **docs:** fix static asset URLs in deployed docs ([3bc9fae](https://github.com/purecloudlabs/iframe-coordinator/commit/3bc9faea2e136dd2ef51fd88fbd19c0218e3799c))
 
 ### [4.2.5](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.4...v4.2.5) (2021-04-28)
 
 ### [4.2.4](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.3...v4.2.4) (2021-04-23)
 
-
 ### Bug Fixes
 
-* **framemanager:** COMUI-460 - Added new default to sandbox attributes ([de42224](https://github.com/purecloudlabs/iframe-coordinator/commit/de42224be10621dab52db08684e2658a08f49ea2))
+- **framemanager:** COMUI-460 - Added new default to sandbox attributes ([de42224](https://github.com/purecloudlabs/iframe-coordinator/commit/de42224be10621dab52db08684e2658a08f49ea2))
 
 ### [4.2.3](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.2...v4.2.3) (2021-04-02)
 
 ### [4.2.2](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.1...v4.2.2) (2021-03-18)
 
-
 ### Bug Fixes
 
-* **cli:** remove embedded app dual scrollbars ([71c9d17](https://github.com/purecloudlabs/iframe-coordinator/commit/71c9d171f5222b4a00f42e9377828516d20b7f0a))
-* **linting:** update lower end commit due to bad commit message ([35e2451](https://github.com/purecloudlabs/iframe-coordinator/commit/35e24515d2fbc018fe8ea3a3c4d93c506199e120))
+- **cli:** remove embedded app dual scrollbars ([71c9d17](https://github.com/purecloudlabs/iframe-coordinator/commit/71c9d171f5222b4a00f42e9377828516d20b7f0a))
+- **linting:** update lower end commit due to bad commit message ([35e2451](https://github.com/purecloudlabs/iframe-coordinator/commit/35e24515d2fbc018fe8ea3a3c4d93c506199e120))
 
 ### [4.2.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.2.0...v4.2.1) (2020-10-27)
 
-
 ### Bug Fixes
 
-* **cli:** missing hash and query parameters ([e7fc6a1](https://github.com/purecloudlabs/iframe-coordinator/commit/e7fc6a1c95f4950dec9e5ab344584cca78ec4dc2))
+- **cli:** missing hash and query parameters ([e7fc6a1](https://github.com/purecloudlabs/iframe-coordinator/commit/e7fc6a1c95f4950dec9e5ab344584cca78ec4dc2))
 
 ## [4.2.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.1.14...v4.2.0) (2020-09-16)
 
-
 ### Features
 
-* **messaging:** support nested iframes by tagging messages with direction ([00d2cbf](https://github.com/purecloudlabs/iframe-coordinator/commit/00d2cbf446722983f51a3bedea41489428ade9b2))
+- **messaging:** support nested iframes by tagging messages with direction ([00d2cbf](https://github.com/purecloudlabs/iframe-coordinator/commit/00d2cbf446722983f51a3bedea41489428ade9b2))
 
 ### [4.1.14](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.1.13...v4.1.14) (2020-09-16)
 
