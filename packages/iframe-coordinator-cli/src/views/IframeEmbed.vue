@@ -5,6 +5,10 @@
       <span class="app-route">{{ frameRoute }}</span>
       as
       <span class="frame-url">{{ frameUrl }}</span>
+      <span class="metadata-container">
+        <span class="metadata-title">Page Metadata: </span>
+        <span class="metadata-content">{{ metadata }}</span>
+      </span>
     </div>
     <div v-if="showMenu" id="appMenu">
       <h2>No app is registered for {{ frameRoute }}</h2>
@@ -36,6 +40,7 @@
       v-on:registeredKeyFired="handleKeyEvent"
       v-on:navRequest="handleNav"
       v-on:frameTransition="updateFrameUrl"
+      v-on:pageMetadata="updatePageMetadata"
     ></frame-router>
   </div>
 </template>
@@ -48,7 +53,8 @@ export default {
     return {
       frameUrl: '',
       showMenu: true,
-      clientConfig: {}
+      clientConfig: {},
+      metadata: {}
     };
   },
   methods: {
@@ -98,6 +104,12 @@ export default {
     updateFrameUrl(event) {
       this.frameUrl = event.detail;
       this.showMenu = this.frameUrl === 'about:blank';
+    },
+    updatePageMetadata(event) {
+      this.metadata = {
+        title: event.detail.title,
+        breadcrumbs: event.detail.breadcrumbs
+      }
     }
   },
   mounted() {
@@ -149,8 +161,21 @@ for more details.
   border-bottom: 2px solid #ff4f1f;
 }
 #routerLayout .app-route,
-#routerLayout .frame-url {
+#routerLayout .frame-url,
+#routerLayout .metadata-container .metadata-content {
   color: #ff4f1f;
+}
+
+#routerLayout .metadata-container {
+  display: flex;
+  text-align: left;
+  float: right;
+  width: 800px;
+}
+
+#routerLayout .metadata-container .metadata-title {
+  margin-right: 5px;
+  width: 150px;
 }
 
 #appMenu {
