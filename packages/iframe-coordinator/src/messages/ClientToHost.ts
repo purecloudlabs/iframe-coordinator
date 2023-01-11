@@ -5,6 +5,10 @@ import { decoder as modalDecoder, LabeledModalRequest } from './ModalRequest';
 import { decoder as navRequestDecoder, LabeledNavRequest } from './NavRequest';
 import { decoder as notifyDecoder, LabeledNotification } from './Notification';
 import {
+  decoder as pageMetadataDecoder,
+  LabeledPageMetadata
+} from './PageMetadata';
+import {
   decoder as publicationDecoder,
   LabeledPublication
 } from './Publication';
@@ -19,7 +23,8 @@ export type ClientToHost =
   | LabeledNavRequest
   | LabeledStarted
   | LabeledKeyDown
-  | LabeledModalRequest;
+  | LabeledModalRequest
+  | LabeledPageMetadata;
 
 /**
  * Validates correctness of messages being sent from
@@ -35,7 +40,8 @@ export function validate(msg: any): ClientToHost {
       navRequest: navRequestDecoder,
       notifyRequest: notifyDecoder,
       toastRequest: notifyDecoder,
-      modalRequest: modalDecoder
+      modalRequest: modalDecoder,
+      pageMetadata: pageMetadataDecoder
     })
   )(msg);
 }
