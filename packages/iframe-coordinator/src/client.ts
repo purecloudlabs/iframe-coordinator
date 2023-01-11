@@ -381,7 +381,7 @@ bad input into one of the iframe-coordinator client methods.
    * Turns off the behavior of intercepting link clicks in the client window click handler.
    */
   public stopInterceptingLinks(): void {
-    this._shouldInterceptLinks = true;
+    this._shouldInterceptLinks = false;
   }
 
   /**
