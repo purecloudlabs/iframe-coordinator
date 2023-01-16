@@ -59,6 +59,25 @@ describe('InternalEventEmitter', () => {
       expect(listener2).toHaveBeenCalledWith('test.data');
     });
 
+    it('should be able to remove a listener from inside the listener callback', () => {
+      const event = 'test.event';
+      const listener = () => {
+        eventEmitter.removeListener(event, listener);
+      };
+      const listener2 = jasmine.createSpy('eventListener2');
+
+      eventEmitter.addListener(event, listener);
+      eventEmitter.addListener(event, listener2);
+
+      expect(() => eventEmitter.dispatch(event, 'test.data')).not.toThrow();
+
+      expect(listener2).toHaveBeenCalledTimes(1);
+
+      eventEmitter.dispatch(event, 'test.data');
+
+      expect(listener2).toHaveBeenCalledTimes(2);
+    });
+
     it('should be able to remove all listeners', () => {
       const listener = jasmine.createSpy('eventListener');
       const listener2 = jasmine.createSpy('eventListener2');
