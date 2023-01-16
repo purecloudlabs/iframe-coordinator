@@ -178,7 +178,8 @@ export class InternalEventEmitter<T> {
       return false;
     }
 
-    const listeners = this._events[type];
+    // listeners is a shallow copy so that removals from the original array do not effect this for loop
+    const listeners = [...this._events[type]];
     const length = listeners.length;
     for (let i = 0; i < length; i++) {
       listeners[i](data);
