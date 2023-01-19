@@ -17,7 +17,7 @@ export interface PageMetadata {
   title: string;
   /** Breadcrumbs that lead to page */
   breadcrumbs: Breadcrumb[];
-  /** holder for any custom data client wants to send for page */
+  /** Holder for any custom data client wants to send for page */
   custom?: any;
 }
 
@@ -27,7 +27,7 @@ export interface PageMetadata {
 export interface Breadcrumb {
   /** UI text for breadcrumb */
   text: string;
-  /** link href for routing to breadcrumb's page */
+  /** Link href for routing to breadcrumb's page */
   href: string;
 }
 
