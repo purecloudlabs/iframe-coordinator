@@ -212,7 +212,7 @@ to bad data passed to a frame-router method.
       if (event.data.protocol === API_PROTOCOL) {
         throw new Error(
           `
-I recieved an invalid message from the client application. This is probably due
+I received an invalid message from the client application. This is probably due
 to a major version mismatch between client and host iframe-coordinator libraries.
       `.trim() +
             '\n' +
@@ -229,6 +229,12 @@ to a major version mismatch between client and host iframe-coordinator libraries
       event.origin === expectedClientOrigin &&
       event.source === this._iframe.contentWindow
     ) {
+      if (validated.msgType === 'clickFired') {
+        /** Simulate a click on the iframe when a click is reported from the client.
+         * This allows a click event to bubble through the host to provide expected behaviors for things like dropdowns and modals.
+         */
+        this._iframe.click();
+      }
       handler(validated);
     }
   }
