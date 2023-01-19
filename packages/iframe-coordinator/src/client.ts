@@ -31,6 +31,7 @@ import {
 import { ModalRequest } from './messages/ModalRequest';
 import { NavRequest } from './messages/NavRequest';
 import { Notification } from './messages/Notification';
+import { PageMetadata } from './messages/PageMetadata';
 import { Publication } from './messages/Publication';
 
 // Re-exports for doc visibility
@@ -495,6 +496,22 @@ bad input into one of the iframe-coordinator client methods.
     this._sendToHost({
       msgType: 'navRequest',
       msg: destination
+    });
+  }
+
+  /**
+   * Sends page metadata to host for display and browser settings
+   *
+   * title property is for the page title in the browser
+   * breadcrumbs is an array of breadcrumb data for display in host application
+   * custom is any custom data wanting to be sent by client app
+   *
+   * @param metadata data that will be used for display in host application and browser page title
+   */
+  public sendPageMetadata(metadata: PageMetadata): void {
+    this._sendToHost({
+      msgType: 'pageMetadata',
+      msg: metadata
     });
   }
 }
