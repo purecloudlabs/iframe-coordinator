@@ -26,7 +26,7 @@ let iframeClient = new Client({
 
 iframeClient.registerCustomElements();
 
-// Add a listener that will handled config data passed from the host to the
+// Add a listener that will handle config data passed from the host to the
 // client at startup.
 iframeClient.addListener('environmentalData', envData => {
   // Transform link URLs to match top-level app.
@@ -75,6 +75,17 @@ document.getElementById('do-publish').addEventListener('click', () => {
 const TOAST_LEVELS = ['info', 'success', 'error'];
 
 document.addEventListener('DOMContentLoaded', () => {
+  let metadata = {
+    title: document.querySelector('h1').innerText,
+    breadcrumbs: [{
+      text: document.querySelector('h1').innerText,
+      href: window.location.href
+    }],
+    custom: undefined
+  }
+
+  iframeClient.sendPageMetadata(metadata);
+
   let toastBtnEl = document.querySelector('button.toast');
   toastBtnEl.addEventListener('click', () => {
     let toast = {
