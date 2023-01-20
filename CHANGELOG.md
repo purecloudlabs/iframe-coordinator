@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.1.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.0.0...v5.1.0) (2023-01-20)
+
+
+### Features
+
+* **page-metadata:** adding ability to send page metadata to host ([a087ab2](https://github.com/purecloudlabs/iframe-coordinator/commit/a087ab2772bdb4334d7a439ac6f4ec447737ddb9))
+
+
+### Bug Fixes
+
+* **event-emitter:** can now remove a listener in an add listener callback ([02ad998](https://github.com/purecloudlabs/iframe-coordinator/commit/02ad998d7fa349dd66f3a5900c0cc5d17ed670fa))
+
 ## [5.0.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v4.6.1...v5.0.0) (2022-12-07)
 
 
