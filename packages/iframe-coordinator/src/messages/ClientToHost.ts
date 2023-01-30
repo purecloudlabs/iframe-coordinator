@@ -1,4 +1,5 @@
 import { dispatch, guard } from 'decoders';
+import { decoder as clickDecoder, LabeledClick } from './Click';
 import { decoder as keyDownDecoder, LabeledKeyDown } from './KeyDown';
 import { LabeledStarted, startedDecoder } from './Lifecycle';
 import { decoder as modalDecoder, LabeledModalRequest } from './ModalRequest';
@@ -20,6 +21,7 @@ import {
 export type ClientToHost =
   | LabeledPublication
   | LabeledNotification
+  | LabeledClick
   | LabeledNavRequest
   | LabeledStarted
   | LabeledKeyDown
@@ -37,6 +39,7 @@ export function validate(msg: any): ClientToHost {
       publish: publicationDecoder,
       registeredKeyFired: keyDownDecoder,
       client_started: startedDecoder,
+      clickFired: clickDecoder,
       navRequest: navRequestDecoder,
       notifyRequest: notifyDecoder,
       toastRequest: notifyDecoder,
