@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.2.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.1.0...v5.2.0) (2023-02-02)
+
+
+### Features
+
+* add client message to notify host of click events ([4a7768f](https://github.com/purecloudlabs/iframe-coordinator/commit/4a7768f738967700c3cf0f9b86d4eb07d82ca4ff))
+* **framemanager:** emit click event to host when client clicked ([7b75f46](https://github.com/purecloudlabs/iframe-coordinator/commit/7b75f46496b8df3a893e6e223116745361d25bc0))
+
+
+### Bug Fixes
+
+* address issues in PR for click events ([9c204b3](https://github.com/purecloudlabs/iframe-coordinator/commit/9c204b36defb097a730fed4f41abb2c7d93c45e7))
+
 ## [5.1.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.0.0...v5.1.0) (2023-01-20)
 
 
