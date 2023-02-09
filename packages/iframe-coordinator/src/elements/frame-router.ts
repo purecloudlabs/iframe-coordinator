@@ -196,6 +196,7 @@ export default class FrameRouterElement extends HTMLElement {
         const publication: Publication = message.msg;
         publication.clientId = this._currentClientId;
         this._publishEmitter.dispatch(message.msg.topic, publication);
+        this._dispatchClientMessage(message);
         break;
       case 'client_started':
         this._handleLifecycleMessage(message);
