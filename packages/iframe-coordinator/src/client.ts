@@ -32,6 +32,7 @@ import { ModalRequest } from './messages/ModalRequest';
 import { NavRequest } from './messages/NavRequest';
 import { Notification } from './messages/Notification';
 import { PageMetadata } from './messages/PageMetadata';
+import { PromptOnLeave } from './messages/PromptOnLeave';
 import { Publication } from './messages/Publication';
 
 // Re-exports for doc visibility
@@ -42,7 +43,8 @@ export {
   EnvDataHandler,
   ModalRequest,
   NavRequest,
-  Notification
+  Notification,
+  PromptOnLeave
 };
 
 /**
@@ -496,6 +498,26 @@ bad input into one of the iframe-coordinator client methods.
     this._sendToHost({
       msgType: 'navRequest',
       msg: destination
+    });
+  }
+
+  /**
+   * Asks the host application to display a prompt on leave dialog.
+   */
+  public requestPromptOnLeave(messagePrompt?: string): void {
+    this._sendToHost({
+      msgType: 'promptOnLeave',
+      msg: { shouldPrompt: true, message: messagePrompt }
+    });
+  }
+
+  /**
+   * Asks the host application to clear the prompt on leave dialog.
+   */
+  public clearPromptOnLeave(): void {
+    this._sendToHost({
+      msgType: 'promptOnLeave',
+      msg: { shouldPrompt: false }
     });
   }
 

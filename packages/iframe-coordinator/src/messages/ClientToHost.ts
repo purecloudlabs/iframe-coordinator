@@ -9,6 +9,7 @@ import {
   decoder as pageMetadataDecoder,
   LabeledPageMetadata
 } from './PageMetadata';
+import { decoder as promptDecoder, LabeledPrompt } from './PromptOnLeave';
 import {
   decoder as publicationDecoder,
   LabeledPublication
@@ -26,7 +27,8 @@ export type ClientToHost =
   | LabeledStarted
   | LabeledKeyDown
   | LabeledModalRequest
-  | LabeledPageMetadata;
+  | LabeledPageMetadata
+  | LabeledPrompt;
 
 /**
  * Validates correctness of messages being sent from
@@ -44,7 +46,8 @@ export function validate(msg: any): ClientToHost {
       notifyRequest: notifyDecoder,
       toastRequest: notifyDecoder,
       modalRequest: modalDecoder,
-      pageMetadata: pageMetadataDecoder
+      pageMetadata: pageMetadataDecoder,
+      promptOnLeave: promptDecoder
     })
   )(msg);
 }

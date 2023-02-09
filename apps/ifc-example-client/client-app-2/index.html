@@ -49,10 +49,14 @@
       </li>
       <!-- internal routes URLs get remapped in js by `transformLinks` -->
       <li>
-        <a class="client-transform-link" href="#/route1">This client: /route1</a>
+        <a class="client-transform-link" href="#/route1"
+          >This client: /route1</a
+        >
       </li>
       <li>
-        <a class="client-transform-link" href="#/route2">This client: /route2</a>
+        <a class="client-transform-link" href="#/route2"
+          >This client: /route2</a
+        >
       </li>
     </ul>
 
@@ -61,15 +65,28 @@
     </h3>
     <ul>
       <li>
-        <ifc-client-link path="/route2">Creating a full link from the client path: /route2</ifc-client-link>
+        <ifc-client-link path="/route2"
+          >Creating a full link from the client path: /route2</ifc-client-link
+        >
       </li>
       <li>
-        <ifc-host-link path="/app1">Creating a full link from the host path: /app1</ifc-host-link>
+        <ifc-host-link path="/app1"
+          >Creating a full link from the host path: /app1</ifc-host-link
+        >
       </li>
     </ul>
 
     <h2>Toasts</h2>
     <button class="toast" data-component-name="App #2">Send Toast</button>
+
+    <h2>Prompt on Leave</h2>
+    <button class="prompt" data-component-name="App #2">
+      Request prompt on leave
+    </button>
+
+    <button class="clearPrompt" data-component-name="App #2">
+      Clear prompt on leave
+    </button>
 
     <h2>Pub-Sub</h2>
     <div id="pub-sub">
