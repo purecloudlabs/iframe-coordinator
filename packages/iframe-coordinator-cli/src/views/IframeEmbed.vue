@@ -39,6 +39,7 @@
       v-on:notifyRequest="displayToast"
       v-on:registeredKeyFired="handleKeyEvent"
       v-on:navRequest="handleNav"
+      v-on:promptOnLeave="handlePromptOnLeave"
       v-on:frameTransition="updateFrameUrl"
       v-on:pageMetadata="updatePageMetadata"
     ></frame-router>
@@ -109,6 +110,18 @@ export default {
       this.metadata = {
         title: event.detail.title,
         breadcrumbs: event.detail.breadcrumbs
+      };
+    },
+    handlePromptOnLeave(event) {
+      if (event.detail.shouldPrompt === true) {
+        window.onbeforeunload = function(event) {
+          event.preventDefault();
+          //This is needed for compatibility with Google Chrome.
+          event.returnValue = '';
+        };
+      }
+      if (event.detail.shouldPrompt === false) {
+        window.onbeforeunload = null;
       }
     }
   },
