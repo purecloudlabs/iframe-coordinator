@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.3.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.2.1...v5.3.0) (2023-02-22)
+
+
+### Features
+
+* **frame-router:** emit custom dom event for client publish messages ([0845d97](https://github.com/purecloudlabs/iframe-coordinator/commit/0845d97c4eab0faa08b4d63204250f78eedeb367))
+
 ### [5.2.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.2.0...v5.2.1) (2023-02-03)
 
 ## [5.2.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.1.0...v5.2.0) (2023-02-02)
