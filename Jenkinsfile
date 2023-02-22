@@ -8,7 +8,7 @@ String[] mailingList = [
 ]
 
 def isReleaseBranch() {
-    return env.SHORT_BRANCH.equals('master');
+    return env.SHORT_BRANCH.equals('main') || env.SHORT_BRANCH.equals('master');
 }
 
 pipeline {
