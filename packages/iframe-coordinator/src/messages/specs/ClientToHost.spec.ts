@@ -1,6 +1,7 @@
 import { ClientToHost, validate } from '../ClientToHost';
 import { LabeledNavRequest } from '../NavRequest';
 import { LabeledNotification } from '../Notification';
+import { LabeledPrompt } from '../PromptOnLeave';
 import { LabeledPublication } from '../Publication';
 
 describe('ClientToHost', () => {
@@ -323,6 +324,68 @@ describe('ClientToHost', () => {
         version: 'unknown',
         direction: undefined
       } as LabeledNavRequest;
+
+      let testResult: ClientToHost;
+      beforeEach(() => {
+        testResult = validate(testMessage);
+      });
+
+      it('should return the validated message', () => {
+        expect(testResult).toEqual(expectedMessage);
+      });
+    });
+  });
+
+  describe('validating promptOnLeave type', () => {
+    describe('when only the shouldPrompt field is provided', () => {
+      const testMessage = {
+        msgType: 'promptOnLeave',
+        msg: {
+          shouldPrompt: true,
+          message: undefined
+        }
+      };
+
+      const expectedMessage: ClientToHost = {
+        msgType: 'promptOnLeave',
+        msg: {
+          shouldPrompt: true,
+          message: undefined
+        },
+        protocol: 'iframe-coordinator',
+        version: 'unknown',
+        direction: undefined
+      };
+
+      let testResult: ClientToHost;
+      beforeEach(() => {
+        testResult = validate(testMessage);
+      });
+
+      it('should return the validated message', () => {
+        expect(testResult).toEqual(expectedMessage);
+      });
+    });
+
+    describe('when both the shouldPrompt and message field are provided', () => {
+      const testMessage = {
+        msgType: 'promptOnLeave',
+        msg: {
+          shouldPrompt: true,
+          message: 'This is a prompt message'
+        }
+      };
+
+      const expectedMessage: ClientToHost = {
+        msgType: 'promptOnLeave',
+        msg: {
+          shouldPrompt: true,
+          message: 'This is a prompt message'
+        },
+        protocol: 'iframe-coordinator',
+        version: 'unknown',
+        direction: undefined
+      };
 
       let testResult: ClientToHost;
       beforeEach(() => {

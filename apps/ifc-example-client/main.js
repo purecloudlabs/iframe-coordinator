@@ -8,7 +8,7 @@ registerCustomElements();
 
 document.getElementById('path').innerHTML = window.location.hash;
 
-window.onhashchange = function() {
+window.onhashchange = function () {
   document.getElementById('path').innerHTML = window.location.hash;
   document.getElementById(
     'urlFromClientPath'
@@ -96,10 +96,22 @@ document.addEventListener('DOMContentLoaded', () => {
         level: TOAST_LEVELS[Math.round(Math.random() * 2)]
       }
     };
-
     // Ask the host app to show the toast.
     iframeClient.requestNotification(toast);
   });
+
+  // Ask host app to display prompt on leave request.
+  let promptBtnEl = document.querySelector('button.prompt');
+  promptBtnEl.addEventListener('click', () => {
+    iframeClient.requestPromptOnLeave();
+  })
+
+  //Ask host app to clear prompt on leave request.
+  let clearPromptBtnEl = document.querySelector('button.clearPrompt');
+  clearPromptBtnEl.addEventListener('click', () => {
+    iframeClient.clearPromptOnLeave();
+  })
+
 });
 
 // HELPER FUNCTIONS
