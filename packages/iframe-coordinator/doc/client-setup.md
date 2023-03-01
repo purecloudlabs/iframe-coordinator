@@ -109,13 +109,19 @@ let externalLink = `<a href="https://external-site.com/external/path" target="_t
 There are common requests a client application will want to make of a host application and we strive
 to provide nice default APIs for these.
 
-Currently there are two implemented:
+Currently there are four implemented:
 
 [`requestNotification`](../classes/client.client-1.html#requestnotification), which asks the host
 app to send a notification message to the user.
 
 [`requestModal`](../classes/client.client-1.html#requestModal), which asks the host
 app to launch a modal identified by a given ID, also accepts initial setup data specific to that modal.
+
+[`requestPromptOnLeave`](../classes/client.client-1.html#requestPromptOnLeave), which asks the host
+app to display a prompt on leave dialog to the user before navigating.
+
+[`clearPromptOnLeave`](../classes/client.client-1.html#clearPromptOnLeave), which asks the host
+app to clear the prompt on leave dialog before navigating.
 
 A client application may request a modal on the host like so:
 
@@ -129,6 +135,22 @@ ifcClient.requestModal({
 ```
 
 The frame-router element will emit a custom event of 'modalRequest' with the ModalRequest object in the detail property.
+
+A client application may request a prompt on leave dialog on the host like so:
+
+```typescript
+ifcClient.requestPromptOnLeave();
+```
+
+The frame-router element will emit a custom event of 'promptOnLeave' with the PromptOnLeave object in the detail property.
+
+A client application may request to clear the prompt on leave dialog on the host like so:
+
+```typescript
+ifcClient.clearPromptOnLeave();
+```
+
+The frame-router element will emit a custom event 'promptOnLeave' with the PromptOnLeave object in the detail property.
 
 ## Custom Client/Host Messaging
 
