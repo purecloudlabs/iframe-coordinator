@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.4.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.3.0...v5.4.0) (2023-03-02)
+
+
+### Features
+
+* 🎸 prompt on leave ([270b039](https://github.com/purecloudlabs/iframe-coordinator/commit/270b039734137b49b0a7ff1645a661605e994c6a))
+
 ## [5.3.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.2.1...v5.3.0) (2023-02-22)
 
 
