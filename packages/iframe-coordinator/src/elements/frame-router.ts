@@ -170,7 +170,7 @@ export default class FrameRouterElement extends HTMLElement {
   /**
    * A property that can be set to initialize the host frame
    */
-  get clientConfig(): any {
+  get clientConfig(): ClientConfig {
     return this._clientConfig;
   }
 
