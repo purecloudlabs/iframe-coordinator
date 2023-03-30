@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.4.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.4.0...v5.4.1) (2023-03-30)
+
+
+### Bug Fixes
+
+* **frame-router:** clientConfig type fixed ([99897c6](https://github.com/purecloudlabs/iframe-coordinator/commit/99897c6511f8dbe6ffd3e0169f172689fd486310))
+
 ## [5.4.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.3.0...v5.4.0) (2023-03-02)
 
 
