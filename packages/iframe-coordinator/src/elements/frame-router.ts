@@ -131,8 +131,8 @@ export default class FrameRouterElement extends HTMLElement {
 
       if (clientInfo === null) {
         /**
-         * Emit a clientNotFound event when there is not matching client.
-         * As legacy behavior, a clientChanged event will also fire unless the
+         * Emit a clientNotFound event when there is no matching client.
+         * As a legacy behavior, a clientChanged event will also fire unless the
          * _currentClientId was already an empty string.
          */
         this.dispatchEvent(new CustomEvent('clientNotFound'));
