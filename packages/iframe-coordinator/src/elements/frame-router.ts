@@ -33,6 +33,7 @@ export default class FrameRouterElement extends HTMLElement {
   private _publishEmitter: InternalEventEmitter<Publication>;
   private _publishExposedEmitter: EventEmitter<Publication>;
   private _currentClientId: string;
+  private _currentPath: string;
 
   /** @internal */
   constructor() {
@@ -129,6 +130,16 @@ export default class FrameRouterElement extends HTMLElement {
         );
       }
 
+      if (clientInfo === null && this._currentPath !== newPath) {
+        /**
+         * Emit a clientNotFound event when there is no matching client.
+         * As a legacy behavior, a clientChanged event will also fire unless the
+         * _currentClientId was already an empty string.
+         */
+        this.dispatchEvent(new CustomEvent('clientNotFound'));
+      }
+
+      this._currentPath = newPath;
       this._currentClientId = newClientId;
 
       const newLocation = this._frameManager.setFrameLocation(
