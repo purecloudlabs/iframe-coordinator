@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [5.5.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.4.1...v5.5.0) (2023-04-25)
+
+
+### Features
+
+* **frame-router:** emit clientNotFound event after each invalid route change ([837d0e5](https://github.com/purecloudlabs/iframe-coordinator/commit/837d0e522861038bd11250186d1fedb5cb064302))
+
+
+### Bug Fixes
+
+* **frame-router:** check for new path before emitting clientNotFound event ([62fa98d](https://github.com/purecloudlabs/iframe-coordinator/commit/62fa98d95b97a18f2126989d58bd1c6ff373259f))
+
 ### [5.4.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.4.0...v5.4.1) (2023-03-30)
 
 
