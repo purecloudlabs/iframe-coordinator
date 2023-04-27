@@ -34,6 +34,7 @@ export default class FrameRouterElement extends HTMLElement {
   private _publishExposedEmitter: EventEmitter<Publication>;
   private _currentClientId: string;
   private _currentPath: string;
+  private _queuedEvents: Event[];
 
   /** @internal */
   constructor() {
@@ -42,6 +43,7 @@ export default class FrameRouterElement extends HTMLElement {
     this._publishExposedEmitter = new EventEmitter<Publication>(
       this._publishEmitter
     );
+    this._queuedEvents = [];
 
     this._frameManager = new FrameManager({
       onMessage: this._handleClientMessages.bind(this)
@@ -63,6 +65,7 @@ export default class FrameRouterElement extends HTMLElement {
   public connectedCallback() {
     this._frameManager.embed(this);
     this._frameManager.startMessageHandler();
+    this._emitQueuedEvents();
   }
 
   /**
@@ -125,7 +128,7 @@ export default class FrameRouterElement extends HTMLElement {
       const newClientId = (clientInfo && clientInfo.id) || '';
 
       if (this._currentClientId !== newClientId) {
-        this.dispatchEvent(
+        this._dispatchEventWhenConnected(
           new CustomEvent('clientChanged', { detail: newClientId })
         );
       }
@@ -136,7 +139,7 @@ export default class FrameRouterElement extends HTMLElement {
          * As a legacy behavior, a clientChanged event will also fire unless the
          * _currentClientId was already an empty string.
          */
-        this.dispatchEvent(new CustomEvent('clientNotFound'));
+        this._dispatchEventWhenConnected(new CustomEvent('clientNotFound'));
       }
 
       this._currentPath = newPath;
@@ -156,7 +159,7 @@ export default class FrameRouterElement extends HTMLElement {
         (clientInfo && clientInfo.defaultTitle) || undefined
       );
 
-      this.dispatchEvent(
+      this._dispatchEventWhenConnected(
         new CustomEvent('frameTransition', { detail: newLocation })
       );
     }
@@ -236,6 +239,26 @@ export default class FrameRouterElement extends HTMLElement {
     this.dispatchEvent(
       new CustomEvent(message.msgType, { detail: messageDetail })
     );
+  }
+
+  /**
+   * Dispatches the event if the component is connected to the DOM. Otherwise, queues the event to be dispatched when connected.
+   *
+   * @param event
+   */
+  private _dispatchEventWhenConnected(event: Event) {
+    if (this.isConnected) {
+      this.dispatchEvent(event);
+    } else {
+      this._queuedEvents.push(event);
+    }
+  }
+
+  private _emitQueuedEvents() {
+    if (this.isConnected) {
+      this._queuedEvents.map(event => this.dispatchEvent(event));
+      this._queuedEvents = [];
+    }
   }
 
   private _getCurrentClientAssignedRoute() {
