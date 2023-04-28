@@ -12,10 +12,14 @@ export default [
       file: 'dist/index.js',
       format: 'es'
     },
+    external: ['decoders'],
     plugins: [
       typescript(),
       replace({
-        __PACKAGE_VERSION__: packageVersion
+        preventAssignment: true,
+        values: {
+          '__PACKAGE_VERSION__': packageVersion
+        }
       })
     ]
   },
@@ -25,10 +29,14 @@ export default [
       file: 'dist/client.js',
       format: 'es'
     },
+    external: ['decoders'],
     plugins: [
       typescript(),
       replace({
-        __PACKAGE_VERSION__: packageVersion
+        preventAssignment: true,
+        values: {
+          '__PACKAGE_VERSION__': packageVersion
+        }
       })
     ]
   },
@@ -38,10 +46,14 @@ export default [
       file: 'dist/host.js',
       format: 'es'
     },
+    external: ['decoders'],
     plugins: [
       typescript(),
       replace({
-        __PACKAGE_VERSION__: packageVersion
+        preventAssignment: true,
+        values: {
+          '__PACKAGE_VERSION__': packageVersion
+        }
       })
     ]
   }
