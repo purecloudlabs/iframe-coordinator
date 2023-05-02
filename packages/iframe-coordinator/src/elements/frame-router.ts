@@ -256,7 +256,7 @@ export default class FrameRouterElement extends HTMLElement {
 
   private _emitQueuedEvents() {
     if (this.isConnected) {
-      this._queuedEvents.map(event => this.dispatchEvent(event));
+      this._queuedEvents.forEach(event => this.dispatchEvent(event));
       this._queuedEvents = [];
     }
   }
