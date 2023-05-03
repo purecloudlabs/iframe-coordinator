@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.5.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.5.0...v5.5.1) (2023-05-03)
+
+
+### Bug Fixes
+
+* **cli:** readded missing files from the published cli package ([26c8eb9](https://github.com/purecloudlabs/iframe-coordinator/commit/26c8eb993292e3bc18e190fcc56a13bc32499551))
+
 ## [5.5.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.4.1...v5.5.0) (2023-04-25)
 
 
