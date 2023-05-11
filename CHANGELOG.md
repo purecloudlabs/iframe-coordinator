@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [5.5.2](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.5.1...v5.5.2) (2023-05-11)
+
+
+### Bug Fixes
+
+* **frame-router:** queue events until component is connected ([57c58f2](https://github.com/purecloudlabs/iframe-coordinator/commit/57c58f2b07c044146a9899d9af135aa70bb39774))
+
 ### [5.5.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.5.0...v5.5.1) (2023-05-03)
 
 
