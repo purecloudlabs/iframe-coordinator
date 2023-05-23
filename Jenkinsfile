@@ -112,7 +112,14 @@ pipeline {
              echo "registry=https://registry.npmjs.org" > ./.npmrc
              echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ./.npmrc
           '''
-          sh "npm run publish-libs"
+          sh "npm run publish.iframe-coordinator"
+          sh('''
+              RELEASE_VERSION="$(npm run --silent current-version --workspace=iframe-coordinator)"
+              npm install --no-progress -P -E iframe-coordinator@$RELEASE_VERSION --workspace=iframe-coordinator-cli
+              git add . && git commit --amend --no-edit --no-verify
+              git tag -a v$RELEASE_VERSION -m "chore(release): $RELEASE_VERSION"
+          ''')
+          sh "npm run publish.iframe-coordinator-cli"
           sshagent (credentials: ['3aa16916-868b-4290-a9ee-b1a05343667e']) {
             sh "git push --follow-tags -u origin ${env.SHORT_BRANCH}"
           }
