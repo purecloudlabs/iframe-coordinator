@@ -6,14 +6,14 @@ the trickiest item to get correct. Be sure to read that section carefully._
 
 ## Application Bootstrap
 
-Early in the application bootstrap process, you will need to create a [client instance](../classes/client.client-1.html), add an event
+Early in the application bootstrap process, you will need to create a [client instance](../classes/client.Client.html), add an event
 listener for environment data passed from the host application, and start the client.
 
 [Environment data](../interfaces/client.envdata.html) is data set in the host application that is static over time, but that clients will
 need to function, such as the user-selected locale. It supports both pre-defined common/required
 options and custom data.
 
-Calling [`start`](../classes/client.client-1.html#start) on the client sets up messaging
+Calling [`start`](../classes/client.Client.html#start) on the client sets up messaging
 listeners, and sends a signal to the host application to inform it that your application is
 ready to start receiving messages.
 
@@ -47,7 +47,7 @@ applications. We need to preserve all of these experiences:
 
 To preserve browser history, the client application should never navigate directly to a new page.
 Instead, it should always request that the host application change its url. This is done with
-a [`requestNavigation`](../classes/client.client-1.html#requestnavigation) call or by using links
+a [`requestNavigation`](../classes/client.Client.html#requestnavigation) call or by using links
 with `target="_top"` set.
 
 ### Ensuring Link URLs Reference the Host Application
@@ -104,6 +104,26 @@ let externalLink = `<a href="https://external-site.com/external/path" target="_t
 <ifc-host-link path="/path">Internal Link</ifc-host-link>
 ```
 
+## Providing Page Metadata
+
+When your application loads a page, you may want to provide metadata to the host application to improve the user experience. This is done with
+a [`sendPageMetadata`](../classes/client.Client.html#sendPageMetadata) call.
+
+```typescript
+ifcClient.sendPageMetadata({
+  // The localized title for your page
+  title: 'My Cool Feature',
+  // An array of breadcrumbs to be displayed
+  breadcrumbs: [{ text: 'Home', href: '/home' }],
+  // Optionally, any additional data that your host expects
+  custom: {
+    foo: 'bar'
+  }
+});
+```
+
+The frame-router element will emit a custom event of 'pageMetadata' with the PageMetaData object in the detail property.
+
 ## Requesting Host Actions
 
 There are common requests a client application will want to make of a host application and we strive
@@ -111,16 +131,16 @@ to provide nice default APIs for these.
 
 Currently there are four implemented:
 
-[`requestNotification`](../classes/client.client-1.html#requestnotification), which asks the host
+[`requestNotification`](../classes/client.Client.html#requestnotification), which asks the host
 app to send a notification message to the user.
 
-[`requestModal`](../classes/client.client-1.html#requestModal), which asks the host
+[`requestModal`](../classes/client.Client.html#requestModal), which asks the host
 app to launch a modal identified by a given ID, also accepts initial setup data specific to that modal.
 
-[`requestPromptOnLeave`](../classes/client.client-1.html#requestPromptOnLeave), which asks the host
+[`requestPromptOnLeave`](../classes/client.Client.html#requestPromptOnLeave), which asks the host
 app to display a prompt on leave dialog to the user before navigating.
 
-[`clearPromptOnLeave`](../classes/client.client-1.html#clearPromptOnLeave), which asks the host
+[`clearPromptOnLeave`](../classes/client.Client.html#clearPromptOnLeave), which asks the host
 app to clear the prompt on leave dialog before navigating.
 
 A client application may request a modal on the host like so:
@@ -159,7 +179,7 @@ iframe-coordinator provides a lightweight pub-sub wrapper around the
 [postmessage api](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) to meet that
 need with a consistent message interface.
 
-You can publish messages to the host application via the [`publish`](../classes/client.client-1.html#publish) method.
+You can publish messages to the host application via the [`publish`](../classes/client.Client.html#publish) method.
 
 ```typescript
 ifcClient.publish({
