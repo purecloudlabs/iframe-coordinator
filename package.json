@@ -15,7 +15,8 @@
     "sync-versions": "./scripts/sync-versions.mjs",
     "release": "standard-version && npm run sync-versions",
     "release.dry": "standard-version --dry-run",
-    "publish-libs": "npm publish --workspace=iframe-coordinator --workspace=iframe-coordinator-cli",
+    "publish.iframe-coordinator": "npm publish --workspace=iframe-coordinator",
+    "publish.iframe-coordinator-cli": "npm publish --workspace=iframe-coordinator-cli",
     "doc": "npm run doc --workspace=iframe-coordinator",
     "prepare": "husky install",
     "pre-commit": "npm run pre-commit --workspaces --if-present"
