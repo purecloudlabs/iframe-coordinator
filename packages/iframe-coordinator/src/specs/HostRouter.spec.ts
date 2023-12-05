@@ -1,96 +1,96 @@
-import { HostRouter } from '../HostRouter';
+import { HostRouter } from "../HostRouter";
 
-describe('HostRouter', () => {
+describe("HostRouter", () => {
   let hostRouter: HostRouter;
-  const clientUrl = 'http://example.com/#/test/one';
+  const clientUrl = "http://example.com/#/test/one";
   beforeEach(() => {
     hostRouter = new HostRouter({
       route1: {
         url: clientUrl,
-        assignedRoute: 'route/one'
+        assignedRoute: "route/one",
       },
       withRouteSlashes: {
         url: clientUrl,
-        assignedRoute: '/leading/and/trailing/'
+        assignedRoute: "/leading/and/trailing/",
       },
       noClientHash: {
-        url: 'http://example.com/my/pushstate/app/?query=works',
-        assignedRoute: 'noHash'
+        url: "http://example.com/my/pushstate/app/?query=works",
+        assignedRoute: "noHash",
       },
       withSandboxAndAllow: {
         url: clientUrl,
-        assignedRoute: 'route/two',
-        sandbox: 'allow-scripts',
-        allow: 'microphone *; camera *;'
-      }
+        assignedRoute: "route/two",
+        sandbox: "allow-scripts",
+        allow: "microphone *; camera *;",
+      },
     });
   });
 
-  describe('when generating client URLs', () => {
-    it('should append the path under the primary route to the client URL', () => {
-      const clientInfo = hostRouter.getClientTarget('route/one/foo/bar');
+  describe("when generating client URLs", () => {
+    it("should append the path under the primary route to the client URL", () => {
+      const clientInfo = hostRouter.getClientTarget("route/one/foo/bar");
       if (!clientInfo) {
         fail();
         return;
       }
-      expect(clientInfo.url).toBe('http://example.com/#/test/one/foo/bar');
-      expect(clientInfo.id).toBe('route1');
+      expect(clientInfo.url).toBe("http://example.com/#/test/one/foo/bar");
+      expect(clientInfo.id).toBe("route1");
     });
 
     it("should ignore leading and trailing slashes on the client's assigned route", () => {
       const clientInfo = hostRouter.getClientTarget(
-        'leading/and/trailing/foo/bar'
+        "leading/and/trailing/foo/bar",
       );
       if (!clientInfo) {
         fail();
         return;
       }
-      expect(clientInfo.url).toBe('http://example.com/#/test/one/foo/bar');
-      expect(clientInfo.id).toBe('withRouteSlashes');
+      expect(clientInfo.url).toBe("http://example.com/#/test/one/foo/bar");
+      expect(clientInfo.id).toBe("withRouteSlashes");
     });
 
-    it('should ignore leading slashes on the provided route', () => {
-      const clientInfo = hostRouter.getClientTarget('/route/one/foo/bar');
+    it("should ignore leading slashes on the provided route", () => {
+      const clientInfo = hostRouter.getClientTarget("/route/one/foo/bar");
       if (!clientInfo) {
         fail();
         return;
       }
-      expect(clientInfo.url).toBe('http://example.com/#/test/one/foo/bar');
-      expect(clientInfo.id).toBe('route1');
+      expect(clientInfo.url).toBe("http://example.com/#/test/one/foo/bar");
+      expect(clientInfo.id).toBe("route1");
     });
 
-    it('should preserve trailing slashes on the provided route', () => {
-      const clientInfo = hostRouter.getClientTarget('/route/one/foo/bar/');
+    it("should preserve trailing slashes on the provided route", () => {
+      const clientInfo = hostRouter.getClientTarget("/route/one/foo/bar/");
       if (!clientInfo) {
         fail();
         return;
       }
-      expect(clientInfo.url).toBe('http://example.com/#/test/one/foo/bar/');
-      expect(clientInfo.id).toBe('route1');
+      expect(clientInfo.url).toBe("http://example.com/#/test/one/foo/bar/");
+      expect(clientInfo.id).toBe("route1");
     });
 
-    it('should append to the path when the client url has no hash', () => {
-      const clientInfo = hostRouter.getClientTarget('noHash/foo/bar');
+    it("should append to the path when the client url has no hash", () => {
+      const clientInfo = hostRouter.getClientTarget("noHash/foo/bar");
       if (!clientInfo) {
         fail();
         return;
       }
       expect(clientInfo.url).toBe(
-        'http://example.com/my/pushstate/app/foo/bar?query=works'
+        "http://example.com/my/pushstate/app/foo/bar?query=works",
       );
-      expect(clientInfo.id).toBe('noClientHash');
+      expect(clientInfo.id).toBe("noClientHash");
     });
 
     it('should return "allow" and "sandbox" config options if they exist', () => {
-      const clientInfo = hostRouter.getClientTarget('route/two/');
+      const clientInfo = hostRouter.getClientTarget("route/two/");
       if (!clientInfo) {
         fail();
         return;
       }
-      expect(clientInfo.url).toBe('http://example.com/#/test/one/');
-      expect(clientInfo.id).toBe('withSandboxAndAllow');
-      expect(clientInfo.sandbox).toBe('allow-scripts');
-      expect(clientInfo.allow).toBe('microphone *; camera *;');
+      expect(clientInfo.url).toBe("http://example.com/#/test/one/");
+      expect(clientInfo.id).toBe("withSandboxAndAllow");
+      expect(clientInfo.sandbox).toBe("allow-scripts");
+      expect(clientInfo.allow).toBe("microphone *; camera *;");
     });
   });
 });

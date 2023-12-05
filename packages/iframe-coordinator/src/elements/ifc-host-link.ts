@@ -1,5 +1,5 @@
-import { Client } from '../client';
-const PATH_ATTR = 'path';
+import { Client } from "../client";
+const PATH_ATTR = "path";
 
 /**
  * A custom element responsible for rendering an anchor element, turning a path
@@ -30,7 +30,7 @@ export default class IfcHostLinkElement extends HTMLElement {
    */
   public connectedCallback() {
     const content = this.innerHTML;
-    let path = this.getAttribute(PATH_ATTR) || '';
+    let path = this.getAttribute(PATH_ATTR) || "";
     path = this._client.urlFromHostPath(path);
     this.innerHTML = `<a target='_top' href=${path}>${content}</a>`;
   }
@@ -42,12 +42,12 @@ export default class IfcHostLinkElement extends HTMLElement {
   public attributeChangedCallback(
     name: string,
     oldValue: string | null,
-    newValue: string | null
+    newValue: string | null,
   ) {
     if (name === PATH_ATTR && oldValue !== newValue) {
-      let path = this.getAttribute(PATH_ATTR) || '';
+      let path = this.getAttribute(PATH_ATTR) || "";
       path = this._client.urlFromHostPath(path);
-      this.firstElementChild?.setAttribute('href', path);
+      this.firstElementChild?.setAttribute("href", path);
     }
   }
 }

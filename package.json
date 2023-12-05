@@ -12,7 +12,7 @@
     "test": "npm test --workspaces --if-present",
     "commit": "git-cz",
     "lint": "commitlint -f de759fc509cf39895450dc31742cfb36b08e01b8",
-    "prettier": "prettier '**/*' --write --ignore-unknown",
+    "prettier": "prettier '**/*' --write --ignore-unknown --log-level silent",
     "sync-versions": "./scripts/sync-versions.mjs",
     "release": "standard-version && npm run sync-versions",
     "release.dry": "standard-version --dry-run",

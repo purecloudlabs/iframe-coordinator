@@ -12,7 +12,7 @@ export function normalizeRoute(route: string): string {
  *
  */
 export function stripLeadingSlash(str: string): string {
-  return str.replace(/^\/+/, '');
+  return str.replace(/^\/+/, "");
 }
 
 /**
@@ -20,7 +20,7 @@ export function stripLeadingSlash(str: string): string {
  *
  */
 export function stripTrailingSlash(str: string): string {
-  return str.replace(/\/+$/, '');
+  return str.replace(/\/+$/, "");
 }
 
 /**
@@ -28,7 +28,7 @@ export function stripTrailingSlash(str: string): string {
  *
  */
 export function stripLeadingSlashAndHashTag(str: string): string {
-  return str.replace(/^(\/|#)+/, '');
+  return str.replace(/^(\/|#)+/, "");
 }
 
 /**
@@ -46,5 +46,5 @@ export function joinRoutes(...routes: string[]): string {
 
       return acc;
     }, [] as string[])
-    .join('/');
+    .join("/");
 }

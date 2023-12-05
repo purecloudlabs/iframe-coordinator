@@ -20,13 +20,13 @@ ready to start receiving messages.
 The iframe-coordinator phase of a typical client bootstrap might look like this:
 
 ```typescript
-import { Client } from 'iframe-coordinator/client';
+import { Client } from "iframe-coordinator/client";
 
 let ifcClient = new Client();
 
 // envDataHandler can be used to store the data in a service module or
 // somewhere else useful for future reference
-ifcClient.addListener('environmentalData', envDataHandler);
+ifcClient.addListener("environmentalData", envDataHandler);
 
 ifcClient.start();
 ```
@@ -71,24 +71,24 @@ wrap, extend, or avoid built-in navigation and link generation utilities.
 
 ```typescript
 // Navigate to a new route in the client app: /foo/bar
-ifcClient.requestNavigation({ url: ifcClient.urlFromClientPath('/foo/bar') });
+ifcClient.requestNavigation({ url: ifcClient.urlFromClientPath("/foo/bar") });
 
 // Navigate to a host application route
-ifcClient.requestNavigation({ url: ifcClient.urlFromHostPath('/path') });
+ifcClient.requestNavigation({ url: ifcClient.urlFromHostPath("/path") });
 
 // Navigate to a 3rd party url
-ifcClient.requestNavigation({ url: 'https://external-site.com/external/path' });
+ifcClient.requestNavigation({ url: "https://external-site.com/external/path" });
 ```
 
 **Generating Links**
 
 ```typescript
 let internalLink = `<a href="${ifcClient.urlFromClientPath(
-  'foo/bar'
+  "foo/bar",
 )}" target="_top">Internal Link</a>`;
 
 let hostLink = `<a href="${ifcClient.urlFromHostPath(
-  '/path'
+  "/path",
 )}" target="_top">Internal Link</a>`;
 
 let externalLink = `<a href="https://external-site.com/external/path" target="_top">Internal Link</a>`;
@@ -112,13 +112,13 @@ a [`sendPageMetadata`](../classes/client.Client.html#sendPageMetadata) call.
 ```typescript
 ifcClient.sendPageMetadata({
   // The localized title for your page
-  title: 'My Cool Feature',
+  title: "My Cool Feature",
   // An array of breadcrumbs to be displayed
-  breadcrumbs: [{ text: 'Home', href: '/home' }],
+  breadcrumbs: [{ text: "Home", href: "/home" }],
   // Optionally, any additional data that your host expects
   custom: {
-    foo: 'bar'
-  }
+    foo: "bar",
+  },
 });
 ```
 
@@ -183,16 +183,16 @@ You can publish messages to the host application via the [`publish`](../classes/
 
 ```typescript
 ifcClient.publish({
-  topic: 'please.do.the.thing',
+  topic: "please.do.the.thing",
   payload: {
-    foo: 'bar',
-    baz: 'qux'
-  }
+    foo: "bar",
+    baz: "qux",
+  },
 });
 ```
 
 You can listen for messages from the host on a topic via the [messaging API](../classes/client.eventemitter.html)
 
 ```typescript
-ifcClient.messaging.addEventListener('topic.from.host', payloadHandler);
+ifcClient.messaging.addEventListener("topic.from.host", payloadHandler);
 ```
