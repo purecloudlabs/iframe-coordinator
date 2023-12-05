@@ -3,37 +3,37 @@
  * @module
  */
 
-import { joinRoutes, stripLeadingSlashAndHashTag } from '../src/urlUtils';
-import IfcClientLinkElement from './elements/ifc-client-link';
-import IfcHostLinkElement from './elements/ifc-host-link';
-import { EventEmitter, InternalEventEmitter } from './EventEmitter';
-import { keyEqual } from './Key';
+import { joinRoutes, stripLeadingSlashAndHashTag } from "../src/urlUtils";
+import IfcClientLinkElement from "./elements/ifc-client-link";
+import IfcHostLinkElement from "./elements/ifc-host-link";
+import { EventEmitter, InternalEventEmitter } from "./EventEmitter";
+import { keyEqual } from "./Key";
 import {
   ClientToHost,
-  validate as validateOutgoing
-} from './messages/ClientToHost';
+  validate as validateOutgoing,
+} from "./messages/ClientToHost";
 import {
   HostToClient,
-  validate as validateIncoming
-} from './messages/HostToClient';
+  validate as validateIncoming,
+} from "./messages/HostToClient";
 import {
   API_PROTOCOL,
   applyClientProtocol,
-  PartialMsg
-} from './messages/LabeledMsg';
-import { KeyData } from './messages/Lifecycle';
+  PartialMsg,
+} from "./messages/LabeledMsg";
+import { KeyData } from "./messages/Lifecycle";
 import {
   EnvData,
   EnvDataHandler,
   LabeledEnvInit,
-  Lifecycle
-} from './messages/Lifecycle';
-import { ModalRequest } from './messages/ModalRequest';
-import { NavRequest } from './messages/NavRequest';
-import { Notification } from './messages/Notification';
-import { PageMetadata } from './messages/PageMetadata';
-import { PromptOnLeave } from './messages/PromptOnLeave';
-import { Publication } from './messages/Publication';
+  Lifecycle,
+} from "./messages/Lifecycle";
+import { ModalRequest } from "./messages/ModalRequest";
+import { NavRequest } from "./messages/NavRequest";
+import { Notification } from "./messages/Notification";
+import { PageMetadata } from "./messages/PageMetadata";
+import { PromptOnLeave } from "./messages/PromptOnLeave";
+import { Publication } from "./messages/Publication";
 
 // Re-exports for doc visibility
 export {
@@ -44,7 +44,7 @@ export {
   ModalRequest,
   NavRequest,
   Notification,
-  PromptOnLeave
+  PromptOnLeave,
 };
 
 /**
@@ -83,7 +83,7 @@ export class Client {
     this._clientWindow = window;
     this._publishEmitter = new InternalEventEmitter<Publication>();
     this._publishExposedEmitter = new EventEmitter<Publication>(
-      this._publishEmitter
+      this._publishEmitter,
     );
     this._envDataEmitter = new InternalEventEmitter<EnvData>();
     this._registeredKeys = [];
@@ -99,7 +99,6 @@ export class Client {
      * This class extends IfcClientLinkElement to provide
      * the ifc-client-link custom element access to the client instance
      */
-    // tslint:disable-next-line:max-classes-per-file
     class IfcClientLinkElementComplete extends IfcClientLinkElement {
       constructor() {
         super(clientInstance);
@@ -109,15 +108,14 @@ export class Client {
      * This class extends IfcHostLinkElement to provide
      * the ifc-host-link custom element access to the client instance
      */
-    // tslint:disable-next-line:max-classes-per-file
     class IfcHostLinkElementComplete extends IfcHostLinkElement {
       constructor() {
         super(clientInstance);
       }
     }
-    clientInstance.addListener('environmentalData', envData => {
-      customElements.define('ifc-client-link', IfcClientLinkElementComplete);
-      customElements.define('ifc-host-link', IfcHostLinkElementComplete);
+    clientInstance.addListener("environmentalData", (envData) => {
+      customElements.define("ifc-client-link", IfcClientLinkElementComplete);
+      customElements.define("ifc-host-link", IfcHostLinkElementComplete);
     });
   }
 
@@ -131,8 +129,8 @@ export class Client {
    * @param listener The handler which receives a notification when an event of the specified type occurs.
    */
   public addListener(
-    type: 'environmentalData',
-    listener: EnvDataHandler
+    type: "environmentalData",
+    listener: EnvDataHandler,
   ): Client {
     this._envDataEmitter.addListener(type, listener);
     return this;
@@ -144,8 +142,8 @@ export class Client {
    * @param listener The event handler to remove from the event target.
    */
   public removeListener(
-    type: 'environmentalData',
-    listener: EnvDataHandler
+    type: "environmentalData",
+    listener: EnvDataHandler,
   ): Client {
     this._envDataEmitter.removeListener(type, listener);
     return this;
@@ -155,7 +153,7 @@ export class Client {
    * Removes all event listeners previously registered with {@link Client.addListener | addListener}.
    * @param type A string which specifies the type of event for which to remove an event listener.
    */
-  public removeAllListeners(type: 'environmentalData'): Client {
+  public removeAllListeners(type: "environmentalData"): Client {
     this._envDataEmitter.removeAllListeners(type);
     return this;
   }
@@ -163,7 +161,7 @@ export class Client {
   private _onWindowMessage = (event: MessageEvent) => {
     let validated = null;
 
-    if (event.data && event.data.direction === 'ClientToHost') {
+    if (event.data && event.data.direction === "ClientToHost") {
       return;
     }
 
@@ -178,8 +176,8 @@ export class Client {
   I received an invalid message from the host application. This is probably due
   to a major version mismatch between client and host iframe-coordinator libraries.
         `.trim() +
-            '\n' +
-            e.message
+            "\n" +
+            e.message,
         );
       } else {
         return;
@@ -190,7 +188,7 @@ export class Client {
   };
 
   private _onWindowClick = (event: MouseEvent) => {
-    this._sendToHost({ msgType: 'clickFired', msg: {} });
+    this._sendToHost({ msgType: "clickFired", msg: {} });
 
     if (this._shouldInterceptLinks) {
       this._interceptLink(event);
@@ -199,15 +197,15 @@ export class Client {
 
   private _interceptLink = (event: MouseEvent) => {
     const target = event.target as HTMLElement;
-    if (target.tagName.toLowerCase() === 'a' && event.button === 0) {
+    if (target.tagName.toLowerCase() === "a" && event.button === 0) {
       event.preventDefault();
       const a = event.target as HTMLAnchorElement;
       const url = new URL(a.href);
       this._sendToHost({
-        msgType: 'navRequest',
+        msgType: "navRequest",
         msg: {
-          url: url.toString()
-        }
+          url: url.toString(),
+        },
       });
     }
   };
@@ -218,14 +216,14 @@ export class Client {
     }
 
     const shouldSend = this._registeredKeys.some((key: KeyData) =>
-      keyEqual(key, event)
+      keyEqual(key, event),
     );
     if (!shouldSend) {
       return;
     }
 
     this._sendToHost({
-      msgType: 'registeredKeyFired',
+      msgType: "registeredKeyFired",
       msg: {
         altKey: event.altKey,
         charCode: event.charCode,
@@ -234,8 +232,8 @@ export class Client {
         key: event.key,
         keyCode: event.keyCode,
         metaKey: event.metaKey,
-        shiftKey: event.shiftKey
-      }
+        shiftKey: event.shiftKey,
+      },
     });
   };
 
@@ -246,12 +244,12 @@ export class Client {
     this._environmentData = envData;
 
     if (this._environmentData.registeredKeys) {
-      this._environmentData.registeredKeys.forEach(keyData => {
+      this._environmentData.registeredKeys.forEach((keyData) => {
         const options = {
           alt: keyData.altKey,
           ctrl: keyData.ctrlKey,
           shift: keyData.shiftKey,
-          meta: keyData.metaKey
+          meta: keyData.metaKey,
         };
 
         if (options.alt || options.ctrl || options.meta) {
@@ -260,15 +258,15 @@ export class Client {
       });
     }
 
-    this._envDataEmitter.dispatch('environmentalData', this._environmentData);
+    this._envDataEmitter.dispatch("environmentalData", this._environmentData);
   }
 
   private _handleHostMessage(message: HostToClient): void {
     switch (message.msgType) {
-      case 'publish':
+      case "publish":
         this._publishEmitter.dispatch(message.msg.topic, message.msg);
         break;
-      case 'env_init':
+      case "env_init":
         this._handleEnvironmentData(message);
         return;
       default:
@@ -296,7 +294,7 @@ export class Client {
    */
   public urlFromClientPath(clientRoute: string): string {
     const hostRootUrl = this.environmentData.hostRootUrl;
-    const assignedRoute = this._assignedRoute || '';
+    const assignedRoute = this._assignedRoute || "";
     const trimmedClientRoute = stripLeadingSlashAndHashTag(clientRoute);
     return joinRoutes(hostRootUrl, assignedRoute, trimmedClientRoute);
   }
@@ -328,8 +326,8 @@ export class Client {
     const trimmedClientRoute = stripLeadingSlashAndHashTag(clientRouteLegacy);
     return joinRoutes(
       this.environmentData.hostRootUrl,
-      this._assignedRoute || '',
-      trimmedClientRoute
+      this._assignedRoute || "",
+      trimmedClientRoute,
     );
   }
 
@@ -346,8 +344,8 @@ export class Client {
 I received invalid data to send to the host application. This is probably due to
 bad input into one of the iframe-coordinator client methods.
       `.trim() +
-          '\n' +
-          e.message
+          "\n" +
+          e.message,
       );
     }
 
@@ -364,9 +362,9 @@ bad input into one of the iframe-coordinator client methods.
 
     this._isStarted = true;
 
-    this._clientWindow.addEventListener('message', this._onWindowMessage);
-    this._clientWindow.addEventListener('keydown', this._onKeyDown);
-    this._clientWindow.addEventListener('click', this._onWindowClick);
+    this._clientWindow.addEventListener("message", this._onWindowMessage);
+    this._clientWindow.addEventListener("keydown", this._onKeyDown);
+    this._clientWindow.addEventListener("click", this._onWindowClick);
     this._sendToHost(Lifecycle.startedMessage);
   }
 
@@ -407,9 +405,9 @@ bad input into one of the iframe-coordinator client methods.
     }
 
     this._isStarted = false;
-    this._clientWindow.removeEventListener('message', this._onWindowMessage);
-    this._clientWindow.removeEventListener('keydown', this._onKeyDown);
-    this._clientWindow.removeEventListener('click', this._onWindowClick);
+    this._clientWindow.removeEventListener("message", this._onWindowMessage);
+    this._clientWindow.removeEventListener("keydown", this._onKeyDown);
+    this._clientWindow.removeEventListener("click", this._onWindowClick);
     this.stopInterceptingLinks();
   }
 
@@ -420,8 +418,8 @@ bad input into one of the iframe-coordinator client methods.
    */
   public publish(publication: Publication): void {
     this._sendToHost({
-      msgType: 'publish',
-      msg: publication
+      msgType: "publish",
+      msg: publication,
     });
   }
 
@@ -436,8 +434,8 @@ bad input into one of the iframe-coordinator client methods.
    */
   public requestModal(modalRequest: ModalRequest) {
     this._sendToHost({
-      msgType: 'modalRequest',
-      msg: modalRequest
+      msgType: "modalRequest",
+      msg: modalRequest,
     });
   }
 
@@ -478,8 +476,8 @@ bad input into one of the iframe-coordinator client methods.
    */
   public requestNotification(notification: Notification): void {
     this._sendToHost({
-      msgType: 'notifyRequest',
-      msg: notification
+      msgType: "notifyRequest",
+      msg: notification,
     });
   }
 
@@ -496,8 +494,8 @@ bad input into one of the iframe-coordinator client methods.
    */
   public requestNavigation(destination: NavRequest): void {
     this._sendToHost({
-      msgType: 'navRequest',
-      msg: destination
+      msgType: "navRequest",
+      msg: destination,
     });
   }
 
@@ -506,8 +504,8 @@ bad input into one of the iframe-coordinator client methods.
    */
   public requestPromptOnLeave(messagePrompt?: string): void {
     this._sendToHost({
-      msgType: 'promptOnLeave',
-      msg: { shouldPrompt: true, message: messagePrompt }
+      msgType: "promptOnLeave",
+      msg: { shouldPrompt: true, message: messagePrompt },
     });
   }
 
@@ -516,8 +514,8 @@ bad input into one of the iframe-coordinator client methods.
    */
   public clearPromptOnLeave(): void {
     this._sendToHost({
-      msgType: 'promptOnLeave',
-      msg: { shouldPrompt: false }
+      msgType: "promptOnLeave",
+      msg: { shouldPrompt: false },
     });
   }
 
@@ -532,8 +530,8 @@ bad input into one of the iframe-coordinator client methods.
    */
   public sendPageMetadata(metadata: PageMetadata): void {
     this._sendToHost({
-      msgType: 'pageMetadata',
-      msg: metadata
+      msgType: "pageMetadata",
+      msg: metadata,
     });
   }
 }
