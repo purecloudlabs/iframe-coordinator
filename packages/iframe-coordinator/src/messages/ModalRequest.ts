@@ -1,5 +1,5 @@
-import { constant, Decoder, mixed, object, string } from 'decoders';
-import { labeledDecoder, LabeledMsg } from './LabeledMsg';
+import { constant, Decoder, mixed, object, string } from "decoders";
+import { labeledDecoder, LabeledMsg } from "./LabeledMsg";
 
 /**
  * The modal request data.
@@ -17,19 +17,19 @@ export interface ModalRequest {
  * between the clients and the host application.
  */
 export interface LabeledModalRequest
-  extends LabeledMsg<'modalRequest', ModalRequest> {
+  extends LabeledMsg<"modalRequest", ModalRequest> {
   /** Message identifier */
-  msgType: 'modalRequest';
+  msgType: "modalRequest";
   /** Modal request details (type and data) */
   msg: ModalRequest;
 }
 
 const decoder: Decoder<LabeledModalRequest> = labeledDecoder(
-  constant<'modalRequest'>('modalRequest'),
+  constant<"modalRequest">("modalRequest"),
   object({
     modalId: string,
-    modalData: mixed
-  })
+    modalData: mixed,
+  }),
 );
 
 export { decoder };

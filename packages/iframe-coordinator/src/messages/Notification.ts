@@ -6,9 +6,9 @@ import {
   mixed,
   object,
   optional,
-  string
-} from 'decoders';
-import { labeledDecoder, LabeledMsg } from './LabeledMsg';
+  string,
+} from "decoders";
+import { labeledDecoder, LabeledMsg } from "./LabeledMsg";
 
 /**
  * A notification configuration for an interface such as a toast-style
@@ -28,9 +28,9 @@ export interface Notification {
  * in the host application.
  */
 export interface LabeledNotification
-  extends LabeledMsg<'notifyRequest', Notification> {
+  extends LabeledMsg<"notifyRequest", Notification> {
   /** Message identifier */
-  msgType: 'notifyRequest';
+  msgType: "notifyRequest";
   /** Toast details */
   msg: Notification;
 }
@@ -38,22 +38,22 @@ export interface LabeledNotification
 /**
  * Helper function to convert old message types to the new type
  */
-function alwaysMsgType(msgType: 'string'): 'notifyRequest' {
-  return 'notifyRequest';
+function alwaysMsgType(msgType: "string"): "notifyRequest" {
+  return "notifyRequest";
 }
 
-const toastTypeDecoder: Decoder<'notifyRequest'> = map(
-  constant<'toastRequest'>('toastRequest'),
-  alwaysMsgType
+const toastTypeDecoder: Decoder<"notifyRequest"> = map(
+  constant<"toastRequest">("toastRequest"),
+  alwaysMsgType,
 );
 
 const decoder: Decoder<LabeledNotification> = labeledDecoder(
-  either(constant<'notifyRequest'>('notifyRequest'), toastTypeDecoder),
+  either(constant<"notifyRequest">("notifyRequest"), toastTypeDecoder),
   object({
     title: optional(string),
     message: string,
-    custom: mixed
-  })
+    custom: mixed,
+  }),
 );
 
 export { decoder };

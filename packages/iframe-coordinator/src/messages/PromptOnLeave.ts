@@ -1,5 +1,5 @@
-import { boolean, constant, Decoder, object, optional, string } from 'decoders';
-import { labeledDecoder, LabeledMsg } from './LabeledMsg';
+import { boolean, constant, Decoder, object, optional, string } from "decoders";
+import { labeledDecoder, LabeledMsg } from "./LabeledMsg";
 
 /** A prompt on leave dialog to be displayed
  * by the host application. If the host application receives a message with the shouldPrompt field set to true
@@ -18,19 +18,19 @@ export interface PromptOnLeave {
  * A message used to request a prompt on leave dialog to be displayed in the host app.
  */
 export interface LabeledPrompt
-  extends LabeledMsg<'promptOnLeave', PromptOnLeave> {
+  extends LabeledMsg<"promptOnLeave", PromptOnLeave> {
   /** Message identifier */
-  msgType: 'promptOnLeave';
+  msgType: "promptOnLeave";
   /** Message details */
   msg: PromptOnLeave;
 }
 
 const decoder: Decoder<LabeledPrompt> = labeledDecoder(
-  constant<'promptOnLeave'>('promptOnLeave'),
+  constant<"promptOnLeave">("promptOnLeave"),
   object({
     shouldPrompt: boolean,
-    message: optional(string)
-  })
+    message: optional(string),
+  }),
 );
 
 export { decoder };

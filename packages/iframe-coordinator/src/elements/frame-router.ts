@@ -1,12 +1,12 @@
-import { EventEmitter, InternalEventEmitter } from '../EventEmitter';
-import FrameManager from '../FrameManager';
-import { HostRouter, RoutingMap } from '../HostRouter';
-import { ClientToHost } from '../messages/ClientToHost';
-import { EnvData, LabeledStarted, SetupData } from '../messages/Lifecycle';
-import { Publication } from '../messages/Publication';
-import { stripTrailingSlash } from '../urlUtils';
+import { EventEmitter, InternalEventEmitter } from "../EventEmitter";
+import FrameManager from "../FrameManager";
+import { HostRouter, RoutingMap } from "../HostRouter";
+import { ClientToHost } from "../messages/ClientToHost";
+import { EnvData, LabeledStarted, SetupData } from "../messages/Lifecycle";
+import { Publication } from "../messages/Publication";
+import { stripTrailingSlash } from "../urlUtils";
 
-const ROUTE_ATTR = 'route';
+const ROUTE_ATTR = "route";
 
 /** A property that can be set to initialize the host frame with the
  * possible clients and the environmental data required by the clients
@@ -41,12 +41,12 @@ export default class FrameRouterElement extends HTMLElement {
     super();
     this._publishEmitter = new InternalEventEmitter<Publication>();
     this._publishExposedEmitter = new EventEmitter<Publication>(
-      this._publishEmitter
+      this._publishEmitter,
     );
     this._queuedEvents = [];
 
     this._frameManager = new FrameManager({
-      onMessage: this._handleClientMessages.bind(this)
+      onMessage: this._handleClientMessages.bind(this),
     });
   }
 
@@ -91,10 +91,10 @@ export default class FrameRouterElement extends HTMLElement {
     const processedHostUrl = this._processHostUrl(envData.hostRootUrl);
     this._envData = {
       ...envData,
-      hostRootUrl: processedHostUrl
+      hostRootUrl: processedHostUrl,
     };
     this._clientConfig = { clients, envData };
-    this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
+    this.changeRoute(this.getAttribute(ROUTE_ATTR) || "about:blank");
   }
 
   /**
@@ -113,7 +113,7 @@ export default class FrameRouterElement extends HTMLElement {
   public publish(publication: Publication): void {
     this._frameManager.sendToClient({
       msg: publication,
-      msgType: 'publish'
+      msgType: "publish",
     });
   }
 
@@ -125,11 +125,11 @@ export default class FrameRouterElement extends HTMLElement {
   public changeRoute(newPath: string) {
     if (this._router) {
       const clientInfo = this._router.getClientTarget(newPath);
-      const newClientId = (clientInfo && clientInfo.id) || '';
+      const newClientId = (clientInfo && clientInfo.id) || "";
 
       if (this._currentClientId !== newClientId) {
         this._dispatchEventWhenConnected(
-          new CustomEvent('clientChanged', { detail: newClientId })
+          new CustomEvent("clientChanged", { detail: newClientId }),
         );
       }
 
@@ -139,28 +139,28 @@ export default class FrameRouterElement extends HTMLElement {
          * As a legacy behavior, a clientChanged event will also fire unless the
          * _currentClientId was already an empty string.
          */
-        this._dispatchEventWhenConnected(new CustomEvent('clientNotFound'));
+        this._dispatchEventWhenConnected(new CustomEvent("clientNotFound"));
       }
 
       this._currentPath = newPath;
       this._currentClientId = newClientId;
 
       const newLocation = this._frameManager.setFrameLocation(
-        clientInfo && clientInfo.url
+        clientInfo && clientInfo.url,
       );
 
       this._frameManager.setFrameSandbox(
-        (clientInfo && clientInfo.sandbox) || undefined
+        (clientInfo && clientInfo.sandbox) || undefined,
       );
       this._frameManager.setFrameAllow(
-        (clientInfo && clientInfo.allow) || undefined
+        (clientInfo && clientInfo.allow) || undefined,
       );
       this._frameManager.setFrameDefaultTitle(
-        (clientInfo && clientInfo.defaultTitle) || undefined
+        (clientInfo && clientInfo.defaultTitle) || undefined,
       );
 
       this._dispatchEventWhenConnected(
-        new CustomEvent('frameTransition', { detail: newLocation })
+        new CustomEvent("frameTransition", { detail: newLocation }),
       );
     }
   }
@@ -172,10 +172,10 @@ export default class FrameRouterElement extends HTMLElement {
   public attributeChangedCallback(
     name: string,
     oldValue: string | null,
-    newValue: string | null
+    newValue: string | null,
   ) {
     if (name === ROUTE_ATTR && oldValue !== newValue) {
-      this.changeRoute(newValue || '');
+      this.changeRoute(newValue || "");
     }
   }
 
@@ -198,21 +198,21 @@ export default class FrameRouterElement extends HTMLElement {
     const processedHostUrl = this._processHostUrl(envData.hostRootUrl);
     this._envData = {
       ...envData,
-      hostRootUrl: processedHostUrl
+      hostRootUrl: processedHostUrl,
     };
 
-    this.changeRoute(this.getAttribute(ROUTE_ATTR) || 'about:blank');
+    this.changeRoute(this.getAttribute(ROUTE_ATTR) || "about:blank");
   }
 
   private _handleClientMessages(message: ClientToHost) {
     switch (message.msgType) {
-      case 'publish':
+      case "publish":
         const publication: Publication = message.msg;
         publication.clientId = this._currentClientId;
         this._publishEmitter.dispatch(message.msg.topic, publication);
         this._dispatchClientMessage(message);
         break;
-      case 'client_started':
+      case "client_started":
         this._handleLifecycleMessage(message);
         break;
       default:
@@ -224,11 +224,11 @@ export default class FrameRouterElement extends HTMLElement {
     const assignedRoute = this._getCurrentClientAssignedRoute();
     const envData: SetupData = {
       ...this._envData,
-      assignedRoute
+      assignedRoute,
     };
     this._frameManager.sendToClient({
-      msgType: 'env_init',
-      msg: envData
+      msgType: "env_init",
+      msg: envData,
     });
   }
 
@@ -237,7 +237,7 @@ export default class FrameRouterElement extends HTMLElement {
     messageDetail.clientId = this._currentClientId;
 
     this.dispatchEvent(
-      new CustomEvent(message.msgType, { detail: messageDetail })
+      new CustomEvent(message.msgType, { detail: messageDetail }),
     );
   }
 
@@ -256,15 +256,15 @@ export default class FrameRouterElement extends HTMLElement {
 
   private _emitQueuedEvents() {
     if (this.isConnected) {
-      this._queuedEvents.forEach(event => this.dispatchEvent(event));
+      this._queuedEvents.forEach((event) => this.dispatchEvent(event));
       this._queuedEvents = [];
     }
   }
 
   private _getCurrentClientAssignedRoute() {
-    const currentRoutePath = this.getAttribute(ROUTE_ATTR) || '';
+    const currentRoutePath = this.getAttribute(ROUTE_ATTR) || "";
     const clientInfo = this._router.getClientTarget(currentRoutePath);
-    return (clientInfo && clientInfo.assignedRoute) || '';
+    return (clientInfo && clientInfo.assignedRoute) || "";
   }
 
   private _processHostUrl(hostUrl: string) {

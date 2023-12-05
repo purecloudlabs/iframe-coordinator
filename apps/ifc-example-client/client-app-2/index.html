@@ -16,14 +16,14 @@
         on the iframe
       </p>
 
-      <video id="webrtc" autoplay style="height: auto; width: 150px;"></video>
+      <video id="webrtc" autoplay style="height: auto; width: 150px"></video>
 
       <script type="text/javascript">
         function requestPermissions() {
           window.navigator.mediaDevices
             .getUserMedia({ video: true })
-            .then(stream => {
-              document.querySelector('video#webrtc').srcObject = stream;
+            .then((stream) => {
+              document.querySelector("video#webrtc").srcObject = stream;
             });
         }
 
