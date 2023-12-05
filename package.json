@@ -12,6 +12,7 @@
     "test": "npm test --workspaces --if-present",
     "commit": "git-cz",
     "lint": "commitlint -f de759fc509cf39895450dc31742cfb36b08e01b8",
+    "prettier": "prettier '**/*' --write --ignore-unknown",
     "sync-versions": "./scripts/sync-versions.mjs",
     "release": "standard-version && npm run sync-versions",
     "release.dry": "standard-version --dry-run",
@@ -19,7 +20,7 @@
     "publish.iframe-coordinator-cli": "npm publish --workspace=iframe-coordinator-cli",
     "doc": "npm run doc --workspace=iframe-coordinator",
     "prepare": "husky install",
-    "pre-commit": "npm run pre-commit --workspaces --if-present"
+    "pre-commit": "lint-staged"
   },
   "keywords": [],
   "author": "",
@@ -30,12 +31,19 @@
     "commitizen": "^4.3.0",
     "git-cz": "^4.9.0",
     "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "prettier": "^3.1.0",
     "standard-version": "^9.5.0"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "lint-staged": {
+    "*": [
+      "prettier --write --ignore-unknown"
+    ]
   },
   "standard-version": {
     "skip": {
