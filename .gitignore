@@ -2,6 +2,5 @@ node_modules/
 /dist/
 /cli/embedded-app/dist/**/*
 .vscode
-.npmrc
 .pnpm-debug.log
 .DS_Store

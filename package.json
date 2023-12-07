@@ -27,9 +27,9 @@
   "devDependencies": {
     "@commitlint/cli": "^9.1.2",
     "@commitlint/config-conventional": "^12.1.4",
-    "commitizen": "^4.2.4",
+    "commitizen": "^4.3.0",
     "git-cz": "^4.9.0",
-    "husky": "^8.0.2",
+    "husky": "^8.0.3",
     "standard-version": "^9.5.0"
   },
   "config": {
@@ -59,7 +59,7 @@
     }
   },
   "volta": {
-    "node": "16.18.1",
-    "npm": "8.18.0"
+    "node": "18.14.2",
+    "npm": "9.5.0"
   }
 }
