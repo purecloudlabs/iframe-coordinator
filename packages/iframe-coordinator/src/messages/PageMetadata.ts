@@ -5,9 +5,9 @@ import {
   mixed,
   object,
   optional,
-  string
-} from 'decoders';
-import { labeledDecoder, LabeledMsg } from './LabeledMsg';
+  string,
+} from "decoders";
+import { labeledDecoder, LabeledMsg } from "./LabeledMsg";
 
 /**
  * The Page metadata
@@ -36,25 +36,25 @@ export interface Breadcrumb {
  * from the clients to the host application.
  */
 export interface LabeledPageMetadata
-  extends LabeledMsg<'pageMetadata', PageMetadata> {
+  extends LabeledMsg<"pageMetadata", PageMetadata> {
   /** Message identifier */
-  msgType: 'pageMetadata';
+  msgType: "pageMetadata";
   /** Modal request details (type and data) */
   msg: PageMetadata;
 }
 
 const decoder: Decoder<LabeledPageMetadata> = labeledDecoder(
-  constant<'pageMetadata'>('pageMetadata'),
+  constant<"pageMetadata">("pageMetadata"),
   object({
     title: string,
     breadcrumbs: array(
       object({
         text: string,
-        href: string
-      })
+        href: string,
+      }),
     ),
-    custom: optional(mixed)
-  })
+    custom: optional(mixed),
+  }),
 );
 
 export { decoder };

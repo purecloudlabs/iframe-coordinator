@@ -27,14 +27,10 @@
     "karma-chrome-launcher": "^3.2.0",
     "karma-jasmine": "^5.1.0",
     "karma-typescript": "^5.5.4",
-    "lint-staged": "^13.3.0",
-    "prettier": "^1.19.1",
     "puppeteer": "^1.20.0",
     "rollup": "^3.29.4",
     "source-map-loader": "^0.2.4",
     "ts-loader": "^9.5.1",
-    "tslint": "^5.20.1",
-    "tslint-config-prettier": "^1.18.0",
     "typedoc": "^0.23.28",
     "typescript": "^4.9.5"
   },
@@ -43,21 +39,10 @@
     "build-lib": "rollup -c",
     "current-version": "cross-var \"echo $npm_package_version\"",
     "doc": "typedoc",
-    "format.fix": "prettier --fix **/*.ts **/*.tsx",
-    "lint": "tslint --project tsconfig.json && npm run lint.format",
-    "lint.fix": "npm run lint.ts -- --fix",
-    "lint.format": "prettier --check **/*.ts **/*.tsx",
-    "pre-commit": "lint-staged",
     "start": "rollup -c --watch",
     "test": "karma start --single-run",
     "test.watch": "karma start",
     "test.watch.chrome": "karma start --browsers=Chrome"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "tslint --fix",
-      "prettier --write"
-    ]
   },
   "author": "",
   "license": "MIT",

@@ -6,24 +6,24 @@ import {
   mixed,
   object,
   optional,
-  string
-} from 'decoders';
-import { applyClientProtocol, labeledDecoder, LabeledMsg } from './LabeledMsg';
+  string,
+} from "decoders";
+import { applyClientProtocol, labeledDecoder, LabeledMsg } from "./LabeledMsg";
 
 /**
  * Client started indication.  The client will
  * now listen for messages and begin sending
  * messages from the client application.
  */
-export interface LabeledStarted extends LabeledMsg<'client_started', any> {
+export interface LabeledStarted extends LabeledMsg<"client_started", any> {
   /** Message identifier */
-  msgType: 'client_started';
+  msgType: "client_started";
 }
 
 // We don't care what is in msg for Started messages.
 const startedDecoder: Decoder<LabeledStarted> = labeledDecoder(
-  constant<'client_started'>('client_started'),
-  mixed
+  constant<"client_started">("client_started"),
+  mixed,
 );
 
 /**
@@ -69,15 +69,15 @@ export interface KeyData {
  * Initial setup message where environmental data
  * is sent to the client.
  */
-export interface LabeledEnvInit extends LabeledMsg<'env_init', SetupData> {
+export interface LabeledEnvInit extends LabeledMsg<"env_init", SetupData> {
   /** Message identifier */
-  msgType: 'env_init';
+  msgType: "env_init";
   /** Environment data */
   msg: SetupData;
 }
 
 const envDecoder: Decoder<LabeledEnvInit> = labeledDecoder(
-  constant<'env_init'>('env_init'),
+  constant<"env_init">("env_init"),
   object({
     locale: string,
     hostRootUrl: string,
@@ -89,12 +89,12 @@ const envDecoder: Decoder<LabeledEnvInit> = labeledDecoder(
           altKey: optional(boolean),
           ctrlKey: optional(boolean),
           metaKey: optional(boolean),
-          shiftKey: optional(boolean)
-        })
-      )
+          shiftKey: optional(boolean),
+        }),
+      ),
     ),
-    custom: mixed
-  })
+    custom: mixed,
+  }),
 );
 
 export { startedDecoder, envDecoder };
@@ -117,8 +117,8 @@ export class Lifecycle {
    */
   public static get startedMessage(): LabeledStarted {
     return applyClientProtocol({
-      msgType: 'client_started',
-      msg: undefined
+      msgType: "client_started",
+      msg: undefined,
     });
   }
 }

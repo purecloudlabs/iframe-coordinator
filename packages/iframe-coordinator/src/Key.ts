@@ -1,25 +1,25 @@
-import { KeyData } from './messages/Lifecycle';
+import { KeyData } from "./messages/Lifecycle";
 
 const codeMap = new Map(
   Object.entries({
-    Comma: ',',
-    Period: '.',
-    Semicolon: ';',
+    Comma: ",",
+    Period: ".",
+    Semicolon: ";",
     Quote: '"',
-    BracketLeft: '[',
-    BracketRight: ']',
-    Backquote: '`',
-    Backslash: '\\',
-    Minus: '-',
-    Equal: '='
-  })
+    BracketLeft: "[",
+    BracketRight: "]",
+    Backquote: "`",
+    Backslash: "\\",
+    Minus: "-",
+    Equal: "=",
+  }),
 );
 
 const keyCodeMap = new Map<number, string>([
-  [37, 'ArrowLeft'],
-  [38, 'ArrowUp'],
-  [39, 'ArrowRight'],
-  [40, 'ArrowDown']
+  [37, "ArrowLeft"],
+  [38, "ArrowUp"],
+  [39, "ArrowRight"],
+  [40, "ArrowDown"],
 ]);
 
 /**
@@ -29,11 +29,11 @@ const keyCodeMap = new Map<number, string>([
  * Other characters like .,[] are all treated with special string values.
  */
 function getCodeValue(code: string): string | undefined {
-  if (code.startsWith('Key')) {
+  if (code.startsWith("Key")) {
     return code.substring(3, code.length).toLowerCase();
   }
 
-  if (code.startsWith('Digit')) {
+  if (code.startsWith("Digit")) {
     return code.substring(5, code.length).toLowerCase();
   }
 

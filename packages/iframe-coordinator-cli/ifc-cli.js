@@ -1,17 +1,17 @@
 #!/usr/bin/env node
 
-const commander = require('commander');
+const commander = require("commander");
 const program = new commander.Command();
-const fs = require('fs');
-const path = require('path');
-const findRoot = require('find-root');
-const express = require('express');
-const cheerio = require('cheerio');
-const https = require('https');
-const devCertAuthority = require('dev-cert-authority');
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const fs = require("fs");
+const path = require("path");
+const findRoot = require("find-root");
+const express = require("express");
+const cheerio = require("cheerio");
+const https = require("https");
+const devCertAuthority = require("dev-cert-authority");
+const { createProxyMiddleware } = require("http-proxy-middleware");
 
-const appPath = path.join(__dirname, './dist/');
+const appPath = path.join(__dirname, "./dist/");
 
 main();
 
@@ -23,17 +23,17 @@ function main() {
   app = express();
   app.use(/^\/$/, serveIndex(indexContent));
   app.use(
-    '/proxy',
+    "/proxy",
     createProxyMiddleware({
       router: extractTargetHost,
       pathRewrite: rewritePath,
       onError: (err, req, res) => {
-        console.log('ERROR', err);
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        console.log("ERROR", err);
+        res.writeHead(500, { "Content-Type": "text/plain" });
         res.end(err.message);
       },
-      target: `http://localhost:${opts.port}` //Required by middleware, but should be always overriden by the previous options
-    })
+      target: `http://localhost:${opts.port}`, //Required by middleware, but should be always overriden by the previous options
+    }),
   );
   app.use(express.static(appPath));
 
@@ -45,7 +45,7 @@ function main() {
   }
 
   const localhostUrl =
-    (opts.ssl ? 'https' : 'http') + '://localhost:' + opts.port + '/';
+    (opts.ssl ? "https" : "http") + "://localhost:" + opts.port + "/";
   console.log(`Listening on port ${opts.port}...`);
   console.log(`Visit host app at: ${localhostUrl}`);
 }
@@ -54,19 +54,19 @@ function main() {
 
 function parseProgramOptions() {
   const projRoot = findRoot(process.cwd());
-  const defaultJsConfig = path.join(projRoot, 'ifc-cli.config.js');
+  const defaultJsConfig = path.join(projRoot, "ifc-cli.config.js");
 
   program
     .option(
-      '-f, --config-file <file>',
-      'iframe client configuration file',
-      defaultJsConfig
+      "-f, --config-file <file>",
+      "iframe client configuration file",
+      defaultJsConfig,
     )
-    .option('-p, --port <port_num>', 'port number to host on', 3000)
-    .option('-s, --ssl', 'serve over https')
-    .option('--ssl-cert <cert_path>', 'certificate file to use for https')
-    .option('--ssl-key <key_path>', 'key file to use for https');
-  program.on('--help', showHelpText);
+    .option("-p, --port <port_num>", "port number to host on", 3000)
+    .option("-s, --ssl", "serve over https")
+    .option("--ssl-cert <cert_path>", "certificate file to use for https")
+    .option("--ssl-key <key_path>", "key file to use for https");
+  program.on("--help", showHelpText);
 
   program.parse(process.argv);
 
@@ -75,12 +75,12 @@ function parseProgramOptions() {
     port: program.port,
     ssl: program.ssl,
     sslCert: program.sslCert,
-    sslKey: program.sslKey
+    sslKey: program.sslKey,
   };
 }
 
 function showHelpText() {
-  const configExample = path.join(__dirname, 'example-ifc.config.js');
+  const configExample = path.join(__dirname, "example-ifc.config.js");
   console.log(`
   This program will start a server for a basic iframe-coordinator host app. In
   order to configure the frame-router element and any other custom logic needed
@@ -101,17 +101,17 @@ function showHelpText() {
 }
 
 function serveIndex(indexContent) {
-  return function(req, res) {
+  return function (req, res) {
     res.send(indexContent);
   };
 }
 
 function generateIndex(appPath, clientConfigFile) {
   const baseIndex = fs
-    .readFileSync(path.join(appPath, 'index.html'))
+    .readFileSync(path.join(appPath, "index.html"))
     .toString();
   const $ = cheerio.load(baseIndex);
-  $('head').append(configScript(clientConfigFile));
+  $("head").append(configScript(clientConfigFile));
   return $.html();
 }
 
@@ -142,12 +142,12 @@ function findConfigFile(cliPath) {
 
 function getSslOpts(certPath, keyPath) {
   if (!certPath || !keyPath) {
-    return devCertAuthority('localhost');
+    return devCertAuthority("localhost");
   }
   if (fs.existsSync(certPath) && fs.existsSync(keyPath)) {
     return {
       cert: fs.readFileSync(certPath),
-      key: fs.readFileSync(keyPath)
+      key: fs.readFileSync(keyPath),
     };
   } else {
     console.log(`Certificate files not found @ ${certPath}, and ${keyPath}`);
@@ -158,8 +158,8 @@ function getSslOpts(certPath, keyPath) {
 // Make sure a path isn't interpreted as a module when required.
 function relativizePath(inPath) {
   let outPath = path.relative(process.cwd(), inPath);
-  if (!outPath.startsWith('.')) {
-    outPath = './' + outPath;
+  if (!outPath.startsWith(".")) {
+    outPath = "./" + outPath;
   }
   return outPath;
 }
@@ -173,7 +173,7 @@ function rewritePath(path) {
 }
 
 function extractProxyUrl(path) {
-  const proxyPath = path.replace(/^\/proxy\//, '');
+  const proxyPath = path.replace(/^\/proxy\//, "");
   let newUrl;
   try {
     newUrl = new URL(decodeURIComponent(proxyPath));

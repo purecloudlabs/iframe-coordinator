@@ -16,20 +16,19 @@ const findIndex =
   [].findIndex ||
   // IE11 support
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/findIndex#Polyfill
-  function(
+  function (
     predicate: (value: never, index: number, obj: never[]) => boolean,
-    thisArg?: any
+    thisArg?: any,
   ) {
     if (this == null) {
       throw new TypeError('"this" is null or not defined');
     }
 
     const o = Object(this);
-    // tslint:disable-next-line
     const len = o.length >>> 0;
 
-    if (typeof predicate !== 'function') {
-      throw new TypeError('predicate must be a function');
+    if (typeof predicate !== "function") {
+      throw new TypeError("predicate must be a function");
     }
 
     let k = 0;
@@ -85,7 +84,7 @@ export class EventEmitter<T> {
    */
   public removeListener(
     type: string,
-    listener: EventHandler<T>
+    listener: EventHandler<T>,
   ): EventEmitter<T> {
     this._rootEmitter.removeListener(type, listener);
     return this;
@@ -107,7 +106,6 @@ export class EventEmitter<T> {
  * events between host and client. This provides class safety
  * on both the type and listeners
  */
-// tslint:disable-next-line
 export class InternalEventEmitter<T> {
   private _events: Events<T>;
 
@@ -122,7 +120,7 @@ export class InternalEventEmitter<T> {
    */
   public addListener(
     type: string,
-    listener: EventHandler<T>
+    listener: EventHandler<T>,
   ): InternalEventEmitter<T> {
     // TODO Improve performance by allowing
     // a single T to be assigned without creating an array
@@ -144,7 +142,7 @@ export class InternalEventEmitter<T> {
    */
   public removeListener(
     type: string,
-    listener: EventHandler<T>
+    listener: EventHandler<T>,
   ): InternalEventEmitter<T> {
     if (!this._events[type]) {
       return this;

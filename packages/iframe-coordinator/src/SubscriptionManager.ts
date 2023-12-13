@@ -1,4 +1,4 @@
-import { Publication } from './messages/Publication';
+import { Publication } from "./messages/Publication";
 
 /**
  * Callback which can handle a publication message.

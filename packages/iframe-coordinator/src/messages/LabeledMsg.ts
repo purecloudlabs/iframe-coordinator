@@ -6,18 +6,18 @@ import {
   map,
   object,
   optional,
-  string
-} from 'decoders';
+  string,
+} from "decoders";
 
 // This is replaced by rollup-plugin-replace with the actual version from package.json
-const version = '__PACKAGE_VERSION__';
+const version = "__PACKAGE_VERSION__";
 
-export const API_PROTOCOL = 'iframe-coordinator';
+export const API_PROTOCOL = "iframe-coordinator";
 
 /**
  * Based on MessageDirection, hosts and clients can ignore messages that are not targeted at them.
  */
-export type MessageDirection = 'ClientToHost' | 'HostToClient';
+export type MessageDirection = "ClientToHost" | "HostToClient";
 
 /**
  * Labeled message is a general structure
@@ -30,7 +30,7 @@ export type MessageDirection = 'ClientToHost' | 'HostToClient';
  */
 export interface LabeledMsg<T, V> extends PartialMsg<T, V> {
   /** Distinguisihes iframe-coordinator message from other postmessage events */
-  protocol: 'iframe-coordinator';
+  protocol: "iframe-coordinator";
   /** library version */
   version: string;
   /** So that nested iframe-coordinators can ignore messages that don't apply */
@@ -53,13 +53,13 @@ export interface PartialMsg<T, V> {
  * @param partialMsg
  */
 export function applyClientProtocol<T, V>(
-  partialMsg: PartialMsg<T, V>
+  partialMsg: PartialMsg<T, V>,
 ): LabeledMsg<T, V> {
   return {
-    direction: 'ClientToHost',
+    direction: "ClientToHost",
     ...partialMsg,
     protocol: API_PROTOCOL,
-    version
+    version,
   };
 }
 
@@ -69,13 +69,13 @@ export function applyClientProtocol<T, V>(
  * @param partialMsg
  */
 export function applyHostProtocol<T, V>(
-  partialMsg: PartialMsg<T, V>
+  partialMsg: PartialMsg<T, V>,
 ): LabeledMsg<T, V> {
   return {
-    direction: 'HostToClient',
+    direction: "HostToClient",
     ...partialMsg,
     protocol: API_PROTOCOL,
-    version
+    version,
   };
 }
 
@@ -85,22 +85,22 @@ export function applyHostProtocol<T, V>(
  */
 export function labeledDecoder<T, V>(
   typeDecoder: Decoder<T>,
-  msgDecoder: Decoder<V>
+  msgDecoder: Decoder<V>,
 ): Decoder<LabeledMsg<T, V>> {
   return object({
     // TODO: in 4.0.0 make protocol and version fields mandatory
     protocol: either(
-      constant<'iframe-coordinator'>(API_PROTOCOL),
-      hardcoded<'iframe-coordinator'>(API_PROTOCOL)
+      constant<"iframe-coordinator">(API_PROTOCOL),
+      hardcoded<"iframe-coordinator">(API_PROTOCOL),
     ),
-    version: either(string, hardcoded('unknown')),
+    version: either(string, hardcoded("unknown")),
     msgType: typeDecoder,
     msg: msgDecoder,
-    direction: optional(directionDecoder)
+    direction: optional(directionDecoder),
   });
 }
 
 const directionDecoder: Decoder<MessageDirection, unknown> = either(
-  constant('ClientToHost'),
-  constant('HostToClient')
+  constant("ClientToHost"),
+  constant("HostToClient"),
 );

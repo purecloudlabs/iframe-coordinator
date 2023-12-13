@@ -5,25 +5,25 @@ import {
   number,
   object,
   optional,
-  string
-} from 'decoders';
-import { NativeKey } from '../Key';
-import { labeledDecoder, LabeledMsg } from './LabeledMsg';
+  string,
+} from "decoders";
+import { NativeKey } from "../Key";
+import { labeledDecoder, LabeledMsg } from "./LabeledMsg";
 
 /**
  * A message used to send key information
  * to the host application.
  */
 export interface LabeledKeyDown
-  extends LabeledMsg<'registeredKeyFired', NativeKey> {
+  extends LabeledMsg<"registeredKeyFired", NativeKey> {
   /** Message identifier */
-  msgType: 'registeredKeyFired';
+  msgType: "registeredKeyFired";
   /** Key details */
   msg: NativeKey;
 }
 
 const decoder: Decoder<LabeledKeyDown> = labeledDecoder(
-  constant<'registeredKeyFired'>('registeredKeyFired'),
+  constant<"registeredKeyFired">("registeredKeyFired"),
   object({
     altKey: optional(boolean),
     charCode: optional(number),
@@ -32,8 +32,8 @@ const decoder: Decoder<LabeledKeyDown> = labeledDecoder(
     key: string,
     keyCode: optional(number),
     metaKey: optional(boolean),
-    shiftKey: optional(boolean)
-  })
+    shiftKey: optional(boolean),
+  }),
 );
 
 export { decoder };

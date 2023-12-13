@@ -19,9 +19,9 @@ Embedding applications via iframe also means that code from separate teams can b
  * We require a few polyfills in order to support IE11.  These
  * will be needed to be loaded by both the host and the client.
  */
-import '@babel/polyfill';
-import 'custom-event-polyfill/polyfill.js';
-import 'url-polyfill';
+import "@babel/polyfill";
+import "custom-event-polyfill/polyfill.js";
+import "url-polyfill";
 
 /* The iframe coordinator library uses custom elements to
  * embed itself in the host app. If you are targeting browsers
@@ -29,11 +29,11 @@ import 'url-polyfill';
  * see: https://github.com/webcomponents/custom-elements for
  * more details on configuring the polyfill
  */
-import '@webcomponents/custom-elements/src/native-shim.js';
-import '@webcomponents/custom-elements/src/custom-elements.js';
+import "@webcomponents/custom-elements/src/native-shim.js";
+import "@webcomponents/custom-elements/src/custom-elements.js";
 
 /* Import the host library */
-import { registerCustomElements } from 'iframe-coordinator/host.js';
+import { registerCustomElements } from "iframe-coordinator/host.js";
 
 /* This will make the custom element `frame-router` available
  * for use in your browser. This element is the primary
@@ -41,7 +41,7 @@ import { registerCustomElements } from 'iframe-coordinator/host.js';
  */
 registerCustomElements();
 
-/* The frame router configuration can be set up by setting the 
+/* The frame router configuration can be set up by setting the
  * `clientConfig` property on the frame-router element.
  * This registers two client apps with the `frame-router`.
  * `assignedRoute` is the fragment path in the current page that represents the root
@@ -58,32 +58,31 @@ registerCustomElements();
  * e.g. http://example.com/client/
  */
 
-  frameRouter.clientConfig = {
-    clients: {
-      application1: {
-        url: `http://${hostname}:8080/client-app-1/#/`,
-        assignedRoute: '/app1'
-      },
-      application2: {
-        url: `http://${hostname}:8080/client-app-2/#/`,
-        assignedRoute: '/app2',
-        allow: 'camera http://localhost:8080;', // optional
-        sandbox: 'allow-presentation allow-modals', // optional
-        defaultTitle: 'iframe Application 2 Example' // optional, but needed for accessibility
-      }
-
+frameRouter.clientConfig = {
+  clients: {
+    application1: {
+      url: `http://${hostname}:8080/client-app-1/#/`,
+      assignedRoute: "/app1",
     },
-    envData: {
-      locale: 'en-US',
-      hostRootUrl: window.location.origin + '/#/',
-      registeredKeys: [
-        { key: 'a', ctrlKey: true },
-        { key: 'b', altKey: true },
-        { key: 'a', ctrlKey: true, shiftKey: true }
-      ],
-      custom: getCustomClientData()
-    }
-  }
+    application2: {
+      url: `http://${hostname}:8080/client-app-2/#/`,
+      assignedRoute: "/app2",
+      allow: "camera http://localhost:8080;", // optional
+      sandbox: "allow-presentation allow-modals", // optional
+      defaultTitle: "iframe Application 2 Example", // optional, but needed for accessibility
+    },
+  },
+  envData: {
+    locale: "en-US",
+    hostRootUrl: window.location.origin + "/#/",
+    registeredKeys: [
+      { key: "a", ctrlKey: true },
+      { key: "b", altKey: true },
+      { key: "a", ctrlKey: true, shiftKey: true },
+    ],
+    custom: getCustomClientData(),
+  },
+};
 ```
 
 **HTML/DOM**
@@ -96,7 +95,11 @@ https://example.com/components/example1/#/my/path
 ```html
 <body>
   <!-- host-app stuff -->
-  <frame-router id="frame-element" route="/one/my/path" frame-id="id-for-child-iframe" />
+  <frame-router
+    id="frame-element"
+    route="/one/my/path"
+    frame-id="id-for-child-iframe"
+  />
   <!-- more host-app stuff -->
 </body>
 ```

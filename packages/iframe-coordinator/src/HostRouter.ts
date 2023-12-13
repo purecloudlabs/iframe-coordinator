@@ -2,8 +2,8 @@
 import {
   normalizeRoute,
   stripLeadingSlash,
-  stripTrailingSlash
-} from './urlUtils';
+  stripTrailingSlash,
+} from "./urlUtils";
 
 /**
  * HostRouter is responsible for mapping route paths to
@@ -13,7 +13,7 @@ export class HostRouter {
   private _clients: ClientInfo[];
 
   constructor(clients: RoutingMap) {
-    this._clients = Object.keys(clients).map(id => {
+    this._clients = Object.keys(clients).map((id) => {
       return parseRegistration(id, clients[id]);
     });
   }
@@ -26,7 +26,7 @@ export class HostRouter {
   public getClientTarget(route: string): ClientTarget | null {
     let clientTarget: ClientTarget | null = null;
 
-    this._clients.forEach(client => {
+    this._clients.forEach((client) => {
       const clientRoute = matchAndStripPrefix(route, client.assignedRoute);
       if (clientRoute !== null) {
         clientTarget = {
@@ -35,7 +35,7 @@ export class HostRouter {
           assignedRoute: client.assignedRoute,
           allow: client.allow,
           sandbox: client.sandbox,
-          defaultTitle: client.defaultTitle
+          defaultTitle: client.defaultTitle,
         };
       }
     });
@@ -137,11 +137,11 @@ interface ClientInfo extends ClientRegistration {
  */
 function matchAndStripPrefix(
   rawTargetRoute: string,
-  clientRoute: string
+  clientRoute: string,
 ): string | null {
   const targetRoute = stripLeadingSlash(rawTargetRoute);
   if (targetRoute.startsWith(clientRoute)) {
-    const newRoute = targetRoute.replace(clientRoute, '');
+    const newRoute = targetRoute.replace(clientRoute, "");
     return stripLeadingSlash(newRoute);
   } else {
     return null;
@@ -160,7 +160,7 @@ function parseRegistration(key: string, value: ClientRegistration): ClientInfo {
     assignedRoute: normalizeRoute(value.assignedRoute),
     allow: value.allow,
     sandbox: value.sandbox,
-    defaultTitle: value.defaultTitle
+    defaultTitle: value.defaultTitle,
   };
 }
 
