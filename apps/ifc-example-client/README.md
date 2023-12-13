@@ -16,4 +16,3 @@ commands from the iframe-coordinator project root (the parent directory of this 
 `npm run start-client-example`
 
 You can then see the apps embedded in a host at http://localhost:3000/#/app1 and http://localhost:3000/#/app2
-

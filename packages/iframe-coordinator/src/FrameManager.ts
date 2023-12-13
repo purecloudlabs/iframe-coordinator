@@ -1,29 +1,29 @@
 import {
   ClientToHost,
-  validate as validateIncoming
-} from './messages/ClientToHost';
+  validate as validateIncoming,
+} from "./messages/ClientToHost";
 import {
   HostToClient,
-  validate as validateOutgoing
-} from './messages/HostToClient';
+  validate as validateOutgoing,
+} from "./messages/HostToClient";
 import {
   API_PROTOCOL,
   applyHostProtocol,
-  PartialMsg
-} from './messages/LabeledMsg';
+  PartialMsg,
+} from "./messages/LabeledMsg";
 
-const IFRAME_STYLE = 'frame-router iframe { width: 100%; height: 100%; }';
+const IFRAME_STYLE = "frame-router iframe { width: 100%; height: 100%; }";
 
 /** @internal default iframe sandbox attributes */
 const DEFAULT_SANDBOX = [
-  'allow-popups-to-escape-sandbox',
-  'allow-scripts',
-  'allow-same-origin',
-  'allow-modals',
-  'allow-forms',
-  'allow-popups',
-  'allow-downloads',
-  'allow-top-navigation-by-user-activation'
+  "allow-popups-to-escape-sandbox",
+  "allow-scripts",
+  "allow-same-origin",
+  "allow-modals",
+  "allow-forms",
+  "allow-popups",
+  "allow-downloads",
+  "allow-top-navigation-by-user-activation",
 ] as const;
 
 let style: HTMLElement;
@@ -52,22 +52,22 @@ class FrameManager {
     mockWindow?: Window;
   }) {
     this._window = options.mockWindow ? options.mockWindow : window;
-    this._postMessageHandler = event => {
+    this._postMessageHandler = (event) => {
       this._handlePostMessage(options.onMessage, event);
     };
 
-    this._frameLocation = 'about:blank';
+    this._frameLocation = "about:blank";
 
-    this._iframe = this._window.document.createElement('iframe');
-    this._iframe.setAttribute('frameborder', '0');
+    this._iframe = this._window.document.createElement("iframe");
+    this._iframe.setAttribute("frameborder", "0");
 
     if (!style) {
-      style = this._window.document.createElement('style');
+      style = this._window.document.createElement("style");
       style.innerText = IFRAME_STYLE;
       this._window.document.head.appendChild(style);
     }
 
-    this._iframe.setAttribute('sandbox', DEFAULT_SANDBOX.join(' '));
+    this._iframe.setAttribute("sandbox", DEFAULT_SANDBOX.join(" "));
   }
 
   /**
@@ -79,10 +79,10 @@ class FrameManager {
    * @param allow string of feature-policies
    */
   public setFrameAllow(allow?: string): void {
-    if (typeof allow !== 'string') {
-      allow = '';
+    if (typeof allow !== "string") {
+      allow = "";
     }
-    this._iframe.setAttribute('allow', allow);
+    this._iframe.setAttribute("allow", allow);
   }
 
   /**
@@ -94,12 +94,12 @@ class FrameManager {
    * @param sandbox string of iframe sandbox rules
    */
   public setFrameSandbox(sandbox?: string): void {
-    if (typeof sandbox !== 'string') {
-      sandbox = '';
+    if (typeof sandbox !== "string") {
+      sandbox = "";
     }
-    const arrSandbox = sandbox.split(' ').concat(DEFAULT_SANDBOX);
-    const newSandbox = [...new Set(arrSandbox)].join(' ');
-    this._iframe.setAttribute('sandbox', newSandbox);
+    const arrSandbox = sandbox.split(" ").concat(DEFAULT_SANDBOX);
+    const newSandbox = [...new Set(arrSandbox)].join(" ");
+    this._iframe.setAttribute("sandbox", newSandbox);
   }
 
   /**
@@ -111,10 +111,10 @@ class FrameManager {
    * @param defaultTitle String for the `title` attribute added to the `<iframe>` element.
    */
   public setFrameDefaultTitle(defaultTitle?: string): void {
-    if (typeof defaultTitle !== 'string') {
-      defaultTitle = '';
+    if (typeof defaultTitle !== "string") {
+      defaultTitle = "";
     }
-    this._iframe.setAttribute('title', defaultTitle);
+    this._iframe.setAttribute("title", defaultTitle);
   }
 
   /**
@@ -127,12 +127,12 @@ class FrameManager {
    * the frame will be directed to 'about:blank'.
    */
   public setFrameLocation(newLocation?: string | null | undefined): string {
-    this._frameLocation = newLocation || 'about:blank';
+    this._frameLocation = newLocation || "about:blank";
     if (this._iframe.contentWindow) {
       this._navigateFrame();
     } else {
       // Handle the case where the frame isn't ready yet.
-      this._iframe.onload = event => {
+      this._iframe.onload = (event) => {
         this._navigateFrame();
         this._iframe.onload = null;
       };
@@ -163,8 +163,8 @@ class FrameManager {
 I received invalid data to send to a client application. This is probably due
 to bad data passed to a frame-router method.
 `.trim() +
-            '\n' +
-            e.message
+            "\n" +
+            e.message,
         );
       }
 
@@ -176,14 +176,14 @@ to bad data passed to a frame-router method.
    * Starts listening to postMessages from the client window.
    */
   public startMessageHandler() {
-    this._window.addEventListener('message', this._postMessageHandler);
+    this._window.addEventListener("message", this._postMessageHandler);
   }
 
   /**
    * Stops listening to postMessages from the client window.
    */
   public stopMessageHandler() {
-    this._window.removeEventListener('message', this._postMessageHandler);
+    this._window.removeEventListener("message", this._postMessageHandler);
   }
 
   /**
@@ -192,9 +192,9 @@ to bad data passed to a frame-router method.
    * @param parent The element to place the iframe inside.
    */
   public embed(parent: HTMLElement) {
-    const frameId = parent.getAttribute('frame-id');
+    const frameId = parent.getAttribute("frame-id");
     if (frameId) {
-      this._iframe.setAttribute('id', frameId);
+      this._iframe.setAttribute("id", frameId);
     }
     parent.appendChild(this._iframe);
   }
@@ -202,7 +202,7 @@ to bad data passed to a frame-router method.
   private _handlePostMessage(handler: MessageHandler, event: MessageEvent) {
     let validated = null;
 
-    if (event.data && event.data.direction === 'HostToClient') {
+    if (event.data && event.data.direction === "HostToClient") {
       return;
     }
 
@@ -215,8 +215,8 @@ to bad data passed to a frame-router method.
 I received an invalid message from the client application. This is probably due
 to a major version mismatch between client and host iframe-coordinator libraries.
       `.trim() +
-            '\n' +
-            e.message
+            "\n" +
+            e.message,
         );
       } else {
         return;
@@ -229,7 +229,7 @@ to a major version mismatch between client and host iframe-coordinator libraries
       event.origin === expectedClientOrigin &&
       event.source === this._iframe.contentWindow
     ) {
-      if (validated.msgType === 'clickFired') {
+      if (validated.msgType === "clickFired") {
         /** Simulate a click on the iframe when a click is reported from the client.
          * This allows a click event to bubble through the host to provide expected behaviors for things like dropdowns and modals.
          */
@@ -249,12 +249,12 @@ to a major version mismatch between client and host iframe-coordinator libraries
     try {
       const clientUrl = new URL(
         this._frameLocation,
-        this._window.location.href
+        this._window.location.href,
       );
 
       // Bail early if it's not an http resource.
       // Ex: file protocol url origin behavior is browser specific
-      if (clientUrl.protocol !== 'http:' && clientUrl.protocol !== 'https:') {
+      if (clientUrl.protocol !== "http:" && clientUrl.protocol !== "https:") {
         return null;
       }
 

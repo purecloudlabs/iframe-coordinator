@@ -1,10 +1,26 @@
 <template>
   <div id="app">
-    <notifications group="toast" id="toastNotifications" position="top right"></notifications>
-    <notifications group="pubsub" id="pubsubEvents" position="top left"></notifications>
-    <notifications group="keydown" id="keydownEvents" position="bottom left"></notifications>
-    <notifications group="metadata" id="metadataEvent" position="bottom right"></notifications>
-    <router-view/>
+    <notifications
+      group="toast"
+      id="toastNotifications"
+      position="top right"
+    ></notifications>
+    <notifications
+      group="pubsub"
+      id="pubsubEvents"
+      position="top left"
+    ></notifications>
+    <notifications
+      group="keydown"
+      id="keydownEvents"
+      position="bottom left"
+    ></notifications>
+    <notifications
+      group="metadata"
+      id="metadataEvent"
+      position="bottom right"
+    ></notifications>
+    <router-view />
   </div>
 </template>
 
@@ -19,7 +35,7 @@ body {
 }
 
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;

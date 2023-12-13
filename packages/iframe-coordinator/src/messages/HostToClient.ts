@@ -1,9 +1,9 @@
-import { dispatch, guard } from 'decoders';
-import { envDecoder, LabeledEnvInit } from './Lifecycle';
+import { dispatch, guard } from "decoders";
+import { envDecoder, LabeledEnvInit } from "./Lifecycle";
 import {
   decoder as publicationDecoder,
-  LabeledPublication
-} from './Publication';
+  LabeledPublication,
+} from "./Publication";
 
 /**
  * All avaiable message types that can be sent
@@ -18,6 +18,6 @@ export type HostToClient = LabeledPublication | LabeledEnvInit;
  */
 export function validate(msg: any): HostToClient {
   return guard(
-    dispatch('msgType', { publish: publicationDecoder, env_init: envDecoder })
+    dispatch("msgType", { publish: publicationDecoder, env_init: envDecoder }),
   )(msg);
 }

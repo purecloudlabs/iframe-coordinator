@@ -1,4 +1,4 @@
-{  
+{
   "$schema": "https://typedoc.org/schema.json",
   "entryPoints": ["./src/client.ts", "./src/host.ts"],
   "includes": "doc",

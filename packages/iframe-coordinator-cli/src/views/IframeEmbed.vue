@@ -48,14 +48,14 @@
 
 <script>
 export default {
-  name: 'iframeEmbed',
-  props: ['frameRoute'],
+  name: "iframeEmbed",
+  props: ["frameRoute"],
   data() {
     return {
-      frameUrl: '',
+      frameUrl: "",
       showMenu: true,
       clientConfig: {},
-      metadata: {}
+      metadata: {},
     };
   },
   methods: {
@@ -64,11 +64,11 @@ export default {
       const messageHtml = `<div class="message">${event.detail.message}</div>
                    <pre class="customData">${customJson}</pre>`;
       this.$notify({
-        group: 'toast',
+        group: "toast",
         title: event.detail.title,
         text: messageHtml,
         duration: event.detail.custom.duration || -1,
-        type: 'toast'
+        type: "toast",
       });
     },
     handleNav(event) {
@@ -77,7 +77,7 @@ export default {
 
       if (location.hash === requestedUrl.hash) {
         // The requested navigation is for the current location, do nothing
-      } else if (event.detail.history === 'replace') {
+      } else if (event.detail.history === "replace") {
         window.location.replace(requestedUrl.hash);
       } else {
         window.location.hash = requestedUrl.hash;
@@ -85,45 +85,45 @@ export default {
     },
     handleKeyEvent(event) {
       this.$notify({
-        group: 'keydown',
+        group: "keydown",
         title: `registeredKeyFired event from ${event.detail.clientId}`,
         text: `<pre>${JSON.stringify(event.detail, null, 2)}</pre>`,
         duration: 3000,
-        type: 'registeredKeyFired'
+        type: "registeredKeyFired",
       });
     },
     notifyPubSub(event) {
       const jsonStr = JSON.stringify(event, null, 2);
       this.$notify({
-        group: 'pubsub',
+        group: "pubsub",
         title: `${event.clientId} on ${event.topic}`,
         text: `<pre>${jsonStr}</pre>`,
         duration: -1,
-        type: 'pubsub'
+        type: "pubsub",
       });
     },
     updateFrameUrl(event) {
       this.frameUrl = event.detail;
-      this.showMenu = this.frameUrl === 'about:blank';
+      this.showMenu = this.frameUrl === "about:blank";
     },
     updatePageMetadata(event) {
       this.metadata = {
         title: event.detail.title,
-        breadcrumbs: event.detail.breadcrumbs
+        breadcrumbs: event.detail.breadcrumbs,
       };
     },
     handlePromptOnLeave(event) {
       if (event.detail.shouldPrompt === true) {
-        window.onbeforeunload = function(event) {
+        window.onbeforeunload = function (event) {
           event.preventDefault();
           //This is needed for compatibility with Google Chrome.
-          event.returnValue = '';
+          event.returnValue = "";
         };
       }
       if (event.detail.shouldPrompt === false) {
         window.onbeforeunload = null;
       }
-    }
+    },
   },
   mounted() {
     // Call the custom config set up on the CLI.
@@ -132,18 +132,17 @@ export default {
       oldSetupFrames.apply(frameRouter, args);
     };
 
-    if (window.routerSetup && typeof window.routerSetup === 'function') {
+    if (window.routerSetup && typeof window.routerSetup === "function") {
       const clientConfig = window.routerSetup(frameRouter);
       this.clientConfig = frameRouter.clientConfig.clients;
       if (clientConfig.publishTopics) {
-        clientConfig.publishTopics.forEach(topic => {
-          frameRouter.messaging.addListener(topic, publication => {
+        clientConfig.publishTopics.forEach((topic) => {
+          frameRouter.messaging.addListener(topic, (publication) => {
             this.notifyPubSub(publication);
           });
         });
       }
     } else {
-      // tslint:disable-next-line
       console.log(`====== ERROR ======
 Could not find a function to set up the frame-router element with. Your
 JS configuration file must assign a set-up function to \`module.exports\`.
@@ -152,7 +151,7 @@ Run:
 for more details.
           `);
     }
-  }
+  },
 };
 </script>
 
