@@ -18,9 +18,9 @@
     "start-host-shim": "ifc-cli"
   },
   "devDependencies": {
-    "concurrently": "^4.1.2",
+    "concurrently": "^8.2.2",
     "iframe-coordinator-cli": "file:../../packages/iframe-coordinator-cli",
-    "vite": "^3.2.7"
+    "vite": "^5.0.8"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
