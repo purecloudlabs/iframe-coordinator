@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const commander = require("commander");
-const program = new commander.Command();
+const { Command } = require("commander");
+const program = new Command();
 const fs = require("fs");
 const path = require("path");
 const findRoot = require("find-root");
@@ -70,12 +70,14 @@ function parseProgramOptions() {
 
   program.parse(process.argv);
 
+  const options = program.opts();
+
   return {
-    clientConfigFile: findConfigFile(program.configFile),
-    port: program.port,
-    ssl: program.ssl,
-    sslCert: program.sslCert,
-    sslKey: program.sslKey,
+    clientConfigFile: findConfigFile(options.configFile),
+    port: options.port,
+    ssl: options.ssl,
+    sslCert: options.sslCert,
+    sslKey: options.sslKey,
   };
 }
 
@@ -90,10 +92,10 @@ function showHelpText() {
   object with the following fields:
 
   - publishTopics: A list of messaging topics the client publishes on
-  
+
   Keep in mind that the config file is not a true commonJS module, and
   will be evaluated directly inside the browser in an immediately invoked
-  function expression. 
+  function expression.
 
   Here is an example config file:
   `);
