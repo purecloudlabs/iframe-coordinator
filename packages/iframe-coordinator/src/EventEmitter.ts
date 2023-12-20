@@ -78,7 +78,7 @@ export class EventEmitter<T> {
   }
 
   /**
-   * Removes from the event listener previously registered with {@link EventEmitter.addEventListener}.
+   * Removes from the event listener previously registered with {@link addEventListener}.
    * @param type A string which specifies the type of event for which to remove an event listener.
    * @param listener The event handler to remove from the event target.
    */
@@ -91,7 +91,7 @@ export class EventEmitter<T> {
   }
 
   /**
-   * Removes all event listeners previously registered with {@link EventEmitter.addEventListener}.
+   * Removes all event listeners previously registered with {@link addEventListener}.
    * @param type A string which specifies the type of event for which to remove an event listener.
    */
   public removeAllListeners(type: string): EventEmitter<T> {
