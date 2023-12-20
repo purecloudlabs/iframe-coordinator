@@ -320,7 +320,7 @@ export class Client {
    *
    * @param clientRouteLegacy The /-separated path within the client app to link to.
    *
-   * @deprecated Use the new {@urlFromClientPath} method instead
+   * @deprecated Use the new {@link urlFromClientPath} method instead
    */
   public asHostUrl(clientRouteLegacy: string): string {
     const trimmedClientRoute = stripLeadingSlashAndHashTag(clientRouteLegacy);

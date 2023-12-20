@@ -83,7 +83,7 @@ export default class FrameRouterElement extends HTMLElement {
    * @param clients The map of registrations for the available clients.
    * @param envData Information about the host environment.
    *
-   * @deprecated Use the new {@clientConfig} property instead
+   * @deprecated Use the new {@link clientConfig} property instead
    *
    */
   public setupFrames(clients: RoutingMap, envData: EnvData) {
