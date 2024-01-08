@@ -20,7 +20,7 @@
   "devDependencies": {
     "concurrently": "^8.2.2",
     "iframe-coordinator-cli": "file:../../packages/iframe-coordinator-cli",
-    "vite": "^5.0.10"
+    "vite": "^5.0.11"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
