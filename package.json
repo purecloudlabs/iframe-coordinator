@@ -1,6 +1,6 @@
 {
   "name": "iframe-coordinator-monorepo",
-  "version": "5.5.6",
+  "version": "5.5.7",
   "workspaces": [
     "./packages/iframe-coordinator",
     "./packages/iframe-coordinator-cli",
@@ -14,7 +14,7 @@
     "lint": "commitlint -f de759fc509cf39895450dc31742cfb36b08e01b8",
     "prettier": "prettier '**/*' --write --ignore-unknown --log-level silent",
     "sync-versions": "./scripts/sync-versions.mjs",
-    "release": "standard-version && npm run sync-versions",
+    "release": "standard-version",
     "release.dry": "standard-version --dry-run",
     "publish.iframe-coordinator": "npm publish --workspace=iframe-coordinator",
     "publish.iframe-coordinator-cli": "npm publish --workspace=iframe-coordinator-cli",
