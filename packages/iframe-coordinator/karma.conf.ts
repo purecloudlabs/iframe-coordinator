@@ -1,12 +1,8 @@
-if (!process.env.CHROME_BIN) {
-  process.env.CHROME_BIN = require("puppeteer").executablePath();
-}
-
 module.exports = (config) => {
   config.set({
     basePath: "src",
     frameworks: ["jasmine", "karma-typescript"],
-    plugins: ["karma-jasmine", "karma-typescript", "karma-chrome-launcher"],
+    plugins: ["karma-jasmine", "karma-typescript", "karma-jsdom-launcher"],
     karmaTypescriptConfig: {
       compilerOptions: {
         target: "es2015",
@@ -22,7 +18,7 @@ module.exports = (config) => {
     colors: true,
     logLevel: config.LOG_INFO,
     autoWatch: true,
-    browsers: ["ChromeHeadless"],
+    browsers: ["jsdom"],
     singleRun: false,
     concurrency: Infinity,
   });
