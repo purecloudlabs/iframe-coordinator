@@ -79,7 +79,6 @@ pipeline {
           // Create an npmrc file, just so we can install deps cleanly from artifactory
           sh "${env.WORKSPACE}/${env.NPM_UTIL_PATH}/scripts/jenkins-create-npmrc.sh"
           sh "npm ci"
-          sh "npm i --no-save @purecloud/web-app-deploy@6.0"
         }
       }
     }
@@ -134,7 +133,7 @@ pipeline {
           sh "npm run doc"
           sh "./scripts/generate-deploy-files"
           sh '''
-              export CDN_ROOT=$(npx cdn --ecosystem pc --manifest dist/docs/manifest.json)
+              export CDN_ROOT=$(npx --package=@purecloud/web-app-deploy@8 -- cached-asset-prefix --ecosystem pc --manifest dist/docs/manifest.json)
               ./scripts/prepare-docs
           '''
         }
