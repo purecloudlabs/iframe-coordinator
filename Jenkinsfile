@@ -109,7 +109,7 @@ pipeline {
       steps {
           dir(env.REPO_DIR) {
           sh '''
-             echo "registry=https://registry.npmjs.org" > ./.npmrc
+             echo "registry=https://registry.npmjs.org" >> ./.npmrc
              echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ./.npmrc
           '''
           sh "npm run publish.iframe-coordinator"

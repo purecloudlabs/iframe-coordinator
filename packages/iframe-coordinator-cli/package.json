@@ -38,5 +38,12 @@
     "build": "vite build"
   },
   "author": "",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:purecloudlabs/iframe-coordinator.git"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
 }
