@@ -147,7 +147,7 @@ pipeline {
       steps {
         dir (env.REPO_DIR) {
           sh '''
-             npx upload \
+             npx --package=@purecloud/web-app-deploy@8 -- upload \
                --ecosystem pc \
                --manifest dist/docs/manifest.json \
                --source-dir ./dist/docs
@@ -163,7 +163,7 @@ pipeline {
       steps {
         dir (env.REPO_DIR) {
           sh '''
-             npx deploy \
+             npx --package=@purecloud/web-app-deploy@8 -- deploy \
                --ecosystem pc \
                --manifest dist/docs/manifest.json \
                --dest-env dev
