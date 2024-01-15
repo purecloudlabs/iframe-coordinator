@@ -116,7 +116,9 @@ pipeline {
           sh('''
               RELEASE_VERSION="$(npm run --silent current-version --workspace=iframe-coordinator)"
               npm install --no-progress -P -E iframe-coordinator@$RELEASE_VERSION --workspace=iframe-coordinator-cli
-              git add . && git commit --amend --no-edit --no-verify
+              git add packages/iframe-coordinator-cli/package.json
+              git add package-lock.json
+              git commit --amend --no-edit --no-verify
               git tag -fa v$RELEASE_VERSION -m "chore(release): $RELEASE_VERSION"
           ''')
           sh "npm run publish.iframe-coordinator-cli"
@@ -147,7 +149,7 @@ pipeline {
       steps {
         dir (env.REPO_DIR) {
           sh '''
-             npx upload \
+             npx --package=@purecloud/web-app-deploy@8 -- upload \
                --ecosystem pc \
                --manifest dist/docs/manifest.json \
                --source-dir ./dist/docs
@@ -163,7 +165,7 @@ pipeline {
       steps {
         dir (env.REPO_DIR) {
           sh '''
-             npx deploy \
+             npx --package=@purecloud/web-app-deploy@8 -- deploy \
                --ecosystem pc \
                --manifest dist/docs/manifest.json \
                --dest-env dev

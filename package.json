@@ -11,7 +11,7 @@
     "start-client-example": "npm run start --workspace=ifc-example-client",
     "test": "npm test --workspaces --if-present",
     "commit": "git-cz",
-    "lint": "commitlint -f de759fc509cf39895450dc31742cfb36b08e01b8",
+    "lint": "commitlint -f 321fe10d3ca4a45b91a3693d76412bb0aa796e32",
     "prettier": "prettier '**/*' --write --ignore-unknown --log-level silent",
     "sync-versions": "./scripts/sync-versions.mjs",
     "release": "standard-version",

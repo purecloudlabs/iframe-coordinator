@@ -4,3 +4,4 @@ node_modules/
 .vscode
 .pnpm-debug.log
 .DS_Store
+.npmrc
