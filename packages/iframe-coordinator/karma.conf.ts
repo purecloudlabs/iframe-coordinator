@@ -21,5 +21,6 @@ module.exports = (config) => {
     browsers: ["jsdom"],
     singleRun: false,
     concurrency: Infinity,
+    hostname: "127.0.0.1",
   });
 };

@@ -1,5 +1,8 @@
 import typescript from "@rollup/plugin-typescript";
 import replace from "@rollup/plugin-replace";
+import { nodeResolve } from "@rollup/plugin-node-resolve";
+import commonjs from "@rollup/plugin-commonjs";
+
 import fs from "fs";
 
 const packageVersion = JSON.parse(
@@ -13,7 +16,6 @@ export default [
       file: "dist/index.js",
       format: "es",
     },
-    external: ["decoders"],
     plugins: [
       typescript(),
       replace({
@@ -22,6 +24,8 @@ export default [
           __PACKAGE_VERSION__: packageVersion,
         },
       }),
+      commonjs(),
+      nodeResolve(),
     ],
   },
   {
@@ -30,7 +34,6 @@ export default [
       file: "dist/client.js",
       format: "es",
     },
-    external: ["decoders"],
     plugins: [
       typescript(),
       replace({
@@ -39,6 +42,8 @@ export default [
           __PACKAGE_VERSION__: packageVersion,
         },
       }),
+      commonjs(),
+      nodeResolve(),
     ],
   },
   {
@@ -47,7 +52,6 @@ export default [
       file: "dist/host.js",
       format: "es",
     },
-    external: ["decoders"],
     plugins: [
       typescript(),
       replace({
@@ -56,6 +60,8 @@ export default [
           __PACKAGE_VERSION__: packageVersion,
         },
       }),
+      commonjs(),
+      nodeResolve(),
     ],
   },
 ];
