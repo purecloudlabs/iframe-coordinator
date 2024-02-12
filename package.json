@@ -19,21 +19,21 @@
     "publish.iframe-coordinator": "npm publish --workspace=iframe-coordinator",
     "publish.iframe-coordinator-cli": "npm publish --workspace=iframe-coordinator-cli",
     "doc": "npm run doc --workspace=iframe-coordinator",
-    "prepare": "husky install",
+    "prepare": "husky",
     "pre-commit": "lint-staged"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@commitlint/cli": "^18.4.4",
-    "@commitlint/config-conventional": "^18.4.4",
+    "@commitlint/cli": "^18.6.0",
+    "@commitlint/config-conventional": "^18.6.0",
     "commitizen": "^4.3.0",
     "git-cz": "^4.9.0",
     "glob": "^10.3.10",
-    "husky": "^8.0.3",
-    "lint-staged": "^15.2.0",
-    "prettier": "^3.1.1",
+    "husky": "^9.0.10",
+    "lint-staged": "^15.2.2",
+    "prettier": "^3.2.5",
     "standard-version": "^9.5.0"
   },
   "config": {
