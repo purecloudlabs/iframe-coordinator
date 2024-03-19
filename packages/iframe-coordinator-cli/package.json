@@ -7,7 +7,7 @@
     "commander": "^12.0.0",
     "custom-event-polyfill": "^1.0.7",
     "dev-cert-authority": "^1.1.1",
-    "express": "^4.18.2",
+    "express": "^4.18.3",
     "find-root": "^1.1.0",
     "http-proxy-middleware": "^2.0.6",
     "iframe-coordinator": "5.5.12",
@@ -21,7 +21,7 @@
   "devDependencies": {
     "@vitejs/plugin-vue2": "^2.3.1",
     "typescript": "^4.9.5",
-    "vite": "^5.0.12"
+    "vite": "^5.1.6"
   },
   "files": [
     "dist",
