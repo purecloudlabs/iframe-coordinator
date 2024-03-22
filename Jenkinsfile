@@ -27,7 +27,7 @@ pipeline {
   }
 
   tools {
-    nodejs 'NodeJS 18.14.2'
+    nodejs 'NodeJS 20.x multiarch'
   }
 
   stages {
