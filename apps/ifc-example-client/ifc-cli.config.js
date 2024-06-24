@@ -16,6 +16,15 @@ module.exports = function (frameRouter) {
         sandbox: "allow-presentation allow-modals", // optional
         defaultTitle: "iframe Application 2 Example", // optional, but needed for accessibility
       },
+      application3: {
+        // We are removing the built-in proxy route example for now, as there are conflicts with vite and
+        // we will be adding improvements to the proxy behavior in the near future
+        url: `http://${hostname}:8080/client-app-2/#/`,
+        assignedRoute: "/app2/test",
+        allow: "camera http://localhost:8080;", // optional
+        sandbox: "allow-presentation allow-modals", // optional
+        defaultTitle: "iframe Application 2 Example", // optional, but needed for accessibility
+      },
     },
     envData: {
       locale: "en-US",

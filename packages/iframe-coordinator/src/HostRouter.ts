@@ -13,9 +13,14 @@ export class HostRouter {
   private _clients: ClientInfo[];
 
   constructor(clients: RoutingMap) {
-    this._clients = Object.keys(clients).map((id) => {
-      return parseRegistration(id, clients[id]);
-    });
+    this._clients = Object.entries(clients)
+      .map(([id, data]) => {
+        return parseRegistration(id, data);
+      })
+      .sort(
+        (a, b) =>
+          b.assignedRoute.split("/").length - a.assignedRoute.split("/").length,
+      );
   }
 
   /**
@@ -26,7 +31,7 @@ export class HostRouter {
   public getClientTarget(route: string): ClientTarget | null {
     let clientTarget: ClientTarget | null = null;
 
-    this._clients.forEach((client) => {
+    for (let client of this._clients) {
       const clientRoute = matchAndStripPrefix(route, client.assignedRoute);
       if (clientRoute !== null) {
         clientTarget = {
@@ -37,8 +42,9 @@ export class HostRouter {
           sandbox: client.sandbox,
           defaultTitle: client.defaultTitle,
         };
+        break;
       }
-    });
+    }
 
     return clientTarget;
   }
@@ -79,10 +85,10 @@ export interface RoutingMap {
  *
  * The 'url' property is the location where the client application is hosted. If the
  * client uses fragment-based routing, the URL should include a hash fragment, e.g.
- * `http://example.com/client/#/` if the client uses pushstate routing, leave the
+ * `http://example.com/client/#/` if the client uses pushState routing, leave the
  * fragment out, e.g. `http://example.com/client`.
  *
- * The `assigneRoute` property is the prefix for all routes that will be mapped to this client.
+ * The `assignedRoute` property is the prefix for all routes that will be mapped to this client.
  * This prefix will be stripped when setting the route on the client. As an example,
  * if `assignedRoute` is `/foo/bar/`, `url` is `https://example.com/client/#/` and the
  * `frame-router` element is passed the route `/foo/bar/baz/qux`, the embedded iframe URL

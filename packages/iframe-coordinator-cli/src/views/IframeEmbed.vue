@@ -5,6 +5,8 @@
       <span class="app-route">{{ frameRoute }}</span>
       as
       <span class="frame-url">{{ frameUrl }}</span>
+      with Client Id of
+      <span class="client-id">{{ currentClientId }}</span>
       <span class="metadata-container">
         <span class="metadata-title">Page Metadata: </span>
         <span class="metadata-content">{{ metadata }}</span>
@@ -42,6 +44,7 @@
       v-on:promptOnLeave="handlePromptOnLeave"
       v-on:frameTransition="updateFrameUrl"
       v-on:pageMetadata="updatePageMetadata"
+      v-on:clientChanged="updateCurrentClientId"
     ></frame-router>
   </div>
 </template>
@@ -56,6 +59,7 @@ export default {
       showMenu: true,
       clientConfig: {},
       metadata: {},
+      currentClientId: "",
     };
   },
   methods: {
@@ -124,6 +128,10 @@ export default {
         window.onbeforeunload = null;
       }
     },
+    updateCurrentClientId(event) {
+      console.log("runs");
+      this.currentClientId = event.detail || "";
+    },
   },
   mounted() {
     // Call the custom config set up on the CLI.
@@ -174,6 +182,7 @@ for more details.
 }
 #routerLayout .app-route,
 #routerLayout .frame-url,
+#routerLayout .client-id,
 #routerLayout .metadata-container .metadata-content {
   color: #ff4f1f;
 }
