@@ -7,7 +7,7 @@ describe("HostRouter", () => {
     hostRouter = new HostRouter({
       route1: {
         url: clientUrl,
-        assignedRoute: "route/one",
+        assignedRoute: "route/one/",
       },
       withRouteSlashes: {
         url: clientUrl,
@@ -22,6 +22,10 @@ describe("HostRouter", () => {
         assignedRoute: "route/two",
         sandbox: "allow-scripts",
         allow: "microphone *; camera *;",
+      },
+      withMoreSpecificity: {
+        url: clientUrl + "/specific",
+        assignedRoute: "route/one/specific",
       },
     });
   });
@@ -91,6 +95,18 @@ describe("HostRouter", () => {
       expect(clientInfo.id).toBe("withSandboxAndAllow");
       expect(clientInfo.sandbox).toBe("allow-scripts");
       expect(clientInfo.allow).toBe("microphone *; camera *;");
+    });
+
+    it("should return route with more specificity", () => {
+      const clientInfo = hostRouter.getClientTarget("route/one/specific/route");
+      if (!clientInfo) {
+        fail();
+        return;
+      }
+      expect(clientInfo.url).toBe(
+        "http://example.com/#/test/one/specific/route",
+      );
+      expect(clientInfo.id).toBe("withMoreSpecificity");
     });
   });
 });

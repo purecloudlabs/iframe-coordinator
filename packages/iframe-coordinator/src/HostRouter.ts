@@ -7,7 +7,7 @@ import {
 
 /**
  * HostRouter is responsible for mapping route paths to
- * corresponding client URls.
+ * corresponding client URLs.
  */
 export class HostRouter {
   private _clients: ClientInfo[];
@@ -17,14 +17,13 @@ export class HostRouter {
       .map(([id, data]) => {
         return parseRegistration(id, data);
       })
-      .sort(
-        (a, b) =>
-          b.assignedRoute.split("/").length - a.assignedRoute.split("/").length,
-      );
+      // Sorts by most path segments in url descending to make sure more specific paths are matched first
+      .sort(byMostPathSegments);
   }
 
   /**
    * Gets the client id and url for the provided route.
+   * Because of the sorting done when instantiated, this will return the target client with the most matching path segments
    *
    * @param route The route to lookup, such as '/foo/bar/baz'
    */
@@ -186,4 +185,11 @@ function applyRoute(urlStr: string, route: string): string {
     newUrl.pathname = `${baseClientPath}/${route}`;
   }
   return newUrl.toString();
+}
+
+/**
+ * Helper function for sorting clients by length of url path segments descending
+ */
+function byMostPathSegments(a: ClientInfo, b: ClientInfo): number {
+  return b.assignedRoute.split("/").length - a.assignedRoute.split("/").length;
 }
