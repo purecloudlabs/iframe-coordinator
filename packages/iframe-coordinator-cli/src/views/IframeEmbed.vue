@@ -129,7 +129,6 @@ export default {
       }
     },
     updateCurrentClientId(event) {
-      console.log("runs");
       this.currentClientId = event.detail || "";
     },
   },
