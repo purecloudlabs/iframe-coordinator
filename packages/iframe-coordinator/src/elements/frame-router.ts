@@ -273,6 +273,6 @@ export default class FrameRouterElement extends HTMLElement {
       return hostUrlObject.href;
     }
     const trimmedUrl = stripTrailingSlash(hostUrl);
-    return window.location.hash ? `${trimmedUrl}/#` : trimmedUrl;
+    return window.location.hash ? `${trimmedUrl}#` : trimmedUrl;
   }
 }
