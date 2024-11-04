@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.0.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.0.0...v6.0.1) (2024-09-04)
+
+## [6.0.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.5.15...v6.0.0) (2024-07-18)
+
+
+### ⚠ BREAKING CHANGES
+
+* **hostrouter:** If apps made workarounds for this bug, then there may be a possibility that the
+wrong client is returned for them
+
+COMUI-2914
+
+### Bug Fixes
+
+* allowing routes with more specificity ([23140c0](https://github.com/purecloudlabs/iframe-coordinator/commit/23140c006e9aa74889d4d3262bfc63f6227adbbc))
+
+
+* **hostrouter:** adding test and more documentation ([4714ce2](https://github.com/purecloudlabs/iframe-coordinator/commit/4714ce2f44456c9b9e95c473deabed25858ec8d2))
+
 ### [5.5.15](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.5.14...v5.5.15) (2024-05-14)
 
 ### [5.5.14](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.5.13...v5.5.14) (2024-03-23)
