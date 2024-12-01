@@ -19,9 +19,26 @@ main();
 function main() {
   const opts = parseProgramOptions();
   const indexContent = generateIndex(appPath, opts.clientConfigFile);
+  const configuredProxies = loadProxyConfig(opts.proxyConfigFile);
 
   app = express();
+  // Serve our custom index file with injected frame-router config
   app.use(/^\/$/, serveIndex(indexContent));
+
+  // Set up user configured proxies
+  configuredProxies.forEach((proxy) => {
+    app.use(
+      proxy.path,
+      createProxyMiddleware({
+        target: proxy.target,
+        ws: true, // proxy websockets too
+        changeOrigin: true, // rewrite the origin header to avoid any potential CORS issues
+        followRedirects: true, // ensure redirects from the server will also be proxied
+      }),
+    );
+  });
+
+  // Deprecated path-based dynamic proxy - to be removed in next major release
   app.use(
     "/proxy",
     createProxyMiddleware({
@@ -35,6 +52,8 @@ function main() {
       target: `http://localhost:${opts.port}`, //Required by middleware, but should be always overriden by the previous options
     }),
   );
+
+  // Server the static Vue App assets
   app.use(express.static(appPath));
 
   if (opts.ssl) {
@@ -55,6 +74,7 @@ function main() {
 function parseProgramOptions() {
   const projRoot = findRoot(process.cwd());
   const defaultJsConfig = path.join(projRoot, "ifc-cli.config.js");
+  const defaultProxyConfig = path.join(projRoot, "ifc-proxy.config.json");
 
   program
     .option(
@@ -62,6 +82,7 @@ function parseProgramOptions() {
       "iframe client configuration file",
       defaultJsConfig,
     )
+    .option("-x -proxy-config <proxy_config_file>")
     .option("-p, --port <port_num>", "port number to host on", 3000)
     .option("-s, --ssl", "serve over https")
     .option("--ssl-cert <cert_path>", "certificate file to use for https")
@@ -72,17 +93,29 @@ function parseProgramOptions() {
 
   const options = program.opts();
 
-  return {
+  // Use a proxy config file from the default location as our fallback if needed
+  let proxyConfigPath = null;
+  if (options.proxyConfig) {
+    proxyConfigPath = findConfigFile(options.proxyConfig);
+  } else if (fs.existsSync(defaultProxyConfig)) {
+    proxyConfigPath = defaultProxyConfig;
+  }
+
+  parsedOpts = {
     clientConfigFile: findConfigFile(options.configFile),
+    proxyConfigFile: proxyConfigPath,
     port: options.port,
     ssl: options.ssl,
     sslCert: options.sslCert,
     sslKey: options.sslKey,
   };
+
+  return parsedOpts;
 }
 
 function showHelpText() {
   const configExample = path.join(__dirname, "example-ifc.config.js");
+  const configContent = fs.readFileSync(configExample).toString();
   console.log(`
   This program will start a server for a basic iframe-coordinator host app. In
   order to configure the frame-router element and any other custom logic needed
@@ -98,8 +131,19 @@ function showHelpText() {
   function expression.
 
   Here is an example config file:
+
+  ${configContent}
+  
+  ifc-cli can also be configured to proxy requests to a local dev server or
+  other server so that embedded apps appear on the same origin as the host.
+  That configuration should be a json file mapping server paths to upstream
+  targets, e.g.: 
+
+  {
+    "/my/app/": "http://localhost:8000/",
+    "/another/app/": "http://localhost:9000/"
+  } 
   `);
-  console.log(fs.readFileSync(configExample).toString());
 }
 
 function serveIndex(indexContent) {
@@ -108,6 +152,10 @@ function serveIndex(indexContent) {
   };
 }
 
+/**
+ * Build the index file served to clients. This is the `index.html` from this project with the
+ * user's configuration file injected into a script tag to enable frame router setup.
+ */
 function generateIndex(appPath, clientConfigFile) {
   const baseIndex = fs
     .readFileSync(path.join(appPath, "index.html"))
@@ -117,6 +165,11 @@ function generateIndex(appPath, clientConfigFile) {
   return $.html();
 }
 
+/**
+ * Generate a script tag that exports the frame router setup function from the user's config file
+ * as a global variable so that ifc-cli's host app can call it when creating the frame-router elemen
+ * in the DOM
+ */
 function configScript(scriptFile) {
   const scriptContents = fs.readFileSync(scriptFile).toString();
   // This is a bit of a kludge but it should suffice for now.
@@ -142,6 +195,14 @@ function findConfigFile(cliPath) {
   }
 }
 
+function relativizePath(inPath) {
+  let outPath = path.relative(process.cwd(), inPath);
+  if (!outPath.startsWith(".")) {
+    outPath = "./" + outPath;
+  }
+  return outPath;
+}
+
 function getSslOpts(certPath, keyPath) {
   if (!certPath || !keyPath) {
     return devCertAuthority("localhost");
@@ -157,13 +218,18 @@ function getSslOpts(certPath, keyPath) {
   }
 }
 
-// Make sure a path isn't interpreted as a module when required.
-function relativizePath(inPath) {
-  let outPath = path.relative(process.cwd(), inPath);
-  if (!outPath.startsWith(".")) {
-    outPath = "./" + outPath;
+function loadProxyConfig(path) {
+  if (!path) {
+    return [];
   }
-  return outPath;
+
+  const proxyConfig = JSON.parse(fs.readFileSync(path).toString());
+  return Object.entries(proxyConfig).map(([path, target]) => {
+    return {
+      path,
+      target,
+    };
+  });
 }
 
 function extractTargetHost(req) {
