@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [6.1.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.0.1...v6.1.0) (2024-12-02)
+
+
+### Features
+
+* **ifc-cli:** add support for proxy configuration via a json file ([940719e](https://github.com/purecloudlabs/iframe-coordinator/commit/940719e1dc7a533401a0b7b9b66e9bda569ced53))
+
 ### [6.0.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.0.0...v6.0.1) (2024-09-04)
 
 ## [6.0.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v5.5.15...v6.0.0) (2024-07-18)
