@@ -2,7 +2,11 @@
 import "@babel/polyfill";
 import "custom-event-polyfill";
 import "url-polyfill";
-import { registerCustomElements, Client } from "iframe-coordinator";
+import {
+  registerCustomElements,
+  Client,
+  WorkerClient,
+} from "iframe-coordinator";
 
 registerCustomElements();
 
@@ -13,6 +17,11 @@ window.onhashchange = function () {
   document.getElementById("urlFromClientPath").innerHTML =
     iframeClient.urlFromClientPath(window.location.hash);
 };
+let workerClient = new WorkerClient({
+  hostOrigin: `http://${window.location.hostname}:3000`
+
+}
+);
 
 /****  SET UP THE IFRAME CLIENT LIBRARY ****/
 
@@ -98,6 +107,28 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     // Ask the host app to show the toast.
     iframeClient.requestNotification(toast);
+  });
+
+  // todo I need to access the worker that was set up on the worker pool
+  const myWorker = new Worker("worker.js");
+  console.log(myWorker)
+  let toastWebWorkerBtnEl = document.querySelector("button.web-worker-toast");
+  
+  function webWorkerToast(count) {
+    return {    title: `time elapsed ${count}`,
+      message: `From ${toastBtnEl.getAttribute("data-component-name")}`,
+      custom: {
+        level: TOAST_LEVELS[Math.round(Math.random() * 2)],
+      },}
+
+  };
+  myWorker.onmessage = function(e) {
+    console.log('e', e)
+    iframeClient.requestNotification(webWorkerToast(e.data));
+  }
+
+  toastWebWorkerBtnEl.addEventListener("click", () => {
+    myWorker.postMessage('hi');
   });
 
   // Ask host app to display prompt on leave request.

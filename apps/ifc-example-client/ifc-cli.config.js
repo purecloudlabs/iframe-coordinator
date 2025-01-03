@@ -1,5 +1,24 @@
-module.exports = function (frameRouter) {
+module.exports = function (frameRouter, workerPool) {
   let hostname = window.location.hostname;
+
+  workerPool.envData = 
+    {
+      locale: "en-US",
+      hostRootUrl: window.location.origin + "/#/",
+      // Optional custom data
+      custom: {}
+    }
+
+    workerPool.clients = {
+      client1: {
+        script: "clients/client-app-1/worker.js", // The worker script
+        // Optional app data to allow the worker to generate URLs for an associated app
+        // via client APIs like `urlFromClientPath`
+        app: {
+          url: `/clients/client-app-1/#/`,
+          assignedRoute: "/app1"
+        }
+      }}
 
   frameRouter.clientConfig = {
     clients: {

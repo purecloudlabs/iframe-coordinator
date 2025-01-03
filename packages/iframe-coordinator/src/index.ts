@@ -1,4 +1,11 @@
 import { Client } from "./client";
-import { FrameRouterElement, registerCustomElements } from "./host";
+import { WorkerClient } from "./workerClient";
+import { FrameRouterElement, registerCustomElements, WorkerPool } from "./host";
 
-export { Client, registerCustomElements, FrameRouterElement };
+export {
+  Client,
+  registerCustomElements,
+  FrameRouterElement,
+  WorkerPool,
+  WorkerClient,
+};
