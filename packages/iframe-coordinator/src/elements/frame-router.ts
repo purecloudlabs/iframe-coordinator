@@ -269,11 +269,10 @@ export default class FrameRouterElement extends HTMLElement {
 
   private _processHostUrl(hostUrl: string) {
     const hostUrlObject = new URL(hostUrl);
-    if (!hostUrlObject.hash && window.location.hash) {
+    if (window.location.hash) {
       hostUrlObject.pathname = stripTrailingSlash(hostUrlObject.pathname) + "/";
       hostUrlObject.hash = "#";
     }
-
     return hostUrlObject.href;
   }
 }
