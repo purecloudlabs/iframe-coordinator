@@ -28,7 +28,10 @@ module.exports = function (frameRouter) {
     },
     envData: {
       locale: "en-US",
-      hostRootUrl: window.location.origin + "/#/",
+      hostRootUrl:
+        window.location.origin +
+        window.location.pathname +
+        window.location.search,
       registeredKeys: [
         { key: "a", ctrlKey: true },
         { key: "b", altKey: true },
