@@ -13,14 +13,15 @@
   "type": "module",
   "scripts": {
     "start": "concurrently \"npm:dev\" \"npm:start-host-shim\"",
-    "dev": "vite --port 8080",
-    "build": "vite build",
+    "dev": "rollup -c --watch",
+    "build": "rollup -c",
     "start-host-shim": "ifc-cli"
   },
   "devDependencies": {
+    "@rollup/plugin-node-resolve": "^16.0.0",
     "concurrently": "^8.2.2",
     "iframe-coordinator-cli": "file:../../packages/iframe-coordinator-cli",
-    "vite": "^5.4.2"
+    "rollup": "^4.30.1"
   },
   "dependencies": {
     "@babel/polyfill": "^7.12.1",
