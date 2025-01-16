@@ -16,3 +16,10 @@ commands from the iframe-coordinator project root (the parent directory of this 
 `npm run start-client-example`
 
 You can then see the apps embedded in a host at http://localhost:3000/#/app1 and http://localhost:3000/#/app2
+
+### Notes
+
+There's no hot-reloading in development mode, so you'll need to refresh the page
+after making changes. The dev mode uses a rollup watcher rather than a server like
+Vite because building stand-alone web-worker modules is particularly challenging
+with Vite.
