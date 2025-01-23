@@ -17,6 +17,14 @@ describe("HostRouter", () => {
         url: "http://example.com/my/pushstate/app/?query=works",
         assignedRoute: "noHash",
       },
+      noClientHashNoQuery: {
+        url: "http://example.com/my/pushstate/app/noquery/",
+        assignedRoute: "noHash/noQuery",
+      },
+      noClientHashMergeQuery: {
+        url: "http://example.com/my/pushstate/app/mergequery/?alpha=true",
+        assignedRoute: "noHash/mergeQuery",
+      },
       withSandboxAndAllow: {
         url: clientUrl,
         assignedRoute: "route/two",
@@ -83,6 +91,34 @@ describe("HostRouter", () => {
         "http://example.com/my/pushstate/app/foo/bar?query=works",
       );
       expect(clientInfo.id).toBe("noClientHash");
+    });
+
+    it("should append to the path when the client url has no hash and no query", () => {
+      const clientInfo = hostRouter.getClientTarget(
+        "noHash/noQuery/foo/bar?query=works",
+      );
+      if (!clientInfo) {
+        fail();
+        return;
+      }
+      expect(clientInfo.url).toBe(
+        "http://example.com/my/pushstate/app/noquery/foo/bar?query=works",
+      );
+      expect(clientInfo.id).toBe("noClientHashNoQuery");
+    });
+
+    it("should append to the path when the client url has no hash and merging query", () => {
+      const clientInfo = hostRouter.getClientTarget(
+        "noHash/mergeQuery/foo/bar?beta=true",
+      );
+      if (!clientInfo) {
+        fail();
+        return;
+      }
+      expect(clientInfo.url).toBe(
+        "http://example.com/my/pushstate/app/mergequery/foo/bar?alpha=true&beta=true",
+      );
+      expect(clientInfo.id).toBe("noClientHashMergeQuery");
     });
 
     it('should return "allow" and "sandbox" config options if they exist', () => {

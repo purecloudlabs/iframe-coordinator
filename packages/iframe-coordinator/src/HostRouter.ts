@@ -179,10 +179,18 @@ function applyRoute(urlStr: string, route: string): string {
   const newUrl = new URL(urlStr, window.location.href);
   if (newUrl.hash) {
     const baseClientRoute = stripTrailingSlash(newUrl.hash);
+    // This supports non-standard query params in hash route directly
     newUrl.hash = `${baseClientRoute}/${route}`;
   } else {
     const baseClientPath = stripTrailingSlash(newUrl.pathname);
-    newUrl.pathname = `${baseClientPath}/${route}`;
+    // Here, we merge host query params and route query params
+    const routeUrl = new URL(route, window.location.href);
+    newUrl.pathname = `${baseClientPath}${routeUrl.pathname}`;
+    const query = new URLSearchParams(newUrl.search);
+    for (const [key, value] of routeUrl.searchParams) {
+      query.set(key, value);
+    }
+    newUrl.search = query.toString();
   }
   return newUrl.toString();
 }
