@@ -13,7 +13,7 @@ module.exports = (config) => {
     preprocessors: {
       "**/*.ts": ["karma-typescript"],
     },
-    reporters: ["progress"],
+    reporters: ["progress", "karma-typescript"],
     port: 9876,
     colors: true,
     logLevel: config.LOG_INFO,
