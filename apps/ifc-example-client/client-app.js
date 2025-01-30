@@ -1,7 +1,3 @@
-// Load polyfills required for IE11
-import "@babel/polyfill";
-import "custom-event-polyfill";
-import "url-polyfill";
 import { registerCustomElements, Client } from "iframe-coordinator";
 
 registerCustomElements();
