@@ -10,6 +10,16 @@ const ENV_DATA_WITH_HASH = {
   hostRootUrl: "https://example.com/root/#/",
 };
 
+const ENV_DATA_WITH_QUERY = {
+  ...ENV_DATA,
+  hostRootUrl: "https://example.com/root/?foo=bar",
+};
+
+const ENV_DATA_WITH_QUERY_AND_HASH = {
+  ...ENV_DATA,
+  hostRootUrl: "https://example.com/root/?foo=bar#/",
+};
+
 describe("The frame router element", () => {
   beforeAll(() => {
     window.customElements.define("frame-router", FrameRouterElement);
@@ -25,7 +35,7 @@ describe("The frame router element", () => {
    * behavior.
    */
   describe("Host URL management", () => {
-    it("Removes a trailing slash on the host URL if present", () => {
+    it("Removes a trailing slash on the host URL if present with no hash", () => {
       const router = new FrameRouterElement();
       router.clientConfig = {
         clients: {},
@@ -65,6 +75,43 @@ describe("The frame router element", () => {
       });
     });
 
-    // TODO: Test expected query behavior here
+    it("Removes trailing slash from pathname when the provided host URL with query params; urlObject and location have no hash", () => {
+      const router = new FrameRouterElement();
+      router.clientConfig = {
+        clients: {},
+        envData: ENV_DATA_WITH_QUERY,
+      };
+      //@ts-ignore
+      expect(router._envData).toEqual({
+        ...ENV_DATA_WITH_QUERY,
+        hostRootUrl: "https://example.com/root?foo=bar",
+      });
+    });
+
+    it("Does not add slash between hash and query params if location has hash; urlObject has no hash", () => {
+      window.location.hash = "foo";
+      const router = new FrameRouterElement();
+      router.clientConfig = {
+        clients: {},
+        envData: ENV_DATA_WITH_QUERY,
+      };
+      //@ts-ignore
+      expect(router._envData).toEqual({
+        ...ENV_DATA_WITH_QUERY,
+        hostRootUrl: "https://example.com/root/?foo=bar#",
+      });
+    });
+
+    it("Does not modify provided host URL with query params if urlObject has hash; location hash N/A", () => {
+      const router = new FrameRouterElement();
+      router.clientConfig = {
+        clients: {},
+        envData: ENV_DATA_WITH_QUERY_AND_HASH,
+      };
+      //@ts-ignore
+      expect(router._envData).toEqual({
+        ...ENV_DATA_WITH_QUERY_AND_HASH,
+      });
+    });
   });
 });
