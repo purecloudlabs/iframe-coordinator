@@ -100,14 +100,6 @@ const envDecoder: Decoder<LabeledEnvInit> = labeledDecoder(
 export { startedDecoder, envDecoder };
 
 /**
- * Handles new environmental data events. These should be configured
- * before {@link Client.start} is called, as the host application
- * will send the environment data immediately after the `Client.start`
- * message is received.
- */
-export type EnvDataHandler = (envData: EnvData) => void;
-
-/**
  * Helpful properties for working with lifecycle stages and
  * their corresponding labeled messages.
  */

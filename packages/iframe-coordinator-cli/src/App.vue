@@ -26,12 +26,23 @@
 
 <style>
 html {
-  height: 100%;
+  height: 100vh;
 }
+
 body {
   padding: 0;
   margin: 0;
-  height: 100%;
+  height: 100vh;
+}
+
+label {
+  font-weight: bold;
+}
+
+select {
+  background-color: #33383d;
+  color: #fdfdfd;
+  border: 1px solid #888;
 }
 
 #app {

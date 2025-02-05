@@ -24,6 +24,9 @@
             .getUserMedia({ video: true })
             .then((stream) => {
               document.querySelector("video#webrtc").srcObject = stream;
+            })
+            .catch((err) => {
+              console.error("Failed to request media permissions", err);
             });
         }
 

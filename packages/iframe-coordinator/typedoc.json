@@ -1,7 +1,6 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["./src/client.ts", "./src/host.ts"],
-  "entryPoints": ["./src/host.ts", "./src/client.ts"],
+  "entryPoints": ["./src/messages.ts", "./src/host.ts", "./src/client.ts"],
   "projectDocuments": ["doc/**/*.md"],
   "outputs": [
     {
@@ -18,10 +17,13 @@
   "excludePrivate": true,
   "excludeProtected": true,
   "includeVersion": true,
-  "plugin": ["typedoc-plugin-markdown"],
+  "plugin": ["typedoc-plugin-markdown", "typedoc-plugin-mdn-links"],
   "externalSymbolLinkMappings": {
     "typescript": {
       "addEventListener": "https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener"
     }
+  },
+  "compilerOptions": {
+    "skipLibCheck": true
   }
 }

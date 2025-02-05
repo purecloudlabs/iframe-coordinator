@@ -8,7 +8,7 @@
 
 > **registerCustomElements**(): `void`
 
-Defined in: [host.ts:10](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/host.ts#L10)
+Defined in: [host.ts:11](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/host.ts#L11)
 
 Registers custom elements used by the host application
 when hosting the coordinated client UI fragments.

@@ -8,7 +8,7 @@
 
 > **EventHandler**\<`T`\> = (`data`) => `void`
 
-Defined in: [EventEmitter.ts:4](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/EventEmitter.ts#L4)
+Defined in: [EventEmitter.ts:4](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/EventEmitter.ts#L4)
 
 A generic handler for incoming event data.
 

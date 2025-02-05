@@ -6,7 +6,7 @@ import {
 } from "./Publication";
 
 /**
- * All avaiable message types that can be sent
+ * All available message types that can be sent
  * from the host application to the client content.
  */
 export type HostToClient = LabeledPublication | LabeledEnvInit;

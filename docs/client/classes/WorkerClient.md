@@ -2,37 +2,36 @@
 
 ***
 
-[iframe-coordinator](../../modules.md) / [client](../README.md) / Client
+[iframe-coordinator](../../modules.md) / [client](../README.md) / WorkerClient
 
-# Class: Client
+# Class: WorkerClient
 
-Defined in: [IframeClient.ts:16](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/IframeClient.ts#L16)
+Defined in: [WorkerClient.ts:9](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerClient.ts#L9)
+
+Client class allowing web workers to interact with the larger
+iframe-coordinator feature set.
 
 ## Extends
 
-- `AbstractClient`\<[`Window`](https://developer.mozilla.org/docs/Web/API/Window)\>
+- `AbstractClient`\<[`DedicatedWorkerGlobalScope`](https://developer.mozilla.org/docs/Web/API/DedicatedWorkerGlobalScope)\>
 
 ## Constructors
 
 ### Constructor
 
-> **new Client**(`configOptions?`): `IframeClient`
+> **new WorkerClient**(): `WorkerClient`
 
-Defined in: [IframeClient.ts:20](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/IframeClient.ts#L20)
+Defined in: [WorkerClient.ts:13](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerClient.ts#L13)
 
-#### Parameters
-
-##### configOptions?
-
-[`ClientConfigOptions`](../interfaces/ClientConfigOptions.md)
+Creates a new Web Worker client.
 
 #### Returns
 
-`IframeClient`
+`WorkerClient`
 
 #### Overrides
 
-`AbstractClient<Window>.constructor`
+`AbstractClient<DedicatedWorkerGlobalScope>.constructor`
 
 ## Accessors
 
@@ -89,7 +88,7 @@ Defined in: [AbstractClient.ts:69](https://github.com/purecloudlabs/iframe-coord
 
 Sets up a function that will be called whenever the specified event type is delivered to the target.
 This should not be confused with the general-purpose pub-sub listeners that can be set via the
-[messaging](#messaging) interface. Handlers should be set before calling [start](#start), otherwise
+[messaging](Client.md#messaging) interface. Handlers should be set before calling [start](#start), otherwise
 there is a risk of missing messages between when the host begins delivering data and the listener
 is added.
 
@@ -190,20 +189,6 @@ The data object to be published.
 #### Inherited from
 
 `AbstractClient.publish`
-
-***
-
-### registerCustomElements()
-
-> **registerCustomElements**(): `void`
-
-Defined in: [IframeClient.ts:46](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/IframeClient.ts#L46)
-
-Registers custom elements used by the client application
-
-#### Returns
-
-`void`
 
 ***
 
@@ -438,7 +423,7 @@ data that will be used for display in host application and browser page title
 
 > **start**(): `void`
 
-Defined in: [IframeClient.ts:30](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/IframeClient.ts#L30)
+Defined in: [AbstractClient.ts:254](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L254)
 
 Initiates responding to events triggered by the host application.
 
@@ -446,26 +431,9 @@ Initiates responding to events triggered by the host application.
 
 `void`
 
-#### Overrides
+#### Inherited from
 
 `AbstractClient.start`
-
-***
-
-### startInterceptingLinks()
-
-> **startInterceptingLinks**(): `void`
-
-Defined in: [IframeClient.ts:78](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/IframeClient.ts#L78)
-
-Allows the click handler on the client window to intercept clicks on anchor elements
-and makes a nav request to the host based on the element's href. This should be
-avoided for complex applications as it can interfere with things like download
-links that you may not want to intercept.
-
-#### Returns
-
-`void`
 
 ***
 
@@ -473,7 +441,7 @@ links that you may not want to intercept.
 
 > **stop**(): `void`
 
-Defined in: [IframeClient.ts:36](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/IframeClient.ts#L36)
+Defined in: [AbstractClient.ts:279](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L279)
 
 Disconnects this client from the host application. This is mostly provided for
 the sake of API completeness. It's unlikely to be used by most applications.
@@ -482,23 +450,9 @@ the sake of API completeness. It's unlikely to be used by most applications.
 
 `void`
 
-#### Overrides
+#### Inherited from
 
 `AbstractClient.stop`
-
-***
-
-### stopInterceptingLinks()
-
-> **stopInterceptingLinks**(): `void`
-
-Defined in: [IframeClient.ts:85](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/IframeClient.ts#L85)
-
-Turns off the behavior of intercepting link clicks in the client window click handler.
-
-#### Returns
-
-`void`
 
 ***
 
