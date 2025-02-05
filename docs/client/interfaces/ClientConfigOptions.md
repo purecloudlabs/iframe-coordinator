@@ -6,7 +6,7 @@
 
 # Interface: ClientConfigOptions
 
-Defined in: [client.ts:56](https://github.com/purecloudlabs/iframe-coordinator/blob/134f6404272580b8ff17876b35c4a3b84a50d64b/packages/iframe-coordinator/src/client.ts#L56)
+Defined in: [client.ts:16](https://github.com/purecloudlabs/iframe-coordinator/blob/1311ddac08caa061850b5cea195f7e2204ad0a04/packages/iframe-coordinator/src/client.ts#L16)
 
 Client configuration options.
 
@@ -16,6 +16,6 @@ Client configuration options.
 
 > `optional` **hostOrigin**: `string`
 
-Defined in: [client.ts:58](https://github.com/purecloudlabs/iframe-coordinator/blob/134f6404272580b8ff17876b35c4a3b84a50d64b/packages/iframe-coordinator/src/client.ts#L58)
+Defined in: [client.ts:18](https://github.com/purecloudlabs/iframe-coordinator/blob/1311ddac08caa061850b5cea195f7e2204ad0a04/packages/iframe-coordinator/src/client.ts#L18)
 
 The expected origin of the host application. Messages will not be sent to other origins.

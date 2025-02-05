@@ -1,6 +1,5 @@
 {
   "$schema": "https://typedoc.org/schema.json",
-  "entryPoints": ["./src/client.ts", "./src/host.ts"],
   "entryPoints": [
     "./src/host.ts",
     "./src/client.ts",
@@ -28,5 +27,8 @@
     "typescript": {
       "addEventListener": "https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener"
     }
+  },
+  "compilerOptions": {
+    "skipLibCheck": true
   }
 }

@@ -12,10 +12,15 @@
 
 ## Interfaces
 
-- [ClientConfig](interfaces/ClientConfig.md)
 - [ClientRegistration](interfaces/ClientRegistration.md)
 - [RoutingMap](interfaces/RoutingMap.md)
 
 ## Functions
 
 - [registerCustomElements](functions/registerCustomElements.md)
+
+## References
+
+### WorkerPool
+
+Re-exports [WorkerPool](../workerPool/classes/WorkerPool.md)

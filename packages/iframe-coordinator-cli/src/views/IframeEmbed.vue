@@ -1,70 +1,111 @@
 <template>
   <div id="routerLayout">
     <div class="explainer">
-      Showing
-      <span class="app-route">{{ frameRoute }}</span>
-      as
-      <span class="frame-url">{{ frameUrl }}</span>
-      with Client Id of
-      <span class="client-id">{{ currentClientId }}</span>
-      <span class="metadata-container">
-        <span class="metadata-title">Page Metadata: </span>
-        <span class="metadata-content">{{ metadata }}</span>
-      </span>
+      <!-- IFC worker controls -->
+      <div class="worker-controls"
+        v-if="Object.keys(workerConfig).length > 0"
+      >
+        <button class="worker-controls"
+          v-on:click="toggleWorkerControls"
+        >
+          Toggle Worker Controls
+        </button>
+      </div>
+      
+      <!-- frame-router status explainer -->
+      <div class="router-status">
+        Showing
+        <span class="app-route">{{ frameRoute }}</span>
+        as
+        <span class="frame-url">{{ frameUrl }}</span>
+        <span v-if="currentClientId">
+          with Client Id of
+          <span class="client-id">{{ currentClientId }}</span>
+        </span>
+        <span v-else> because no client matched</span>
+        <span class="metadata-container">
+          <span class="metadata-title">Page Metadata: </span>
+          <span class="metadata-content">{{ metadata }}</span>
+        </span>
+      </div>
+
+      <!-- documentation link -->
       <a class="help-link" target="docs" href="/ifc-docs/">docs</a>
     </div>
 
-    <div v-if="showMenu" id="appMenu">
-      <h2>No app is registered for {{ frameRoute }}</h2>
+    <div id="main">
+      <!-- Menu for invalid/unassigned routes -->
+      <div v-if="showMenu" id="appMenu">
+        <h2>No app is registered for {{ frameRoute }}</h2>
 
-      <div v-if="Object.keys(clientConfig).length > 0">
-        <p>To see your embedded apps, use one of the links below.</p>
-        <nav>
-          <ul>
-            <li v-for="(client, id) in clientConfig" v-bind:key="id">
-              <a v-bind:href="'#' + client.assignedRoute"
-                >{{ id }} @ {{ client.assignedRoute }}</a
-              >
-            </li>
-          </ul>
-        </nav>
+        <div v-if="Object.keys(clientConfig).length > 0">
+          <p>To see your embedded apps, use one of the links below.</p>
+          <nav>
+            <ul>
+              <li v-for="(client, id) in clientConfig" v-bind:key="id">
+                <a v-bind:href="'#' + client.assignedRoute"
+                  >{{ id }} @ {{ client.assignedRoute }}</a
+                >
+              </li>
+            </ul>
+          </nav>
+        </div>
+        <div v-else>
+          <p>
+            I couldn't find any registered client applications. Please check your
+            ifc-cli configuration file.
+          </p>
+        </div>
       </div>
-      <div v-else>
-        <p>
-          I couldn't find any registered client applications. Please check your
-          ifc-cli configuration file.
-        </p>
-      </div>
+      <!-- Active IFC client display on assigned routes -->
+      <frame-router
+        v-show="!showMenu"
+        id="frameRouter"
+        v-bind:route="frameRoute"
+        frame-id="ifc-cli-frame"
+        v-on:notifyRequest="displayToast"
+        v-on:registeredKeyFired="handleKeyEvent"
+        v-on:navRequest="handleNav"
+        v-on:promptOnLeave="handlePromptOnLeave"
+        v-on:frameTransition="updateFrameUrl"
+        v-on:pageMetadata="updatePageMetadata"
+        v-on:clientChanged="updateCurrentClientId"
+      ></frame-router>
+      <!-- Toggleable web-worker controls -->
+      <worker-controls
+        v-bind:worker-pool="workerPool"
+        v-if="showWorkerControls"
+      ></worker-controls>
     </div>
-    <frame-router
-      id="frameRouter"
-      v-bind:route="frameRoute"
-      frame-id="ifc-cli-frame"
-      v-on:notifyRequest="displayToast"
-      v-on:registeredKeyFired="handleKeyEvent"
-      v-on:navRequest="handleNav"
-      v-on:promptOnLeave="handlePromptOnLeave"
-      v-on:frameTransition="updateFrameUrl"
-      v-on:pageMetadata="updatePageMetadata"
-      v-on:clientChanged="updateCurrentClientId"
-    ></frame-router>
   </div>
 </template>
 
 <script>
+import { WorkerPool } from "iframe-coordinator";
+import WorkerControls from "./WorkerControls.vue";
+
 export default {
   name: "iframeEmbed",
   props: ["frameRoute"],
+  components: {
+    WorkerControls
+  },
   data() {
     return {
+      workerPool: {},
       frameUrl: "",
       showMenu: true,
       clientConfig: {},
+      workerConfig: {},
       metadata: {},
       currentClientId: "",
+      showWorkerControls: false
     };
   },
   methods: {
+    toggleWorkerControls() {
+      this.showWorkerControls = !this.showWorkerControls;
+    },
     displayToast(event) {
       const customJson = JSON.stringify(event.detail.custom, null, 2);
       const messageHtml = `<div class="message">${event.detail.message}</div>
@@ -73,13 +114,13 @@ export default {
         group: "toast",
         title: event.detail.title,
         text: messageHtml,
-        duration: event.detail.custom.duration || -1,
+        duration: event.detail.custom?.duration || -1,
         type: "toast",
       });
     },
     handleNav(event) {
       // TODO: detect and handle external URLs properly
-      const requestedUrl = new URL(event.detail.url);
+      const requestedUrl = new URL(event.detail.url, window.location);
 
       if (location.hash === requestedUrl.hash) {
         // The requested navigation is for the current location, do nothing
@@ -135,6 +176,13 @@ export default {
     },
   },
   mounted() {
+    // Create the web worker pool
+    this.workerPool = new WorkerPool();
+    // Add worker pool event handlers
+    this.workerPool.addEventListener('navRequest', this.handleNav);
+    this.workerPool.addEventListener('notifyRequest', this.displayToast);
+    this.workerPool.addEventListener('promptOnLeave', this.handlePrompotOnLeave);
+
     // Call the custom config set up on the CLI.
     const oldSetupFrames = frameRouter.setupFrames;
     frameRouter.setupFrames = (...args) => {
@@ -142,8 +190,14 @@ export default {
     };
 
     if (window.routerSetup && typeof window.routerSetup === "function") {
-      const clientConfig = window.routerSetup(frameRouter);
+      const clientConfig = window.routerSetup(frameRouter, this.workerPool);
       this.clientConfig = frameRouter.clientConfig.clients;
+      this.workerConfig = this.workerPool.clientConfig.clients;
+
+      // Start web workers
+      console.log("Starting IFC workers", this.workerPool.clientConfig);
+      this.workerPool.start();
+
       if (clientConfig.publishTopics) {
         clientConfig.publishTopics.forEach((topic) => {
           frameRouter.messaging.addListener(topic, (publication) => {
@@ -170,16 +224,18 @@ for more details.
   flex-direction: column;
   height: 100%;
 }
+#main {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: row;
+}
 #frameRouter {
   flex-grow: 1;
-  flex-shrink: 1;
-  flex-basis: 100vh;
 }
 #routerLayout .explainer {
   padding: 20px;
   background-color: #33383d;
   color: #fdfdfd;
-  border-bottom: 2px solid #ff4f1f;
 }
 .help-link {
   position: absolute;

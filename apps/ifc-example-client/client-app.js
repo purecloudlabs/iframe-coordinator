@@ -96,6 +96,29 @@ document.addEventListener("DOMContentLoaded", () => {
     iframeClient.requestNotification(toast);
   });
 
+    // todo I need to access the worker that was set up on the worker pool
+    // const myWorker = new Worker("worker.js");
+    // console.log(myWorker)
+    let toastWebWorkerBtnEl = document.querySelector("button.web-worker-toast");
+
+    function webWorkerToast(count) {
+      return {
+        title: `time elapsed ${count}`,
+        message: `From ${toastBtnEl.getAttribute("data-component-name")}`,
+        custom: {
+          level: TOAST_LEVELS[Math.round(Math.random() * 2)],
+        },
+      };
+    }
+    // myWorker.onmessage = function(e) {
+    //   console.log('e', e)
+    //   iframeClient.requestNotification(webWorkerToast(e.data));
+    // }
+
+    // toastWebWorkerBtnEl.addEventListener("click", () => {
+    //   myWorker.postMessage('hi');
+    // });
+
   // Ask host app to display prompt on leave request.
   let promptBtnEl = document.querySelector("button.prompt");
   promptBtnEl.addEventListener("click", () => {
