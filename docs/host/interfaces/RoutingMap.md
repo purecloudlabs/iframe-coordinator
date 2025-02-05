@@ -6,7 +6,7 @@
 
 # Interface: RoutingMap
 
-Defined in: [HostRouter.ts:78](https://github.com/purecloudlabs/iframe-coordinator/blob/134f6404272580b8ff17876b35c4a3b84a50d64b/packages/iframe-coordinator/src/HostRouter.ts#L78)
+Defined in: [HostRouter.ts:78](https://github.com/purecloudlabs/iframe-coordinator/blob/561c590dfeabe11ed8488b3b06930ec2af67c347/packages/iframe-coordinator/src/HostRouter.ts#L78)
 
 A map from client identifiers to configuration describing
 where the client app is hosted, and what routes should be

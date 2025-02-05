@@ -12,3 +12,5 @@
 
 - [client](client/README.md)
 - [host](host/README.md)
+- [workerClient](workerClient/README.md)
+- [workerPool](workerPool/README.md)

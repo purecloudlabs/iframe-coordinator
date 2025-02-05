@@ -1,5 +1,34 @@
-module.exports = function (frameRouter) {
+module.exports = function (frameRouter, workerPool) {
   let hostname = window.location.hostname;
+  let hostRootUrl =
+    window.location.origin + window.location.pathname + window.location.search;
+
+  workerPool.workerConfig = {
+    clients: {
+      app1Worker: {
+        script: "clients/dist/client-worker.js", // The worker script
+        // Optional app data to allow the worker to generate URLs for an associated app
+        // via client APIs like `urlFromClientPath`
+        app: {
+          url: `/clients/client-app-1/#/`,
+          assignedRoute: "/app1",
+        },
+      },
+      app2Worker: {
+        script: "clients/dist/client-worker.js",
+        app: {
+          url: `/clients/client-app-2/#/`,
+          assignedRoute: "/app2",
+        },
+      },
+    },
+    envData: {
+      locale: "en-US",
+      hostRootUrl: hostRootUrl,
+      // Optional custom data
+      custom: {},
+    },
+  };
 
   frameRouter.clientConfig = {
     clients: {
@@ -28,10 +57,7 @@ module.exports = function (frameRouter) {
     },
     envData: {
       locale: "en-US",
-      hostRootUrl:
-        window.location.origin +
-        window.location.pathname +
-        window.location.search,
+      hostRootUrl: hostRootUrl,
       registeredKeys: [
         { key: "a", ctrlKey: true },
         { key: "b", altKey: true },
@@ -40,6 +66,8 @@ module.exports = function (frameRouter) {
       custom: getCustomClientData(),
     },
   };
+
+  
   return {
     // These are the topics that the host app should display payloads for when
     // the client publishes on them.

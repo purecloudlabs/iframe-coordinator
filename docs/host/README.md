@@ -19,3 +19,9 @@
 ## Functions
 
 - [registerCustomElements](functions/registerCustomElements.md)
+
+## References
+
+### WorkerPool
+
+Re-exports [WorkerPool](../workerPool/classes/WorkerPool.md)
