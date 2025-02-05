@@ -47,6 +47,24 @@ export default [
     ],
   },
   {
+    input: "src/workerClient.ts",
+    output: {
+      file: "dist/workerClient.js",
+      format: "es",
+    },
+    plugins: [
+      typescript(),
+      replace({
+        preventAssignment: true,
+        values: {
+          __PACKAGE_VERSION__: packageVersion,
+        },
+      }),
+      commonjs(),
+      nodeResolve(),
+    ],
+  },
+  {
     input: "src/host.ts",
     output: {
       file: "dist/host.js",

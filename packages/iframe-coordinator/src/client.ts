@@ -61,7 +61,7 @@ export interface ClientConfigOptions {
  */
 export class Client {
   private _isStarted: boolean;
-  private _clientWindow: Window;
+  private _clientWindow: WindowProxy;
   private _environmentData: EnvData;
   private _envDataEmitter: InternalEventEmitter<EnvData>;
   private _hostOrigin: string;
@@ -78,9 +78,9 @@ export class Client {
     if (configOptions && configOptions.hostOrigin) {
       this._hostOrigin = configOptions.hostOrigin;
     } else {
-      this._hostOrigin = window.origin;
+      this._hostOrigin = self.origin;
     }
-    this._clientWindow = window;
+    this._clientWindow = self;
     this._publishEmitter = new InternalEventEmitter<Publication>();
     this._publishExposedEmitter = new EventEmitter<Publication>(
       this._publishEmitter,
@@ -238,6 +238,7 @@ export class Client {
   };
 
   private _handleEnvironmentData(message: HostToClient): void {
+    console.log("envInitMessage:", message);
     const envInitMsg: LabeledEnvInit = message as LabeledEnvInit;
     const { assignedRoute, ...envData } = envInitMsg.msg;
     this._assignedRoute = assignedRoute;

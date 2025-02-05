@@ -50,11 +50,14 @@
 </template>
 
 <script>
+import { WorkerPool } from "iframe-coordinator";
+
 export default {
   name: "iframeEmbed",
   props: ["frameRoute"],
   data() {
     return {
+      workerPool: {},
       frameUrl: "",
       showMenu: true,
       clientConfig: {},
@@ -133,6 +136,12 @@ export default {
     },
   },
   mounted() {
+    // const myWorker = new Worker("clients/client-app-1/worker.js", {
+    //   type: "module",
+    // });
+    // myWorker.postMessage("hi");
+
+    this.workerPool = new WorkerPool();
     // Call the custom config set up on the CLI.
     const oldSetupFrames = frameRouter.setupFrames;
     frameRouter.setupFrames = (...args) => {
@@ -140,8 +149,9 @@ export default {
     };
 
     if (window.routerSetup && typeof window.routerSetup === "function") {
-      const clientConfig = window.routerSetup(frameRouter);
+      const clientConfig = window.routerSetup(frameRouter, this.workerPool);
       this.clientConfig = frameRouter.clientConfig.clients;
+      this.workerPool.start();
       if (clientConfig.publishTopics) {
         clientConfig.publishTopics.forEach((topic) => {
           frameRouter.messaging.addListener(topic, (publication) => {

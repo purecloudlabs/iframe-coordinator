@@ -19,14 +19,14 @@ main();
 function main() {
   const opts = parseProgramOptions();
   const indexContent = generateIndex(appPath, opts.clientConfigFile);
-  const configuredProxies = loadProxyConfig(opts.proxyConfigFile);
+  const serverConfig = loadConfig(opts.proxyConfigFile);
 
   app = express();
   // Serve our custom index file with injected frame-router config
   app.use(/^\/$/, serveIndex(indexContent));
 
   // Set up user configured proxies
-  configuredProxies.forEach((proxy) => {
+  serverConfig.proxies.forEach((proxy) => {
     app.use(
       proxy.path,
       createProxyMiddleware({
@@ -36,6 +36,11 @@ function main() {
         followRedirects: true, // ensure redirects from the server will also be proxied
       }),
     );
+  });
+
+  // Set up user configured static directories
+  serverConfig.static.forEach((mapping) => {
+    app.use(mapping.serverPath, express.static(mapping.fsDir));
   });
 
   // Deprecated path-based dynamic proxy - to be removed in next major release
@@ -53,7 +58,7 @@ function main() {
     }),
   );
 
-  // Server the static Vue App assets
+  // Serve the static Vue App assets
   app.use(express.static(appPath));
 
   if (opts.ssl) {
@@ -218,18 +223,37 @@ function getSslOpts(certPath, keyPath) {
   }
 }
 
-function loadProxyConfig(path) {
+function loadConfig(path) {
   if (!path) {
     return [];
   }
 
-  const proxyConfig = JSON.parse(fs.readFileSync(path).toString());
-  return Object.entries(proxyConfig).map(([path, target]) => {
-    return {
-      path,
-      target,
-    };
-  });
+  const rawConfig = JSON.parse(fs.readFileSync(path).toString());
+  // The old config format was just an object of proxy mappings. To also
+  // support new static file features, we have a new format with optional `proxy`
+  // and `static` fields.
+  const useNewFormat = rawConfig.proxies || rawConfig.static;
+  let rawProxyConfig = useNewFormat ? rawConfig.proxies || {} : rawConfig;
+  const proxyConfig = Object.entries(rawProxyConfig).map(
+    ([serverPath, target]) => {
+      return {
+        path: serverPath,
+        target,
+      };
+    },
+  );
+
+  const rawStaticConfig = useNewFormat ? rawConfig.static : {};
+  const staticConfig = Object.entries(rawStaticConfig).map(
+    ([serverPath, fsDir]) => {
+      return {
+        fsDir,
+        serverPath,
+      };
+    },
+  );
+
+  return { proxies: proxyConfig, static: staticConfig };
 }
 
 function extractTargetHost(req) {
