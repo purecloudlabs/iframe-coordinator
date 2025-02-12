@@ -1,8 +1,4 @@
-import {
-  registerCustomElements,
-  Client,
-  WorkerClient,
-} from "iframe-coordinator";
+import { registerCustomElements, Client } from "iframe-coordinator";
 
 registerCustomElements();
 
@@ -13,9 +9,6 @@ window.onhashchange = function () {
   document.getElementById("urlFromClientPath").innerHTML =
     iframeClient.urlFromClientPath(window.location.hash);
 };
-let workerClient = new WorkerClient({
-  hostOrigin: `http://${window.location.hostname}:3000`,
-});
 
 /****  SET UP THE IFRAME CLIENT LIBRARY ****/
 

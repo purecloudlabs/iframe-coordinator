@@ -136,11 +136,6 @@ export default {
     },
   },
   mounted() {
-    // const myWorker = new Worker("clients/client-app-1/worker.js", {
-    //   type: "module",
-    // });
-    // myWorker.postMessage("hi");
-
     this.workerPool = new WorkerPool();
     // Call the custom config set up on the CLI.
     const oldSetupFrames = frameRouter.setupFrames;
@@ -151,7 +146,11 @@ export default {
     if (window.routerSetup && typeof window.routerSetup === "function") {
       const clientConfig = window.routerSetup(frameRouter, this.workerPool);
       this.clientConfig = frameRouter.clientConfig.clients;
+
+      // Start web workers
+      console.log("Starting IFC workers", this.workerPool.clientConfig);
       this.workerPool.start();
+
       if (clientConfig.publishTopics) {
         clientConfig.publishTopics.forEach((topic) => {
           frameRouter.messaging.addListener(topic, (publication) => {

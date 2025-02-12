@@ -6,6 +6,8 @@ import {
   applyClientProtocol,
   PartialMsg,
 } from "./messages/LabeledMsg";
+import { HostManager } from "./hostManager";
+import { HostToClient } from "./messages/HostToClient";
 
 /** A property that can be set to initialize the worker pool with the
  * possible clients and the environmental data required by the clients
@@ -35,23 +37,28 @@ interface AppData {
   assignedRoute: string;
 }
 
-export default class WorkerPool {
+export default class WorkerPool extends EventTarget {
   private _isStarted: boolean;
   private _workers: WorkerMap = {};
-  private _envData: EnvData;
-  private _publishEmitter: InternalEventEmitter<Publication>;
-  private _publishExposedEmitter: EventEmitter<Publication>;
-  private _currentClientId: string;
-  private _currentPath: string;
-  private _queuedEvents: Event[];
+  private _hostManager: HostManager;
 
   /** @internal */
   constructor() {
-    this._publishEmitter = new InternalEventEmitter<Publication>();
-    this._publishExposedEmitter = new EventEmitter<Publication>(
-      this._publishEmitter,
-    );
-    this._queuedEvents = [];
+    super();
+    const workerPool = this;
+    class WorkerManager extends HostManager {
+      protected _postMessageToClient(
+        message: HostToClient,
+        clientId: string,
+      ): void {
+        workerPool._workers[clientId].postMessage(message);
+      }
+      protected _getClientAssignedRoute(clientId: string): string {
+        return workerPool._clientConfig.clients[clientId]?.app.assignedRoute;
+      }
+    }
+
+    this._hostManager = new WorkerManager(this);
   }
 
   private _clientConfig: ClientConfig;
@@ -62,31 +69,24 @@ export default class WorkerPool {
 
   set clientConfig(clientConfig: ClientConfig) {
     this._clientConfig = clientConfig;
-  }
-
-  public sendMessageToWorker<T, V>(
-    worker: Worker,
-    partialMsg: PartialMsg<T, V>,
-  ): void {
-    const message = applyClientProtocol(partialMsg);
-    worker.postMessage(message);
+    this._hostManager.envData = clientConfig.envData;
   }
 
   public start(): void {
     if (this._isStarted) {
       return;
     }
+
     Object.entries(this._clientConfig.clients).forEach(([clientId, client]) => {
       const workerUrl = client.script;
       this._workers[clientId] = new Worker(workerUrl);
-    });
-    Object.values(this._workers).forEach((worker) => {
-      worker.postMessage({ envData: this._clientConfig.envData });
-      this.sendMessageToWorker(worker, {
-        msgType: "env_init",
-        msg: this._clientConfig.envData,
+      console.log("Adding worker listener");
+      this._workers[clientId].addEventListener("message", (msg) => {
+        console.log("Got worker message", msg);
+        this._hostManager.handleClientMessage(msg, clientId);
       });
     });
+
     this._isStarted = true;
   }
 

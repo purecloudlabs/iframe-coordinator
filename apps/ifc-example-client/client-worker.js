@@ -5,40 +5,19 @@
 import { WorkerClient } from "iframe-coordinator/dist/workerClient.js";
 // let client;
 try {
+  self.addEventListener("message", (e) => {
+    console.log("Worker Raw Postmessage:", e.data);
+  });
+
+  console.log("Initializing Example Worker");
+
   const client = new WorkerClient();
+  client.addListener("environmentalData", (envData) => {
+    console.log("Worker received environment data:", envData);
+  });
+
+  console.log("Sending client start");
   client.start();
-
-  let interval = 0;
-  // Ask the host app to show the toast.
-
-  function increment() {
-    interval++;
-    console.log(interval);
-  }
-
-  setInterval(increment, 10000);
-
-  onmessage = function (e) {
-    console.log("got message", e.data);
-    this.handleMessage(e.data);
-    console.log(interval);
-    postMessage(interval);
-  };
-
-  handleMessage = function (messageData) {
-    switch (messageData.messageType) {
-      case "env_init":
-        // initializeClient(messageData)
-        break;
-      default:
-        console.log("cannot handle message");
-    }
-  };
-
-  // initializeClient = function() {
-
-  //   // client = new WorkerClient({hostOrigin: messageData.msg.hostRootUrl})
-  // }
 } catch (error) {
   console.error("web worker error", error);
 }
