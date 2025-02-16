@@ -225,7 +225,7 @@ function getSslOpts(certPath, keyPath) {
 
 function loadConfig(path) {
   if (!path) {
-    return [];
+    return { proxies: [], static: [] };
   }
 
   const rawConfig = JSON.parse(fs.readFileSync(path).toString());
