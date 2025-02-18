@@ -1,6 +1,6 @@
 {
   "name": "iframe-coordinator",
-  "version": "6.2.0",
+  "version": "6.2.1",
   "description": "Tools for coordinating embedded apps via iframes.",
   "dependencies": {
     "decoders": "1.15.0"
