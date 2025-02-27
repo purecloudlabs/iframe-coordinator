@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.2.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.2.0...v6.2.1) (2025-02-18)
+
+
+### Bug Fixes
+
+* **ifc-cli:** fix incorrect default data that failed when no proxy config file was present ([52537a0](https://github.com/purecloudlabs/iframe-coordinator/commit/52537a052914060fca177a39b697b8fea8438b0a))
+
 ## [6.2.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.1.1...v6.2.0) (2025-01-28)
 
 
