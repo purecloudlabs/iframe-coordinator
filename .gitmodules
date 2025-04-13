@@ -1,0 +1,3 @@
+[submodule "build"]
+	path = build
+	url = git@bitbucket.org:inindca/iframe-coordinator-buildfiles.git
