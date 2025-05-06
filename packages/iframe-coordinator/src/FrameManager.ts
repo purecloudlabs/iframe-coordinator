@@ -12,7 +12,7 @@ import {
   PartialMsg,
 } from "./messages/LabeledMsg";
 
-const IFRAME_STYLE = "frame-router iframe { width: 100%; height: 100%; }";
+const IFRAME_STYLE = "frame-router iframe { width: 100%; height: 100%; border: 0px }";
 
 /** @internal default iframe sandbox attributes */
 const DEFAULT_SANDBOX = [
@@ -59,7 +59,6 @@ class FrameManager {
     this._frameLocation = "about:blank";
 
     this._iframe = this._window.document.createElement("iframe");
-    this._iframe.setAttribute("frameborder", "0");
 
     if (!style) {
       style = this._window.document.createElement("style");
