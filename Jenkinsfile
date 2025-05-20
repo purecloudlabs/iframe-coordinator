@@ -3,12 +3,11 @@ import com.genesys.jenkins.Service
 
 def notifications = null
 String[] mailingList = [
-  "Matthew.Cheely@genesys.com",
-  "Daragh.King@genesys.com"
+  'CoreUI@genesys.com'
 ]
 
 def isReleaseBranch() {
-    return env.SHORT_BRANCH.equals('main') || env.SHORT_BRANCH.equals('master');
+  return env.SHORT_BRANCH.equals('main') || env.SHORT_BRANCH.equals('master')
 }
 
 pipeline {
@@ -19,9 +18,9 @@ pipeline {
   }
 
   environment {
-    NPM_UTIL_PATH = "npm-utils"
-    REPO_DIR = "repo"
-    SHORT_BRANCH = env.GIT_BRANCH.replaceFirst(/^origin\//, '');
+    NPM_UTIL_PATH = 'npm-utils'
+    REPO_DIR = 'repo'
+    SHORT_BRANCH = env.GIT_BRANCH.replaceFirst(/^origin\//, '')
     NPM_TOKEN = credentials('2844c47b-19b8-4c5f-b901-190de49c0883')
     ARTIFACTORY = credentials('14645c89-70a0-4b46-a8a2-2f0a580d13dd')
   }
@@ -78,7 +77,7 @@ pipeline {
         dir(env.REPO_DIR) {
           // Create an npmrc file, just so we can install deps cleanly from artifactory
           sh "${env.WORKSPACE}/${env.NPM_UTIL_PATH}/scripts/jenkins-create-npmrc.sh"
-          sh "npm ci"
+          sh 'npm ci'
         }
       }
     }
@@ -86,8 +85,8 @@ pipeline {
     stage('Check') {
       steps {
         dir(env.REPO_DIR) {
-          sh "npm run lint"
-          sh "npm run test"
+          sh 'npm run lint'
+          sh 'npm run test'
         }
       }
     }
@@ -95,9 +94,9 @@ pipeline {
     stage('Build') {
       steps {
         dir(env.REPO_DIR) {
-          sh "npm run release"
-          sh "npm run sync-versions"
-          sh "npm run build"
+          sh 'npm run release'
+          sh 'npm run sync-versions'
+          sh 'npm run build'
         }
       }
     }
@@ -112,7 +111,7 @@ pipeline {
              echo "registry=https://registry.npmjs.org" >> ./.npmrc
              echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ./.npmrc
           '''
-          sh "npm run publish.iframe-coordinator"
+          sh 'npm run publish.iframe-coordinator'
           sh('''
               RELEASE_VERSION="$(npm run --silent current-version --workspace=iframe-coordinator)"
               npm install --no-progress -P -E iframe-coordinator@$RELEASE_VERSION --workspace=iframe-coordinator-cli
@@ -121,19 +120,19 @@ pipeline {
               git commit --amend --no-edit --no-verify
               git tag -fa v$RELEASE_VERSION -m "chore(release): $RELEASE_VERSION"
           ''')
-          sh "npm run publish.iframe-coordinator-cli"
-          sshagent (credentials: ['3aa16916-868b-4290-a9ee-b1a05343667e']) {
+          sh 'npm run publish.iframe-coordinator-cli'
+          sshagent(credentials: ['3aa16916-868b-4290-a9ee-b1a05343667e']) {
             sh "git push --follow-tags -u origin ${env.SHORT_BRANCH}"
           }
-        }
+          }
       }
     }
 
     stage('Build Docs') {
       steps {
-        dir (env.REPO_DIR) {
-          sh "npm run doc"
-          sh "./scripts/generate-deploy-files"
+        dir(env.REPO_DIR) {
+          sh 'npm run doc'
+          sh './scripts/generate-deploy-files'
           sh '''
               export CDN_ROOT=$(npx --package=@purecloud/web-app-deploy@8 -- cached-asset-prefix --ecosystem pc --manifest dist/docs/manifest.json)
               ./scripts/prepare-docs
@@ -147,7 +146,7 @@ pipeline {
         expression { isReleaseBranch()  }
       }
       steps {
-        dir (env.REPO_DIR) {
+        dir(env.REPO_DIR) {
           sh '''
              npx --package=@purecloud/web-app-deploy@8 -- upload \
                --ecosystem pc \
@@ -163,7 +162,7 @@ pipeline {
         expression { isReleaseBranch()  }
       }
       steps {
-        dir (env.REPO_DIR) {
+        dir(env.REPO_DIR) {
           sh '''
              npx --package=@purecloud/web-app-deploy@8 -- deploy \
                --ecosystem pc \
@@ -178,13 +177,13 @@ pipeline {
   post {
     fixed {
       script {
-        notifications.emailResults(mailingList.join(" "))
+        notifications.emailResults(mailingList.join(' '))
       }
     }
 
     failure {
       script {
-        notifications.emailResults(mailingList.join(" "))
+        notifications.emailResults(mailingList.join(' '))
       }
     }
   }
