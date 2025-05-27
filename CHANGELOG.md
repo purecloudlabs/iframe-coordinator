@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.3.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.3.0...v6.3.1) (2025-05-27)
+
+
+### Bug Fixes
+
+* remove frameborder in favor of css equivalent ([aa986c0](https://github.com/purecloudlabs/iframe-coordinator/commit/aa986c085383ef3bbc54a4d26694b6ac6d46d88e))
+
 ## [6.3.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.2.1...v6.3.0) (2025-02-28)
 
 
