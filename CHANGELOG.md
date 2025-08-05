@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.3.2](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.3.1...v6.3.2) (2025-08-05)
+
+
+### Bug Fixes
+
+* **client:** fix message validation bug ([bef05ca](https://github.com/purecloudlabs/iframe-coordinator/commit/bef05ca30ba14e684a1f792852cb1f838469f1a0))
+
 ### [6.3.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.3.0...v6.3.1) (2025-05-27)
 
 
