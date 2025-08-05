@@ -8,6 +8,9 @@ import {
 import { EnvData, SetupData } from "../messages/Lifecycle";
 import { Publication } from "../messages/Publication";
 
+const HOST_ORIGIN = "https://example.com";
+const BAD_ORIGIN = "https://evil.com";
+
 describe("client", () => {
   let client: any;
   let mockFrameWindow: any;
@@ -33,7 +36,7 @@ describe("client", () => {
     };
 
     client = new Client({
-      hostOrigin: "https://example.com",
+      hostOrigin: HOST_ORIGIN,
     });
     client._clientWindow = mockFrameWindow;
   });
@@ -71,7 +74,7 @@ describe("client", () => {
       client.start();
 
       mockFrameWindow.trigger("message", {
-        origin: "origin",
+        origin: HOST_ORIGIN,
         data: {
           msgType: "env_init",
           msg: testEnvironmentData,
@@ -205,17 +208,20 @@ describe("client", () => {
     beforeEach(() => {
       subscriptionCalled = false;
       client.start();
-      client.messaging.addListener("origin", () => (subscriptionCalled = true));
+      client.messaging.addListener(
+        "myTopic",
+        () => (subscriptionCalled = true),
+      );
     });
 
-    it("should throw an exception on invalid iframe-coordinator message", () => {
+    it("should throw an exception on invalid message type", () => {
       expect(() => {
         mockFrameWindow.trigger("message", {
-          origin: "origin",
+          origin: HOST_ORIGIN,
           data: {
             protocol: API_PROTOCOL,
-            msgType: "test data",
-            msg: "msg",
+            msgType: "not valid type",
+            msg: { topic: "myTopic", payload: "data" },
             direction: "HostToClient",
           },
         });
@@ -227,14 +233,15 @@ describe("client", () => {
       expect(subscriptionCalled).toBe(false);
     });
 
-    it("should throw an exception on invalid iframe-coordinator message with no direction", () => {
+    it("should throw an exception on invalid message content", () => {
       expect(() => {
         mockFrameWindow.trigger("message", {
-          origin: "origin",
+          origin: HOST_ORIGIN,
           data: {
             protocol: API_PROTOCOL,
-            msgType: "test data",
-            msg: "msg",
+            msgType: "publish",
+            msg: { invalid: "yes" },
+            direction: "HostToClient",
           },
         });
       }).toThrowMatching((err) => {
@@ -245,31 +252,51 @@ describe("client", () => {
       expect(subscriptionCalled).toBe(false);
     });
 
-    it("should not throw an exception if not from iframe-coordinator", () => {
+    // Fix this in next major release, holding off for now in case of compat issues
+    // it("should throw an exception on invalid iframe-coordinator message with no direction", () => {
+    //   expect(() => {
+    //     mockFrameWindow.trigger("message", {
+    //       origin: HOST_ORIGIN,
+    //       data: {
+    //         protocol: API_PROTOCOL,
+    //         msgType: "publish",
+    //         msg: { topic: "myTopic", payload: "data" },
+    //       },
+    //     });
+    //   }).toThrowMatching((err) => {
+    //     return err.message.startsWith(
+    //       "I received an invalid message from the host application",
+    //     );
+    //   });
+    //   expect(subscriptionCalled).toBe(false);
+    // });
+
+    it("should ignore messages from other client applications", () => {
       expect(() => {
         mockFrameWindow.trigger("message", {
-          protocol: "whatev",
-          origin: "origin",
+          protocol: API_PROTOCOL,
+          origin: HOST_ORIGIN,
           data: {
-            protocol: "whatev",
-            msgType: "test data",
-            msg: "msg",
+            protocol: API_PROTOCOL,
+            msgType: "publish",
+            msg: { topic: "myTopic", payload: "data" },
+            direction: "ClientToHost",
           },
         });
       }).not.toThrow();
       expect(subscriptionCalled).toBe(false);
     });
 
-    it("should ignore messages from client applications", () => {
+    it("should ignore messages from invalid domains", () => {
       expect(() => {
         mockFrameWindow.trigger("message", {
           protocol: API_PROTOCOL,
-          origin: "origin",
+          origin: BAD_ORIGIN,
           data: {
             protocol: API_PROTOCOL,
-            msgType: "invalid message type",
-            msg: "msg",
-            direction: "ClientToHost",
+            msgType: "publish",
+            msg: { topic: "myTopic", payload: "data" },
+            direction: "HostToClient",
           },
         });
       }).not.toThrow();
@@ -287,7 +314,7 @@ describe("client", () => {
         receivedPayload = data.payload;
       });
       mockFrameWindow.trigger("message", {
-        origin: "origin",
+        origin: HOST_ORIGIN,
         data: {
           msgType: "publish",
           msg: {
@@ -314,7 +341,7 @@ describe("client", () => {
         receivedPayload = data.payload;
       });
       mockFrameWindow.trigger("message", {
-        origin: "origin",
+        origin: HOST_ORIGIN,
         data: {
           msgType: "publish",
           msg: {
@@ -345,7 +372,7 @@ describe("client", () => {
       client.start();
 
       mockFrameWindow.trigger("message", {
-        origin: "origin",
+        origin: HOST_ORIGIN,
         data: {
           msgType: "env_init",
           msg: testEnvironmentData,

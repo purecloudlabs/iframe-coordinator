@@ -161,6 +161,12 @@ export class Client {
   private _onWindowMessage = (event: MessageEvent) => {
     let validated = null;
 
+    // Ignore messages from the wrong origin
+    if (event.origin !== this._hostOrigin) {
+      return;
+    }
+
+    // Ignore messages from clients to hosts
     if (event.data && event.data.direction === "ClientToHost") {
       return;
     }
