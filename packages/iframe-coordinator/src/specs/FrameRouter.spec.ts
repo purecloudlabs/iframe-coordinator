@@ -5,6 +5,11 @@ const ENV_DATA = {
   hostRootUrl: "https://example.com/root/",
 };
 
+const ENV_DATA_SINGLE_SLASH = {
+  ...ENV_DATA,
+  hostRootUrl: "https://example.com/",
+};
+
 const ENV_DATA_WITH_HASH = {
   ...ENV_DATA,
   hostRootUrl: "https://example.com/root/#/",
@@ -59,6 +64,33 @@ describe("The frame router element", () => {
       expect(router._envData).toEqual({
         ...ENV_DATA,
         hostRootUrl: "https://example.com/root/#",
+      });
+    });
+
+    it("Correctly process a host URL using the root path with no hash", () => {
+      const router = new FrameRouterElement();
+      router.clientConfig = {
+        clients: {},
+        envData: ENV_DATA_SINGLE_SLASH,
+      };
+      //@ts-ignore
+      expect(router._envData).toEqual({
+        ...ENV_DATA,
+        hostRootUrl: "https://example.com/",
+      });
+    });
+
+    it("Correctly process a host URL using the root path with a hash", () => {
+      window.location.hash = "foo";
+      const router = new FrameRouterElement();
+      router.clientConfig = {
+        clients: {},
+        envData: ENV_DATA_SINGLE_SLASH,
+      };
+      //@ts-ignore
+      expect(router._envData).toEqual({
+        ...ENV_DATA,
+        hostRootUrl: "https://example.com/#",
       });
     });
 
