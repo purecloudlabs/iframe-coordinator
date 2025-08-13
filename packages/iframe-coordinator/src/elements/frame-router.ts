@@ -272,7 +272,9 @@ export default class FrameRouterElement extends HTMLElement {
     if (!hostUrlObject.hash) {
       hostUrlObject.pathname = stripTrailingSlash(hostUrlObject.pathname);
       if (window.location.hash) {
-        hostUrlObject.pathname += "/";
+        if (hostUrlObject.pathname !== "/") {
+          hostUrlObject.pathname += "/";
+        }
         hostUrlObject.hash = "#";
       }
     }

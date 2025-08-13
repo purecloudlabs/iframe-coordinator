@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.3.4](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.3.3...v6.3.4) (2025-08-07)
+
+
+### Bug Fixes
+
+* **frame-router:** fix double-slash in host URL processing when path is `/` ([e63e8c9](https://github.com/purecloudlabs/iframe-coordinator/commit/e63e8c9b73413d94392a6b5308101ec70697d3ca))
+
+### [6.3.3](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.3.2...v6.3.3) (2025-08-07)
+
 ### [6.3.2](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.3.1...v6.3.2) (2025-08-05)
 
 
