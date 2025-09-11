@@ -87,7 +87,7 @@ function parseProgramOptions() {
       "iframe client configuration file",
       defaultJsConfig,
     )
-    .option("-x -proxy-config <proxy_config_file>")
+    .option("-x, --proxy-config <proxy_config_file>")
     .option("-p, --port <port_num>", "port number to host on", 3000)
     .option("-s, --ssl", "serve over https")
     .option("--ssl-cert <cert_path>", "certificate file to use for https")
