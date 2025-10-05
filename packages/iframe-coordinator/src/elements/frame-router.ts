@@ -145,10 +145,6 @@ export default class FrameRouterElement extends HTMLElement {
       this._currentPath = newPath;
       this._currentClientId = newClientId;
 
-      const newLocation = this._frameManager.setFrameLocation(
-        clientInfo && clientInfo.url,
-      );
-
       this._frameManager.setFrameSandbox(
         (clientInfo && clientInfo.sandbox) || undefined,
       );
@@ -157,6 +153,10 @@ export default class FrameRouterElement extends HTMLElement {
       );
       this._frameManager.setFrameDefaultTitle(
         (clientInfo && clientInfo.defaultTitle) || undefined,
+      );
+
+      const newLocation = this._frameManager.setFrameLocation(
+        clientInfo && clientInfo.url,
       );
 
       this._dispatchEventWhenConnected(
