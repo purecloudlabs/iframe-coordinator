@@ -139,28 +139,24 @@ Options:
   Keep in mind that the config file is not a true commonJS module, and
   will be evaluated directly inside the browser in an immediately invoked
   function expression.
+```
 
-  The CLI host app also provides a proxy route under `/proxy/` that can be used
-  if you need the client and host applications on the same domain. To use the proxy,
-  simply make the url registered for the client that of the host app, followed by
-  `/proxy/` and then the url of the client app. (See `app2` in the config below
-  for an example)
+The CLI host app also provides a proxy config file that can be used
+if you need the client and host applications on the same domain. (See `app2` in the config below
+for an example).
 
-  Here is an example config file:
+`ifc-cli-config.js`
 
+```json
 module.exports = function(frameRouter) {
   frameRouter.clientConfig = {
     clients: {
       app1: {
-        url: 'http://localhost:8080/client-app-1/#/',
+        url: '/client-app-1/#/',
         assignedRoute: '/app1'
       },
       app2: {
-        // Instead of directly referencing client 2 via "url: `http://${hostname}:8080/client-app-2/#/`"
-        // we use the built-in proxy route so it can share the same domain as the host app.
-        url: `${window.location.origin}/proxy/${encodeURI(
-          `http://${hostname}:8080/client-app-2/#/`
-        )}`,
+        url: '/client-app-2/#/',
         assignedRoute: '/app2',
         sandbox: 'allow-presentation', // optional
         allow: 'microphone http://localhost:8080;' // optional
@@ -168,7 +164,10 @@ module.exports = function(frameRouter) {
     },
     envData: {
       locale: 'en-US',
-      hostRootUrl: window.location.origin,
+      hostRootUrl:
+        window.location.origin +
+        window.location.pathname +
+        window.location.search,
       custom: getCustomClientData()
     }
   };
@@ -182,6 +181,25 @@ module.exports = function(frameRouter) {
 
 function getCustomClientData() {
   return { test: 'This is only a test' };
+}
+```
+
+`ifc-proxy.config.json`
+
+```json
+{
+  "static": {
+    // Instead of directly referencing client 2 via "url: `http://${hostname}:8080/client-app-2/#/`"
+    // we create a static directory for the second client.
+    "/client-app-2": "http://${hostname}:8080"
+  },
+  // This file also has support for basic proxy configurations
+  "proxies": {
+    "something": {
+      path: "/something"
+      target: "http://www.example.org/something"
+    }
+  }
 }
 ```
 
