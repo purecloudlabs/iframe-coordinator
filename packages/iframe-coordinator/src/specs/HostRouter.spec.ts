@@ -108,5 +108,37 @@ describe("HostRouter", () => {
       );
       expect(clientInfo.id).toBe("withMoreSpecificity");
     });
+
+    it("should resolve same-prefix routes by specificity regardless of order", () => {
+      hostRouter = new HostRouter({
+        lessSpecific: {
+          assignedRoute: "assigned/route/",
+          url: "about:blank",
+        },
+        moreSpecific: {
+          assignedRoute: "assigned/route-modified/",
+          url: "about:blank",
+        },
+      });
+      let clientInfo = hostRouter.getClientTarget(
+        "assigned/route-modified/sub-route",
+      );
+      expect(clientInfo?.id).toBe("moreSpecific");
+
+      hostRouter = new HostRouter({
+        moreSpecific: {
+          assignedRoute: "assigned/route-modified/",
+          url: "about:blank",
+        },
+        lessSpecific: {
+          assignedRoute: "assigned/route/",
+          url: "about:blank",
+        },
+      });
+      clientInfo = hostRouter.getClientTarget(
+        "assigned/route-modified/sub-route",
+      );
+      expect(clientInfo?.id).toBe("moreSpecific");
+    });
   });
 });
