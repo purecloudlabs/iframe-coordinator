@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [6.3.7](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.3.6...v6.3.7) (2025-10-06)
+
+
+### Bug Fixes
+
+* **frame-router:** fix specificity bug in route matching ([a76b355](https://github.com/purecloudlabs/iframe-coordinator/commit/a76b355e4e0349587a4c44cf2eb3c8c84e78cfae))
+
 ### [6.3.6](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.3.5...v6.3.6) (2025-10-06)
 
 
