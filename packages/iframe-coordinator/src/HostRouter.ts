@@ -18,7 +18,7 @@ export class HostRouter {
         return parseRegistration(id, data);
       })
       // Sorts by most path segments in url descending to make sure more specific paths are matched first
-      .sort(byMostPathSegments);
+      .sort(byPathSpecificity);
   }
 
   /**
@@ -188,8 +188,20 @@ function applyRoute(urlStr: string, route: string): string {
 }
 
 /**
- * Helper function for sorting clients by length of url path segments descending
+ * Helper function for sorting clients by url path specificity, from most to
+ * least specific
  */
-function byMostPathSegments(a: ClientInfo, b: ClientInfo): number {
-  return b.assignedRoute.split("/").length - a.assignedRoute.split("/").length;
+function byPathSpecificity(a: ClientInfo, b: ClientInfo): number {
+  const aPathLength = a.assignedRoute.split("/").length;
+  const bPathLength = b.assignedRoute.split("/").length;
+  const pathDiff = bPathLength - aPathLength;
+  if (pathDiff !== 0) {
+    // The longer path is more specific and should come first
+    return pathDiff;
+  } else {
+    // If the path has the same number of segments, putting the longer
+    // string length first ensures more-specific paths are matched first.
+    // e.g. /foo/barbaz comes before /foo/bar
+    return b.assignedRoute.length - a.assignedRoute.length;
+  }
 }
