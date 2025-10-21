@@ -1,3 +1,5 @@
+import { describe, expect, test, beforeAll, beforeEach } from "vitest";
+
 import { FrameRouterElement } from "../host";
 
 const ENV_DATA = {
@@ -40,7 +42,7 @@ describe("The frame router element", () => {
    * behavior.
    */
   describe("Host URL management", () => {
-    it("Removes a trailing slash on the host URL if present with no hash", () => {
+    test("Removes a trailing slash on the host URL if present with no hash", () => {
       const router = new FrameRouterElement();
       router.clientConfig = {
         clients: {},
@@ -53,7 +55,7 @@ describe("The frame router element", () => {
       });
     });
 
-    it("Adds a fragment to the tracked host URL if one is present on window but not on the provided root URL", () => {
+    test("Adds a fragment to the tracked host URL if one is present on window but not on the provided root URL", () => {
       window.location.hash = "foo";
       const router = new FrameRouterElement();
       router.clientConfig = {
@@ -67,7 +69,7 @@ describe("The frame router element", () => {
       });
     });
 
-    it("Correctly process a host URL using the root path with no hash", () => {
+    test("Correctly process a host URL using the root path with no hash", () => {
       const router = new FrameRouterElement();
       router.clientConfig = {
         clients: {},
@@ -80,7 +82,7 @@ describe("The frame router element", () => {
       });
     });
 
-    it("Correctly process a host URL using the root path with a hash", () => {
+    test("Correctly process a host URL using the root path with a hash", () => {
       window.location.hash = "foo";
       const router = new FrameRouterElement();
       router.clientConfig = {
@@ -94,7 +96,7 @@ describe("The frame router element", () => {
       });
     });
 
-    it("Does not modify the provided host URL if it and the current location have a fragment", () => {
+    test("Does not modify the provided host URL if it and the current location have a fragment", () => {
       window.location.hash = "foo";
       const router = new FrameRouterElement();
       router.clientConfig = {
@@ -107,7 +109,7 @@ describe("The frame router element", () => {
       });
     });
 
-    it("Removes trailing slash from pathname when the provided host URL with query params; urlObject and location have no hash", () => {
+    test("Removes trailing slash from pathname when the provided host URL with query params; urlObject and location have no hash", () => {
       const router = new FrameRouterElement();
       router.clientConfig = {
         clients: {},
@@ -120,7 +122,7 @@ describe("The frame router element", () => {
       });
     });
 
-    it("Does not add slash between hash and query params if location has hash; urlObject has no hash", () => {
+    test("Does not add slash between hash and query params if location has hash; urlObject has no hash", () => {
       window.location.hash = "foo";
       const router = new FrameRouterElement();
       router.clientConfig = {
@@ -134,7 +136,7 @@ describe("The frame router element", () => {
       });
     });
 
-    it("Does not modify provided host URL with query params if urlObject has hash; location hash N/A", () => {
+    test("Does not modify provided host URL with query params if urlObject has hash; location hash N/A", () => {
       const router = new FrameRouterElement();
       router.clientConfig = {
         clients: {},

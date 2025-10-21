@@ -20,17 +20,12 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-replace": "^5.0.7",
     "@rollup/plugin-typescript": "^11.1.6",
-    "@types/jasmine": "^5.1.5",
-    "jasmine-core": "^5.5.0",
     "jsdom": "^26.0.0",
-    "karma": "^6.4.4",
-    "karma-jasmine": "^5.1.0",
-    "karma-jsdom-launcher": "^18.0.0",
-    "karma-typescript": "^5.5.4",
     "puppeteer": "^22.15.0",
     "rollup": "^4.21.1",
     "typedoc": "^0.25.13",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "vitest": "^3.2.4"
   },
   "scripts": {
     "build": "npm run build-lib",
@@ -38,9 +33,8 @@
     "current-version": "echo $npm_package_version",
     "doc": "typedoc",
     "start": "rollup -c --watch",
-    "test": "karma start --single-run",
-    "test.watch": "karma start",
-    "test.watch.chrome": "karma start --browsers=Chrome"
+    "test": "vitest --run",
+    "test.watch": "vitest"
   },
   "author": "",
   "license": "MIT",

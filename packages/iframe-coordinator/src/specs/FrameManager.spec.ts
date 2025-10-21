@@ -1,3 +1,5 @@
+import { describe, expect, test, beforeEach, vi } from "vitest";
+
 import FrameManager from "../FrameManager";
 import { API_PROTOCOL } from "../messages/LabeledMsg";
 
@@ -11,29 +13,25 @@ describe("FrameManager", () => {
     mocks = {};
 
     mocks.document = {
-      createElement: jasmine
-        .createSpy("docCreateElement")
-        .and.callFake((element: string) => {
-          return mocks.frame;
-        }),
+      createElement: vi.fn((element: string) => {
+        return mocks.frame;
+      }),
       head: {
-        appendChild: jasmine.createSpy("headAppend"),
+        appendChild: vi.fn(),
       },
     };
 
     mocks.window = {
       handlers: {},
       document: mocks.document,
-      addEventListener: jasmine
-        .createSpy("windowAddEventListener")
-        .and.callFake((topic: string, handler: (data: any) => void) => {
-          mocks.window.handlers[topic] = handler;
-        }),
-      removeEventListener: jasmine
-        .createSpy("windowRemoveEventListener")
-        .and.callFake((topic: string, handler: (data: any) => void) => {
+      addEventListener: vi.fn((topic: string, handler: (data: any) => void) => {
+        mocks.window.handlers[topic] = handler;
+      }),
+      removeEventListener: vi.fn(
+        (topic: string, handler: (data: any) => void) => {
           mocks.window.handlers[topic] = undefined;
-        }),
+        },
+      ),
       raise(topic: string, data: any) {
         if (mocks.window.handlers[topic]) {
           mocks.window.handlers[topic](data);
@@ -46,13 +44,13 @@ describe("FrameManager", () => {
 
     mocks.frameWindow = {
       location: {
-        replace: jasmine.createSpy("frameLocationReplace"),
+        replace: vi.fn(),
       },
-      postMessage: jasmine.createSpy("framePostMessage"),
+      postMessage: vi.fn(),
     };
 
     mocks.frame = {
-      setAttribute: jasmine.createSpy("frameSetAttribute"),
+      setAttribute: vi.fn(),
       load: () => {
         mocks.frame.contentWindow = mocks.frameWindow;
         if (mocks.frame.onload) {
@@ -62,11 +60,11 @@ describe("FrameManager", () => {
     };
 
     mocks.node = {
-      getAttribute: jasmine.createSpy("nodeGetAttribute"),
-      appendChild: jasmine.createSpy("nodeAppendChild"),
+      getAttribute: vi.fn(),
+      appendChild: vi.fn(),
     };
 
-    mocks.handler = jasmine.createSpy("messageHandler");
+    mocks.handler = vi.fn();
 
     frameManager = new FrameManager({
       onMessage: mocks.handler,
@@ -74,7 +72,7 @@ describe("FrameManager", () => {
     });
   });
 
-  it("Creates a sandboxed iframe when created", () => {
+  test("Creates a sandboxed iframe when created", () => {
     expect(mocks.document.createElement).toHaveBeenCalledWith("iframe");
     expect(mocks.frame.setAttribute).toHaveBeenCalledWith(
       "sandbox",
@@ -83,7 +81,7 @@ describe("FrameManager", () => {
   });
 
   describe("Can be used to set the frame's location", () => {
-    it("before the frame loads", () => {
+    test("before the frame loads", () => {
       frameManager.setFrameLocation("http://example.com/");
       mocks.frame.load();
       expect(mocks.frame.contentWindow.location.replace).toHaveBeenCalledWith(
@@ -91,7 +89,7 @@ describe("FrameManager", () => {
       );
     });
 
-    it("after the frame loads", () => {
+    test("after the frame loads", () => {
       mocks.frame.load();
       frameManager.setFrameLocation("http://example.com/");
       expect(mocks.frame.contentWindow.location.replace).toHaveBeenCalledWith(
@@ -99,7 +97,7 @@ describe("FrameManager", () => {
       );
     });
 
-    it("to an empty page", () => {
+    test("to an empty page", () => {
       mocks.frame.load();
       frameManager.setFrameLocation(null);
       expect(mocks.frame.contentWindow.location.replace).toHaveBeenCalledWith(
@@ -107,7 +105,7 @@ describe("FrameManager", () => {
       );
     });
 
-    it("returns the set location", () => {
+    test("returns the set location", () => {
       mocks.frame.load();
       const blank = frameManager.setFrameLocation(null);
       const example = frameManager.setFrameLocation("http://example.com");
@@ -121,7 +119,7 @@ describe("FrameManager", () => {
       mocks.frame.load();
     });
 
-    it("unless the frame location is the default", () => {
+    test("unless the frame location is the default", () => {
       const message = {
         msgType: "publish",
         msg: {
@@ -134,7 +132,7 @@ describe("FrameManager", () => {
       expect(mocks.frame.contentWindow.postMessage).not.toHaveBeenCalled();
     });
 
-    it("restricted by set location origin", () => {
+    test("restricted by set location origin", () => {
       const message = {
         msgType: "publish",
         msg: {
@@ -160,7 +158,7 @@ describe("FrameManager", () => {
       );
     });
 
-    it("or restricted by the implied host page origin", () => {
+    test("or restricted by the implied host page origin", () => {
       const message = {
         msgType: "publish",
         msg: {
@@ -207,7 +205,7 @@ describe("FrameManager", () => {
       frameManager.startMessageHandler();
     });
 
-    it("if the messages are sent correctly", () => {
+    test("if the messages are sent correctly", () => {
       mocks.window.raise("message", mocks.messageEvent);
       expect(mocks.handler).toHaveBeenCalledWith({
         msgType: mocks.messageEvent.data.msgType,
@@ -221,7 +219,7 @@ describe("FrameManager", () => {
       });
     });
 
-    it("if the messages are sent correctly to a host", () => {
+    test("if the messages are sent correctly to a host", () => {
       mocks.window.raise("message", mocks.messageEvent);
       expect(mocks.handler).toHaveBeenCalledWith({
         msgType: mocks.messageEvent.data.msgType,
@@ -235,7 +233,7 @@ describe("FrameManager", () => {
       });
     });
 
-    it("if the messages are sent correctly to a host and missing direction", () => {
+    test("if the messages are sent correctly to a host and missing direction", () => {
       mocks.messageEvent.data.direction = undefined;
       mocks.window.raise("message", mocks.messageEvent);
       expect(mocks.handler).toHaveBeenCalledWith({
@@ -250,25 +248,25 @@ describe("FrameManager", () => {
       });
     });
 
-    it("which are blocked if sent from an unexpected origin", () => {
+    test("which are blocked if sent from an unexpected origin", () => {
       mocks.messageEvent.origin = "http://evil.com";
       mocks.window.raise("message", mocks.messageEvent);
       expect(mocks.handler).not.toHaveBeenCalled();
     });
 
-    it("which are blocked if intended for a client", () => {
+    test("which are blocked if intended for a client", () => {
       mocks.messageEvent.data.direction = "HostToClient";
       mocks.window.raise("message", mocks.messageEvent);
       expect(mocks.handler).not.toHaveBeenCalled();
     });
 
-    it("which are blocked if sent from an unexpected frame", () => {
+    test("which are blocked if sent from an unexpected frame", () => {
       mocks.messageEvent.source = {};
       mocks.window.raise("message", mocks.messageEvent);
       expect(mocks.handler).not.toHaveBeenCalled();
     });
 
-    it("which throw exceptions if sent with invalid data from iframe-coordinator", () => {
+    test("which throw exceptions if sent with invalid data from iframe-coordinator", () => {
       mocks.messageEvent.data = {
         protocol: API_PROTOCOL,
         msgType: "notValid",
@@ -279,7 +277,7 @@ describe("FrameManager", () => {
       }).toThrow();
     });
 
-    it("which do not throw exceptions if sent with invalid data from other sources", () => {
+    test("which do not throw exceptions if sent with invalid data from other sources", () => {
       mocks.messageEvent.data = {
         protocol: "whatev",
         msgType: "notValid",
@@ -290,7 +288,7 @@ describe("FrameManager", () => {
       }).not.toThrow();
     });
 
-    it("and can unsubscribe as well.", () => {
+    test("and can unsubscribe as well.", () => {
       frameManager.stopMessageHandler();
       mocks.window.raise("message", mocks.messageEvent);
       expect(mocks.handler).not.toHaveBeenCalled();
@@ -303,7 +301,7 @@ describe("FrameManager", () => {
       frameManager.setFrameLocation("http://example.com/");
     });
 
-    it("if the message is valid", () => {
+    test("if the message is valid", () => {
       const message = {
         msgType: "publish",
         msg: {
@@ -329,7 +327,7 @@ describe("FrameManager", () => {
     });
 
     /*
-    it('but not if the message is invalid', () => {
+    test('but not if the message is invalid', () => {
       const message = {
         msgType: 'notAValidType',
         msg: {}
@@ -341,13 +339,13 @@ describe("FrameManager", () => {
   });
 
   describe("Can be used to set the frame's allow policy", () => {
-    it("set it to a new policy", () => {
+    test("set it to a new policy", () => {
       const allowOpts = "microphone *; camera *;";
       frameManager.setFrameAllow(allowOpts);
       expect(mocks.frame.setAttribute).toHaveBeenCalledWith("allow", allowOpts);
     });
 
-    it("ensure only a string is set", () => {
+    test("ensure only a string is set", () => {
       frameManager.setFrameAllow(false as any);
       expect(mocks.frame.setAttribute).toHaveBeenCalledWith("allow", "");
     });
@@ -363,7 +361,7 @@ describe("FrameManager", () => {
       "allow-downloads",
     ];
 
-    it("add to the sandbox", () => {
+    test("add to the sandbox", () => {
       const sandboxOpts = "awesome-sandbox allow-playground";
       frameManager.setFrameSandbox(sandboxOpts);
       sandboxOpts
@@ -371,44 +369,44 @@ describe("FrameManager", () => {
         .forEach((newOpt) =>
           expect(mocks.frame.setAttribute).toHaveBeenCalledWith(
             "sandbox",
-            jasmine.stringMatching(newOpt),
+            expect.stringMatching(newOpt),
           ),
         );
     });
 
-    it("ensure defaults are always set", () => {
+    test("ensure defaults are always set", () => {
       frameManager.setFrameSandbox("");
       DEFAULT_SANDBOX.forEach((defaultOpt) =>
         expect(mocks.frame.setAttribute).toHaveBeenCalledWith(
           "sandbox",
-          jasmine.stringMatching(defaultOpt),
+          expect.stringMatching(defaultOpt),
         ),
       );
     });
 
-    it("ensure only a string is set", () => {
+    test("ensure only a string is set", () => {
       frameManager.setFrameSandbox({} as any);
       expect(mocks.frame.setAttribute).not.toHaveBeenCalledWith("sandbox", {});
     });
   });
 
   describe("Can be used to set the frame's default title", () => {
-    it("add default title attribute", () => {
+    test("add default title attribute", () => {
       const testTitle = "iframe test title";
       frameManager.setFrameDefaultTitle(testTitle);
       expect(mocks.frame.setAttribute).toHaveBeenCalledWith(
         "title",
-        jasmine.stringMatching(testTitle),
+        expect.stringMatching(testTitle),
       );
     });
 
-    it("ensure only a string is set", () => {
+    test("ensure only a string is set", () => {
       frameManager.setFrameDefaultTitle({} as any);
       expect(mocks.frame.setAttribute).not.toHaveBeenCalledWith("title", {});
     });
   });
 
-  it("Can be embeded the frame in another element", () => {
+  test("Can be embeded the frame in another element", () => {
     frameManager.embed(mocks.node);
     expect(mocks.node.appendChild).toHaveBeenCalledWith(mocks.frame);
   });

@@ -1,3 +1,5 @@
+import { describe, expect, test, beforeEach, vi } from "vitest";
+
 import { InternalEventEmitter } from "../EventEmitter";
 
 describe("InternalEventEmitter", () => {
@@ -7,31 +9,31 @@ describe("InternalEventEmitter", () => {
       eventEmitter = new InternalEventEmitter<string>();
     });
 
-    it("should not error when dispatching an event with no listeners", () => {
+    test("should not error when dispatching an event with no listeners", () => {
       expect(() => eventEmitter.dispatch("test", "data")).not.toThrow();
     });
 
-    it("should not error when removing no listeners", () => {
+    test("should not error when removing no listeners", () => {
       expect(() => eventEmitter.removeAllListeners("test.event")).not.toThrow();
     });
 
-    it("should not dispatch to different typed event", () => {
-      const listener = jasmine.createSpy("wrongEventListener");
+    test("should not dispatch to different typed event", () => {
+      const listener = vi.fn();
       eventEmitter.addListener("wrong.event", listener);
       eventEmitter.dispatch("test.event", "test.data");
       expect(listener).not.toHaveBeenCalled();
     });
 
-    it("should dispatch to correctly typed event", () => {
-      const listener = jasmine.createSpy("eventListener");
+    test("should dispatch to correctly typed event", () => {
+      const listener = vi.fn();
       eventEmitter.addListener("test.event", listener);
       eventEmitter.dispatch("test.event", "test.data");
       expect(listener).toHaveBeenCalledWith("test.data");
     });
 
-    it("should dispatch to multipe listeners of the right type", () => {
-      const listener = jasmine.createSpy("eventListener");
-      const listener2 = jasmine.createSpy("eventListener2");
+    test("should dispatch to multipe listeners of the right type", () => {
+      const listener = vi.fn();
+      const listener2 = vi.fn();
       eventEmitter.addListener("test.event", listener);
       eventEmitter.addListener("test.event", listener2);
       eventEmitter.dispatch("test.event", "test.data");
@@ -39,18 +41,18 @@ describe("InternalEventEmitter", () => {
       expect(listener2).toHaveBeenCalledWith("test.data");
     });
 
-    it("should not re-add an existing listener", () => {
-      const listener = jasmine.createSpy("eventListener");
+    test("should not re-add an existing listener", () => {
+      const listener = vi.fn();
       eventEmitter.addListener("test.event", listener);
       eventEmitter.addListener("test.event", listener);
       eventEmitter.dispatch("test.event", "test.data");
       expect(listener).toHaveBeenCalledWith("test.data");
-      expect(listener.calls.count()).toBe(1);
+      expect(listener.mock.calls.length).toBe(1);
     });
 
-    it("should remove an existing listener", () => {
-      const listener = jasmine.createSpy("eventListener");
-      const listener2 = jasmine.createSpy("eventListener2");
+    test("should remove an existing listener", () => {
+      const listener = vi.fn();
+      const listener2 = vi.fn();
       eventEmitter.addListener("test.event", listener);
       eventEmitter.addListener("test.event", listener2);
       eventEmitter.removeListener("test.event", listener);
@@ -59,12 +61,12 @@ describe("InternalEventEmitter", () => {
       expect(listener2).toHaveBeenCalledWith("test.data");
     });
 
-    it("should be able to remove a listener from inside the listener callback", () => {
+    test("should be able to remove a listener from inside the listener callback", () => {
       const event = "test.event";
       const listener = () => {
         eventEmitter.removeListener(event, listener);
       };
-      const listener2 = jasmine.createSpy("eventListener2");
+      const listener2 = vi.fn();
 
       eventEmitter.addListener(event, listener);
       eventEmitter.addListener(event, listener2);
@@ -78,9 +80,9 @@ describe("InternalEventEmitter", () => {
       expect(listener2).toHaveBeenCalledTimes(2);
     });
 
-    it("should be able to remove all listeners", () => {
-      const listener = jasmine.createSpy("eventListener");
-      const listener2 = jasmine.createSpy("eventListener2");
+    test("should be able to remove all listeners", () => {
+      const listener = vi.fn();
+      const listener2 = vi.fn();
       eventEmitter.addListener("test.event", listener);
       eventEmitter.addListener("test.event", listener2);
       eventEmitter.removeAllListeners("test.event");
@@ -103,9 +105,9 @@ describe("InternalEventEmitter", () => {
       payload1: "test.data",
       payload2: 2,
     };
-    it("should dispatch to multipe listeners of the right type", () => {
-      const listener = jasmine.createSpy("eventListener");
-      const listener2 = jasmine.createSpy("eventListener2");
+    test("should dispatch to multipe listeners of the right type", () => {
+      const listener = vi.fn();
+      const listener2 = vi.fn();
       eventEmitter.addListener("test.event", listener);
       eventEmitter.addListener("test.event", listener2);
       eventEmitter.dispatch("test.event", testData);

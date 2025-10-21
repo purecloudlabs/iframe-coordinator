@@ -1,3 +1,5 @@
+import { describe, expect, test, beforeEach, vi } from "vitest";
+
 import { Client } from "../client";
 import {
   API_PROTOCOL,
@@ -28,7 +30,7 @@ describe("client", () => {
         delete mockFrameWindow.eventHandlers[eventId];
       },
       parent: {
-        postMessage: jasmine.createSpy("window.parent.postMessage"),
+        postMessage: vi.fn(),
       },
       location: {
         hash: "client/route",
@@ -46,7 +48,7 @@ describe("client", () => {
       client.start();
     });
 
-    it("should send a client_started notification", () => {
+    test("should send a client_started notification", () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
         applyClientProtocol({
           msgType: "client_started",
@@ -82,18 +84,18 @@ describe("client", () => {
       });
     });
 
-    it("should delegate", () => {
+    test("should delegate", () => {
       const { assignedRoute, ...restEnvData } = testEnvironmentData;
       expect(receivedEnvData).toEqual(restEnvData);
     });
 
     describe("generate full URL from client path", () => {
-      it("should be able to generate full url from client path", () => {
+      test("should be able to generate full url from client path", () => {
         const urlFromClient = client.urlFromClientPath("client/route");
         expect(urlFromClient).toEqual("http://example.com/app1/client/route");
       });
 
-      it("should ignore client route leading slash and hash tag", () => {
+      test("should ignore client route leading slash and hash tag", () => {
         let urlFromClient = client.urlFromClientPath("/client/route");
         expect(urlFromClient).toEqual("http://example.com/app1/client/route");
         urlFromClient = client.urlFromClientPath("#/client/route");
@@ -101,7 +103,7 @@ describe("client", () => {
         urlFromClient = client.urlFromClientPath("/#/client/route");
         expect(urlFromClient).toEqual("http://example.com/app1/client/route");
       });
-      it("should keep query strings", () => {
+      test("should keep query strings", () => {
         const urlFromClient = client.urlFromClientPath(
           "/#/client/route?foo=bar",
         );
@@ -112,12 +114,12 @@ describe("client", () => {
     });
 
     describe("generate full URL from host path", () => {
-      it("should be able to access full url from host path", () => {
+      test("should be able to access full url from host path", () => {
         const urlFromHost = client.urlFromHostPath("app1");
         expect(urlFromHost).toEqual("http://example.com/app1");
       });
 
-      it("should ignore host route leading slash and hash tag", () => {
+      test("should ignore host route leading slash and hash tag", () => {
         let urlFromHost = client.urlFromHostPath("/app1");
         expect(urlFromHost).toEqual("http://example.com/app1");
         urlFromHost = client.urlFromHostPath("#/app1");
@@ -125,7 +127,7 @@ describe("client", () => {
         urlFromHost = client.urlFromHostPath("/#/app1");
         expect(urlFromHost).toEqual("http://example.com/app1");
       });
-      it("should keep query strings", () => {
+      test("should keep query strings", () => {
         const urlFromHost = client.urlFromHostPath("/#/app1?foo=bar");
         expect(urlFromHost).toEqual("http://example.com/app1?foo=bar");
       });
@@ -142,7 +144,7 @@ describe("client", () => {
         client.requestNotification({ message: "Test notification message" });
       });
 
-      it("should send a message to the worker", () => {
+      test("should send a message to the worker", () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           applyClientProtocol({
             msgType: "notifyRequest",
@@ -166,7 +168,7 @@ describe("client", () => {
         });
       });
 
-      it("should send a message to the worker", () => {
+      test("should send a message to the worker", () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           applyClientProtocol({
             msgType: "notifyRequest",
@@ -188,7 +190,7 @@ describe("client", () => {
       client.publish({ topic: "test.topic", payload: "custom data" });
     });
 
-    it("should notify worker of new publication", () => {
+    test("should notify worker of new publication", () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
         applyClientProtocol({
           msgType: "publish",
@@ -214,7 +216,7 @@ describe("client", () => {
       );
     });
 
-    it("should throw an exception on invalid message type", () => {
+    test("should throw an exception on invalid message type", () => {
       expect(() => {
         mockFrameWindow.trigger("message", {
           origin: HOST_ORIGIN,
@@ -225,15 +227,13 @@ describe("client", () => {
             direction: "HostToClient",
           },
         });
-      }).toThrowMatching((err) => {
-        return err.message.startsWith(
-          "I received an invalid message from the host application",
-        );
-      });
+      }).toThrowError(
+        /^I received an invalid message from the host application/,
+      );
       expect(subscriptionCalled).toBe(false);
     });
 
-    it("should throw an exception on invalid message content", () => {
+    test("should throw an exception on invalid message content", () => {
       expect(() => {
         mockFrameWindow.trigger("message", {
           origin: HOST_ORIGIN,
@@ -244,16 +244,14 @@ describe("client", () => {
             direction: "HostToClient",
           },
         });
-      }).toThrowMatching((err) => {
-        return err.message.startsWith(
-          "I received an invalid message from the host application",
-        );
-      });
+      }).toThrowError(
+        /^I received an invalid message from the host application/,
+      );
       expect(subscriptionCalled).toBe(false);
     });
 
     // Fix this in next major release, holding off for now in case of compat issues
-    // it("should throw an exception on invalid iframe-coordinator message with no direction", () => {
+    // test("should throw an exception on invalid iframe-coordinator message with no direction", () => {
     //   expect(() => {
     //     mockFrameWindow.trigger("message", {
     //       origin: HOST_ORIGIN,
@@ -271,7 +269,7 @@ describe("client", () => {
     //   expect(subscriptionCalled).toBe(false);
     // });
 
-    it("should ignore messages from other client applications", () => {
+    test("should ignore messages from other client applications", () => {
       expect(() => {
         mockFrameWindow.trigger("message", {
           protocol: API_PROTOCOL,
@@ -287,7 +285,7 @@ describe("client", () => {
       expect(subscriptionCalled).toBe(false);
     });
 
-    it("should ignore messages from invalid domains", () => {
+    test("should ignore messages from invalid domains", () => {
       expect(() => {
         mockFrameWindow.trigger("message", {
           protocol: API_PROTOCOL,
@@ -325,7 +323,7 @@ describe("client", () => {
       });
     });
 
-    it("should raise a publish event for the topic", () => {
+    test("should raise a publish event for the topic", () => {
       expect(publishCalls).toBe(1);
       expect(receivedPayload).toBe("test data");
     });
@@ -353,7 +351,7 @@ describe("client", () => {
       });
     });
 
-    it("should raise a publish event for the topic", () => {
+    test("should raise a publish event for the topic", () => {
       expect(publishCalls).toBe(1);
       expect(receivedPayload).toBe("test data");
     });
@@ -382,7 +380,7 @@ describe("client", () => {
 
     describe("when invalid key is encountered", () => {
       beforeEach(() => {
-        mockFrameWindow.parent.postMessage.calls.reset();
+        mockFrameWindow.parent.postMessage.mockClear();
 
         mockFrameWindow.trigger("keydown", {
           code: "KeyA",
@@ -394,7 +392,7 @@ describe("client", () => {
         });
       });
 
-      it("should not raise the event", () => {
+      test("should not raise the event", () => {
         expect(mockFrameWindow.parent.postMessage).not.toHaveBeenCalled();
       });
     });
@@ -412,7 +410,7 @@ describe("client", () => {
         });
       });
 
-      it("should publish a key event", () => {
+      test("should publish a key event", () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           applyClientProtocol({
             msgType: "registeredKeyFired",
@@ -438,7 +436,7 @@ describe("client", () => {
       client.requestNavigation({ url: "http://www.example.com/" });
     });
 
-    it("should notify host of navigation request", () => {
+    test("should notify host of navigation request", () => {
       expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
         applyClientProtocol({
           msgType: "navRequest",
@@ -466,7 +464,7 @@ describe("client", () => {
         });
       });
 
-      it("should notify host of navigation request", () => {
+      test("should notify host of navigation request", () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           applyClientProtocol({
             msgType: "navRequest",
@@ -476,7 +474,7 @@ describe("client", () => {
         );
       });
 
-      it("should notify host of a click event", () => {
+      test("should notify host of a click event", () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           applyClientProtocol({
             msgType: "clickFired",
@@ -491,7 +489,7 @@ describe("client", () => {
       beforeEach(() => {
         client.start();
         client.startInterceptingLinks();
-        mockFrameWindow.parent.postMessage.calls.reset();
+        mockFrameWindow.parent.postMessage.mockClear();
         mockElement = document.createElement("div");
         mockFrameWindow.trigger("click", {
           target: mockElement,
@@ -502,14 +500,14 @@ describe("client", () => {
         });
       });
 
-      it("should not notify host of navigation request", () => {
+      test("should not notify host of navigation request", () => {
         expect(mockFrameWindow.parent.postMessage).not.toHaveBeenCalledWith(
-          jasmine.objectContaining({ msgType: "navRequest" }),
-          jasmine.anything(),
+          expect.objectContaining({ msgType: "navRequest" }),
+          expect.anything()
         );
       });
 
-      it("should notify host of a click event", () => {
+      test("should notify host of a click event", () => {
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           applyClientProtocol({
             msgType: "clickFired",
@@ -521,7 +519,7 @@ describe("client", () => {
     });
 
     describe("when the client is created without a specific host origin", () => {
-      it("sends messages to it's own origin", () => {
+      test("sends messages to it's own origin", () => {
         client = new Client();
         client._clientWindow = mockFrameWindow;
         client.start();

@@ -1,3 +1,5 @@
+import { describe, expect, test } from "vitest";
+
 import {
   joinRoutes,
   normalizeRoute,
@@ -20,7 +22,7 @@ describe("urlUtils", () => {
       { input: ["test", "/", "test"], expectedOutput: "test/test" },
       { input: ["/test/", "/", "/test/"], expectedOutput: "test/test" },
     ].forEach(({ input, expectedOutput }, index) => {
-      it(`should work as expected (${index + 1})`, () => {
+      test(`should work as expected (${index + 1})`, () => {
         expect(joinRoutes(...input)).toBe(expectedOutput);
       });
     });

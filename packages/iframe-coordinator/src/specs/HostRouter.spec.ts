@@ -1,3 +1,5 @@
+import { describe, expect, test, beforeEach } from "vitest";
+
 import { HostRouter } from "../HostRouter";
 
 describe("HostRouter", () => {
@@ -31,7 +33,7 @@ describe("HostRouter", () => {
   });
 
   describe("when generating client URLs", () => {
-    it("should append the path under the primary route to the client URL", () => {
+    test("should append the path under the primary route to the client URL", () => {
       const clientInfo = hostRouter.getClientTarget("route/one/foo/bar");
       if (!clientInfo) {
         fail();
@@ -41,7 +43,7 @@ describe("HostRouter", () => {
       expect(clientInfo.id).toBe("route1");
     });
 
-    it("should ignore leading and trailing slashes on the client's assigned route", () => {
+    test("should ignore leading and trailing slashes on the client's assigned route", () => {
       const clientInfo = hostRouter.getClientTarget(
         "leading/and/trailing/foo/bar",
       );
@@ -53,7 +55,7 @@ describe("HostRouter", () => {
       expect(clientInfo.id).toBe("withRouteSlashes");
     });
 
-    it("should ignore leading slashes on the provided route", () => {
+    test("should ignore leading slashes on the provided route", () => {
       const clientInfo = hostRouter.getClientTarget("/route/one/foo/bar");
       if (!clientInfo) {
         fail();
@@ -63,7 +65,7 @@ describe("HostRouter", () => {
       expect(clientInfo.id).toBe("route1");
     });
 
-    it("should preserve trailing slashes on the provided route", () => {
+    test("should preserve trailing slashes on the provided route", () => {
       const clientInfo = hostRouter.getClientTarget("/route/one/foo/bar/");
       if (!clientInfo) {
         fail();
@@ -73,7 +75,7 @@ describe("HostRouter", () => {
       expect(clientInfo.id).toBe("route1");
     });
 
-    it("should append to the path when the client url has no hash", () => {
+    test("should append to the path when the client url has no hash", () => {
       const clientInfo = hostRouter.getClientTarget("noHash/foo/bar");
       if (!clientInfo) {
         fail();
@@ -85,7 +87,7 @@ describe("HostRouter", () => {
       expect(clientInfo.id).toBe("noClientHash");
     });
 
-    it('should return "allow" and "sandbox" config options if they exist', () => {
+    test('should return "allow" and "sandbox" config options if they exist', () => {
       const clientInfo = hostRouter.getClientTarget("route/two/");
       if (!clientInfo) {
         fail();
@@ -97,7 +99,7 @@ describe("HostRouter", () => {
       expect(clientInfo.allow).toBe("microphone *; camera *;");
     });
 
-    it("should return route with more specificity", () => {
+    test("should return route with more specificity", () => {
       const clientInfo = hostRouter.getClientTarget("route/one/specific/route");
       if (!clientInfo) {
         fail();
@@ -109,7 +111,7 @@ describe("HostRouter", () => {
       expect(clientInfo.id).toBe("withMoreSpecificity");
     });
 
-    it("should resolve same-prefix routes by specificity regardless of order", () => {
+    test("should resolve same-prefix routes by specificity regardless of order", () => {
       hostRouter = new HostRouter({
         lessSpecific: {
           assignedRoute: "assigned/route/",

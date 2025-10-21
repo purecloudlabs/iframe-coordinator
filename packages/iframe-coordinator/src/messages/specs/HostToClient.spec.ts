@@ -1,3 +1,5 @@
+import { describe, expect, test, beforeEach } from "vitest";
+
 import { HostToClient, validate } from "../HostToClient";
 import { applyClientProtocol } from "../LabeledMsg";
 
@@ -8,7 +10,7 @@ describe("HostToClient", () => {
       msg: "test-data",
     };
 
-    it("should return a null message", () => {
+    test("should return a null message", () => {
       expect(() => {
         validate(testMessage);
       }).toThrow();
@@ -28,7 +30,7 @@ describe("HostToClient", () => {
       beforeEach(() => {
         testResult = validate(testMessage);
       });
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         expect(testResult).toEqual(
           applyClientProtocol({
             msgType: "publish",
@@ -50,7 +52,7 @@ describe("HostToClient", () => {
       beforeEach(() => {
         testResult = validate(testMessage);
       });
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         expect(testResult).toEqual(
           applyClientProtocol({
             msgType: "publish",
@@ -68,7 +70,7 @@ describe("HostToClient", () => {
         },
       };
 
-      it("should throw an exception", () => {
+      test("should throw an exception", () => {
         expect(() => {
           validate(testMessage);
         }).toThrow();
@@ -98,7 +100,7 @@ describe("HostToClient", () => {
       beforeEach(() => {
         testResult = validate(testMessage);
       });
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         expect(testResult).toEqual(expectedMessage);
       });
     });
@@ -116,7 +118,7 @@ describe("HostToClient", () => {
         },
       });
 
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         const testResult = validate(testMessage);
         expect(testResult).toEqual(
           applyClientProtocol({
@@ -147,7 +149,7 @@ describe("HostToClient", () => {
       beforeEach(() => {
         testResult = validate(testMessage);
       });
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         expect(testResult).toEqual(applyClientProtocol(testMessage));
       });
     });
@@ -160,7 +162,7 @@ describe("HostToClient", () => {
         },
       };
 
-      it("should throw an exception", () => {
+      test("should throw an exception", () => {
         expect(() => {
           validate(testMessage);
         }).toThrow();
