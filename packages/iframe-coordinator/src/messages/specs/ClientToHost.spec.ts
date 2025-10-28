@@ -1,3 +1,5 @@
+import { describe, expect, beforeEach, test } from "vitest";
+
 import { ClientToHost, validate } from "../ClientToHost";
 import { LabeledNavRequest } from "../NavRequest";
 import { LabeledNotification } from "../Notification";
@@ -11,7 +13,7 @@ describe("ClientToHost", () => {
       msg: "test-data",
     };
 
-    it("should throw an exception", () => {
+    test("should throw an exception", () => {
       expect(() => {
         validate(testMessage);
       }).toThrow();
@@ -45,7 +47,7 @@ describe("ClientToHost", () => {
         testResult = validate(testMessage);
       });
 
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         expect(testResult).toEqual(expectedMessage);
       });
     });
@@ -71,7 +73,7 @@ describe("ClientToHost", () => {
         testResult = validate(testMessage);
       });
 
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         expect(testResult).toEqual(expectedMessage);
       });
     });
@@ -84,7 +86,7 @@ describe("ClientToHost", () => {
         },
       };
 
-      it("should throw an exception", () => {
+      test("should throw an exception", () => {
         expect(() => {
           validate(testMessage);
         }).toThrow();
@@ -115,7 +117,7 @@ describe("ClientToHost", () => {
         testResult = validate(testMessage);
       });
 
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         expect(testResult).toEqual(expectedMessage);
       });
     });
@@ -147,7 +149,7 @@ describe("ClientToHost", () => {
         testResult = validate(testMessage);
       });
 
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         expect(testResult).toEqual(expectedMessage);
       });
     });
@@ -178,7 +180,7 @@ describe("ClientToHost", () => {
         testResult = validate(testMessage);
       });
 
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         expect(testResult).toEqual(expectedMessage);
       });
     });
@@ -205,7 +207,7 @@ describe("ClientToHost", () => {
         testResult = validate(testMessage);
       });
 
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         expect(testResult).toEqual(expectedMessage);
       });
     });
@@ -219,14 +221,14 @@ describe("ClientToHost", () => {
         },
       };
 
-      it("should throw an exception", () => {
+      test("should throw an exception", () => {
         expect(() => {
           validate(testMessage);
         }).toThrow();
       });
     });
 
-    it("can handle old requests with toast naming", () => {
+    test("can handle old requests with toast naming", () => {
       const toastMessage = {
         msgType: "toastRequest",
         msg: {
@@ -273,7 +275,7 @@ describe("ClientToHost", () => {
         testResult = validate(testMessage);
       });
 
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         expect(testResult).toEqual(expectedMessage);
       });
     });
@@ -286,7 +288,7 @@ describe("ClientToHost", () => {
         },
       };
 
-      it("should return throw an exception", () => {
+      test("should return throw an exception", () => {
         expect(() => {
           validate(testMessage);
         }).toThrow();
@@ -302,7 +304,7 @@ describe("ClientToHost", () => {
         },
       };
 
-      it("should return throw an exception", () => {
+      test("should return throw an exception", () => {
         expect(() => {
           validate(testMessage);
         }).toThrow();
@@ -330,7 +332,7 @@ describe("ClientToHost", () => {
         testResult = validate(testMessage);
       });
 
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         expect(testResult).toEqual(expectedMessage);
       });
     });
@@ -362,7 +364,7 @@ describe("ClientToHost", () => {
         testResult = validate(testMessage);
       });
 
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         expect(testResult).toEqual(expectedMessage);
       });
     });
@@ -392,7 +394,7 @@ describe("ClientToHost", () => {
         testResult = validate(testMessage);
       });
 
-      it("should return the validated message", () => {
+      test("should return the validated message", () => {
         expect(testResult).toEqual(expectedMessage);
       });
     });

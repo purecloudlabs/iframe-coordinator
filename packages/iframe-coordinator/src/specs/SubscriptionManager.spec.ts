@@ -1,3 +1,5 @@
+import { describe, expect, test, beforeEach, vi } from "vitest";
+
 import {
   PublicationHandler,
   SubscriptionManager,
@@ -8,12 +10,12 @@ describe("SubscriptionManager", () => {
   let subscriptionManager: SubscriptionManager;
 
   beforeEach(() => {
-    handler = jasmine.createSpy("publicationHandler");
+    handler = vi.fn();
     subscriptionManager = new SubscriptionManager();
     subscriptionManager.setHandler(handler);
   });
 
-  it("dispatches subscribed messages to the handler function", () => {
+  test("dispatches subscribed messages to the handler function", () => {
     subscriptionManager.subscribe("test.topic");
     subscriptionManager.dispatchMessage({
       topic: "test.topic",
@@ -25,7 +27,7 @@ describe("SubscriptionManager", () => {
     });
   });
 
-  it("won't dispatch messages to topics that aren't subscribed", () => {
+  test("won't dispatch messages to topics that aren't subscribed", () => {
     subscriptionManager.subscribe("test.topic");
     subscriptionManager.dispatchMessage({
       topic: "not.subscribed",
@@ -34,7 +36,7 @@ describe("SubscriptionManager", () => {
     expect(handler).not.toHaveBeenCalled();
   });
 
-  it("supports unsubscribing from topics.", () => {
+  test("supports unsubscribing from topics.", () => {
     subscriptionManager.subscribe("test.topic");
     subscriptionManager.unsubscribe("test.topic");
     subscriptionManager.dispatchMessage({
