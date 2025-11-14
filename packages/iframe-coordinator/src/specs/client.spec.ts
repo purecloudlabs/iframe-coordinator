@@ -503,7 +503,7 @@ describe("client", () => {
       test("should not notify host of navigation request", () => {
         expect(mockFrameWindow.parent.postMessage).not.toHaveBeenCalledWith(
           expect.objectContaining({ msgType: "navRequest" }),
-          expect.anything()
+          expect.anything(),
         );
       });
 

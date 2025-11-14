@@ -36,8 +36,7 @@ describe("HostRouter", () => {
     test("should append the path under the primary route to the client URL", () => {
       const clientInfo = hostRouter.getClientTarget("route/one/foo/bar");
       if (!clientInfo) {
-        fail();
-        return;
+        throw new Error("Expected clientInfo to be defined");
       }
       expect(clientInfo.url).toBe("http://example.com/#/test/one/foo/bar");
       expect(clientInfo.id).toBe("route1");
@@ -48,8 +47,7 @@ describe("HostRouter", () => {
         "leading/and/trailing/foo/bar",
       );
       if (!clientInfo) {
-        fail();
-        return;
+        throw new Error("Expected clientInfo to be defined");
       }
       expect(clientInfo.url).toBe("http://example.com/#/test/one/foo/bar");
       expect(clientInfo.id).toBe("withRouteSlashes");
@@ -58,8 +56,7 @@ describe("HostRouter", () => {
     test("should ignore leading slashes on the provided route", () => {
       const clientInfo = hostRouter.getClientTarget("/route/one/foo/bar");
       if (!clientInfo) {
-        fail();
-        return;
+        throw new Error("Expected clientInfo to be defined");
       }
       expect(clientInfo.url).toBe("http://example.com/#/test/one/foo/bar");
       expect(clientInfo.id).toBe("route1");
@@ -68,8 +65,7 @@ describe("HostRouter", () => {
     test("should preserve trailing slashes on the provided route", () => {
       const clientInfo = hostRouter.getClientTarget("/route/one/foo/bar/");
       if (!clientInfo) {
-        fail();
-        return;
+        throw new Error("Expected clientInfo to be defined");
       }
       expect(clientInfo.url).toBe("http://example.com/#/test/one/foo/bar/");
       expect(clientInfo.id).toBe("route1");
@@ -78,8 +74,7 @@ describe("HostRouter", () => {
     test("should append to the path when the client url has no hash", () => {
       const clientInfo = hostRouter.getClientTarget("noHash/foo/bar");
       if (!clientInfo) {
-        fail();
-        return;
+        throw new Error("Expected clientInfo to be defined");
       }
       expect(clientInfo.url).toBe(
         "http://example.com/my/pushstate/app/foo/bar?query=works",
@@ -90,8 +85,7 @@ describe("HostRouter", () => {
     test('should return "allow" and "sandbox" config options if they exist', () => {
       const clientInfo = hostRouter.getClientTarget("route/two/");
       if (!clientInfo) {
-        fail();
-        return;
+        throw new Error("Expected clientInfo to be defined");
       }
       expect(clientInfo.url).toBe("http://example.com/#/test/one/");
       expect(clientInfo.id).toBe("withSandboxAndAllow");
@@ -102,8 +96,7 @@ describe("HostRouter", () => {
     test("should return route with more specificity", () => {
       const clientInfo = hostRouter.getClientTarget("route/one/specific/route");
       if (!clientInfo) {
-        fail();
-        return;
+        throw new Error("Expected clientInfo to be defined");
       }
       expect(clientInfo.url).toBe(
         "http://example.com/#/test/one/specific/route",
