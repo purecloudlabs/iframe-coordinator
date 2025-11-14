@@ -12,7 +12,8 @@ import {
   PartialMsg,
 } from "./messages/LabeledMsg";
 
-const IFRAME_STYLE = "frame-router iframe { width: 100%; height: 100%; border: 0px }";
+const IFRAME_STYLE =
+  "frame-router iframe { width: 100%; height: 100%; border: 0px }";
 
 /** @internal default iframe sandbox attributes */
 const DEFAULT_SANDBOX = [
