@@ -5,7 +5,6 @@
 There is no need to run commands within each of the packages, setup can be done in the root monorepo directory (the parent directory of this README)
 
 - `npm install`
-
   - installs each of the packages and in the example client app
 
 - `npm run build`
