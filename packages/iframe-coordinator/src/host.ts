@@ -1,4 +1,4 @@
-import FrameRouterElement from "./elements/frame-router";
+import FrameRouterElement, { ClientConfig } from "./elements/frame-router";
 
 /* re-exported for better docs */
 import { ClientRegistration, RoutingMap } from "./HostRouter";
@@ -16,4 +16,5 @@ export {
   FrameRouterElement,
   RoutingMap,
   ClientRegistration,
+  ClientConfig,
 };

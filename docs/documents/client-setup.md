@@ -1,3 +1,9 @@
+[**iframe-coordinator v6.3.10**](../README.md)
+
+***
+
+[iframe-coordinator](../modules.md) / client-setup
+
 # Client Application Setup
 
 To seamlessly integrate a client application with a host, you will need to alter the client
@@ -6,14 +12,14 @@ the trickiest item to get correct. Be sure to read that section carefully._
 
 ## Application Bootstrap
 
-Early in the application bootstrap process, you will need to create a {@link client.Client} instance, add an event
+Early in the application bootstrap process, you will need to create a [client.Client](../client/classes/Client.md) instance, add an event
 listener for environment data passed from the host application, and start the client.
 
-{@link client.EnvData | Environment data} is data set in the host application that is static over time, but that clients will
+[Environment data](../client/interfaces/EnvData.md) is data set in the host application that is static over time, but that clients will
 need to function, such as the user-selected locale. It supports both pre-defined common/required
 options and custom data.
 
-Calling {@link client.Client.start} on the client sets up messaging
+Calling [client.Client.start](../client/classes/Client.md#start) on the client sets up messaging
 listeners, and sends a signal to the host application to inform it that your application is
 ready to start receiving messages.
 
@@ -47,7 +53,7 @@ applications. We need to preserve all of these experiences:
 
 To preserve browser history, the client application should never navigate directly to a new page.
 Instead, it should always request that the host application change its url. This is done with
-a {@link client.Client.requestNavigation} call or by using links
+a [client.Client.requestNavigation](../client/classes/Client.md#requestnavigation) call or by using links
 with `target="_top"` set.
 
 ### Ensuring Link URLs Reference the Host Application
@@ -107,7 +113,7 @@ let externalLink = `<a href="https://external-site.com/external/path" target="_t
 ## Providing Page Metadata
 
 When your application loads a page, you may want to provide metadata to the host application to improve the user experience. This is done with
-a {@link client.Client.sendPageMetadata} call.
+a [client.Client.sendPageMetadata](../client/classes/Client.md#sendpagemetadata) call.
 
 ```typescript
 ifcClient.sendPageMetadata({
@@ -131,16 +137,16 @@ to provide nice default APIs for these.
 
 Currently there are four implemented:
 
-{@link client.Client.requestNotification}, which asks the host
+[client.Client.requestNotification](../client/classes/Client.md#requestnotification), which asks the host
 app to send a notification message to the user.
 
-{@link client.Client.requestModal}, which asks the host
+[client.Client.requestModal](../client/classes/Client.md#requestmodal), which asks the host
 app to launch a modal identified by a given ID, also accepts initial setup data specific to that modal.
 
-{@link client.Client.requestPromptOnLeave}, which asks the host
+[client.Client.requestPromptOnLeave](../client/classes/Client.md#requestpromptonleave), which asks the host
 app to display a prompt on leave dialog to the user before navigating.
 
-{@link client.Client.clearPromptOnLeave}, which asks the host
+[client.Client.clearPromptOnLeave](../client/classes/Client.md#clearpromptonleave), which asks the host
 app to clear the prompt on leave dialog before navigating.
 
 A client application may request a modal on the host like so:
@@ -179,7 +185,7 @@ iframe-coordinator provides a lightweight pub-sub wrapper around the
 [postmessage api](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) to meet that
 need with a consistent message interface.
 
-You can publish messages to the host application via the {@link client.Client.publish} method.
+You can publish messages to the host application via the [client.Client.publish](../client/classes/Client.md#publish) method.
 
 ```typescript
 ifcClient.publish({
@@ -191,7 +197,7 @@ ifcClient.publish({
 });
 ```
 
-You can listen for messages from the host on a topic via the {@link client.EventEmitter | messaging API}
+You can listen for messages from the host on a topic via the [messaging API](../client/classes/EventEmitter.md)
 
 ```typescript
 ifcClient.messaging.addEventListener("topic.from.host", payloadHandler);
