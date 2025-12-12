@@ -29,6 +29,7 @@ import {
   Lifecycle,
 } from "./messages/Lifecycle";
 import { ModalRequest } from "./messages/ModalRequest";
+import { SidePanelRequest } from "./messages/SidePanelRequest";
 import { NavRequest } from "./messages/NavRequest";
 import { Notification } from "./messages/Notification";
 import { PageMetadata } from "./messages/PageMetadata";
@@ -442,6 +443,22 @@ bad input into one of the iframe-coordinator client methods.
     this._sendToHost({
       msgType: "modalRequest",
       msg: modalRequest,
+    });
+  }
+
+  /**
+   * Asks the host application to open a side panel.
+   *
+   * The modalId property names the modal that should be displayed
+   * Data passed via the modalData property can be used by the host application to set up initial state specific to that modal
+   *
+   * @param modalRequest the ID and any data specific to the modal instance required
+   *
+   */
+  public requestSidePanel(sidePanelRequest: SidePanelRequest) {
+    this._sendToHost({
+      msgType: "sidePanelRequest",
+      msg: sidePanelRequest,
     });
   }
 
