@@ -3,6 +3,10 @@ import { decoder as clickDecoder, LabeledClick } from "./Click";
 import { decoder as keyDownDecoder, LabeledKeyDown } from "./KeyDown";
 import { LabeledStarted, startedDecoder } from "./Lifecycle";
 import { decoder as modalDecoder, LabeledModalRequest } from "./ModalRequest";
+import {
+  decoder as sidePanelDecoder,
+  LabeledSidePanelRequest,
+} from "./SidePanelRequest";
 import { decoder as navRequestDecoder, LabeledNavRequest } from "./NavRequest";
 import { decoder as notifyDecoder, LabeledNotification } from "./Notification";
 import {
@@ -27,6 +31,7 @@ export type ClientToHost =
   | LabeledStarted
   | LabeledKeyDown
   | LabeledModalRequest
+  | LabeledSidePanelRequest
   | LabeledPageMetadata
   | LabeledPrompt;
 
@@ -46,6 +51,7 @@ export function validate(msg: any): ClientToHost {
       notifyRequest: notifyDecoder,
       toastRequest: notifyDecoder,
       modalRequest: modalDecoder,
+      sidePanelRequest: sidePanelDecoder,
       pageMetadata: pageMetadataDecoder,
       promptOnLeave: promptDecoder,
     }),
