@@ -1,4 +1,4 @@
-import { constant, Decoder, mixed, object, string } from "decoders";
+import { constant, Decoder, mixed, object, optional, string } from "decoders";
 import { labeledDecoder, LabeledMsg } from "./LabeledMsg";
 
 /**
@@ -10,6 +10,9 @@ export interface ModalRequest {
 
   /** Any data that the client wishes to send to the modal */
   modalData: any;
+
+  /** Optional field for clients to specify additional display options  */
+  custom?: any;
 }
 
 /**
@@ -22,6 +25,8 @@ export interface LabeledModalRequest
   msgType: "modalRequest";
   /** Modal request details (type and data) */
   msg: ModalRequest;
+  /** Optional field for clients to specify additional display options */
+  custom?: any;
 }
 
 const decoder: Decoder<LabeledModalRequest> = labeledDecoder(
@@ -29,6 +34,7 @@ const decoder: Decoder<LabeledModalRequest> = labeledDecoder(
   object({
     modalId: string,
     modalData: mixed,
+    custom: optional(mixed),
   }),
 );
 
