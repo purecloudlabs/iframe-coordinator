@@ -438,7 +438,7 @@ bad input into one of the iframe-coordinator client methods.
    * The modalId property names the modal that should be displayed
    * Data passed via the modalData property can be used by the host application to set up initial state specific to that modal
    *
-   * @param modalRequest the ID and any data specific to the modal instance required
+   * @param modalRequest the ID, data and custom options specific to the modal instance required
    *
    */
   public requestModal(modalRequest: ModalRequest) {
