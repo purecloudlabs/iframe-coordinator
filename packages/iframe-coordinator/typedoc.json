@@ -1,11 +1,17 @@
 {
   "$schema": "https://typedoc.org/schema.json",
   "entryPoints": ["./src/client.ts", "./src/host.ts"],
-  "includes": "doc",
-  "out": "../../dist/docs",
+  "projectDocuments": ["doc/**/*.md"],
+  "out": "../../docs",
   "excludeExternals": true,
   "excludeInternal": true,
   "excludePrivate": true,
   "excludeProtected": true,
-  "includeVersion": true
+  "includeVersion": true,
+  "plugin": ["typedoc-plugin-markdown"],
+  "externalSymbolLinkMappings": {
+    "typescript": {
+      "addEventListener": "https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener"
+    }
+  }
 }

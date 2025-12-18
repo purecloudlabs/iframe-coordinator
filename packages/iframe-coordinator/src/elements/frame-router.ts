@@ -11,7 +11,7 @@ const ROUTE_ATTR = "route";
 /** A property that can be set to initialize the host frame with the
  * possible clients and the environmental data required by the clients
  */
-interface ClientConfig {
+export interface ClientConfig {
   /** The map of registrations for the available clients. */
   clients: RoutingMap;
   /** Information about the host environment. */

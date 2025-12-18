@@ -97,6 +97,7 @@ pipeline {
           sh 'npm run release'
           sh 'npm run sync-versions'
           sh 'npm run build'
+          sh 'npm run doc'
         }
       }
     }
@@ -118,9 +119,16 @@ pipeline {
               git add packages/iframe-coordinator-cli/package.json
               git add package-lock.json
               git commit --amend --no-edit --no-verify
-              git tag -fa v$RELEASE_VERSION -m "chore(release): $RELEASE_VERSION"
           ''')
           sh 'npm run publish.iframe-coordinator-cli'
+          sh('''
+              RELEASE_VERSION="$(npm run --silent current-version --workspace=iframe-coordinator)"
+              npm install
+              git add package-lock.json
+              git add docs/
+              git commit --amend --no-edit --no-verify
+              git tag -fa v$RELEASE_VERSION -m "chore(release): $RELEASE_VERSION"
+          ''')
           sshagent(credentials: ['3aa16916-868b-4290-a9ee-b1a05343667e']) {
             sh "git push --follow-tags -u origin ${env.SHORT_BRANCH}"
           }
@@ -128,50 +136,50 @@ pipeline {
       }
     }
 
-    stage('Build Docs') {
-      steps {
-        dir(env.REPO_DIR) {
-          sh 'npm run doc'
-          sh './scripts/generate-deploy-files'
-          sh '''
-              export CDN_ROOT=$(npx --package=@purecloud/web-app-deploy@8 -- cached-asset-prefix --ecosystem pc --manifest dist/docs/manifest.json)
-              ./scripts/prepare-docs
-          '''
-        }
-      }
-    }
+    // stage('Build Docs') {
+    //   steps {
+    //     dir(env.REPO_DIR) {
+    //       sh 'npm run doc'
+    //       sh './scripts/generate-deploy-files'
+    //       sh '''
+    //           export CDN_ROOT=$(npx --package=@purecloud/web-app-deploy@8 -- cached-asset-prefix --ecosystem pc --manifest dist/docs/manifest.json)
+    //           ./scripts/prepare-docs
+    //       '''
+    //     }
+    //   }
+    // }
 
-    stage('Upload Docs') {
-      when {
-        expression { isReleaseBranch()  }
-      }
-      steps {
-        dir(env.REPO_DIR) {
-          sh '''
-             npx --package=@purecloud/web-app-deploy@8 -- upload \
-               --ecosystem pc \
-               --manifest dist/docs/manifest.json \
-               --source-dir ./dist/docs
-          '''
-        }
-      }
-    }
+    // stage('Upload Docs') {
+    //   when {
+    //     expression { isReleaseBranch()  }
+    //   }
+    //   steps {
+    //     dir(env.REPO_DIR) {
+    //       sh '''
+    //          npx --package=@purecloud/web-app-deploy@8 -- upload \
+    //            --ecosystem pc \
+    //            --manifest dist/docs/manifest.json \
+    //            --source-dir ./dist/docs
+    //       '''
+    //     }
+    //   }
+    // }
 
-    stage('Deploy Docs') {
-      when {
-        expression { isReleaseBranch()  }
-      }
-      steps {
-        dir(env.REPO_DIR) {
-          sh '''
-             npx --package=@purecloud/web-app-deploy@8 -- deploy \
-               --ecosystem pc \
-               --manifest dist/docs/manifest.json \
-               --dest-env dev
-          '''
-        }
-      }
-    }
+    // stage('Deploy Docs') {
+    //   when {
+    //     expression { isReleaseBranch()  }
+    //   }
+    //   steps {
+    //     dir(env.REPO_DIR) {
+    //       sh '''
+    //          npx --package=@purecloud/web-app-deploy@8 -- deploy \
+    //            --ecosystem pc \
+    //            --manifest dist/docs/manifest.json \
+    //            --dest-env dev
+    //       '''
+    //     }
+    //   }
+    // }
   }
 
   post {

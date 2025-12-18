@@ -46,6 +46,9 @@ export {
   Notification,
   PromptOnLeave,
 };
+export { KeyData } from "./messages/Lifecycle";
+export { PageMetadata, Breadcrumb } from "./messages/PageMetadata";
+export { EventHandler } from "./EventEmitter";
 
 /**
  * Client configuration options.

@@ -23,8 +23,9 @@
     "jsdom": "^26.1.0",
     "puppeteer": "^22.15.0",
     "rollup": "^4.53.2",
-    "typedoc": "^0.25.13",
-    "typescript": "^4.9.5",
+    "typedoc": "^0.28.15",
+    "typedoc-plugin-markdown": "^4.9.0",
+    "typescript": "^5.5.4",
     "vitest": "^3.2.4"
   },
   "scripts": {
