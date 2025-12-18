@@ -10,6 +10,10 @@ def isReleaseBranch() {
   return env.SHORT_BRANCH.equals('main') || env.SHORT_BRANCH.equals('master')
 }
 
+def isBetaBranch() {
+  return env.SHORT_BRANCH.startsWith('beta/')
+}
+
 pipeline {
   agent { label 'dev_mesos_v2' }
   options {
@@ -92,47 +96,57 @@ pipeline {
     }
 
     stage('Build') {
+      environment {
+        GIT_COMMIT_SHORT = env.GIT_COMMIT.substring(0, 7)
+      }
       steps {
         dir(env.REPO_DIR) {
-          sh 'npm run release'
-          sh 'npm run sync-versions'
-          sh 'npm run build'
-          sh 'npm run doc'
+          script {
+            if (isReleaseBranch()) {
+              sh 'npm run release --skip.tag'
+            } else if (isBetaBranch()) {
+              sh "npm run release -- --prerelease beta.$GIT_COMMIT_SHORT --skip.tag"
+            }
+            sh 'npm run sync-versions'
+            sh 'npm run build'
+            sh 'npm run doc'
+          }
         }
       }
     }
 
     stage('Publish Library') {
       when {
-        expression { isReleaseBranch()  }
+        expression { isReleaseBranch() || isBetaBranch() }
       }
       steps {
+        script {
+          def publishFlags = ""
+          if (isBetaBranch()) {
+            publishFlags = "--tag beta"
+          }
           dir(env.REPO_DIR) {
-          sh '''
-             echo "registry=https://registry.npmjs.org" >> ./.npmrc
-             echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ./.npmrc
-          '''
-          sh 'npm run publish.iframe-coordinator'
-          sh('''
-              RELEASE_VERSION="$(npm run --silent current-version --workspace=iframe-coordinator)"
-              npm install --no-progress -P -E iframe-coordinator@$RELEASE_VERSION --workspace=iframe-coordinator-cli
-              git add packages/iframe-coordinator-cli/package.json
-              git add package-lock.json
-              git commit --amend --no-edit --no-verify
-          ''')
-          sh 'npm run publish.iframe-coordinator-cli'
-          sh('''
-              RELEASE_VERSION="$(npm run --silent current-version --workspace=iframe-coordinator)"
-              npm install
-              git add package-lock.json
-              git add docs/
-              git commit --amend --no-edit --no-verify
-              git tag -fa v$RELEASE_VERSION -m "chore(release): $RELEASE_VERSION"
-          ''')
-          sshagent(credentials: ['3aa16916-868b-4290-a9ee-b1a05343667e']) {
-            sh "git push --follow-tags -u origin ${env.SHORT_BRANCH}"
+            sh '''
+               echo "registry=https://registry.npmjs.org" >> ./.npmrc
+               echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" >> ./.npmrc
+            '''
+            sh "npm run publish.iframe-coordinator ${publishFlags}"
+            sh "npm run publish.iframe-coordinator-cli ${publishFlags}"
+            sh('''
+                RELEASE_VERSION="$(npm run --silent current-version --workspace=iframe-coordinator)"
+                npm install
+                git add package-lock.json
+                git add docs/
+                git commit --amend --no-edit --no-verify
+                git tag -fa v$RELEASE_VERSION -m "chore(release): $RELEASE_VERSION"
+            ''')
+            if (isReleaseBranch()) {
+              sshagent(credentials: ['3aa16916-868b-4290-a9ee-b1a05343667e']) {
+                sh "git push --follow-tags -u origin ${env.SHORT_BRANCH}"
+              }
+            }
           }
-          }
+        }
       }
     }
 

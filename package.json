@@ -14,8 +14,8 @@
     "lint": "commitlint --from c6ce5b2c3ad19bf49b8fb340dda4cb526cb39708",
     "prettier": "prettier '**/*' --write --ignore-unknown --log-level silent",
     "sync-versions": "./scripts/sync-versions.mjs",
-    "release": "standard-version",
-    "release.dry": "standard-version --dry-run",
+    "release": "commit-and-tag-version",
+    "release.dry": "commit-and-tag-version --dry-run",
     "publish.iframe-coordinator": "npm publish --workspace=iframe-coordinator",
     "publish.iframe-coordinator-cli": "npm publish --workspace=iframe-coordinator-cli",
     "doc": "npm run doc --workspace=iframe-coordinator",
@@ -28,13 +28,13 @@
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
+    "commit-and-tag-version": "^12.6.1",
     "commitizen": "^4.3.1",
     "git-cz": "^4.9.0",
     "glob": "^11.0.3",
     "husky": "^9.1.7",
     "lint-staged": "^15.5.2",
     "prettier": "^3.6.2",
-    "standard-version": "^9.5.0",
     "typescript": "^5.5.4"
   },
   "overrides": {
@@ -46,15 +46,7 @@
     }
   },
   "lint-staged": {
-    "*": [
-      "prettier --write --ignore-unknown"
-    ]
-  },
-  "standard-version": {
-    "skip": {
-      "commit": true,
-      "tag": true
-    }
+    "*": ["prettier --write --ignore-unknown"]
   },
   "volta": {
     "node": "20.9.0",
