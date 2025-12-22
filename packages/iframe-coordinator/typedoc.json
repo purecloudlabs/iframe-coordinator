@@ -1,8 +1,23 @@
 {
   "$schema": "https://typedoc.org/schema.json",
   "entryPoints": ["./src/client.ts", "./src/host.ts"],
+  "entryPoints": [
+    "./src/host.ts",
+    "./src/client.ts",
+    "./src/workerPool.ts",
+    "./src/workerClient.ts"
+  ],
   "projectDocuments": ["doc/**/*.md"],
-  "out": "../../docs",
+  "outputs": [
+    {
+      "name": "markdown",
+      "path": "../../docs"
+    },
+    {
+      "name": "html",
+      "path": "../iframe-coordinator-cli/public/ifc-docs"
+    }
+  ],
   "excludeExternals": true,
   "excludeInternal": true,
   "excludePrivate": true,
