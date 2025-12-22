@@ -12,6 +12,7 @@
 
 ## Interfaces
 
+- [ClientConfig](interfaces/ClientConfig.md)
 - [ClientRegistration](interfaces/ClientRegistration.md)
 - [RoutingMap](interfaces/RoutingMap.md)
 

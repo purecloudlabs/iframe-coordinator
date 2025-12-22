@@ -66,6 +66,8 @@ module.exports = function (frameRouter, workerPool) {
       custom: getCustomClientData(),
     },
   };
+
+  
   return {
     // These are the topics that the host app should display payloads for when
     // the client publishes on them.

@@ -6,37 +6,83 @@
 
 # Class: WorkerPool
 
-Defined in: [workerPool.ts:34](https://github.com/purecloudlabs/iframe-coordinator/blob/1311ddac08caa061850b5cea195f7e2204ad0a04/packages/iframe-coordinator/src/workerPool.ts#L34)
+Defined in: [workerPool.ts:53](https://github.com/purecloudlabs/iframe-coordinator/blob/dfc24a6ef16297e683341ab30da161b99a839afa/packages/iframe-coordinator/src/workerPool.ts#L53)
+
+Class for managing a collection of worker processes. The WorkerPool is an
+EventTarget and emits events in the same way as the [FrameRouterElement](../../host/classes/FrameRouterElement.md),
+although with fewer possible events.
 
 ## Extends
 
 - `EventTarget`
 
+## Constructors
+
+### Constructor
+
+> **new WorkerPool**(): `WorkerPool`
+
+Defined in: [workerPool.ts:59](https://github.com/purecloudlabs/iframe-coordinator/blob/dfc24a6ef16297e683341ab30da161b99a839afa/packages/iframe-coordinator/src/workerPool.ts#L59)
+
+Creates a new worker pool
+
+#### Returns
+
+`WorkerPool`
+
+#### Overrides
+
+`EventTarget.constructor`
+
 ## Accessors
 
-### clientConfig
+### isRunning
 
 #### Get Signature
 
-> **get** **clientConfig**(): `ClientConfig`
+> **get** **isRunning**(): `boolean`
 
-Defined in: [workerPool.ts:60](https://github.com/purecloudlabs/iframe-coordinator/blob/1311ddac08caa061850b5cea195f7e2204ad0a04/packages/iframe-coordinator/src/workerPool.ts#L60)
+Defined in: [workerPool.ts:104](https://github.com/purecloudlabs/iframe-coordinator/blob/dfc24a6ef16297e683341ab30da161b99a839afa/packages/iframe-coordinator/src/workerPool.ts#L104)
+
+True if the worker is running.
 
 ##### Returns
 
-`ClientConfig`
+`boolean`
+
+***
+
+### workerConfig
+
+#### Get Signature
+
+> **get** **workerConfig**(): [`WorkerConfig`](../interfaces/WorkerConfig.md)
+
+Defined in: [workerPool.ts:97](https://github.com/purecloudlabs/iframe-coordinator/blob/dfc24a6ef16297e683341ab30da161b99a839afa/packages/iframe-coordinator/src/workerPool.ts#L97)
+
+Get the configured workers for the pool.
+
+##### Returns
+
+[`WorkerConfig`](../interfaces/WorkerConfig.md)
 
 #### Set Signature
 
-> **set** **clientConfig**(`clientConfig`): `void`
+> **set** **workerConfig**(`clientConfig`): `void`
 
-Defined in: [workerPool.ts:64](https://github.com/purecloudlabs/iframe-coordinator/blob/1311ddac08caa061850b5cea195f7e2204ad0a04/packages/iframe-coordinator/src/workerPool.ts#L64)
+Defined in: [workerPool.ts:86](https://github.com/purecloudlabs/iframe-coordinator/blob/dfc24a6ef16297e683341ab30da161b99a839afa/packages/iframe-coordinator/src/workerPool.ts#L86)
+
+Set the configured workers for the pool.
+
+Changing this after the pool has been started will throw an Error. If you
+have a need to dynamically change the set of running workers, please reach
+out with your use case.
 
 ##### Parameters
 
 ###### clientConfig
 
-`ClientConfig`
+[`WorkerConfig`](../interfaces/WorkerConfig.md)
 
 ##### Returns
 
@@ -48,7 +94,7 @@ Defined in: [workerPool.ts:64](https://github.com/purecloudlabs/iframe-coordinat
 
 > **publish**(`clientId`, `publication`): `void`
 
-Defined in: [workerPool.ts:103](https://github.com/purecloudlabs/iframe-coordinator/blob/1311ddac08caa061850b5cea195f7e2204ad0a04/packages/iframe-coordinator/src/workerPool.ts#L103)
+Defined in: [workerPool.ts:151](https://github.com/purecloudlabs/iframe-coordinator/blob/dfc24a6ef16297e683341ab30da161b99a839afa/packages/iframe-coordinator/src/workerPool.ts#L151)
 
 Publish a message to a worker.
 
@@ -77,7 +123,9 @@ The topic may not be of interest, and could be ignored.
 
 > **start**(): `void`
 
-Defined in: [workerPool.ts:69](https://github.com/purecloudlabs/iframe-coordinator/blob/1311ddac08caa061850b5cea195f7e2204ad0a04/packages/iframe-coordinator/src/workerPool.ts#L69)
+Defined in: [workerPool.ts:111](https://github.com/purecloudlabs/iframe-coordinator/blob/dfc24a6ef16297e683341ab30da161b99a839afa/packages/iframe-coordinator/src/workerPool.ts#L111)
+
+Start the worker pool, and all associated workers.
 
 #### Returns
 
@@ -89,7 +137,10 @@ Defined in: [workerPool.ts:69](https://github.com/purecloudlabs/iframe-coordinat
 
 > **stop**(): `void`
 
-Defined in: [workerPool.ts:87](https://github.com/purecloudlabs/iframe-coordinator/blob/1311ddac08caa061850b5cea195f7e2204ad0a04/packages/iframe-coordinator/src/workerPool.ts#L87)
+Defined in: [workerPool.ts:131](https://github.com/purecloudlabs/iframe-coordinator/blob/dfc24a6ef16297e683341ab30da161b99a839afa/packages/iframe-coordinator/src/workerPool.ts#L131)
+
+Stops the worker pool, immediately terminating all registered workers. Does
+nothing if the pool was never started.
 
 #### Returns
 

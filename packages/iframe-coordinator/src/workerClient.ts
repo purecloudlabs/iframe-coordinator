@@ -3,7 +3,7 @@ import { ClientToHost } from "./messages/ClientToHost";
 
 export class WorkerClient extends IfcClient<DedicatedWorkerGlobalScope> {
   /**
-   * Creates a new client.
+   * Creates a new Web Worker client.
    */
   public constructor() {
     super();

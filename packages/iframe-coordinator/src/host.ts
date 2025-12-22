@@ -1,4 +1,4 @@
-import FrameRouterElement from "./elements/frame-router";
+import FrameRouterElement, { ClientConfig } from "./elements/frame-router";
 import { WorkerPool } from "./workerPool";
 /* re-exported for better docs */
 import { ClientRegistration, RoutingMap } from "./HostRouter";
@@ -15,6 +15,7 @@ export {
   registerCustomElements,
   FrameRouterElement,
   RoutingMap,
+  ClientConfig,
   ClientRegistration,
   WorkerPool,
 };

@@ -1,15 +1,21 @@
 <template>
   <div id="routerLayout">
-    <div class="explainer">
+    <div class="header">
+      <div class="control-icons">
+        <!-- sidebar tools toggle -->
+        <button class="worker-controls" title="Web Worker Tools" v-on:click="toggleWorkerControls">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sidebar"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+        </button>
+        <!-- documentation link -->
+        <a class="help-link" v-html="" title="Documentation" target="docs" href="/ifc-docs/">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-help-circle"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        </a>
+      </div>
+
       <!-- IFC worker controls -->
       <div class="worker-controls"
         v-if="Object.keys(workerConfig).length > 0"
       >
-        <button class="worker-controls"
-          v-on:click="toggleWorkerControls"
-        >
-          Toggle Worker Controls
-        </button>
       </div>
       
       <!-- frame-router status explainer -->
@@ -29,8 +35,6 @@
         </span>
       </div>
 
-      <!-- documentation link -->
-      <a class="help-link" target="docs" href="/ifc-docs/">docs</a>
     </div>
 
     <div id="main">
@@ -83,6 +87,7 @@
 <script>
 import { WorkerPool } from "iframe-coordinator";
 import WorkerControls from "./WorkerControls.vue";
+import helpSvg from "../../public/help-circle.svg?raw";
 
 export default {
   name: "iframeEmbed",
@@ -232,25 +237,36 @@ for more details.
 #frameRouter {
   flex-grow: 1;
 }
-#routerLayout .explainer {
-  padding: 20px;
+#routerLayout .header {
+  padding: 5px 10px;
   background-color: #33383d;
   color: #fdfdfd;
 }
-.help-link {
-  position: absolute;
-  top: 5px;
-  right: 15px; 
+a, button {
   color: #1fc0ff;
+  
 }
 button {
   background-color: #33383d;
-  color: #1fc0ff;
   border: 1px solid #1fc0ff;
   border-radius: 4px;
   padding: 3px 8px;
   text-align: center;
 }
+.control-icons {
+  text-align: right
+}
+.control-icons :not(:last-child) {
+  margin-right: 5px;
+}
+.control-icons button {
+  border: none;
+  padding: 0;
+}
+.worker-controls svg {
+  transform: scaleX(-1);
+}
+
 #routerLayout .app-route,
 #routerLayout .frame-url,
 #routerLayout .client-id,
