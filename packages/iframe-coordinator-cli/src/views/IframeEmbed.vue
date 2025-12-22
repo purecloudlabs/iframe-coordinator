@@ -11,7 +11,9 @@
         <span class="metadata-title">Page Metadata: </span>
         <span class="metadata-content">{{ metadata }}</span>
       </span>
+      <a class="help-link" target="docs" href="/ifc-docs/">docs</a>
     </div>
+
     <div v-if="showMenu" id="appMenu">
       <h2>No app is registered for {{ frameRoute }}</h2>
 
@@ -178,6 +180,20 @@ for more details.
   background-color: #33383d;
   color: #fdfdfd;
   border-bottom: 2px solid #ff4f1f;
+}
+.help-link {
+  position: absolute;
+  top: 5px;
+  right: 15px; 
+  color: #1fc0ff;
+}
+button {
+  background-color: #33383d;
+  color: #1fc0ff;
+  border: 1px solid #1fc0ff;
+  border-radius: 4px;
+  padding: 3px 8px;
+  text-align: center;
 }
 #routerLayout .app-route,
 #routerLayout .frame-url,

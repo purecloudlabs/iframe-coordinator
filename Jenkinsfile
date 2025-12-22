@@ -108,8 +108,8 @@ pipeline {
               sh "npm run release -- --prerelease beta.$GIT_COMMIT_SHORT --skip.tag"
             }
             sh 'npm run sync-versions'
-            sh 'npm run build'
             sh 'npm run doc'
+            sh 'npm run build'
           }
         }
       }
