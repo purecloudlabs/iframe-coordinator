@@ -1,6 +1,13 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
+
+## [6.4.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.3.11...v6.4.0) (2026-01-06)
+
+
+### Features
+
+* **ifc-cli:** Make docs available in ifc-cli server ([4f775ef](https://github.com/purecloudlabs/iframe-coordinator/commit/4f775ef8111f5bd720a2a42993e32bbfe3fdce89))
 
 ### [6.3.11](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.3.10...v6.3.11) (2025-12-18)
 
