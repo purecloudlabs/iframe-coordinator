@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.3.11**](../../README.md)
+[**iframe-coordinator v6.4.0**](../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: KeyData
 
-Defined in: [messages/Lifecycle.ts:55](https://github.com/purecloudlabs/iframe-coordinator/blob/bd2d3f4f4273043c84bd1155daa5293d568d782a/packages/iframe-coordinator/src/messages/Lifecycle.ts#L55)
+Defined in: [messages/Lifecycle.ts:55](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/messages/Lifecycle.ts#L55)
 
 A data structure representing a key.
 
@@ -16,7 +16,7 @@ A data structure representing a key.
 
 > `optional` **altKey**: `boolean`
 
-Defined in: [messages/Lifecycle.ts:59](https://github.com/purecloudlabs/iframe-coordinator/blob/bd2d3f4f4273043c84bd1155daa5293d568d782a/packages/iframe-coordinator/src/messages/Lifecycle.ts#L59)
+Defined in: [messages/Lifecycle.ts:59](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/messages/Lifecycle.ts#L59)
 
 If the alt key should be pressed.
 
@@ -26,7 +26,7 @@ If the alt key should be pressed.
 
 > `optional` **ctrlKey**: `boolean`
 
-Defined in: [messages/Lifecycle.ts:61](https://github.com/purecloudlabs/iframe-coordinator/blob/bd2d3f4f4273043c84bd1155daa5293d568d782a/packages/iframe-coordinator/src/messages/Lifecycle.ts#L61)
+Defined in: [messages/Lifecycle.ts:61](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/messages/Lifecycle.ts#L61)
 
 If the ctrl key should be pressed.
 
@@ -36,7 +36,7 @@ If the ctrl key should be pressed.
 
 > **key**: `string`
 
-Defined in: [messages/Lifecycle.ts:57](https://github.com/purecloudlabs/iframe-coordinator/blob/bd2d3f4f4273043c84bd1155daa5293d568d782a/packages/iframe-coordinator/src/messages/Lifecycle.ts#L57)
+Defined in: [messages/Lifecycle.ts:57](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/messages/Lifecycle.ts#L57)
 
 The key character for example: 'a'
 
@@ -46,7 +46,7 @@ The key character for example: 'a'
 
 > `optional` **metaKey**: `boolean`
 
-Defined in: [messages/Lifecycle.ts:63](https://github.com/purecloudlabs/iframe-coordinator/blob/bd2d3f4f4273043c84bd1155daa5293d568d782a/packages/iframe-coordinator/src/messages/Lifecycle.ts#L63)
+Defined in: [messages/Lifecycle.ts:63](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/messages/Lifecycle.ts#L63)
 
 If the meta key should be pressed.
 
@@ -56,6 +56,6 @@ If the meta key should be pressed.
 
 > `optional` **shiftKey**: `boolean`
 
-Defined in: [messages/Lifecycle.ts:65](https://github.com/purecloudlabs/iframe-coordinator/blob/bd2d3f4f4273043c84bd1155daa5293d568d782a/packages/iframe-coordinator/src/messages/Lifecycle.ts#L65)
+Defined in: [messages/Lifecycle.ts:65](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/messages/Lifecycle.ts#L65)
 
 If the shift key should be pressed.

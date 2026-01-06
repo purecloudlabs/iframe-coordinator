@@ -1,6 +1,6 @@
 {
   "name": "ifc-example-client",
-  "version": "6.3.11",
+  "version": "6.4.0",
   "description": "Demo app for iframe-coordinator project",
   "repository": {
     "type": "git",

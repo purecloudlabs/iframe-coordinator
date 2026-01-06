@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.3.11**](../../README.md)
+[**iframe-coordinator v6.4.0**](../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: RoutingMap
 
-Defined in: [HostRouter.ts:78](https://github.com/purecloudlabs/iframe-coordinator/blob/bd2d3f4f4273043c84bd1155daa5293d568d782a/packages/iframe-coordinator/src/HostRouter.ts#L78)
+Defined in: [HostRouter.ts:78](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/HostRouter.ts#L78)
 
 A map from client identifiers to configuration describing
 where the client app is hosted, and what routes should be

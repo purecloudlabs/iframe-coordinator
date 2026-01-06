@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.3.11**](../../README.md)
+[**iframe-coordinator v6.4.0**](../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ClientRegistration
 
-Defined in: [HostRouter.ts:96](https://github.com/purecloudlabs/iframe-coordinator/blob/bd2d3f4f4273043c84bd1155daa5293d568d782a/packages/iframe-coordinator/src/HostRouter.ts#L96)
+Defined in: [HostRouter.ts:96](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/HostRouter.ts#L96)
 
 Configuration for a single `frame-router` client.
 
@@ -27,7 +27,7 @@ will be `http://example.com/client/#/baz/qux`
 
 > `optional` **allow**: `string`
 
-Defined in: [HostRouter.ts:105](https://github.com/purecloudlabs/iframe-coordinator/blob/bd2d3f4f4273043c84bd1155daa5293d568d782a/packages/iframe-coordinator/src/HostRouter.ts#L105)
+Defined in: [HostRouter.ts:105](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/HostRouter.ts#L105)
 
 Sets the iframe's [allow attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-allow)
 for this client.
@@ -38,7 +38,7 @@ for this client.
 
 > **assignedRoute**: `string`
 
-Defined in: [HostRouter.ts:100](https://github.com/purecloudlabs/iframe-coordinator/blob/bd2d3f4f4273043c84bd1155daa5293d568d782a/packages/iframe-coordinator/src/HostRouter.ts#L100)
+Defined in: [HostRouter.ts:100](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/HostRouter.ts#L100)
 
 The `frame-router` route attribute prefix that maps to this client app
 
@@ -48,7 +48,7 @@ The `frame-router` route attribute prefix that maps to this client app
 
 > `optional` **defaultTitle**: `string`
 
-Defined in: [HostRouter.ts:115](https://github.com/purecloudlabs/iframe-coordinator/blob/bd2d3f4f4273043c84bd1155daa5293d568d782a/packages/iframe-coordinator/src/HostRouter.ts#L115)
+Defined in: [HostRouter.ts:115](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/HostRouter.ts#L115)
 
 Sets the iframe's default [title](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#accessibility_concerns) attribute.
 This is required for accessibility.
@@ -59,7 +59,7 @@ This is required for accessibility.
 
 > `optional` **sandbox**: `string`
 
-Defined in: [HostRouter.ts:110](https://github.com/purecloudlabs/iframe-coordinator/blob/bd2d3f4f4273043c84bd1155daa5293d568d782a/packages/iframe-coordinator/src/HostRouter.ts#L110)
+Defined in: [HostRouter.ts:110](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/HostRouter.ts#L110)
 
 Sets the iframe's [sandbox attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox)
 for this client. Values wll be merged with built-in defaults.
@@ -70,6 +70,6 @@ for this client. Values wll be merged with built-in defaults.
 
 > **url**: `string`
 
-Defined in: [HostRouter.ts:98](https://github.com/purecloudlabs/iframe-coordinator/blob/bd2d3f4f4273043c84bd1155daa5293d568d782a/packages/iframe-coordinator/src/HostRouter.ts#L98)
+Defined in: [HostRouter.ts:98](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/HostRouter.ts#L98)
 
 The URL where the client application is hosted

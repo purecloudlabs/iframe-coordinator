@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.3.11**](../../README.md)
+[**iframe-coordinator v6.4.0**](../../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **EventHandler**\<`T`\> = (`data`) => `void`
 
-Defined in: [EventEmitter.ts:4](https://github.com/purecloudlabs/iframe-coordinator/blob/bd2d3f4f4273043c84bd1155daa5293d568d782a/packages/iframe-coordinator/src/EventEmitter.ts#L4)
+Defined in: [EventEmitter.ts:4](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/EventEmitter.ts#L4)
 
 A generic handler for incoming event data.
 
