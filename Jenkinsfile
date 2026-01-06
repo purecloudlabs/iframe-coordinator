@@ -103,7 +103,7 @@ pipeline {
         dir(env.REPO_DIR) {
           script {
             if (isReleaseBranch()) {
-              sh 'npm run release --skip.tag'
+              sh 'npm run release -- --skip.tag'
             } else if (isBetaBranch()) {
               sh "npm run release -- --prerelease beta.$GIT_COMMIT_SHORT --skip.tag"
             }
