@@ -4,9 +4,9 @@
 
 [iframe-coordinator](../../modules.md) / [client](../README.md) / EventEmitter
 
-# Class: EventEmitter\<T\>
+# Interface: EventEmitter\<T\>
 
-Defined in: [EventEmitter.ts:58](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/EventEmitter.ts#L58)
+Defined in: [EventEmitter.ts:58](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/EventEmitter.ts#L58)
 
 API for registering and unregistering event handlers. Mirrors the browser's EventTarget API.
 
@@ -24,7 +24,7 @@ The type of event produced by the emitter.
 
 > **addListener**(`type`, `listener`): `EventEmitter`\<`T`\>
 
-Defined in: [EventEmitter.ts:75](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/EventEmitter.ts#L75)
+Defined in: [EventEmitter.ts:75](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/EventEmitter.ts#L75)
 
 Sets up a function that will be called whenever the specified event type is delivered to the target.
 
@@ -52,7 +52,7 @@ The handler which receives a notification when an event of the specified type oc
 
 > **removeAllListeners**(`type`): `EventEmitter`\<`T`\>
 
-Defined in: [EventEmitter.ts:97](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/EventEmitter.ts#L97)
+Defined in: [EventEmitter.ts:97](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/EventEmitter.ts#L97)
 
 Removes all event listeners previously registered with [addEventListener](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener).
 
@@ -74,7 +74,7 @@ A string which specifies the type of event for which to remove an event listener
 
 > **removeListener**(`type`, `listener`): `EventEmitter`\<`T`\>
 
-Defined in: [EventEmitter.ts:85](https://github.com/purecloudlabs/iframe-coordinator/blob/0927c82358918a080e4b0ebe1e2829fb81b8ba67/packages/iframe-coordinator/src/EventEmitter.ts#L85)
+Defined in: [EventEmitter.ts:85](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/EventEmitter.ts#L85)
 
 Removes from the event listener previously registered with [addEventListener](https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener).
 

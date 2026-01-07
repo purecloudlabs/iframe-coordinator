@@ -12,3 +12,4 @@
 
 - [client](client/README.md)
 - [host](host/README.md)
+- [messages](messages/README.md)

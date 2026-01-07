@@ -1,4 +1,3 @@
-import { Client } from "./client";
-import { FrameRouterElement, registerCustomElements } from "./host";
-
-export { Client, registerCustomElements, FrameRouterElement };
+export * from "./messages";
+export * from "./client";
+export * from "./host";

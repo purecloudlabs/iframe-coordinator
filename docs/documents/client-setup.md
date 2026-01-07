@@ -15,7 +15,7 @@ the trickiest item to get correct. Be sure to read that section carefully._
 Early in the application bootstrap process, you will need to create a [client.Client](../client/classes/Client.md) instance, add an event
 listener for environment data passed from the host application, and start the client.
 
-[Environment data](../client/interfaces/EnvData.md) is data set in the host application that is static over time, but that clients will
+[Environment data](../messages/interfaces/EnvData.md) is data set in the host application that is static over time, but that clients will
 need to function, such as the user-selected locale. It supports both pre-defined common/required
 options and custom data.
 
@@ -197,7 +197,7 @@ ifcClient.publish({
 });
 ```
 
-You can listen for messages from the host on a topic via the [messaging API](../client/classes/EventEmitter.md)
+You can listen for messages from the host on a topic via the [messaging API](../client/interfaces/EventEmitter.md)
 
 ```typescript
 ifcClient.messaging.addEventListener("topic.from.host", payloadHandler);

@@ -11,22 +11,68 @@
 ## Classes
 
 - [Client](classes/Client.md)
-- [EventEmitter](classes/EventEmitter.md)
+- [WorkerClient](classes/WorkerClient.md)
 
 ## Interfaces
 
-- [Breadcrumb](interfaces/Breadcrumb.md)
 - [ClientConfigOptions](interfaces/ClientConfigOptions.md)
-- [EnvData](interfaces/EnvData.md)
-- [KeyData](interfaces/KeyData.md)
-- [ModalRequest](interfaces/ModalRequest.md)
-- [NavRequest](interfaces/NavRequest.md)
-- [Notification](interfaces/Notification.md)
-- [PageMetadata](interfaces/PageMetadata.md)
-- [PromptOnLeave](interfaces/PromptOnLeave.md)
-- [Publication](interfaces/Publication.md)
+- [EventEmitter](interfaces/EventEmitter.md)
 
 ## Type Aliases
 
 - [EnvDataHandler](type-aliases/EnvDataHandler.md)
 - [EventHandler](type-aliases/EventHandler.md)
+
+## References
+
+### Breadcrumb
+
+Re-exports [Breadcrumb](../messages/interfaces/Breadcrumb.md)
+
+***
+
+### EnvData
+
+Re-exports [EnvData](../messages/interfaces/EnvData.md)
+
+***
+
+### KeyData
+
+Re-exports [KeyData](../messages/interfaces/KeyData.md)
+
+***
+
+### ModalRequest
+
+Re-exports [ModalRequest](../messages/interfaces/ModalRequest.md)
+
+***
+
+### NavRequest
+
+Re-exports [NavRequest](../messages/interfaces/NavRequest.md)
+
+***
+
+### Notification
+
+Re-exports [Notification](../messages/interfaces/Notification.md)
+
+***
+
+### PageMetadata
+
+Re-exports [PageMetadata](../messages/interfaces/PageMetadata.md)
+
+***
+
+### PromptOnLeave
+
+Re-exports [PromptOnLeave](../messages/interfaces/PromptOnLeave.md)
+
+***
+
+### Publication
+
+Re-exports [Publication](../messages/interfaces/Publication.md)
