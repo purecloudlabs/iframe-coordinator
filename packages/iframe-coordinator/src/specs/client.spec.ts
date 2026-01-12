@@ -40,7 +40,7 @@ describe("client", () => {
     client = new Client({
       hostOrigin: HOST_ORIGIN,
     });
-    client._clientWindow = mockFrameWindow;
+    client._globalContext = mockFrameWindow;
   });
 
   describe("when the client is started", () => {
@@ -521,7 +521,7 @@ describe("client", () => {
     describe("when the client is created without a specific host origin", () => {
       test("sends messages to it's own origin", () => {
         client = new Client();
-        client._clientWindow = mockFrameWindow;
+        client._globalContext = mockFrameWindow;
         client.start();
         expect(mockFrameWindow.parent.postMessage).toHaveBeenCalledWith(
           applyClientProtocol({

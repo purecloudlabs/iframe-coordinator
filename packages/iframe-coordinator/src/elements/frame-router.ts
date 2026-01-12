@@ -8,8 +8,9 @@ import { stripTrailingSlash } from "../urlUtils";
 
 const ROUTE_ATTR = "route";
 
-/** A property that can be set to initialize the host frame with the
- * possible clients and the environmental data required by the clients
+/**
+ * Data structure defining the list of iframe clients, their associated routes
+ * and any environmental data required by the clients.
  */
 export interface ClientConfig {
   /** The map of registrations for the available clients. */
