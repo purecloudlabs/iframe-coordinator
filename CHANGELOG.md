@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [6.5.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.4.0...v6.5.0) (2026-01-13)
+
+
+### Features
+
+* **web-workers:** Add web-worker support ([12e01f0](https://github.com/purecloudlabs/iframe-coordinator/commit/12e01f027f27abd453b6ba6344bfddab512ad6fc))
+
 ## [6.4.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.3.11...v6.4.0) (2026-01-06)
 
 
