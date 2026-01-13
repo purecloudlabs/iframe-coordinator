@@ -1,6 +1,6 @@
 {
   "name": "iframe-coordinator-cli",
-  "version": "6.4.0",
+  "version": "6.5.0",
   "description": "CLI for local iframe-coordinator development",
   "dependencies": {
     "cheerio": "1.0.0-rc.12",
@@ -22,7 +22,11 @@
     "typescript": "^5.5.4",
     "vite": "^5.4.21"
   },
-  "files": ["dist", "ifc-cli.js", "example-ifc.config.js"],
+  "files": [
+    "dist",
+    "ifc-cli.js",
+    "example-ifc.config.js"
+  ],
   "bin": {
     "ifc-cli": "ifc-cli.js"
   },

@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.4.0**](../../README.md)
+[**iframe-coordinator v6.5.0**](../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Class: FrameRouterElement
 
-Defined in: [elements/frame-router.ts:30](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/elements/frame-router.ts#L30)
+Defined in: [elements/frame-router.ts:30](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/elements/frame-router.ts#L30)
 
 A custom element responsible for rendering an iframe and communicating with
 configured client applications that will render in that frame. It will be
@@ -27,7 +27,7 @@ markup or use `document.createElement('frame-router')` after calling
 
 > **get** **clientConfig**(): [`ClientConfig`](../interfaces/ClientConfig.md)
 
-Defined in: [elements/frame-router.ts:188](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/elements/frame-router.ts#L188)
+Defined in: [elements/frame-router.ts:188](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/elements/frame-router.ts#L188)
 
 A property that can be set to initialize the host frame
 
@@ -39,7 +39,7 @@ A property that can be set to initialize the host frame
 
 > **set** **clientConfig**(`clientConfig`): `void`
 
-Defined in: [elements/frame-router.ts:192](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/elements/frame-router.ts#L192)
+Defined in: [elements/frame-router.ts:192](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/elements/frame-router.ts#L192)
 
 ##### Parameters
 
@@ -59,7 +59,7 @@ Defined in: [elements/frame-router.ts:192](https://github.com/purecloudlabs/ifra
 
 > **get** **messaging**(): [`EventEmitter`](../../client/interfaces/EventEmitter.md)\<[`Publication`](../../messages/interfaces/Publication.md)\>
 
-Defined in: [elements/frame-router.ts:104](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/elements/frame-router.ts#L104)
+Defined in: [elements/frame-router.ts:104](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/elements/frame-router.ts#L104)
 
 Eventing for published messages from the host application.
 
@@ -73,7 +73,7 @@ Eventing for published messages from the host application.
 
 > **changeRoute**(`newPath`): `void`
 
-Defined in: [elements/frame-router.ts:126](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/elements/frame-router.ts#L126)
+Defined in: [elements/frame-router.ts:126](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/elements/frame-router.ts#L126)
 
 Changes the route the client fragment is rendering.
 
@@ -95,7 +95,7 @@ a new route which matches those provided originally.
 
 > **publish**(`publication`): `void`
 
-Defined in: [elements/frame-router.ts:114](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/elements/frame-router.ts#L114)
+Defined in: [elements/frame-router.ts:114](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/elements/frame-router.ts#L114)
 
 Publish a message to the client fragment.
 
@@ -118,7 +118,7 @@ The topic may not be of interest, and could be ignored.
 
 > **setupFrames**(`clients`, `envData`): `void`
 
-Defined in: [elements/frame-router.ts:90](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/elements/frame-router.ts#L90)
+Defined in: [elements/frame-router.ts:90](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/elements/frame-router.ts#L90)
 
 Initializes this host frame with the possible clients and
 the environmental data required the clients.

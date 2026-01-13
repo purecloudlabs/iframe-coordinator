@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.4.0**](../../README.md)
+[**iframe-coordinator v6.5.0**](../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ModalRequest
 
-Defined in: [messages/ModalRequest.ts:7](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/messages/ModalRequest.ts#L7)
+Defined in: [messages/ModalRequest.ts:7](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/messages/ModalRequest.ts#L7)
 
 The modal request data.
 
@@ -16,7 +16,7 @@ The modal request data.
 
 > **modalData**: `any`
 
-Defined in: [messages/ModalRequest.ts:12](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/messages/ModalRequest.ts#L12)
+Defined in: [messages/ModalRequest.ts:12](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/messages/ModalRequest.ts#L12)
 
 Any data that the client wishes to send to the modal
 
@@ -26,6 +26,6 @@ Any data that the client wishes to send to the modal
 
 > **modalId**: `string`
 
-Defined in: [messages/ModalRequest.ts:9](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/messages/ModalRequest.ts#L9)
+Defined in: [messages/ModalRequest.ts:9](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/messages/ModalRequest.ts#L9)
 
 The ID of the modal the client wishes to launch

@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.4.0**](../../README.md)
+[**iframe-coordinator v6.5.0**](../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: WorkerItem
 
-Defined in: [WorkerPool.ts:27](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerPool.ts#L27)
+Defined in: [WorkerPool.ts:27](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/WorkerPool.ts#L27)
 
 Web worker metadata.
 
@@ -16,7 +16,7 @@ Web worker metadata.
 
 > **app**: [`WorkerAppData`](WorkerAppData.md)
 
-Defined in: [WorkerPool.ts:31](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerPool.ts#L31)
+Defined in: [WorkerPool.ts:31](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/WorkerPool.ts#L31)
 
 Application metadata. Allows a worker easily generate links for an associated application
 
@@ -26,6 +26,6 @@ Application metadata. Allows a worker easily generate links for an associated ap
 
 > **script**: `string` \| [`URL`](https://developer.mozilla.org/docs/Web/API/URL)
 
-Defined in: [WorkerPool.ts:29](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerPool.ts#L29)
+Defined in: [WorkerPool.ts:29](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/WorkerPool.ts#L29)
 
 The script to run for the worker

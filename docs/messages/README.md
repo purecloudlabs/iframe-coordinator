@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.4.0**](../README.md)
+[**iframe-coordinator v6.5.0**](../README.md)
 
 ***
 

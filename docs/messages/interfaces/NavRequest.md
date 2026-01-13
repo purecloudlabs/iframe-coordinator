@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.4.0**](../../README.md)
+[**iframe-coordinator v6.5.0**](../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: NavRequest
 
-Defined in: [messages/NavRequest.ts:7](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/messages/NavRequest.ts#L7)
+Defined in: [messages/NavRequest.ts:7](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/messages/NavRequest.ts#L7)
 
 The navigation request data.
 
@@ -16,7 +16,7 @@ The navigation request data.
 
 > `optional` **history**: `"push"` \| `"replace"`
 
-Defined in: [messages/NavRequest.ts:15](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/messages/NavRequest.ts#L15)
+Defined in: [messages/NavRequest.ts:15](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/messages/NavRequest.ts#L15)
 
 How the client wants the host to update the browser's session history.
 Push is the default behavior (adds a new session history entry).
@@ -29,6 +29,6 @@ after navigation will skip the location you are navigating from.
 
 > **url**: `string`
 
-Defined in: [messages/NavRequest.ts:9](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/messages/NavRequest.ts#L9)
+Defined in: [messages/NavRequest.ts:9](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/messages/NavRequest.ts#L9)
 
 The URL the client wants the host application to navigate to

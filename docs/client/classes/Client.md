@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.4.0**](../../README.md)
+[**iframe-coordinator v6.5.0**](../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Class: Client
 
-Defined in: [IframeClient.ts:16](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/IframeClient.ts#L16)
+Defined in: [IframeClient.ts:16](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/IframeClient.ts#L16)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: [IframeClient.ts:16](https://github.com/purecloudlabs/iframe-coordin
 
 > **new Client**(`configOptions?`): `IframeClient`
 
-Defined in: [IframeClient.ts:20](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/IframeClient.ts#L20)
+Defined in: [IframeClient.ts:20](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/IframeClient.ts#L20)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: [IframeClient.ts:20](https://github.com/purecloudlabs/iframe-coordin
 
 > **get** **environmentData**(): [`EnvData`](../../messages/interfaces/EnvData.md)
 
-Defined in: [AbstractClient.ts:171](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L171)
+Defined in: [AbstractClient.ts:171](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L171)
 
 Gets the environmental data provided by the host application. This includes
 the locale the client should use, the base URL of the host app, and any
@@ -64,7 +64,7 @@ custom data sent by the host.
 
 > **get** **messaging**(): [`EventEmitter`](../interfaces/EventEmitter.md)\<[`Publication`](../../messages/interfaces/Publication.md)\>
 
-Defined in: [AbstractClient.ts:271](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L271)
+Defined in: [AbstractClient.ts:271](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L271)
 
 Accessor for the general-purpose pub-sub bus between client and host applications.
 The content of messages on this bus are not defined by this API beyond a basic
@@ -85,7 +85,7 @@ agreed upon as a shared API between host and client.
 
 > **addListener**(`type`, `listener`): `this`
 
-Defined in: [AbstractClient.ts:69](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L69)
+Defined in: [AbstractClient.ts:69](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L69)
 
 Sets up a function that will be called whenever the specified event type is delivered to the target.
 This should not be confused with the general-purpose pub-sub listeners that can be set via the
@@ -122,7 +122,7 @@ The handler which receives a notification when an event of the specified type oc
 
 > **asHostUrl**(`clientRouteLegacy`): `string`
 
-Defined in: [AbstractClient.ts:214](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L214)
+Defined in: [AbstractClient.ts:214](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L214)
 
 Translates a client route like `/foo/bar` to the full URL used in the host
 app for the same page, e.g. `https://hostapp.com/#/client-app/foo/bar`.
@@ -153,7 +153,7 @@ Use the new [urlFromClientPath](#urlfromclientpath) method instead
 
 > **clearPromptOnLeave**(): `void`
 
-Defined in: [AbstractClient.ts:389](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L389)
+Defined in: [AbstractClient.ts:389](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L389)
 
 Asks the host application to clear the prompt on leave dialog.
 
@@ -171,7 +171,7 @@ Asks the host application to clear the prompt on leave dialog.
 
 > **publish**(`publication`): `void`
 
-Defined in: [AbstractClient.ts:293](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L293)
+Defined in: [AbstractClient.ts:293](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L293)
 
 Publish a general message to the host application.
 
@@ -197,7 +197,7 @@ The data object to be published.
 
 > **registerCustomElements**(): `void`
 
-Defined in: [IframeClient.ts:46](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/IframeClient.ts#L46)
+Defined in: [IframeClient.ts:46](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/IframeClient.ts#L46)
 
 Registers custom elements used by the client application
 
@@ -211,7 +211,7 @@ Registers custom elements used by the client application
 
 > **removeAllListeners**(`type`): `this`
 
-Defined in: [AbstractClient.ts:94](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L94)
+Defined in: [AbstractClient.ts:94](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L94)
 
 Removes all event listeners previously registered with [addListener](#addlistener).
 
@@ -237,7 +237,7 @@ A string which specifies the type of event for which to remove an event listener
 
 > **removeListener**(`type`, `listener`): `this`
 
-Defined in: [AbstractClient.ts:82](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L82)
+Defined in: [AbstractClient.ts:82](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L82)
 
 Removes an event listener previously registered with [addListener](#addlistener).
 
@@ -269,7 +269,7 @@ The event handler to remove from the event target.
 
 > **requestModal**(`modalRequest`): `void`
 
-Defined in: [AbstractClient.ts:309](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L309)
+Defined in: [AbstractClient.ts:309](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L309)
 
 Asks the host application to open a modal dialog.
 
@@ -298,7 +298,7 @@ the ID and any data specific to the modal instance required
 
 > **requestNavigation**(`destination`): `void`
 
-Defined in: [AbstractClient.ts:369](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L369)
+Defined in: [AbstractClient.ts:369](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L369)
 
 Asks the host application to navigate to a new location.
 
@@ -329,7 +329,7 @@ a description of where the client wants to navigate the app to.
 
 > **requestNotification**(`notification`): `void`
 
-Defined in: [AbstractClient.ts:351](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L351)
+Defined in: [AbstractClient.ts:351](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L351)
 
 Asks the host application to display a user notification.
 
@@ -384,7 +384,7 @@ client.requestNotification({
 
 > **requestPromptOnLeave**(`messagePrompt?`): `void`
 
-Defined in: [AbstractClient.ts:379](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L379)
+Defined in: [AbstractClient.ts:379](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L379)
 
 Asks the host application to display a prompt on leave dialog.
 
@@ -408,7 +408,7 @@ Asks the host application to display a prompt on leave dialog.
 
 > **sendPageMetadata**(`metadata`): `void`
 
-Defined in: [AbstractClient.ts:405](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L405)
+Defined in: [AbstractClient.ts:405](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L405)
 
 Sends page metadata to host for display and browser settings
 
@@ -438,7 +438,7 @@ data that will be used for display in host application and browser page title
 
 > **start**(): `void`
 
-Defined in: [IframeClient.ts:30](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/IframeClient.ts#L30)
+Defined in: [IframeClient.ts:30](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/IframeClient.ts#L30)
 
 Initiates responding to events triggered by the host application.
 
@@ -456,7 +456,7 @@ Initiates responding to events triggered by the host application.
 
 > **startInterceptingLinks**(): `void`
 
-Defined in: [IframeClient.ts:78](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/IframeClient.ts#L78)
+Defined in: [IframeClient.ts:78](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/IframeClient.ts#L78)
 
 Allows the click handler on the client window to intercept clicks on anchor elements
 and makes a nav request to the host based on the element's href. This should be
@@ -473,7 +473,7 @@ links that you may not want to intercept.
 
 > **stop**(): `void`
 
-Defined in: [IframeClient.ts:36](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/IframeClient.ts#L36)
+Defined in: [IframeClient.ts:36](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/IframeClient.ts#L36)
 
 Disconnects this client from the host application. This is mostly provided for
 the sake of API completeness. It's unlikely to be used by most applications.
@@ -492,7 +492,7 @@ the sake of API completeness. It's unlikely to be used by most applications.
 
 > **stopInterceptingLinks**(): `void`
 
-Defined in: [IframeClient.ts:85](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/IframeClient.ts#L85)
+Defined in: [IframeClient.ts:85](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/IframeClient.ts#L85)
 
 Turns off the behavior of intercepting link clicks in the client window click handler.
 
@@ -506,7 +506,7 @@ Turns off the behavior of intercepting link clicks in the client window click ha
 
 > **urlFromClientPath**(`clientRoute`): `string`
 
-Defined in: [AbstractClient.ts:184](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L184)
+Defined in: [AbstractClient.ts:184](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L184)
 
 Translates a client route like `/foo/bar` to the full URL used in the host
 app for the same page, e.g. `https://hostapp.com/#/client-app/foo/bar`.
@@ -536,7 +536,7 @@ The /-separated path within the client app to link to.
 
 > **urlFromHostPath**(`hostRoute`): `string`
 
-Defined in: [AbstractClient.ts:200](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/AbstractClient.ts#L200)
+Defined in: [AbstractClient.ts:200](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/AbstractClient.ts#L200)
 
 Translates a host route like `/app2` to the full URL used in the host
 app, e.g. `https://hostapp.com/#/app2`.

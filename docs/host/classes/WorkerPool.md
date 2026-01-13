@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.4.0**](../../README.md)
+[**iframe-coordinator v6.5.0**](../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Class: WorkerPool
 
-Defined in: [WorkerPool.ts:59](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerPool.ts#L59)
+Defined in: [WorkerPool.ts:59](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/WorkerPool.ts#L59)
 
 Class for managing a collection of worker processes that should run for the
 lifetime of the host application. Workers can be provided with basic
@@ -28,7 +28,7 @@ possible events.
 
 > **new WorkerPool**(): `WorkerPool`
 
-Defined in: [WorkerPool.ts:94](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerPool.ts#L94)
+Defined in: [WorkerPool.ts:94](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/WorkerPool.ts#L94)
 
 Creates a new worker pool
 
@@ -48,7 +48,7 @@ Creates a new worker pool
 
 > **get** **isRunning**(): `boolean`
 
-Defined in: [WorkerPool.ts:125](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerPool.ts#L125)
+Defined in: [WorkerPool.ts:125](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/WorkerPool.ts#L125)
 
 True if the worker is running.
 
@@ -64,7 +64,7 @@ True if the worker is running.
 
 > **get** **workerConfig**(): [`WorkerConfig`](../interfaces/WorkerConfig.md)
 
-Defined in: [WorkerPool.ts:118](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerPool.ts#L118)
+Defined in: [WorkerPool.ts:118](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/WorkerPool.ts#L118)
 
 Get the configured workers for the pool.
 
@@ -76,7 +76,7 @@ Get the configured workers for the pool.
 
 > **set** **workerConfig**(`clientConfig`): `void`
 
-Defined in: [WorkerPool.ts:107](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerPool.ts#L107)
+Defined in: [WorkerPool.ts:107](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/WorkerPool.ts#L107)
 
 Set the configured workers for the pool.
 
@@ -100,7 +100,7 @@ out with your use case.
 
 > **publish**(`clientId`, `publication`): `void`
 
-Defined in: [WorkerPool.ts:176](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerPool.ts#L176)
+Defined in: [WorkerPool.ts:176](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/WorkerPool.ts#L176)
 
 Publish a message to a worker.
 
@@ -129,7 +129,7 @@ The topic may not be of interest, and could be ignored.
 
 > **start**(): `void`
 
-Defined in: [WorkerPool.ts:132](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerPool.ts#L132)
+Defined in: [WorkerPool.ts:132](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/WorkerPool.ts#L132)
 
 Start the worker pool, and all associated workers.
 
@@ -143,7 +143,7 @@ Start the worker pool, and all associated workers.
 
 > **stop**(): `void`
 
-Defined in: [WorkerPool.ts:156](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerPool.ts#L156)
+Defined in: [WorkerPool.ts:156](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/WorkerPool.ts#L156)
 
 Stops the worker pool, immediately terminating all registered workers. Does
 nothing if the pool was never started.

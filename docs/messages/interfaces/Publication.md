@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.4.0**](../../README.md)
+[**iframe-coordinator v6.5.0**](../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: Publication
 
-Defined in: [messages/Publication.ts:15](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/messages/Publication.ts#L15)
+Defined in: [messages/Publication.ts:15](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/messages/Publication.ts#L15)
 
 A pub-sub message for general-purpose messaging between hosts and clients.
 
@@ -16,7 +16,7 @@ A pub-sub message for general-purpose messaging between hosts and clients.
 
 > `optional` **clientId**: `string`
 
-Defined in: [messages/Publication.ts:28](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/messages/Publication.ts#L28)
+Defined in: [messages/Publication.ts:28](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/messages/Publication.ts#L28)
 
 Client the message originates from. This should not be provided when
 calling client methods. The value will be ignored and the library
@@ -28,7 +28,7 @@ will replace it when delivering the message to the host.
 
 > **payload**: `any`
 
-Defined in: [messages/Publication.ts:22](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/messages/Publication.ts#L22)
+Defined in: [messages/Publication.ts:22](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/messages/Publication.ts#L22)
 
 Data to publish
 
@@ -38,7 +38,7 @@ Data to publish
 
 > **topic**: `string`
 
-Defined in: [messages/Publication.ts:20](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/messages/Publication.ts#L20)
+Defined in: [messages/Publication.ts:20](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/messages/Publication.ts#L20)
 
 The topic to publish on. The host application must be subscribed to the topic
 in order to receive the message.

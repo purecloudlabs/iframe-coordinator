@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.4.0**](../../README.md)
+[**iframe-coordinator v6.5.0**](../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: PageMetadata
 
-Defined in: [messages/PageMetadata.ts:15](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/messages/PageMetadata.ts#L15)
+Defined in: [messages/PageMetadata.ts:15](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/messages/PageMetadata.ts#L15)
 
 The Page metadata
 
@@ -16,7 +16,7 @@ The Page metadata
 
 > **breadcrumbs**: [`Breadcrumb`](Breadcrumb.md)[]
 
-Defined in: [messages/PageMetadata.ts:19](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/messages/PageMetadata.ts#L19)
+Defined in: [messages/PageMetadata.ts:19](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/messages/PageMetadata.ts#L19)
 
 Breadcrumbs that lead to page
 
@@ -26,7 +26,7 @@ Breadcrumbs that lead to page
 
 > `optional` **custom**: `any`
 
-Defined in: [messages/PageMetadata.ts:21](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/messages/PageMetadata.ts#L21)
+Defined in: [messages/PageMetadata.ts:21](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/messages/PageMetadata.ts#L21)
 
 Holder for any custom data client wants to send for page
 
@@ -36,6 +36,6 @@ Holder for any custom data client wants to send for page
 
 > **title**: `string`
 
-Defined in: [messages/PageMetadata.ts:17](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/messages/PageMetadata.ts#L17)
+Defined in: [messages/PageMetadata.ts:17](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/messages/PageMetadata.ts#L17)
 
 Title of the Page for the browser

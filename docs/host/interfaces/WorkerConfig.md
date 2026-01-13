@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.4.0**](../../README.md)
+[**iframe-coordinator v6.5.0**](../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: WorkerConfig
 
-Defined in: [WorkerPool.ts:10](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerPool.ts#L10)
+Defined in: [WorkerPool.ts:10](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/WorkerPool.ts#L10)
 
 Data structure defining the list of web workers, and any environmental data
 they may need for initialization.
@@ -17,7 +17,7 @@ they may need for initialization.
 
 > **clients**: [`WorkerRegistry`](WorkerRegistry.md)
 
-Defined in: [WorkerPool.ts:12](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerPool.ts#L12)
+Defined in: [WorkerPool.ts:12](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/WorkerPool.ts#L12)
 
 Web worker registrations
 
@@ -27,6 +27,6 @@ Web worker registrations
 
 > **envData**: [`EnvData`](../../messages/interfaces/EnvData.md)
 
-Defined in: [WorkerPool.ts:14](https://github.com/purecloudlabs/iframe-coordinator/blob/fb480f347a30f2befa8e9d15eabcba02bb20fc20/packages/iframe-coordinator/src/WorkerPool.ts#L14)
+Defined in: [WorkerPool.ts:14](https://github.com/purecloudlabs/iframe-coordinator/blob/24a29952c135ede083858799b8f5e2a6b7ff78ef/packages/iframe-coordinator/src/WorkerPool.ts#L14)
 
 Information about the host environment.
