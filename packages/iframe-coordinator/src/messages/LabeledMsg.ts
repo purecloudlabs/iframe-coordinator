@@ -1,13 +1,4 @@
-import {
-  constant,
-  Decoder,
-  either,
-  hardcoded,
-  map,
-  object,
-  optional,
-  string,
-} from "decoders";
+import { constant, Decoder, either, exact, optional, string } from "decoders";
 
 // This is replaced by rollup-plugin-replace with the actual version from package.json
 const version = "__PACKAGE_VERSION__";
@@ -87,20 +78,21 @@ export function labeledDecoder<T, V>(
   typeDecoder: Decoder<T>,
   msgDecoder: Decoder<V>,
 ): Decoder<LabeledMsg<T, V>> {
-  return object({
+  return exact({
     // TODO: in 4.0.0 make protocol and version fields mandatory
-    protocol: either(
-      constant<"iframe-coordinator">(API_PROTOCOL),
-      hardcoded<"iframe-coordinator">(API_PROTOCOL),
-    ),
-    version: either(string, hardcoded("unknown")),
+    protocol: optional(constant<"iframe-coordinator">(API_PROTOCOL)),
+    version: optional(string),
     msgType: typeDecoder,
     msg: msgDecoder,
     direction: optional(directionDecoder),
-  });
+  }).transform((decoded) => ({
+    ...decoded,
+    protocol: decoded.protocol ?? API_PROTOCOL,
+    version: decoded.version ?? "unknown",
+  })) as Decoder<LabeledMsg<T, V>>;
 }
 
-const directionDecoder: Decoder<MessageDirection, unknown> = either(
+const directionDecoder: Decoder<MessageDirection> = either(
   constant("ClientToHost"),
   constant("HostToClient"),
 );
