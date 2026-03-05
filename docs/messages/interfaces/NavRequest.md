@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [messages](../README.md) / NavRequest
 
@@ -23,7 +23,7 @@ Push is the default behavior (adds a new session history entry).
 Replace alters the current entry so that using the back button
 after navigation will skip the location you are navigating from.
 
-***
+---
 
 ### url
 

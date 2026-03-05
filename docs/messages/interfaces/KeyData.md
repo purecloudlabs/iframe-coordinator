@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [messages](../README.md) / KeyData
 
@@ -20,7 +20,7 @@ Defined in: [messages/Lifecycle.ts:59](https://github.com/purecloudlabs/iframe-c
 
 If the alt key should be pressed.
 
-***
+---
 
 ### ctrlKey?
 
@@ -30,7 +30,7 @@ Defined in: [messages/Lifecycle.ts:61](https://github.com/purecloudlabs/iframe-c
 
 If the ctrl key should be pressed.
 
-***
+---
 
 ### key
 
@@ -40,7 +40,7 @@ Defined in: [messages/Lifecycle.ts:57](https://github.com/purecloudlabs/iframe-c
 
 The key character for example: 'a'
 
-***
+---
 
 ### metaKey?
 
@@ -50,7 +50,7 @@ Defined in: [messages/Lifecycle.ts:63](https://github.com/purecloudlabs/iframe-c
 
 If the meta key should be pressed.
 
-***
+---
 
 ### shiftKey?
 

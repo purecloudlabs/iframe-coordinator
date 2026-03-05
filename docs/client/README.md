@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../README.md)
 
-***
+---
 
 [iframe-coordinator](../modules.md) / client
 
@@ -29,49 +29,49 @@
 
 Re-exports [Breadcrumb](../messages/interfaces/Breadcrumb.md)
 
-***
+---
 
 ### EnvData
 
 Re-exports [EnvData](../messages/interfaces/EnvData.md)
 
-***
+---
 
 ### KeyData
 
 Re-exports [KeyData](../messages/interfaces/KeyData.md)
 
-***
+---
 
 ### ModalRequest
 
 Re-exports [ModalRequest](../messages/interfaces/ModalRequest.md)
 
-***
+---
 
 ### NavRequest
 
 Re-exports [NavRequest](../messages/interfaces/NavRequest.md)
 
-***
+---
 
 ### Notification
 
 Re-exports [Notification](../messages/interfaces/Notification.md)
 
-***
+---
 
 ### PageMetadata
 
 Re-exports [PageMetadata](../messages/interfaces/PageMetadata.md)
 
-***
+---
 
 ### PromptOnLeave
 
 Re-exports [PromptOnLeave](../messages/interfaces/PromptOnLeave.md)
 
-***
+---
 
 ### Publication
 

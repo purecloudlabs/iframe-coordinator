@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../README.md)
 
-***
+---
 
 [iframe-coordinator](../modules.md) / client-setup
 

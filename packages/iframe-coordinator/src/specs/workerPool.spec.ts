@@ -140,7 +140,7 @@ describe("WorkerPool", () => {
     workerPool.start();
     workerPool.publish("client1", publishMessage);
     expect(workerMap["worker.client1"].postMessage).toHaveBeenCalledWith(
-      applyHostProtocol({ msgType: "publish", msg: publishMessage}),
+      applyHostProtocol({ msgType: "publish", msg: publishMessage }),
     );
   });
 

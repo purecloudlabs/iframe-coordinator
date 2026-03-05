@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [messages](../README.md) / Publication
 
@@ -22,7 +22,7 @@ Client the message originates from. This should not be provided when
 calling client methods. The value will be ignored and the library
 will replace it when delivering the message to the host.
 
-***
+---
 
 ### payload
 
@@ -32,7 +32,7 @@ Defined in: [messages/Publication.ts:22](https://github.com/purecloudlabs/iframe
 
 Data to publish
 
-***
+---
 
 ### topic
 

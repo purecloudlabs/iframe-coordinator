@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [host](../README.md) / FrameRouterElement
 
@@ -51,7 +51,7 @@ Defined in: [elements/frame-router.ts:192](https://github.com/purecloudlabs/ifra
 
 `void`
 
-***
+---
 
 ### messaging
 
@@ -89,7 +89,7 @@ a new route which matches those provided originally.
 
 `void`
 
-***
+---
 
 ### publish()
 
@@ -112,7 +112,7 @@ The topic may not be of interest, and could be ignored.
 
 `void`
 
-***
+---
 
 ### ~~setupFrames()~~
 

@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [messages](../README.md) / ModalRequest
 
@@ -20,7 +20,7 @@ Defined in: [messages/ModalRequest.ts:12](https://github.com/purecloudlabs/ifram
 
 Any data that the client wishes to send to the modal
 
-***
+---
 
 ### modalId
 

@@ -35,8 +35,10 @@ export interface Breadcrumb {
  * A message used to send metadata of a page
  * from the clients to the host application.
  */
-export interface LabeledPageMetadata
-  extends LabeledMsg<"pageMetadata", PageMetadata> {
+export interface LabeledPageMetadata extends LabeledMsg<
+  "pageMetadata",
+  PageMetadata
+> {
   /** Message identifier */
   msgType: "pageMetadata";
   /** Modal request details (type and data) */

@@ -1,5 +1,11 @@
 import FrameRouterElement, { ClientConfig } from "./elements/frame-router";
-import { WorkerAppData, WorkerConfig, WorkerItem, WorkerPool, WorkerRegistry } from "./WorkerPool";
+import {
+  WorkerAppData,
+  WorkerConfig,
+  WorkerItem,
+  WorkerPool,
+  WorkerRegistry,
+} from "./WorkerPool";
 /* re-exported for better docs */
 import { ClientRegistration, RoutingMap } from "./HostRouter";
 import { EnvData, KeyData } from "./messages";
@@ -26,7 +32,4 @@ export {
 };
 
 // Lecacy compatibility exports - superceded by messaging.ts
-export {
-  type EnvData,
-  type KeyData,
-}
+export { type EnvData, type KeyData };

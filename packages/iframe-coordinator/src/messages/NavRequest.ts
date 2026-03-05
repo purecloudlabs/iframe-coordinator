@@ -19,8 +19,10 @@ export interface NavRequest {
  * A message used to request the host navigate to another
  * URI.
  */
-export interface LabeledNavRequest
-  extends LabeledMsg<"navRequest", NavRequest> {
+export interface LabeledNavRequest extends LabeledMsg<
+  "navRequest",
+  NavRequest
+> {
   /** Message identifier */
   msgType: "navRequest";
   /** Navigation request details */

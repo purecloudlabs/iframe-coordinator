@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [host](../README.md) / ClientConfig
 
@@ -21,7 +21,7 @@ Defined in: [elements/frame-router.ts:17](https://github.com/purecloudlabs/ifram
 
 The map of registrations for the available clients.
 
-***
+---
 
 ### envData
 

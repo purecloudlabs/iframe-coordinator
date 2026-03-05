@@ -62,7 +62,7 @@ export abstract class HostManager {
 
   private _validateClientMessage(
     event: MessageEvent<ClientToHost>,
-    clientId: string
+    clientId: string,
   ): ClientToHost | undefined {
     let validated: ClientToHost;
 
@@ -72,7 +72,10 @@ export abstract class HostManager {
 
     const expectedClientOrigin = this._expectedClientOrigin(clientId);
     if (event.origin !== expectedClientOrigin) {
-      console.warn(`Ignoring message from unexpected origin: ${event.origin}`, event.data);
+      console.warn(
+        `Ignoring message from unexpected origin: ${event.origin}`,
+        event.data,
+      );
       return;
     }
 

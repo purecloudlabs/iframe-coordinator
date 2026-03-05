@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [host](../README.md) / WorkerAppData
 
@@ -20,7 +20,7 @@ Defined in: [WorkerPool.ts:41](https://github.com/purecloudlabs/iframe-coordinat
 
 The route the application is assigned to in the [FrameRouterElement](../classes/FrameRouterElement.md)'s [ClientConfig](ClientConfig.md)
 
-***
+---
 
 ### url
 

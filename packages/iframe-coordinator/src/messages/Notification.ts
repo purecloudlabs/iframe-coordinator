@@ -27,8 +27,10 @@ export interface Notification {
  * A message used to request notifications to display
  * in the host application.
  */
-export interface LabeledNotification
-  extends LabeledMsg<"notifyRequest", Notification> {
+export interface LabeledNotification extends LabeledMsg<
+  "notifyRequest",
+  Notification
+> {
   /** Message identifier */
   msgType: "notifyRequest";
   /** Toast details */

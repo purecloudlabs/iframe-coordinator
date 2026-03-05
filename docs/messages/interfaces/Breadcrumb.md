@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [messages](../README.md) / Breadcrumb
 
@@ -20,7 +20,7 @@ Defined in: [messages/PageMetadata.ts:31](https://github.com/purecloudlabs/ifram
 
 Link href for routing to breadcrumb's page
 
-***
+---
 
 ### text
 

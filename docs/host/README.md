@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../README.md)
 
-***
+---
 
 [iframe-coordinator](../modules.md) / host
 
@@ -31,7 +31,7 @@
 
 Re-exports [EnvData](../messages/interfaces/EnvData.md)
 
-***
+---
 
 ### KeyData
 

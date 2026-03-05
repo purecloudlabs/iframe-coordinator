@@ -19,6 +19,7 @@
     "publish.iframe-coordinator": "npm publish --workspace=iframe-coordinator",
     "publish.iframe-coordinator-cli": "npm publish --workspace=iframe-coordinator-cli",
     "doc": "npm run doc --workspace=iframe-coordinator",
+    "postdoc": "npm run prettier",
     "prepare": "husky",
     "pre-commit": "lint-staged"
   },

@@ -4,7 +4,7 @@ import { EnvData } from "./messages/Lifecycle";
 
 /**
  * Client class allowing web workers to interact with the larger
- * iframe-coordinator feature set. 
+ * iframe-coordinator feature set.
  */
 export class WorkerClient extends AbstractClient<DedicatedWorkerGlobalScope> {
   /**
