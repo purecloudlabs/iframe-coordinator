@@ -1,4 +1,4 @@
-import { dispatch, guard } from "decoders";
+import { taggedUnion } from "decoders";
 import { decoder as clickDecoder, LabeledClick } from "./Click";
 import { decoder as keyDownDecoder, LabeledKeyDown } from "./KeyDown";
 import { LabeledStarted, startedDecoder } from "./Lifecycle";
@@ -36,18 +36,16 @@ export type ClientToHost =
  * @param msg The message requiring validation.
  */
 export function validate(msg: any): ClientToHost {
-  return guard(
-    dispatch("msgType", {
-      publish: publicationDecoder,
-      registeredKeyFired: keyDownDecoder,
-      client_started: startedDecoder,
-      clickFired: clickDecoder,
-      navRequest: navRequestDecoder,
-      notifyRequest: notifyDecoder,
-      toastRequest: notifyDecoder,
-      modalRequest: modalDecoder,
-      pageMetadata: pageMetadataDecoder,
-      promptOnLeave: promptDecoder,
-    }),
-  )(msg);
+  return taggedUnion("msgType", {
+    publish: publicationDecoder,
+    registeredKeyFired: keyDownDecoder,
+    client_started: startedDecoder,
+    clickFired: clickDecoder,
+    navRequest: navRequestDecoder,
+    notifyRequest: notifyDecoder,
+    toastRequest: notifyDecoder,
+    modalRequest: modalDecoder,
+    pageMetadata: pageMetadataDecoder,
+    promptOnLeave: promptDecoder,
+  }).verify(msg);
 }

@@ -1,4 +1,4 @@
-import { constant, Decoder, mixed, object, string } from "decoders";
+import { constant, Decoder, exact, string, unknown } from "decoders";
 import { labeledDecoder, LabeledMsg } from "./LabeledMsg";
 
 /**
@@ -9,7 +9,7 @@ export interface ModalRequest {
   modalId: string;
 
   /** Any data that the client wishes to send to the modal */
-  modalData: any;
+  modalData?: any;
 }
 
 /**
@@ -28,9 +28,9 @@ export interface LabeledModalRequest extends LabeledMsg<
 
 const decoder: Decoder<LabeledModalRequest> = labeledDecoder(
   constant<"modalRequest">("modalRequest"),
-  object({
+  exact({
     modalId: string,
-    modalData: mixed,
+    modalData: unknown,
   }),
 );
 
