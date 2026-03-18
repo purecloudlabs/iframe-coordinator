@@ -26,7 +26,7 @@ describe("client", () => {
       },
       removeEventListener: (eventId: string) => {
         delete mockGlobalScope.eventHandlers[eventId];
-      }
+      },
     };
 
     client = new TestClient();
@@ -79,16 +79,24 @@ describe("client", () => {
     describe("generate full URL from client path", () => {
       test("should be able to generate full url from client path", () => {
         const urlFromClient = client.urlFromClientPath("client/path");
-        expect(urlFromClient).toEqual("http://example.com/host-root/client-route/client/path");
+        expect(urlFromClient).toEqual(
+          "http://example.com/host-root/client-route/client/path",
+        );
       });
 
       test("should ignore client route leading slash and hash tag", () => {
         let urlFromClient = client.urlFromClientPath("/client/path");
-        expect(urlFromClient).toEqual("http://example.com/host-root/client-route/client/path");
+        expect(urlFromClient).toEqual(
+          "http://example.com/host-root/client-route/client/path",
+        );
         urlFromClient = client.urlFromClientPath("#/client/path");
-        expect(urlFromClient).toEqual("http://example.com/host-root/client-route/client/path");
+        expect(urlFromClient).toEqual(
+          "http://example.com/host-root/client-route/client/path",
+        );
         urlFromClient = client.urlFromClientPath("/#/client/path");
-        expect(urlFromClient).toEqual("http://example.com/host-root/client-route/client/path");
+        expect(urlFromClient).toEqual(
+          "http://example.com/host-root/client-route/client/path",
+        );
       });
       test("should keep query strings", () => {
         const urlFromClient = client.urlFromClientPath(
@@ -116,7 +124,9 @@ describe("client", () => {
       });
       test("should keep query strings", () => {
         const urlFromHost = client.urlFromHostPath("/#/host-route?foo=bar");
-        expect(urlFromHost).toEqual("http://example.com/host-root/host-route?foo=bar");
+        expect(urlFromHost).toEqual(
+          "http://example.com/host-root/host-route?foo=bar",
+        );
       });
     });
   });

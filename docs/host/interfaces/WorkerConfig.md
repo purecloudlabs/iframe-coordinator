@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [host](../README.md) / WorkerConfig
 
@@ -21,7 +21,7 @@ Defined in: [WorkerPool.ts:12](https://github.com/purecloudlabs/iframe-coordinat
 
 Web worker registrations
 
-***
+---
 
 ### envData
 

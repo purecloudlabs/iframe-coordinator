@@ -16,8 +16,10 @@ export interface ModalRequest {
  * A message used to publish a generic messages
  * between the clients and the host application.
  */
-export interface LabeledModalRequest
-  extends LabeledMsg<"modalRequest", ModalRequest> {
+export interface LabeledModalRequest extends LabeledMsg<
+  "modalRequest",
+  ModalRequest
+> {
   /** Message identifier */
   msgType: "modalRequest";
   /** Modal request details (type and data) */

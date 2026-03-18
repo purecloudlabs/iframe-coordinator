@@ -51,7 +51,7 @@ interface WorkerMap {
  * application metadata, allowing them to generate URLs for and request
  * navigation to a corresponding iframed client app that may or may not be
  * currently loaded.
- * 
+ *
  * The WorkerPool is an {@link EventTarget} and emits events in the same way as the
  * {@link host.FrameRouterElement | FrameRouterElement}, although with fewer
  * possible events.
@@ -66,29 +66,28 @@ export class WorkerPool extends EventTarget {
    * private fields.
    */
   private static WorkerManager = class extends HostManager {
-      private workerPool: WorkerPool;
-      constructor(envData: EnvData, workerPool: WorkerPool) {
-        super(envData, workerPool);
-        this.workerPool = workerPool;
-      }
+    private workerPool: WorkerPool;
+    constructor(envData: EnvData, workerPool: WorkerPool) {
+      super(envData, workerPool);
+      this.workerPool = workerPool;
+    }
 
-      protected _postMessageToClient(
-        message: HostToClient,
-        clientId: string,
-      ): void {
-        this.workerPool._workers[clientId].postMessage(message);
-      }
+    protected _postMessageToClient(
+      message: HostToClient,
+      clientId: string,
+    ): void {
+      this.workerPool._workers[clientId].postMessage(message);
+    }
 
-      protected _getClientAssignedRoute(clientId: string): string {
-        return this.workerPool._workerConfig.clients[clientId]?.app.assignedRoute;
-      }
+    protected _getClientAssignedRoute(clientId: string): string {
+      return this.workerPool._workerConfig.clients[clientId]?.app.assignedRoute;
+    }
 
-      protected _expectedClientOrigin(_clientId: string): string {
-        // Web workers always send an empty origin
-        return "";
-      }
-    
-  }  
+    protected _expectedClientOrigin(_clientId: string): string {
+      // Web workers always send an empty origin
+      return "";
+    }
+  };
 
   /** Creates a new worker pool */
   constructor() {
@@ -109,7 +108,10 @@ export class WorkerPool extends EventTarget {
       throw new Error("Cannot change workers while running");
     }
     this._workerConfig = clientConfig;
-    this._hostManager = new WorkerPool.WorkerManager(clientConfig.envData, this);
+    this._hostManager = new WorkerPool.WorkerManager(
+      clientConfig.envData,
+      this,
+    );
   }
 
   /**
@@ -137,7 +139,9 @@ export class WorkerPool extends EventTarget {
     Object.entries(this._workerConfig.clients).forEach(([clientId, client]) => {
       const workerUrl = client.script;
       try {
-        this._workers[clientId] = new Worker(workerUrl, {name: `worker.${clientId}`});
+        this._workers[clientId] = new Worker(workerUrl, {
+          name: `worker.${clientId}`,
+        });
         this._workers[clientId].addEventListener("message", (msg) => {
           this._hostManager.handleClientMessage(msg, clientId);
         });

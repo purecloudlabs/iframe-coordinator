@@ -17,14 +17,12 @@ try {
     const api = request.api;
     console.log("worker: Got exercise API request from host", request);
 
-    if(client[api] && typeof client[api] == 'function') {
-        client[api](request.data);
+    if (client[api] && typeof client[api] == "function") {
+      client[api](request.data);
     } else {
-      console.log(`Unrecognized API: ${api}`)
+      console.log(`Unrecognized API: ${api}`);
     }
-
-  })
-
+  });
 
   console.log("Sending client start");
   client.start();

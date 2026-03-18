@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [messages](../README.md) / Notification
 
@@ -21,7 +21,7 @@ Defined in: [messages/Notification.ts:23](https://github.com/purecloudlabs/ifram
 
 Additional host-specific options such as severity
 
-***
+---
 
 ### message
 
@@ -31,7 +31,7 @@ Defined in: [messages/Notification.ts:21](https://github.com/purecloudlabs/ifram
 
 The notification message
 
-***
+---
 
 ### title?
 

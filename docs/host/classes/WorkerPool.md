@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [host](../README.md) / WorkerPool
 
@@ -56,7 +56,7 @@ True if the worker is running.
 
 `boolean`
 
-***
+---
 
 ### workerConfig
 
@@ -123,7 +123,7 @@ The topic may not be of interest, and could be ignored.
 
 `void`
 
-***
+---
 
 ### start()
 
@@ -137,7 +137,7 @@ Start the worker pool, and all associated workers.
 
 `void`
 
-***
+---
 
 ### stop()
 

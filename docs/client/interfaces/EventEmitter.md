@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [client](../README.md) / EventEmitter
 
@@ -46,7 +46,7 @@ The handler which receives a notification when an event of the specified type oc
 
 `EventEmitter`\<`T`\>
 
-***
+---
 
 ### removeAllListeners()
 
@@ -68,7 +68,7 @@ A string which specifies the type of event for which to remove an event listener
 
 `EventEmitter`\<`T`\>
 
-***
+---
 
 ### removeListener()
 

@@ -3,21 +3,59 @@
     <div class="header">
       <div class="control-icons">
         <!-- sidebar tools toggle -->
-        <button class="worker-controls" title="Web Worker Tools" v-on:click="toggleWorkerControls">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-sidebar"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+        <button
+          class="worker-controls"
+          title="Web Worker Tools"
+          v-on:click="toggleWorkerControls"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-sidebar"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="9" y1="3" x2="9" y2="21"></line>
+          </svg>
         </button>
         <!-- documentation link -->
-        <a class="help-link" v-html="" title="Documentation" target="docs" href="/ifc-docs/">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-help-circle"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <a
+          class="help-link"
+          title="Documentation"
+          target="docs"
+          href="/ifc-docs/"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="feather feather-help-circle"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
         </a>
       </div>
 
       <!-- IFC worker controls -->
-      <div class="worker-controls"
+      <div
+        class="worker-controls"
         v-if="Object.keys(workerConfig).length > 0"
-      >
-      </div>
-      
+      ></div>
+
       <!-- frame-router status explainer -->
       <div class="router-status">
         Showing
@@ -34,7 +72,6 @@
           <span class="metadata-content">{{ metadata }}</span>
         </span>
       </div>
-
     </div>
 
     <div id="main">
@@ -56,8 +93,8 @@
         </div>
         <div v-else>
           <p>
-            I couldn't find any registered client applications. Please check your
-            ifc-cli configuration file.
+            I couldn't find any registered client applications. Please check
+            your ifc-cli configuration file.
           </p>
         </div>
       </div>
@@ -92,7 +129,7 @@ export default {
   name: "iframeEmbed",
   props: ["frameRoute"],
   components: {
-    WorkerControls
+    WorkerControls,
   },
   data() {
     return {
@@ -103,7 +140,7 @@ export default {
       workerConfig: {},
       metadata: {},
       currentClientId: "",
-      showWorkerControls: false
+      showWorkerControls: false,
     };
   },
   methods: {
@@ -183,9 +220,12 @@ export default {
     // Create the web worker pool
     this.workerPool = new WorkerPool();
     // Add worker pool event handlers
-    this.workerPool.addEventListener('navRequest', this.handleNav);
-    this.workerPool.addEventListener('notifyRequest', this.displayToast);
-    this.workerPool.addEventListener('promptOnLeave', this.handlePrompotOnLeave);
+    this.workerPool.addEventListener("navRequest", this.handleNav);
+    this.workerPool.addEventListener("notifyRequest", this.displayToast);
+    this.workerPool.addEventListener(
+      "promptOnLeave",
+      this.handlePrompotOnLeave,
+    );
 
     // Call the custom config set up on the CLI.
     const oldSetupFrames = frameRouter.setupFrames;
@@ -241,9 +281,9 @@ for more details.
   background-color: #33383d;
   color: #fdfdfd;
 }
-a, button {
+a,
+button {
   color: #1fc0ff;
-  
 }
 button {
   background-color: #33383d;
@@ -253,7 +293,7 @@ button {
   text-align: center;
 }
 .control-icons {
-  text-align: right
+  text-align: right;
 }
 .control-icons :not(:last-child) {
   margin-right: 5px;

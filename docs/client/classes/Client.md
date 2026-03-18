@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [client](../README.md) / Client
 
@@ -56,7 +56,7 @@ custom data sent by the host.
 
 `AbstractClient.environmentData`
 
-***
+---
 
 ### messaging
 
@@ -116,7 +116,7 @@ The handler which receives a notification when an event of the specified type oc
 
 `AbstractClient.addListener`
 
-***
+---
 
 ### ~~asHostUrl()~~
 
@@ -147,7 +147,7 @@ Use the new [urlFromClientPath](#urlfromclientpath) method instead
 
 `AbstractClient.asHostUrl`
 
-***
+---
 
 ### clearPromptOnLeave()
 
@@ -165,7 +165,7 @@ Asks the host application to clear the prompt on leave dialog.
 
 `AbstractClient.clearPromptOnLeave`
 
-***
+---
 
 ### publish()
 
@@ -191,7 +191,7 @@ The data object to be published.
 
 `AbstractClient.publish`
 
-***
+---
 
 ### registerCustomElements()
 
@@ -205,7 +205,7 @@ Registers custom elements used by the client application
 
 `void`
 
-***
+---
 
 ### removeAllListeners()
 
@@ -231,7 +231,7 @@ A string which specifies the type of event for which to remove an event listener
 
 `AbstractClient.removeAllListeners`
 
-***
+---
 
 ### removeListener()
 
@@ -263,7 +263,7 @@ The event handler to remove from the event target.
 
 `AbstractClient.removeListener`
 
-***
+---
 
 ### requestModal()
 
@@ -292,7 +292,7 @@ the ID and any data specific to the modal instance required
 
 `AbstractClient.requestModal`
 
-***
+---
 
 ### requestNavigation()
 
@@ -323,7 +323,7 @@ a description of where the client wants to navigate the app to.
 
 `AbstractClient.requestNavigation`
 
-***
+---
 
 ### requestNotification()
 
@@ -334,7 +334,7 @@ Defined in: [AbstractClient.ts:351](https://github.com/purecloudlabs/iframe-coor
 Asks the host application to display a user notification.
 
 The page embedding the client app is responsible for handling the fired custom event and
-presenting/styling the notification.  Application-specific concerns such as level, TTLs,
+presenting/styling the notification. Application-specific concerns such as level, TTLs,
 ids for action callbacks (notification click, notification action buttons), etc. can be passed via
 the `custom` property of the `notification` type.
 
@@ -353,24 +353,24 @@ the desired notification configuration.
 #### Examples
 
 ```typescript
-client.requestNotification({ title: 'Hello world' });
+client.requestNotification({ title: "Hello world" });
 ```
 
 ```typescript
 client.requestNotification({
-  title: 'Hello',
-  message: 'World'
+  title: "Hello",
+  message: "World",
 });
 ```
 
 ```typescript
 client.requestNotification({
-  title: 'Hello',
-  message: 'World',
+  title: "Hello",
+  message: "World",
   custom: {
     displaySeconds: 5,
-    level: 'info'
-  }
+    level: "info",
+  },
 });
 ```
 
@@ -378,7 +378,7 @@ client.requestNotification({
 
 `AbstractClient.requestNotification`
 
-***
+---
 
 ### requestPromptOnLeave()
 
@@ -402,7 +402,7 @@ Asks the host application to display a prompt on leave dialog.
 
 `AbstractClient.requestPromptOnLeave`
 
-***
+---
 
 ### sendPageMetadata()
 
@@ -432,7 +432,7 @@ data that will be used for display in host application and browser page title
 
 `AbstractClient.sendPageMetadata`
 
-***
+---
 
 ### start()
 
@@ -450,7 +450,7 @@ Initiates responding to events triggered by the host application.
 
 `AbstractClient.start`
 
-***
+---
 
 ### startInterceptingLinks()
 
@@ -467,7 +467,7 @@ links that you may not want to intercept.
 
 `void`
 
-***
+---
 
 ### stop()
 
@@ -486,7 +486,7 @@ the sake of API completeness. It's unlikely to be used by most applications.
 
 `AbstractClient.stop`
 
-***
+---
 
 ### stopInterceptingLinks()
 
@@ -500,7 +500,7 @@ Turns off the behavior of intercepting link clicks in the client window click ha
 
 `void`
 
-***
+---
 
 ### urlFromClientPath()
 
@@ -530,7 +530,7 @@ The /-separated path within the client app to link to.
 
 `AbstractClient.urlFromClientPath`
 
-***
+---
 
 ### urlFromHostPath()
 

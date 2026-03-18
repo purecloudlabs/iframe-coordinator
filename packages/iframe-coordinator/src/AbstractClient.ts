@@ -18,11 +18,7 @@ import {
   applyClientProtocol,
   PartialMsg,
 } from "./messages/LabeledMsg";
-import {
-  EnvData,
-  LabeledEnvInit,
-  Lifecycle,
-} from "./messages/Lifecycle";
+import { EnvData, LabeledEnvInit, Lifecycle } from "./messages/Lifecycle";
 import { ModalRequest } from "./messages/ModalRequest";
 import { NavRequest } from "./messages/NavRequest";
 import { Notification } from "./messages/Notification";
@@ -33,7 +29,9 @@ import { Publication } from "./messages/Publication";
  * This class is the central behavior of a micro-frontend client communicating
  * with a host context.
  */
-export abstract class AbstractClient<T extends Window | DedicatedWorkerGlobalScope> {
+export abstract class AbstractClient<
+  T extends Window | DedicatedWorkerGlobalScope,
+> {
   protected _isStarted: boolean;
   private _environmentData: EnvData;
   private _envDataEmitter: InternalEventEmitter<EnvData>;

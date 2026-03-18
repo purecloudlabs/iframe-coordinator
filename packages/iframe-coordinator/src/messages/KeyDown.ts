@@ -14,8 +14,10 @@ import { labeledDecoder, LabeledMsg } from "./LabeledMsg";
  * A message used to send key information
  * to the host application.
  */
-export interface LabeledKeyDown
-  extends LabeledMsg<"registeredKeyFired", NativeKey> {
+export interface LabeledKeyDown extends LabeledMsg<
+  "registeredKeyFired",
+  NativeKey
+> {
   /** Message identifier */
   msgType: "registeredKeyFired";
   /** Key details */

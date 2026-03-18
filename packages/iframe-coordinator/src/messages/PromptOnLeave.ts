@@ -17,8 +17,10 @@ export interface PromptOnLeave {
 /**
  * A message used to request a prompt on leave dialog to be displayed in the host app.
  */
-export interface LabeledPrompt
-  extends LabeledMsg<"promptOnLeave", PromptOnLeave> {
+export interface LabeledPrompt extends LabeledMsg<
+  "promptOnLeave",
+  PromptOnLeave
+> {
   /** Message identifier */
   msgType: "promptOnLeave";
   /** Message details */

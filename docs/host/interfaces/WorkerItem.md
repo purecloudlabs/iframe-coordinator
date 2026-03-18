@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [host](../README.md) / WorkerItem
 
@@ -20,7 +20,7 @@ Defined in: [WorkerPool.ts:31](https://github.com/purecloudlabs/iframe-coordinat
 
 Application metadata. Allows a worker easily generate links for an associated application
 
-***
+---
 
 ### script
 

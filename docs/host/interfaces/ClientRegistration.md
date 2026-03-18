@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [host](../README.md) / ClientRegistration
 
@@ -32,7 +32,7 @@ Defined in: [HostRouter.ts:105](https://github.com/purecloudlabs/iframe-coordina
 Sets the iframe's [allow attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-allow)
 for this client.
 
-***
+---
 
 ### assignedRoute
 
@@ -42,7 +42,7 @@ Defined in: [HostRouter.ts:100](https://github.com/purecloudlabs/iframe-coordina
 
 The `frame-router` route attribute prefix that maps to this client app
 
-***
+---
 
 ### defaultTitle?
 
@@ -53,7 +53,7 @@ Defined in: [HostRouter.ts:115](https://github.com/purecloudlabs/iframe-coordina
 Sets the iframe's default [title](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#accessibility_concerns) attribute.
 This is required for accessibility.
 
-***
+---
 
 ### sandbox?
 
@@ -64,7 +64,7 @@ Defined in: [HostRouter.ts:110](https://github.com/purecloudlabs/iframe-coordina
 Sets the iframe's [sandbox attribute](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/iframe#attr-sandbox)
 for this client. Values wll be merged with built-in defaults.
 
-***
+---
 
 ### url
 

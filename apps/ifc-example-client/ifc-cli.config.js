@@ -67,7 +67,6 @@ module.exports = function (frameRouter, workerPool) {
     },
   };
 
-  
   return {
     // These are the topics that the host app should display payloads for when
     // the client publishes on them.

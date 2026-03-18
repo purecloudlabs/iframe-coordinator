@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [messages](../README.md) / PageMetadata
 
@@ -20,7 +20,7 @@ Defined in: [messages/PageMetadata.ts:19](https://github.com/purecloudlabs/ifram
 
 Breadcrumbs that lead to page
 
-***
+---
 
 ### custom?
 
@@ -30,7 +30,7 @@ Defined in: [messages/PageMetadata.ts:21](https://github.com/purecloudlabs/ifram
 
 Holder for any custom data client wants to send for page
 
-***
+---
 
 ### title
 

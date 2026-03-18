@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [messages](../README.md) / PromptOnLeave
 
@@ -22,7 +22,7 @@ Defined in: [messages/PromptOnLeave.ts:14](https://github.com/purecloudlabs/ifra
 
 Optional message to prompt the user with.
 
-***
+---
 
 ### shouldPrompt
 

@@ -1,6 +1,6 @@
 [**iframe-coordinator v6.5.0**](../../README.md)
 
-***
+---
 
 [iframe-coordinator](../../modules.md) / [messages](../README.md) / EnvData
 
@@ -21,7 +21,7 @@ Defined in: [messages/Lifecycle.ts:41](https://github.com/purecloudlabs/iframe-c
 
 Extra application-specific details for your use case
 
-***
+---
 
 ### hostRootUrl
 
@@ -31,7 +31,7 @@ Defined in: [messages/Lifecycle.ts:37](https://github.com/purecloudlabs/iframe-c
 
 The location of the host app. Useful for building URLs that reference host pages
 
-***
+---
 
 ### locale
 
@@ -41,7 +41,7 @@ Defined in: [messages/Lifecycle.ts:35](https://github.com/purecloudlabs/iframe-c
 
 The locale in use by the host app, which the client application should also use.
 
-***
+---
 
 ### registeredKeys?
 
