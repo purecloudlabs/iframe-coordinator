@@ -21,7 +21,7 @@
     "@rollup/plugin-node-resolve": "^16.0.3",
     "concurrently": "^8.2.2",
     "iframe-coordinator-cli": "file:../../packages/iframe-coordinator-cli",
-    "rollup": "^4.53.2"
+    "rollup": "^4.59.0"
   },
   "dependencies": {
     "iframe-coordinator": "file:../../packages/iframe-coordinator"

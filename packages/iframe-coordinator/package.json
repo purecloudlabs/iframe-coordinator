@@ -22,11 +22,11 @@
     "@rollup/plugin-typescript": "^11.1.6",
     "jsdom": "^26.1.0",
     "puppeteer": "^22.15.0",
-    "rollup": "^4.53.2",
-    "typedoc": "^0.28.15",
-    "typedoc-plugin-markdown": "^4.9.0",
-    "typedoc-plugin-mdn-links": "^5.0.10",
-    "typescript": "^5.5.4",
+    "rollup": "^4.59.0",
+    "typedoc": "^0.28.17",
+    "typedoc-plugin-markdown": "^4.10.0",
+    "typedoc-plugin-mdn-links": "^5.1.1",
+    "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   },
   "scripts": {
