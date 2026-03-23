@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [6.5.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.5.0...v6.5.1) (2026-03-23)
+
+
+### Bug Fixes
+
+* **frame-router:** update frame-router to set iframe title from pageMetadata messages ([3535de1](https://github.com/purecloudlabs/iframe-coordinator/commit/3535de12752d1f37abc99d09bb2aa705e3fec32c))
+
 ## [6.5.0](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.4.0...v6.5.0) (2026-01-13)
 
 
