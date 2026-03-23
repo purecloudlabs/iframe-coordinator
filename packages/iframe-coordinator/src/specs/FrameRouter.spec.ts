@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeAll, beforeEach } from "vitest";
+import { describe, expect, test, beforeAll, beforeEach, vi } from "vitest";
 
 import { FrameRouterElement } from "../host";
 
@@ -146,6 +146,64 @@ describe("The frame router element", () => {
       expect(router._envData).toEqual({
         ...ENV_DATA_WITH_QUERY_AND_HASH,
       });
+    });
+  });
+
+  describe("Iframe title updates from pageMetadata", () => {
+    let router: FrameRouterElement;
+
+    beforeEach(() => {
+      router = new FrameRouterElement();
+      router.clientConfig = {
+        clients: {
+          testClient: {
+            url: "https://example.com/client/",
+            assignedRoute: "test",
+            defaultTitle: "Default Title",
+          },
+        },
+        envData: ENV_DATA,
+      };
+    });
+
+    test("Updates iframe title and dispatches event when pageMetadata has a non-empty title", () => {
+      //@ts-ignore
+      const titleSpy = vi.spyOn(router._frameManager, "setFrameDefaultTitle");
+      const dispatchSpy = vi.spyOn(router, "dispatchEvent");
+
+      //@ts-ignore
+      router._handleClientMessages({
+        msgType: "pageMetadata",
+        msg: {
+          title: "Activate Queues",
+          breadcrumbs: [],
+        },
+      });
+
+      expect(titleSpy).toHaveBeenCalledWith("Activate Queues");
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ type: "pageMetadata" }),
+      );
+    });
+
+    test("Preserves existing iframe title but still dispatches event when pageMetadata title is empty", () => {
+      //@ts-ignore
+      const titleSpy = vi.spyOn(router._frameManager, "setFrameDefaultTitle");
+      const dispatchSpy = vi.spyOn(router, "dispatchEvent");
+
+      //@ts-ignore
+      router._handleClientMessages({
+        msgType: "pageMetadata",
+        msg: {
+          title: "",
+          breadcrumbs: [],
+        },
+      });
+
+      expect(titleSpy).not.toHaveBeenCalled();
+      expect(dispatchSpy).toHaveBeenCalledWith(
+        expect.objectContaining({ type: "pageMetadata" }),
+      );
     });
   });
 });

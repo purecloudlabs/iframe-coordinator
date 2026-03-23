@@ -216,6 +216,12 @@ export default class FrameRouterElement extends HTMLElement {
       case "client_started":
         this._handleLifecycleMessage(message);
         break;
+      case "pageMetadata":
+        if (message.msg.title) {
+          this._frameManager.setFrameDefaultTitle(message.msg.title);
+        }
+        this._dispatchClientMessage(message);
+        break;
       default:
         this._dispatchClientMessage(message);
     }
