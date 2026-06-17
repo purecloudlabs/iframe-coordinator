@@ -2,11 +2,10 @@ import {
   constant,
   Decoder,
   either,
-  map,
-  mixed,
-  object,
+  exact,
   optional,
   string,
+  unknown,
 } from "decoders";
 import { labeledDecoder, LabeledMsg } from "./LabeledMsg";
 
@@ -20,7 +19,7 @@ export interface Notification {
   /** The notification message */
   message: string;
   /** Additional host-specific options such as severity */
-  custom: any;
+  custom?: any;
 }
 
 /**
@@ -40,21 +39,19 @@ export interface LabeledNotification extends LabeledMsg<
 /**
  * Helper function to convert old message types to the new type
  */
-function alwaysMsgType(msgType: "string"): "notifyRequest" {
+function alwaysMsgType(msgType: "toastRequest"): "notifyRequest" {
   return "notifyRequest";
 }
 
-const toastTypeDecoder: Decoder<"notifyRequest"> = map(
-  constant<"toastRequest">("toastRequest"),
-  alwaysMsgType,
-);
+const toastTypeDecoder: Decoder<"notifyRequest"> =
+  constant<"toastRequest">("toastRequest").transform(alwaysMsgType);
 
 const decoder: Decoder<LabeledNotification> = labeledDecoder(
   either(constant<"notifyRequest">("notifyRequest"), toastTypeDecoder),
-  object({
+  exact({
     title: optional(string),
     message: string,
-    custom: mixed,
+    custom: unknown,
   }),
 );
 

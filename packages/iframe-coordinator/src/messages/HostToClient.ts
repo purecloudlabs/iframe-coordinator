@@ -1,4 +1,4 @@
-import { dispatch, guard } from "decoders";
+import { taggedUnion } from "decoders";
 import { envDecoder, LabeledEnvInit } from "./Lifecycle";
 import {
   decoder as publicationDecoder,
@@ -17,7 +17,8 @@ export type HostToClient = LabeledPublication | LabeledEnvInit;
  * @param msg The message requiring validation.
  */
 export function validate(msg: any): HostToClient {
-  return guard(
-    dispatch("msgType", { publish: publicationDecoder, env_init: envDecoder }),
-  )(msg);
+  return taggedUnion("msgType", {
+    publish: publicationDecoder,
+    env_init: envDecoder,
+  }).verify(msg);
 }

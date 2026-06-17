@@ -1,12 +1,4 @@
-import {
-  constant,
-  Decoder,
-  map,
-  mixed,
-  object,
-  optional,
-  string,
-} from "decoders";
+import { constant, Decoder, exact, optional, string, unknown } from "decoders";
 import { labeledDecoder, LabeledMsg } from "./LabeledMsg";
 
 /**
@@ -19,7 +11,7 @@ export interface Publication {
    */
   topic: string;
   /** Data to publish */
-  payload: any;
+  payload?: any;
   /**
    * Client the message originates from. This should not be provided when
    * calling client methods. The value will be ignored and the library
@@ -41,9 +33,9 @@ export interface LabeledPublication extends LabeledMsg<"publish", Publication> {
 
 const decoder: Decoder<LabeledPublication> = labeledDecoder(
   constant<"publish">("publish"),
-  object({
+  exact({
     topic: string,
-    payload: mixed,
+    payload: unknown,
     clientId: optional(string),
   }),
 );

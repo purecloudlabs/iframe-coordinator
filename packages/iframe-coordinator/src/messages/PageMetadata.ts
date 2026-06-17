@@ -2,10 +2,10 @@ import {
   array,
   constant,
   Decoder,
-  mixed,
-  object,
+  exact,
   optional,
   string,
+  unknown,
 } from "decoders";
 import { labeledDecoder, LabeledMsg } from "./LabeledMsg";
 
@@ -47,15 +47,15 @@ export interface LabeledPageMetadata extends LabeledMsg<
 
 const decoder: Decoder<LabeledPageMetadata> = labeledDecoder(
   constant<"pageMetadata">("pageMetadata"),
-  object({
+  exact({
     title: string,
     breadcrumbs: array(
-      object({
+      exact({
         text: string,
         href: string,
       }),
     ),
-    custom: optional(mixed),
+    custom: optional(unknown),
   }),
 );
 

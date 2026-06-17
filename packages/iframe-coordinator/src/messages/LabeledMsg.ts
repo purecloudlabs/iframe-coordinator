@@ -1,10 +1,9 @@
 import {
+  always,
   constant,
   Decoder,
   either,
-  hardcoded,
-  map,
-  object,
+  exact,
   optional,
   string,
 } from "decoders";
@@ -87,20 +86,20 @@ export function labeledDecoder<T, V>(
   typeDecoder: Decoder<T>,
   msgDecoder: Decoder<V>,
 ): Decoder<LabeledMsg<T, V>> {
-  return object({
+  return exact({
     // TODO: in 4.0.0 make protocol and version fields mandatory
     protocol: either(
       constant<"iframe-coordinator">(API_PROTOCOL),
-      hardcoded<"iframe-coordinator">(API_PROTOCOL),
+      always<"iframe-coordinator">(API_PROTOCOL),
     ),
-    version: either(string, hardcoded("unknown")),
+    version: either(string, always("unknown")),
     msgType: typeDecoder,
     msg: msgDecoder,
     direction: optional(directionDecoder),
-  });
+  }) as Decoder<LabeledMsg<T, V>>;
 }
 
-const directionDecoder: Decoder<MessageDirection, unknown> = either(
+const directionDecoder: Decoder<MessageDirection> = either(
   constant("ClientToHost"),
   constant("HostToClient"),
 );

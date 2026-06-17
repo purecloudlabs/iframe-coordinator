@@ -3,10 +3,10 @@ import {
   boolean,
   constant,
   Decoder,
-  mixed,
-  object,
+  exact,
   optional,
   string,
+  unknown,
 } from "decoders";
 import { applyClientProtocol, labeledDecoder, LabeledMsg } from "./LabeledMsg";
 
@@ -23,7 +23,7 @@ export interface LabeledStarted extends LabeledMsg<"client_started", any> {
 // We don't care what is in msg for Started messages.
 const startedDecoder: Decoder<LabeledStarted> = labeledDecoder(
   constant<"client_started">("client_started"),
-  mixed,
+  unknown,
 );
 
 /**
@@ -78,13 +78,13 @@ export interface LabeledEnvInit extends LabeledMsg<"env_init", SetupData> {
 
 const envDecoder: Decoder<LabeledEnvInit> = labeledDecoder(
   constant<"env_init">("env_init"),
-  object({
+  exact({
     locale: string,
     hostRootUrl: string,
     assignedRoute: string,
     registeredKeys: optional(
       array(
-        object({
+        exact({
           key: string,
           altKey: optional(boolean),
           ctrlKey: optional(boolean),
@@ -93,7 +93,7 @@ const envDecoder: Decoder<LabeledEnvInit> = labeledDecoder(
         }),
       ),
     ),
-    custom: mixed,
+    custom: unknown,
   }),
 );
 
