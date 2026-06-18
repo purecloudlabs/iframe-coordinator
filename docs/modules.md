@@ -1,8 +1,8 @@
-[**iframe-coordinator v6.5.1**](README.md)
+[**iframe-coordinator v6.5.2**](README.md)
 
 ---
 
-# iframe-coordinator v6.5.1
+# iframe-coordinator v6.5.2
 
 ## Documents
 

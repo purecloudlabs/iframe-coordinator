@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.5.1**](../../README.md)
+[**iframe-coordinator v6.5.2**](../../README.md)
 
 ---
 
@@ -6,7 +6,7 @@
 
 # Interface: Breadcrumb
 
-Defined in: [messages/PageMetadata.ts:27](https://github.com/purecloudlabs/iframe-coordinator/blob/c66985bfb186111ea5faaed3c49c76f23c1e0800/packages/iframe-coordinator/src/messages/PageMetadata.ts#L27)
+Defined in: [messages/PageMetadata.ts:27](https://github.com/purecloudlabs/iframe-coordinator/blob/b64efe0f09bd193da927d893bb5567bbf39a17cb/packages/iframe-coordinator/src/messages/PageMetadata.ts#L27)
 
 Single breadcrumb
 
@@ -16,7 +16,7 @@ Single breadcrumb
 
 > **href**: `string`
 
-Defined in: [messages/PageMetadata.ts:31](https://github.com/purecloudlabs/iframe-coordinator/blob/c66985bfb186111ea5faaed3c49c76f23c1e0800/packages/iframe-coordinator/src/messages/PageMetadata.ts#L31)
+Defined in: [messages/PageMetadata.ts:31](https://github.com/purecloudlabs/iframe-coordinator/blob/b64efe0f09bd193da927d893bb5567bbf39a17cb/packages/iframe-coordinator/src/messages/PageMetadata.ts#L31)
 
 Link href for routing to breadcrumb's page
 
@@ -26,6 +26,6 @@ Link href for routing to breadcrumb's page
 
 > **text**: `string`
 
-Defined in: [messages/PageMetadata.ts:29](https://github.com/purecloudlabs/iframe-coordinator/blob/c66985bfb186111ea5faaed3c49c76f23c1e0800/packages/iframe-coordinator/src/messages/PageMetadata.ts#L29)
+Defined in: [messages/PageMetadata.ts:29](https://github.com/purecloudlabs/iframe-coordinator/blob/b64efe0f09bd193da927d893bb5567bbf39a17cb/packages/iframe-coordinator/src/messages/PageMetadata.ts#L29)
 
 UI text for breadcrumb

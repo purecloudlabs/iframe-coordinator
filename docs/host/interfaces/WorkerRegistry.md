@@ -1,4 +1,4 @@
-[**iframe-coordinator v6.5.1**](../../README.md)
+[**iframe-coordinator v6.5.2**](../../README.md)
 
 ---
 
@@ -6,7 +6,7 @@
 
 # Interface: WorkerRegistry
 
-Defined in: [WorkerPool.ts:20](https://github.com/purecloudlabs/iframe-coordinator/blob/c66985bfb186111ea5faaed3c49c76f23c1e0800/packages/iframe-coordinator/src/WorkerPool.ts#L20)
+Defined in: [WorkerPool.ts:20](https://github.com/purecloudlabs/iframe-coordinator/blob/b64efe0f09bd193da927d893bb5567bbf39a17cb/packages/iframe-coordinator/src/WorkerPool.ts#L20)
 
 Map from logical identifier to worker details. Keys are used to address workers.
 

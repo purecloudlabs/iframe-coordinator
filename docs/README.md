@@ -1,4 +1,4 @@
-**iframe-coordinator v6.5.1**
+**iframe-coordinator v6.5.2**
 
 ---
 
