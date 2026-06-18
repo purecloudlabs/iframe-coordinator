@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [6.5.2](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.5.1...v6.5.2) (2026-06-18)
+
 ## [6.5.1](https://github.com/purecloudlabs/iframe-coordinator/compare/v6.5.0...v6.5.1) (2026-03-23)
 
 
